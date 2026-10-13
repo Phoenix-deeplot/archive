@@ -1,0 +1,5 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "python3 build_index.py --keep-dates || python build_index.py --keep-dates",
+  "outputDirectory": "."
+}

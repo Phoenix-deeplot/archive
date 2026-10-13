@@ -1,0 +1,59 @@
+{
+  "books/供应链读书笔记-合集.html": {
+    "featured": true,
+    "hidden": false
+  },
+  "notes/chuhai_supply_chain_visual_notes_v3.html": {
+    "title": "出海 × 供应链：图谱化研究笔记 V3",
+    "summary": "不是ERP替代品，不是单纯APS，也不是让AI直接下采购决策，而是建立在现有业务系统之上的“策略与控制层”。",
+    "featured": true
+  },
+  "notes/index (1).html": {
+    "title": "啤酒供应链模拟 · 牛鞭效应",
+    "summary": "通过模拟管理零售商 → 批发商 → 分销商 → 工厂 的生产销售模式，来了解供应链的基础运作和牛鞭效应的原理。"
+  },
+  "tools/index.html": {
+    "title": "牛鞭效应模拟",
+    "summary": "通过模拟管理 零售商 → 批发商 → 分销商 → 工厂 整条供应链，以订单流、货物流和库存位置解释牛鞭效应。"
+  },
+  "notes/index.html": {
+    "title": "牛鞭效应模拟",
+    "summary": "以订单流、货物流和库存位置解释牛鞭效应的互动模拟。",
+    "hidden": true
+  },
+  "tools/supplychain/index.html": {
+    "hidden": false
+  },
+  "books/采购与供应链管理-读书笔记.html": {
+    "hidden": false
+  },
+  "books/重资产到轻资产-读书笔记.html": {
+    "hidden": false
+  },
+  "notes/scenarios_2026-09-28_demo.md": {
+    "title": "情景压力测试 · 2026-09-28",
+    "summary": "综合指数 28.6（平稳），建议姿态：按常规计划执行，定期复盘即可。",
+    "hidden": true
+  },
+  "notes/《张坤投资思想文集》.pdf": {
+    "title": "《张坤投资思想文集》",
+    "hidden": false
+  },
+  "notes/supplychain/index.html": {
+    "title": "牛鞭效应模拟",
+    "summary": "以订单流、货物流和库存位置解释牛鞭效应的互动模拟。",
+    "hidden": true
+  },
+  "tools/supplychain-2/index.html": {
+    "title": "牛鞭效应模拟",
+    "summary": "以订单流、货物流和库存位置解释牛鞭效应的互动模拟。"
+  },
+  "notes/AI_劳动力市场招聘情报报告.pdf": {
+    "title": "AI_劳动力市场招聘情报报告",
+    "hidden": true
+  },
+  "tools/20220119-国金证券-餐饮行业供应链专题分析报告：餐饮供应链专题一，如何看待预制菜在餐饮标准化供应中的应用？ ( etc.) (z-library.sk, 1lib.sk, z-lib.sk).pdf": {
+    "title": "20220119-国金证券-餐饮行业供应链专题分析报告",
+    "summary": "20220119-国金证券-餐饮行业供应链专题分析报告：餐饮供应链专题一，如何看待预制菜在餐饮标准化供应中的应用？ ( etc.) (z-library.sk, 1lib.sk, z-lib.sk)"
+  }
+}

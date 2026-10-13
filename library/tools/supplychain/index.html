@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="以订单流、货物流和库存位置解释牛鞭效应的互动模拟。">
+  <title>牛鞭效应模拟</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body class="dashboard-body">
+  <div class="app-shell">
+    <header class="topbar" aria-label="实验控制">
+      <div class="top-stats" aria-label="本局状态">
+        <div class="top-stat"><span>周次</span><b id="weekValue">—</b></div>
+        <div class="top-stat"><span>成本</span><b id="costValue">¥0</b></div>
+        <div class="top-stat"><span>发运率</span><b id="serviceValue">—</b></div>
+        <div class="top-stat"><span>牛鞭·当前</span><b id="bullwhipValue">—</b></div>
+      </div>
+
+      <div class="top-actions">
+        <label class="select-wrap">
+          <span class="sr-only">游戏模式</span>
+          <select id="modeSelect" data-guide-target="mode">
+            <option value="learn">教学</option>
+            <option value="sandbox">全链沙盒</option>
+          </select>
+        </label>
+        <label class="select-wrap" id="roleSelectWrap">
+          <span class="sr-only">管理角色</span>
+          <select id="roleSelect">
+            <option value="0">零售商</option>
+            <option value="1">批发商</option>
+            <option value="2">分销商</option>
+            <option value="3">工厂</option>
+          </select>
+        </label>
+        <button class="button button-quiet settings-trigger" id="settingsButton" type="button" aria-haspopup="dialog" aria-controls="settingsDialog" aria-expanded="false">设置</button>
+        <button class="button button-quiet guide-trigger" id="guideButton" type="button" aria-haspopup="dialog" aria-controls="guideDialog" aria-expanded="false">新手指南 <span aria-hidden="true">?</span></button>
+        <button class="button button-quiet" id="restartButton" type="button">重玩同路径</button>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <section class="system-section" aria-label="订单信息与货物流">
+        <div class="system-map" id="systemMap" data-guide-target="flow" aria-live="polite"></div>
+      </section>
+
+      <div class="dashboard-grid">
+        <section class="operations-section dashboard-panel" aria-label="经营面板">
+          <div class="panel-tools">
+            <button class="text-button" id="visibilityButton" type="button" aria-pressed="false">显示全链</button>
+          </div>
+          <div class="stage-grid" id="stages"></div>
+
+          <article class="coach-card" id="coachCard" data-guide-target="coach">
+            <div class="coach-copy">
+              <strong id="coachTitle">先算库存位置，再订货</strong>
+              <p class="coach-summary" id="coachSummary">建议会按现货、背单与所有未完成补给计算。</p>
+            </div>
+            <div class="sandbox-direct-controls" id="sandboxDirectControls" aria-label="四个环节的订货量" hidden></div>
+            <div class="coach-actions">
+              <button class="button button-secondary" id="explainButton" type="button">计算</button>
+              <button class="button button-primary" id="applyButton" type="button">采用建议</button>
+            </div>
+            <div class="coach-math" id="coachMath" hidden></div>
+          </article>
+        </section>
+
+        <section class="analysis-section dashboard-panel" aria-label="需求与订货趋势">
+          <div class="chart-toolbar">
+            <div class="chart-legend" aria-label="图例">
+              <span><i class="legend-demand"></i>需求</span>
+              <span><i class="legend-order"></i>订货</span>
+              <span><i class="legend-arrival"></i>到货</span>
+              <span><i class="legend-backlog"></i>背单</span>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chart" aria-label="需求和订货量曲线图"></canvas></div>
+          <div class="insight-strip" id="insightStrip">完成第一周后，趋势会显示在这里。</div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="action-bar" id="actionBar" data-guide-target="advance" aria-label="提交操作">
+      <div class="action-copy">
+        <strong id="decisionStatus">等待你的订货决策</strong>
+        <span id="decisionDetail">库存位置包含尚未到货的补给，但不能立刻发货。</span>
+      </div>
+      <div class="action-controls">
+        <label class="toggle-wrap"><input type="checkbox" id="reducedMotion"><span>快速</span></label>
+        <button class="button button-primary button-large" id="submitButton" type="button">确认并推进 <span aria-hidden="true">→</span></button>
+      </div>
+    </footer>
+  </div>
+
+  <dialog class="result-dialog" id="resultDialog" aria-labelledby="resultTitle">
+    <div class="result-topline"><span>实验复盘</span><button class="icon-button" id="closeResult" type="button" aria-label="关闭结果">×</button></div>
+    <h2 id="resultTitle">你让信号稳定下来了吗？</h2>
+    <p id="resultIntro"></p>
+    <div class="result-context" id="resultContext"></div>
+    <div class="result-metrics" id="resultMetrics"></div>
+    <section class="role-comparison" aria-labelledby="roleComparisonTitle">
+      <div class="role-comparison-heading"><strong id="roleComparisonTitle">全链角色对比</strong><span>牛鞭以终端需求为基准</span></div>
+      <div class="role-comparison-scroll">
+        <table>
+          <thead><tr><th scope="col">环节</th><th scope="col">累计发运率</th><th scope="col">累计成本</th><th scope="col">牛鞭</th></tr></thead>
+          <tbody id="roleComparisonBody"></tbody>
+        </table>
+      </div>
+    </section>
+    <div class="turning-points" id="turningPoints"></div>
+    <div class="dialog-actions"><button class="button button-secondary" id="playAgain" type="button">同路径重试</button><button class="button button-primary" id="switchStrategy" type="button">改用共享需求重跑</button></div>
+  </dialog>
+
+  <dialog class="settings-dialog" id="settingsDialog" aria-labelledby="settingsTitle" aria-describedby="settingsDescription">
+    <div class="settings-topline"><span>情景设置</span><button class="icon-button" id="closeSettings" type="button" aria-label="关闭设置">×</button></div>
+    <h2 id="settingsTitle">情景、延迟与协同</h2>
+    <p id="settingsDescription">保存后从第 1 周重新开始。本周客户订单会立即检查现货：有货即发，无货进入背单。</p>
+    <div class="settings-grid">
+      <label class="setting-field"><span>补货信号延迟 <small>订单到上游</small></span><input id="orderLeadInput" type="number" min="1" max="6" step="1" inputmode="numeric" value="2"><em>周</em></label>
+      <label class="setting-field"><span>常规运输周期 <small>上游发货到仓</small></span><input id="shipmentLeadInput" type="number" min="1" max="6" step="1" inputmode="numeric" value="2"><em>周</em></label>
+      <label class="setting-field"><span>客户交付周期 <small>零售发运到签收</small></span><input id="customerDeliveryLeadInput" type="number" min="1" max="6" step="1" inputmode="numeric" value="2"><em>周</em></label>
+      <label class="setting-field"><span>工厂生产周期 <small>仅工厂补货</small></span><input id="productionLeadInput" type="number" min="1" max="6" step="1" inputmode="numeric" value="1"><em>周</em></label>
+      <label class="setting-range"><span>终端需求随机波动 <small>围绕基础需求上下浮动</small></span><output id="demandJitterValue">±0 箱</output><input id="demandJitterInput" type="range" min="0" max="6" step="1" value="0"></label>
+      <label class="setting-choice"><span><b>建议策略</b><small>只影响“采用建议”和自动管理的环节</small></span><select id="recommendationModeInput" aria-label="智能建议策略"><option value="local">本地订单预测</option><option value="shared">共享终端需求协同</option></select></label>
+      <label class="setting-field setting-seed"><span>需求回放编号 <small>相同设置与编号可复现同一需求</small></span><input id="demandSeedInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="10" value="20261010"><em>#</em></label>
+      <label class="setting-switch"><input id="expediteEnabledInput" type="checkbox"><span><b>允许加急运输</b><small>下单时可为单笔补货勾选加急</small></span></label>
+      <label class="setting-field expedite-setting"><span>加急缩短运输</span><input id="expediteReductionInput" type="number" min="1" max="3" step="1" inputmode="numeric" value="1"><em>周</em></label>
+      <label class="setting-field expedite-setting"><span>加急费用 <small>每箱额外成本</small></span><input id="expediteCostInput" type="number" min="0" max="50" step="1" inputmode="numeric" value="2"><em>元</em></label>
+    </div>
+    <div class="settings-preview" id="settingsPreview" aria-live="polite"></div>
+    <div class="dialog-actions settings-actions"><button class="button button-secondary" id="cancelSettings" type="button">取消</button><button class="button button-primary" id="saveSettings" type="button">保存并重开</button></div>
+  </dialog>
+
+  <dialog class="guide-dialog" id="guideDialog" aria-labelledby="guideTitle" aria-describedby="guideText">
+    <div class="guide-spotlight" id="guideSpotlight" aria-hidden="true"></div>
+    <section class="guide-popover">
+      <div class="guide-topline"><span id="guideProgress" aria-live="polite">新手指南 1 / 5</span><button class="icon-button" id="guideClose" type="button" aria-label="关闭新手指南">×</button></div>
+      <h2 id="guideTitle">先看今天能不能发货</h2>
+      <p id="guideText">只有仓内现货能立刻服务客户；上游在途货还不能用于今天的发货。</p>
+      <label class="guide-suppress"><input type="checkbox" id="guideSuppress"> 不再自动显示</label>
+      <div class="guide-actions"><button class="text-button" id="guideSkip" type="button">跳过</button><span><button class="button button-secondary" id="guidePrevious" type="button">上一步</button><button class="button button-primary" id="guideNext" type="button">下一步</button></span></div>
+    </section>
+  </dialog>
+
+  <noscript>这个互动模拟需要启用 JavaScript。</noscript>
+  <script src="./game.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>供应链读书笔记：刘宝红两本书合读</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF1F0; --surface:#FFFFFF; --ink:#18232B; --muted:#55636C; --rule:#CBD3D2;
+  --heavy:#24365C; --light:#1F7A6D; --amber:#C98A00; --amber-ink:#7F5600;
+  --heavy-soft:#E3E8F2; --light-soft:#DDEFEB; --amber-soft:#FBF0D3;
+  --serif:"Noto Serif SC","Songti SC","STSong","SimSun",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC","Segoe UI",sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12181C; --surface:#1A2227; --ink:#E3E9EA; --muted:#9AA8AF; --rule:#2E3A40;
+    --heavy:#8EA6D9; --light:#5CC2B1; --amber:#E5B23A; --amber-ink:#E9C26A;
+    --heavy-soft:#1E2840; --light-soft:#173430; --amber-soft:#33290F;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12181C; --surface:#1A2227; --ink:#E3E9EA; --muted:#9AA8AF; --rule:#2E3A40;
+  --heavy:#8EA6D9; --light:#5CC2B1; --amber:#E5B23A; --amber-ink:#E9C26A;
+  --heavy-soft:#1E2840; --light-soft:#173430; --amber-soft:#33290F;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.75}
+img,svg{max-width:100%}
+a{color:var(--light)}
+:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.prose{max-width:46em}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.nav .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-top:8px;padding-bottom:8px}
+.nav .wrap::-webkit-scrollbar{display:none}
+.nav a{flex:none;text-decoration:none;color:var(--muted);font-size:14px;padding:6px 10px;border-radius:3px;white-space:nowrap}
+.nav a:hover{color:var(--ink);background:var(--surface)}
+
+/* hero */
+.hero{padding:56px 0 40px}
+.hero .book{font-size:15px;color:var(--muted);margin:0 0 18px}
+.hero .book b{color:var(--ink);font-weight:600}
+.thesis{font-family:var(--serif);font-weight:900;font-size:clamp(32px,5.6vw,60px);line-height:1.2;letter-spacing:-.01em;margin:0 0 22px;text-wrap:balance}
+.thesis > span.c{display:block}
+.thesis .h{color:var(--heavy)}
+.thesis .l{color:var(--light)}
+.hero p.lead{font-size:18px;max-width:40em;margin:0 0 14px}
+.hero p.scope{font-size:14px;color:var(--muted);max-width:46em;margin:0}
+
+/* sections */
+section.block{padding:52px 0;border-top:1px solid var(--rule)}
+h2{font-family:var(--serif);font-weight:900;font-size:clamp(26px,3.6vw,36px);line-height:1.25;margin:0 0 8px}
+h2 + .sub{color:var(--muted);margin:0 0 28px;max-width:46em}
+h3{font-family:var(--serif);font-weight:600;font-size:21px;line-height:1.35;margin:0 0 10px}
+h4{font-size:15px;margin:0 0 6px;font-weight:700}
+ul,ol{padding-left:1.25em;margin:.3em 0}
+li{margin:.2em 0}
+.small{font-size:14px;color:var(--muted)}
+
+/* logic chain */
+.chain{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(6,1fr);gap:0}
+.chain li{position:relative;margin:0;padding:18px 18px 20px;color:#fff;min-height:220px}
+.chain li:nth-child(1){background:#24365C}
+.chain li:nth-child(2){background:#253F63}
+.chain li:nth-child(3){background:#27496A}
+.chain li:nth-child(4){background:#28566E}
+.chain li:nth-child(5){background:#26666F}
+.chain li:nth-child(6){background:#1F7A6D}
+.chain li:not(:last-child)::after{content:"";position:absolute;right:-11px;top:50%;width:22px;height:22px;transform:translateY(-50%) rotate(45deg);background:inherit;z-index:1;border-top:2px solid var(--bg);border-right:2px solid var(--bg)}
+.chain .n{font-family:var(--serif);font-weight:900;font-size:30px;line-height:1;opacity:.55}
+.chain .t{font-family:var(--serif);font-weight:600;font-size:18px;margin:8px 0 6px;line-height:1.3}
+.chain .d{font-size:14px;line-height:1.6;opacity:.92}
+.chain .c{display:inline-block;margin-top:10px;font-size:12px;border:1px solid rgba(255,255,255,.45);padding:1px 6px;border-radius:2px}
+.weight{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-top:8px}
+.weight span:first-child{color:var(--heavy)} .weight span:last-child{color:var(--light)}
+@media (max-width:900px){
+  .chain{grid-template-columns:1fr}
+  .chain li{min-height:0;padding:16px 18px 18px}
+  .chain li:not(:last-child)::after{right:auto;left:28px;top:auto;bottom:-11px;transform:rotate(135deg)}
+}
+
+/* mind map */
+.mm-tools{display:flex;gap:8px;margin:0 0 16px;flex-wrap:wrap}
+.btn{font:inherit;font-size:14px;background:var(--surface);color:var(--ink);border:1px solid var(--rule);padding:6px 12px;border-radius:3px;cursor:pointer}
+.btn:hover{border-color:var(--muted)}
+.mm{background:var(--surface);border:1px solid var(--rule);padding:22px 18px 22px 14px;overflow-x:auto}
+.mm ul{list-style:none;margin:0;padding:0}
+.mm ul ul{margin-left:13px;padding-left:18px;border-left:1px solid var(--rule)}
+.mm li{position:relative;margin:4px 0}
+.mm ul ul > li::before{content:"";position:absolute;left:-18px;top:16px;width:14px;border-top:1px solid var(--rule)}
+.mm li > ul{display:none}
+.mm li.open > ul{display:block}
+.mm .node{display:inline-flex;align-items:baseline;gap:6px;text-align:left;font:inherit;background:none;border:0;color:var(--ink);padding:3px 6px;border-radius:3px;cursor:pointer;line-height:1.55}
+.mm .node:hover{background:var(--bg)}
+.mm .node .k{color:var(--muted);font-size:12px;width:12px;display:inline-block;transition:transform .15s}
+.mm li.open > .node .k{transform:rotate(90deg)}
+.mm .leaf{display:block;padding:3px 6px 3px 24px;font-size:15px;color:var(--ink)}
+.mm .leaf b{font-weight:600}
+.mm > ul > li > .node{font-family:var(--serif);font-weight:900;font-size:22px}
+.mm > ul > li > ul > li > .node{font-family:var(--serif);font-weight:600;font-size:18px}
+.mm .b-heavy{color:var(--heavy)} .mm .b-light{color:var(--light)} .mm .b-amber{color:var(--amber-ink)}
+@media (prefers-reduced-motion:reduce){.mm .node .k{transition:none}}
+
+/* module notes */
+.mod{display:grid;grid-template-columns:220px minmax(0,1fr);gap:28px;padding:30px 0;border-top:1px dashed var(--rule)}
+.mod:first-of-type{border-top:0;padding-top:0}
+.mod .head .id{font-family:var(--serif);font-weight:900;font-size:44px;line-height:1;color:var(--heavy);opacity:.35}
+.mod .head h3{margin-top:6px}
+.mod .head .ch{font-size:13px;color:var(--muted)}
+.rows{display:grid;grid-template-columns:96px minmax(0,1fr);border-top:1px solid var(--rule)}
+.rows > dt,.rows > dd{margin:0;padding:12px 0;border-bottom:1px solid var(--rule)}
+.rows > dt{font-weight:700;font-size:14px;padding-right:10px;display:flex;gap:8px;align-items:flex-start}
+.rows > dt::before{content:"";flex:none;width:8px;height:8px;margin-top:9px;border-radius:50%}
+.rows > dt.q::before{background:var(--amber)}
+.rows > dt.r::before{background:var(--heavy)}
+.rows > dt.s::before{background:var(--light)}
+.rows > dt.k::before{background:var(--ink)}
+.rows > dt.e::before{border:1.5px solid var(--muted)}
+.rows > dd > p{margin:0 0 .4em}
+.rows > dd > p:last-child{margin-bottom:0}
+.quote{font-family:var(--serif);font-weight:600}
+@media (max-width:760px){
+  .mod{grid-template-columns:minmax(0,1fr);gap:10px}
+  .rows{grid-template-columns:minmax(0,1fr)}
+  .rows > dt{border-bottom:0;padding-bottom:0}
+}
+
+/* models */
+.models{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.plate{background:var(--surface);border:1px solid var(--rule);padding:20px 20px 18px;border-radius:4px}
+.plate.wide{grid-column:1 / -1}
+.plate .use{font-size:14px;color:var(--muted);margin:0 0 12px}
+.plate .src{font-size:12px;color:var(--muted);margin-top:10px}
+@media (max-width:820px){.models{grid-template-columns:minmax(0,1fr)}}
+.plate,.stage-card,.mod > *,.rows > dd{min-width:0}
+.steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--rule)}
+.steps3 > div{padding:12px 14px;border-right:1px solid var(--rule)}
+.steps3 > div:last-child{border-right:0}
+.steps3 .lv{font-size:12px;color:var(--muted)}
+.steps3 b{display:block;font-family:var(--serif);font-size:17px;margin:2px 0 4px}
+.steps3 p{margin:0;font-size:14px;line-height:1.6}
+@media (max-width:560px){.steps3{grid-template-columns:1fr}.steps3 > div{border-right:0;border-bottom:1px solid var(--rule)}.steps3 > div:last-child{border-bottom:0}}
+.formula{font-family:var(--serif);font-weight:600;background:var(--bg);padding:8px 12px;margin:12px 0 0;font-size:15px}
+
+.spectrum{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--rule);font-size:14px}
+.spectrum > div{padding:10px 10px 12px;border-right:1px solid var(--rule)}
+.spectrum > div:last-child{border-right:0}
+.spectrum > div:nth-child(1){background:var(--heavy-soft)}
+.spectrum > div:nth-child(5){background:var(--light-soft)}
+.spectrum b{display:block;font-size:15px;margin-bottom:4px}
+.spectrum p{margin:0;line-height:1.55;color:var(--muted)}
+.axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;gap:12px}
+@media (max-width:640px){.spectrum{grid-template-columns:1fr}.spectrum > div{border-right:0;border-bottom:1px solid var(--rule)}}
+
+.tree{list-style:none;padding:0;margin:0;font-size:15px}
+.tree li{padding:7px 0 7px 14px;border-left:3px solid var(--rule);margin:0 0 6px}
+.tree li.yes{border-left-color:var(--heavy)}
+.tree li.no{border-left-color:var(--light)}
+.tree li span{color:var(--muted);font-size:14px}
+.outcomes{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:13px;border:1px solid var(--rule);padding:2px 8px;border-radius:2px;background:var(--bg)}
+
+.quad{display:grid;grid-template-columns:28px 1fr 1fr;grid-template-rows:1fr 1fr 24px;gap:4px;font-size:14px}
+.quad .cell{padding:10px 12px;border:1px solid var(--rule);min-height:92px}
+.quad .cell b{display:block;font-size:15px;margin-bottom:2px}
+.quad .cell p{margin:0;line-height:1.55;color:var(--muted)}
+.quad .ya{grid-row:1 / 3;writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;font-size:12px;color:var(--muted)}
+.quad .xa{grid-column:2 / 4;text-align:center;font-size:12px;color:var(--muted)}
+.quad .hi{background:var(--light-soft)}
+.quad .lo{background:var(--amber-soft)}
+
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--rule);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--rule)}
+th{font-weight:700;background:var(--bg);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.ok{color:var(--light);font-weight:700} td.ng{color:var(--amber-ink);font-weight:700}
+
+/* stages */
+.stages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 32px}
+@media (max-width:820px){.stages{grid-template-columns:minmax(0,1fr)}}
+.ladder{list-style:none;counter-reset:s;padding:0;margin:8px 0 0}
+.ladder li{counter-increment:s;position:relative;padding:0 0 12px 34px;margin:0}
+.ladder li::before{content:counter(s);position:absolute;left:0;top:2px;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--heavy);color:var(--heavy);font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700;background:var(--surface)}
+.ladder li:not(:last-child)::after{content:"";position:absolute;left:11px;top:26px;bottom:2px;border-left:1.5px solid var(--rule)}
+.ladder li b{font-weight:700}
+.ladder li p{margin:2px 0 0;font-size:14px;color:var(--muted);line-height:1.6}
+.stage-card{background:var(--surface);border:1px solid var(--rule);padding:18px 20px}
+
+/* signals */
+.signals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px;margin-top:22px}
+@media (max-width:760px){.signals{grid-template-columns:1fr}}
+.sig{padding:12px 0;border-bottom:1px solid var(--rule)}
+.sig .s{font-weight:700}
+.sig .m{font-size:14px;color:var(--muted);margin-top:2px}
+.sig .s::before{content:"";display:inline-block;width:10px;height:10px;background:var(--amber);margin-right:8px;transform:rotate(45deg) translateY(-1px)}
+
+/* traps */
+.traps{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px}
+@media (max-width:760px){.traps{grid-template-columns:1fr}}
+.traps li{padding:14px 0;border-bottom:1px solid var(--rule);margin:0}
+.traps .x{color:var(--amber-ink);font-size:14px}
+.traps .v{margin-top:2px}
+
+/* quiz */
+details.qa{background:var(--surface);border:1px solid var(--rule);margin:0 0 8px}
+details.qa summary{cursor:pointer;padding:12px 16px;font-weight:600;list-style:none}
+details.qa summary::-webkit-details-marker{display:none}
+details.qa summary::before{content:"+";display:inline-block;width:18px;color:var(--muted)}
+details.qa[open] summary::before{content:"−"}
+details.qa .ans{padding:0 16px 14px 34px;font-size:15px}
+
+/* apply */
+.apply{counter-reset:a;list-style:none;padding:0;margin:0}
+.apply li{counter-increment:a;display:grid;grid-template-columns:44px 1fr;gap:6px;padding:14px 0;border-bottom:1px solid var(--rule);margin:0}
+.apply li::before{content:counter(a);font-family:var(--serif);font-weight:900;font-size:26px;line-height:1;color:var(--light)}
+.apply b{display:block}
+.apply span{font-size:14px;color:var(--muted)}
+
+
+/* added: notes, practice, ledger, timelines, prompts */
+[hidden]{display:none !important}
+.note{border-left:4px solid var(--amber);background:var(--amber-soft);padding:12px 16px;margin:0 0 24px;max-width:56em}
+.note.heavy{border-left-color:var(--heavy);background:var(--heavy-soft)}
+.note p{margin:0 0 .4em}.note p:last-child{margin:0}
+.qblock{padding:28px 0;border-top:1px dashed var(--rule)}
+.qblock:first-of-type{border-top:0;padding-top:0}
+.qblock h3 .qn{color:var(--light);margin-right:6px}
+.qblock p{max-width:52em}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:760px){.two{grid-template-columns:minmax(0,1fr)}}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.filters button{font:inherit;font-size:14px;background:var(--surface);color:var(--ink);border:1px solid var(--rule);padding:5px 14px;border-radius:999px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.ledger{list-style:none;padding:0;margin:0;border-top:1px solid var(--rule)}
+.ledger > li{display:grid;grid-template-columns:104px minmax(0,1fr) 200px;gap:16px;padding:14px 0;border-bottom:1px solid var(--rule);margin:0}
+.ledger .cat{font-size:13px;font-weight:700;padding-top:3px;white-space:nowrap}
+.ledger .cat::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:currentColor;transform:translateY(-1px)}
+.cat.d{color:var(--heavy)} .cat.f{color:var(--light)} .cat.t{color:var(--amber-ink)} .cat.l{color:var(--muted)}
+.ledger .what{margin:0}
+.ledger .why{margin:4px 0 0;font-size:14px;color:var(--muted)}
+.ledger .loc{font-size:13px;color:var(--muted);text-align:right;line-height:1.5}
+.ledger .loc b{display:block;color:var(--ink);font-weight:600}
+@media (max-width:760px){.ledger > li{grid-template-columns:minmax(0,1fr);gap:4px}.ledger .loc{text-align:left}.ledger .loc b{display:inline;margin-right:6px}}
+.tl-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:6px 0 34px}
+@media (max-width:820px){.tl-grid{grid-template-columns:minmax(0,1fr)}}
+.tl-card{background:var(--surface);border:1px solid var(--rule);padding:16px 18px;min-width:0}
+.tl-card h4{font-size:16px;margin:0 0 2px}
+.tl-card .loc{font-size:12px;color:var(--muted);margin:0 0 10px}
+.tl{list-style:none;padding:0;margin:0}
+.tl li{display:grid;grid-template-columns:78px minmax(0,1fr);gap:10px;padding:6px 0;margin:0;font-size:14px;line-height:1.6;border-top:1px dotted var(--rule)}
+.tl li:first-child{border-top:0}
+.tl .y{font-weight:700;color:var(--heavy)}
+.prompt-wrap{position:relative;margin:10px 0 26px}
+pre.prompt{margin:0;background:var(--surface);border:1px solid var(--rule);padding:16px 18px;padding-top:44px;white-space:pre-wrap;word-break:break-word;font-family:"SFMono-Regular",Consolas,Menlo,"PingFang SC","Microsoft YaHei",monospace;font-size:13.5px;line-height:1.75;max-height:540px;overflow:auto}
+.prompt-wrap .copy{position:absolute;top:8px;right:8px}
+.why-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:26px}
+@media (max-width:760px){.why-grid{grid-template-columns:minmax(0,1fr)}}
+.why-grid > div{background:var(--surface);border:1px solid var(--rule);padding:18px 20px;min-width:0}
+.why-grid ol{padding-left:1.3em}
+.why-grid li{margin:.45em 0}
+footer{padding:36px 0 56px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted)}
+
+/* combined layout */
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 16px)}
+.layout{display:grid;grid-template-columns:288px minmax(0,1fr)}
+.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;height:100vh;height:100dvh;overflow-y:auto;border-right:1px solid var(--rule);padding:24px 16px 48px 20px;background:var(--bg)}
+.toc-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.toc .brand{font-family:var(--serif);font-weight:900;font-size:20px;line-height:1.3;margin:0}
+.toc .brand a{color:var(--ink);text-decoration:none}
+.toc .brand-sub{font-size:13px;color:var(--muted);margin:2px 0 20px}
+.toc .toc-close{display:none}
+.toc .grp{margin:0 0 16px}
+.toc summary{cursor:pointer;list-style:none;font-weight:700;font-size:14px;line-height:1.5;padding:4px 0 6px 12px;border-left:3px solid var(--heavy)}
+.toc summary::-webkit-details-marker{display:none}
+.toc .grp.b2 summary{border-left-color:var(--light)}
+.toc .grp.sh summary{border-left-color:var(--amber)}
+.toc .gno{display:block;font-size:12px;font-weight:400;color:var(--muted)}
+.toc ol{list-style:none;padding:4px 0 0;margin:0}
+.toc li{margin:0}
+.toc ol a{display:block;padding:4px 10px 4px 15px;font-size:14px;line-height:1.5;color:var(--muted);text-decoration:none;border-radius:3px}
+.toc ol a:hover{color:var(--ink);background:var(--surface)}
+.toc ol a[aria-current="true"]{color:var(--ink);background:var(--surface);font-weight:600;box-shadow:inset 3px 0 0 var(--ink)}
+.topbar{display:none}
+.book-head{border-top:6px solid var(--heavy);padding-top:48px}
+.book-head.b2{border-top-color:var(--light)}
+.bookno{display:inline-block;font-size:13px;font-weight:700;color:var(--bg);background:var(--heavy);padding:1px 8px;border-radius:2px;margin-right:10px}
+.book-head.b2 .bookno{background:var(--light)}
+.overview{padding-bottom:48px}
+.book-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:26px 0 22px;max-width:900px}
+.book-card{display:block;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-top:5px solid var(--heavy);padding:16px 18px 18px}
+.book-card.b2{border-top-color:var(--light)}
+.book-card:hover{border-color:var(--muted)}
+.bc-no{display:block;font-size:13px;color:var(--muted)}
+.bc-title{display:block;font-family:var(--serif);font-weight:600;font-size:18px;line-height:1.4;margin:4px 0 8px}
+.bc-line{display:block;font-size:15px;color:var(--muted)}
+@media (max-width:640px){.book-cards{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:1099px){
+  html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 60px)}
+  .layout{display:block}
+  .topbar{display:flex;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;align-items:center;gap:10px;padding:8px 16px;background:var(--bg);background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+  .topbar .where{flex:1;min-width:0;font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .topbar .where b{color:var(--ink);font-weight:600}
+  .toc{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:40;height:auto;border-right:0;padding:calc(env(safe-area-inset-top,0px) + 16px) 20px calc(env(safe-area-inset-bottom,0px) + 32px)}
+  body.toc-open .toc{display:block}
+  body.toc-open{overflow:hidden}
+  .toc .toc-close{display:inline-block}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="btn toc-open" type="button" aria-controls="toc" aria-expanded="false">目录</button>
+  <span class="where"><b>总览</b></span>
+</div>
+<div class="layout">
+  <aside class="toc" id="toc" aria-label="目录">
+    <div class="toc-head">
+      <p class="brand"><a href="#top">供应链读书笔记</a></p>
+      <button class="btn toc-close" type="button" aria-label="关闭目录">关闭</button>
+    </div>
+    <p class="brand-sub">刘宝红两本书合读</p>
+    <details class="grp b1" open>
+      <summary><span class="gno">第 1 本</span>供应链管理：重资产到轻资产的解决方案</summary>
+      <ol>
+          <li><a href="#b1-top">开篇：核心论点</a></li>
+          <li><a href="#b1-spine">全书骨架</a></li>
+          <li><a href="#b1-map">思维导图</a></li>
+          <li><a href="#b1-modules">五模块笔记</a></li>
+          <li><a href="#b1-models">模型工具箱</a></li>
+          <li><a href="#b1-stages">阶段模型</a></li>
+          <li><a href="#b1-data">从数据找问题</a></li>
+          <li><a href="#b1-roles">角色视角</a></li>
+          <li><a href="#b1-traps">误区与反直觉</a></li>
+          <li><a href="#b1-practice">外包与供应商实操</a></li>
+          <li><a href="#b1-critique">批判性阅读</a></li>
+          <li><a href="#b1-ledger">细节账本</a></li>
+          <li><a href="#b1-quiz">自测</a></li>
+          <li><a href="#b1-apply">迁移应用</a></li>
+      </ol>
+    </details>
+    <details class="grp b2" open>
+      <summary><span class="gno">第 2 本</span>采购与供应链管理：一个实践者的角度</summary>
+      <ol>
+          <li><a href="#b2-top">开篇：核心论点</a></li>
+          <li><a href="#b2-spine">全书骨架</a></li>
+          <li><a href="#b2-map">思维导图</a></li>
+          <li><a href="#b2-modules">七模块笔记</a></li>
+          <li><a href="#b2-models">模型工具箱</a></li>
+          <li><a href="#b2-stages">阶段模型</a></li>
+          <li><a href="#b2-data">从数据找问题</a></li>
+          <li><a href="#b2-roles">角色视角</a></li>
+          <li><a href="#b2-traps">误区与反直觉</a></li>
+          <li><a href="#b2-critique">批判性阅读</a></li>
+          <li><a href="#b2-ledger">细节账本</a></li>
+          <li><a href="#b2-quiz">自测</a></li>
+          <li><a href="#b2-apply">迁移应用</a></li>
+      </ol>
+    </details>
+    <details class="grp sh" open>
+      <summary><span class="gno">合读</span>两本书放在一起</summary>
+      <ol>
+          <li><a href="#s-link">两本书的连接</a></li>
+          <li><a href="#s-method">读法与提示词</a></li>
+      </ol>
+    </details>
+  </aside>
+  <div class="content">
+  <header class="hero overview" id="top">
+    <div class="wrap">
+      <p class="book">读书笔记合集，刘宝红著</p>
+      <h1 class="thesis"><span class="c">先想清楚<span class="h">哪些该自己做</span>，</span><span class="c">再学会<span class="l">把供应商管好</span>。</span></h1>
+      <p class="lead">两本书合起来是一条完整的决策链：第 1 本回答为什么重资产会拖垮企业、哪些该外包；第 2 本回答外包之后供应商怎么选、怎么管，以及采购职能如何从“小采购”升级为“大采购”。</p>
+      <div class="book-cards">
+        <a class="book-card b1" href="#b1-top"><span class="bc-no">第 1 本</span><span class="bc-title">供应链管理：重资产到轻资产的解决方案</span><span class="bc-line">重资产是管理能力不足的替代品；轻资产，要靠能力换来。</span></a>
+        <a class="book-card b2" href="#b2-top"><span class="bc-no">第 2 本</span><span class="bc-title">采购与供应链管理：一个实践者的角度（第3版）</span><span class="bc-line">七成增值在供应商，管好它，要靠“大采购”。</span></a>
+      </div>
+      <p class="scope">时间不多时，先读 <a href="#s-link">两本书的连接</a>，再按需跳进各自的模型工具箱和细节账本。</p>
+      <p class="scope" style="margin-top:8px">标注约定：〔书中〕为作者观点或书中材料；〔补充〕为行业通用做法，不是书中内容；〔我的分析〕为阅读后的推断，标“需核实”的条目涉及成书后的变化。细节账本中的页码对应你上传的两份 PDF。</p>
+    </div>
+  </header>
+  <main>
+<section class="hero book-head b1" id="b1-top">
+  <div class="wrap">
+    <p class="book"><span class="bookno">第 1 本</span><b>《供应链管理：重资产到轻资产的解决方案》</b>刘宝红</p>
+    <h2 class="thesis"><span class="c"><span class="h">重资产</span>，是管理能力不足的替代品；</span><span class="c"><span class="l">轻资产</span>，要靠能力换来。</span></h2>
+    <p class="lead">全书一条主线：垂直整合换来了控制力，也带来了两个改不掉的结构性缺陷——需求单一、竞争不充分。内部挖潜只能治标，外包才治本；而外包能否成功，取决于企业有没有三项能力：识别核心竞争力、模块化设计、选好管好供应商。</p>
+    <p class="scope">范围说明：本书讨论的是“垂直整合而来的重资产”（品牌商自建的工厂、仓储、物流、食堂、车队等本可从市场获取的资源），不是钢铁、电力这类“重资产行业”本身。它是作者“蓝皮书”框架（前端防杂、后端减重、中间治乱）中“后端减重”的深化。</p>
+    
+  </div>
+</section>
+<section class="block" id="b1-spine">
+  <div class="wrap">
+    <h2>全书骨架：从重到轻的六步逻辑</h2>
+    <p class="sub">色块从深到浅，对应从“重”走向“轻”。每一步都是下一步的前提。</p>
+    <ol class="chain">
+      <li><div class="n">1</div><div class="t">现象：固定成本刚性</div><div class="d">短缺时建不出来，过剩时降不下去；折旧不管开不开工都在发生。</div><span class="c">序言／第一章</span></li>
+      <li><div class="n">2</div><div class="t">根因：技术＋商业</div><div class="d">产品与工艺越复杂越难分离；更常见的是管理能力不足，选不好、管不好供应商。</div><span class="c">第一章</span></li>
+      <li><div class="n">3</div><div class="t">缺陷：两大结构性问题</div><div class="d">①需求单一，规模效益低；②竞争不充分，资源劣质化。</div><span class="c">第一章</span></li>
+      <li><div class="n">4</div><div class="t">出路：转移→改善→外包</div><div class="d">差异化让客户买单；精益、六西格玛内部消化；都不行就外包。</div><span class="c">第一章</span></li>
+      <li><div class="n">5</div><div class="t">外包：三个层面</div><div class="d">订单外包→产品外包→结构性外包（关停并转、剥离）。</div><span class="c">第二章</span></li>
+      <li><div class="n">6</div><div class="t">能力：外包的地基</div><div class="d">核心竞争力识别＋模块化设计＋供应商选择与管理。</div><span class="c">第三章</span></li>
+    </ol>
+    <div class="weight"><span>重：控制力强、灵活性差</span><span>轻：灵活性强、对管理能力要求高</span></div>
+  </div>
+</section>
+<section class="block" id="b1-map">
+  <div class="wrap">
+    <h2>思维导图</h2>
+    <p class="sub">点击节点展开或收起。一级分支按“从哪来—为什么坏—怎么办—怎么做—靠什么”排列。</p>
+    <div class="mm-tools">
+      <button class="btn" type="button" data-mm="open">全部展开</button>
+      <button class="btn" type="button" data-mm="close">全部收起</button>
+    </div>
+    <div class="mm" id="b1-mm">
+      <ul>
+        <li class="open"><button class="node" type="button" aria-expanded="true"><span class="k">▶</span>重资产 → 轻资产</button>
+          <ul>
+            <li><button class="node b-heavy" type="button" aria-expanded="false"><span class="k">▶</span>A　重资产从哪来</button>
+              <ul>
+                <li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>技术因素（客观）</button>
+                  <ul>
+                    <li><span class="leaf">复杂度：手机约 300 个零件，汽车约 3 万，商用大飞机约 300 万</span></li>
+                    <li><span class="leaf">产品设计与工艺设计越相互依赖，越难剥离制造 → 越倾向垂直整合</span></li>
+                    <li><span class="leaf">行业由轻到重：贸易 → 电商 → 零售 → 快消 → 耐用品 → 汽车 → 大型设备 → 商用飞机 → 航天军工</span></li>
+                  </ul>
+                </li>
+                <li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>商业因素（人为，更常见）</button>
+                  <ul>
+                    <li><span class="leaf">技术创新、品牌溢价不足 → 没有利润空间去外包</span></li>
+                    <li><span class="leaf">管理能力低 → 选不好、管不好供应商 → 只能自己干</span></li>
+                    <li><span class="leaf">资源边际回报递减：钱多了，却投向回报低的厂房设备</span></li>
+                    <li><span class="leaf">强势创始人：凡管控不了的都视为风险，于是自己做</span></li>
+                  </ul>
+                </li>
+                <li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>资源获取光谱</button>
+                  <ul>
+                    <li><span class="leaf">垂直整合 ／ 协作 ／ 竞合 ／ 代工 ／ 持币购物</span></li>
+                    <li><span class="leaf">竞合是常态；竞合摆不平 → 滑向垂直整合</span></li>
+                    <li><span class="leaf">案例：京东、亚马逊自建物流；苹果用“买断产能、提供设备”走出第三条路</span></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li><button class="node b-amber" type="button" aria-expanded="false"><span class="k">▶</span>B　为什么难逃劣质化</button>
+              <ul>
+                <li><span class="leaf"><b>需求单一</b>：按旺季建产能 → 平时闲置 → 单位固定成本高</span></li>
+                <li><span class="leaf"><b>竞争不充分</b>：封闭环境改进慢 → 与专业供应商差距越拉越大</span></li>
+                <li><span class="leaf">内部供应商：没脾气也没能力（最差的供应商是自己的生产线）</span></li>
+                <li><span class="leaf">“赛马”式市场化子公司：价格对齐就牺牲服务，保服务就得高价，两头落空</span></li>
+                <li><span class="leaf">并购式“一站式供应链”：成本更高、能力没升，最终剥离</span></li>
+                <li><span class="leaf">例外：核心竞争力（持续投入＋直接参与市场竞争）</span></li>
+              </ul>
+            </li>
+            <li><button class="node b-heavy" type="button" aria-expanded="false"><span class="k">▶</span>C　三条出路</button>
+              <ul>
+                <li><span class="leaf"><b>转移</b>：差异化让客户买单（台积电毛利率约 50%，足以覆盖折旧）</span></li>
+                <li><span class="leaf"><b>改善</b>：TQM、精益、六西格玛、厂中厂——改善运营指标，但改不了两大结构性问题</span></li>
+                <li><span class="leaf"><b>外包</b>：固定成本变动化；供应商靠需求聚合摊薄波动</span></li>
+                <li><span class="leaf">美国企业“三级跳”：精益（80年代）→ 六西格玛（90年代）→ 大规模外包（2000年后）</span></li>
+              </ul>
+            </li>
+            <li><button class="node b-light" type="button" aria-expanded="false"><span class="k">▶</span>D　外包怎么做</button>
+              <ul>
+                <li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>订单外包</button>
+                  <ul>
+                    <li><span class="leaf">资源互补（溢出订单）：以确定性应对不确定性——少而精、适度承诺、接受合理溢价</span></li>
+                    <li><span class="leaf">能力互补（不擅长的）：靠清晰战略说“不”</span></li>
+                  </ul>
+                </li>
+                <li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>产品外包</button>
+                  <ul>
+                    <li><span class="leaf">新产品：科尔尼决策树 6 问 → 5 种结局</span></li>
+                    <li><span class="leaf">老产品：告别旧优势、靠设计差异化、想清外包后做什么</span></li>
+                  </ul>
+                </li>
+                <li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>结构性外包</button>
+                  <ul>
+                    <li><span class="leaf">科尔尼四分法：红花／绿叶／鸡肋／敝屣</span></li>
+                    <li><span class="leaf">BCG 工厂成本驱动器：规模效益、生产效率、要素成本</span></li>
+                  </ul>
+                </li>
+                <li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>剥离</button>
+                  <ul>
+                    <li><span class="leaf">障碍：资产专用、股权集中、惰性、“战略”借口、信息不对称</span></li>
+                    <li><span class="leaf">方式：拆分上市、转让、停产、转产、关厂</span></li>
+                    <li><span class="leaf">原则：进入慎始如终，退出果断；忽略沉没成本</span></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li><button class="node b-light" type="button" aria-expanded="false"><span class="k">▶</span>E　外包靠什么能力</button>
+              <ul>
+                <li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>核心竞争力</button>
+                  <ul>
+                    <li><span class="leaf">三条件缺一不可：延展性、有用性、独特性</span></li>
+                    <li><span class="leaf">是暂时的：行业变化节拍越快，持有期越短</span></li>
+                    <li><span class="leaf">防外包过度：菲亚特部件 2×2、样板车型</span></li>
+                  </ul>
+                </li>
+                <li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>模块化</button>
+                  <ul>
+                    <li><span class="leaf">产品结构决定供应链结构：集成式↔垂直整合，模块式↔外包</span></li>
+                    <li><span class="leaf">四大驱动：多元化需求、生产效率、财务压力、技术</span></li>
+                    <li><span class="leaf">难点：长期收益 vs 项目短期成本；“愿不愿意”与“能不能够”</span></li>
+                  </ul>
+                </li>
+                <li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>供应商管理</button>
+                  <ul>
+                    <li><span class="leaf">依赖升级：自制 → 产能依赖 → 知识依赖</span></li>
+                    <li><span class="leaf">协作三条件：长期关系、数量有限、共同解决问题</span></li>
+                    <li><span class="leaf">有选择、有管理，先督促、后帮助，谁选择、谁管理</span></li>
+                    <li><span class="leaf">从“小采购”到“大采购”；补上供应商工程师</span></li>
+                    <li><span class="leaf">防代工企业变竞争对手</span></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+<section class="block" id="b1-modules">
+  <div class="wrap">
+    <h2>五模块笔记</h2>
+    <p class="sub">每个模块按“问题场景 → 原因·逻辑 → 解决方法 → 关键结论 → 数据与案例”记录。</p>
+
+    <article class="mod">
+      <div class="head"><div class="id">M1</div><h3>企业为什么会走上重资产</h3><div class="ch">第一章前半</div></div>
+      <dl class="rows">
+        <dt class="q">问题场景</dt>
+        <dd><p>同一行业有轻有重：苹果外包制造，OPPO、vivo 自建大厂；惠而浦、伊莱克斯大量外包，美的、海尔工厂众多。创业公司做到三五亿规模就“必须建厂”；连员工食堂都自建。</p></dd>
+        <dt class="r">原因·逻辑</dt>
+        <dd>
+          <p><b>技术因素</b>：产品和工艺越复杂，二者越需要交互优化，越难把制造剥离出去（航天军工、商用飞机最重，快消最轻）。</p>
+          <p><b>商业因素</b>：①技术和品牌溢价不足，没有足够利润空间来“外包”重资产；②管理能力低，无法通过市场方式获取资源。</p>
+          <p><b>机制</b>：现金宽裕却没能力投向高回报领域，就投进厂房设备并美其名曰“护城河”——资源边际回报递减。供应商关系从协作滑向竞合，竞合摆不平就垂直整合。</p>
+        </dd>
+        <dt class="s">解决方法</dt>
+        <dd><p>在“持币购物（不担任何风险）”与“垂直整合（担全部风险）”之间找第三条路：给供应商预测、付定金、买断部分产能、承担专用设备费；加强供应链职能（专人管供应商、改善计划）。必要时保留少量自有产能，用于新品导入、保留工艺知识、议价、保护知识产权和应急。</p></dd>
+        <dt class="k">关键结论</dt>
+        <dd><p class="quote">重资产是管理能力不足的替代品。</p><p>“轻→重→轻”的纺锤形不是规律，而是管理能力提升过程中交的学费。重资产可以快速进入，不能快速退出。横向整合练肌肉，垂直整合长肥肉。</p></dd>
+        <dt class="e">数据与案例</dt>
+        <dd><p>京东、亚马逊自建物流（持币购物 → 类代工 → 竞合 → 自建 → 独立核算）；地方明星企业从焦化一路扩到炼铁、炼钢、发电、物流、地产；特斯拉“2% 的零件交不了就造不了车”的控制逻辑。</p></dd>
+      </dl>
+    </article>
+
+    <article class="mod">
+      <div class="head"><div class="id">M2</div><h3>垂直整合为什么难逃劣质化，内部挖潜为什么不够</h3><div class="ch">第一章后半＋附录</div></div>
+      <dl class="rows">
+        <dt class="q">问题场景</dt>
+        <dd><p>英特尔整体产能过剩却接不到代工大客户，先进制程落后后考虑外包；自建清洗线多年“只看过程不看结果”，交给专业商后各项指标大幅改善；几百人的 IT 团队把 ERP 定制到无法升级；“市场化”的子公司拿到内部订单就转包给第三方。</p></dd>
+        <dt class="r">原因·逻辑</dt>
+        <dd>
+          <p><b>①需求单一</b>：按旺季建产能，平时填不满；专业供应商服务多行业，“东边不亮西边亮”，利用率更高。</p>
+          <p><b>②竞争不充分</b>：内部资源不会被淘汰，没有压力就没有改进速度；时间一长，设备、人员、方法全面落后。核心竞争力是例外——它直接参与市场竞争，也有持续投入。</p>
+          <p>因此内部供应商是“没脾气也没能力”；而让子公司与外部“赛马”，它只能在“价格对齐、牺牲服务”和“保住服务、维持高价”之间二选一。</p>
+        </dd>
+        <dt class="s">解决方法</dt>
+        <dd><p>按顺序检验三条出路：能否<b>转移</b>（靠产品差异化让客户买单）→ 能否<b>改善</b>（精益、六西格玛、厂中厂）→ 都不行就<b>外包</b>。</p></dd>
+        <dt class="k">关键结论</dt>
+        <dd><p>有制造能力不等于有制造优势：很多“制造优势”其实是沾了研发和品牌的光。精益、六西格玛能改善库存周转等运营指标，但解决不了规模效益和劣质化，而且常随主导者离任而褪色。厂中厂提升了积极性，却没提高整体产能利用率，也极少成功接到外部业务。</p></dd>
+        <dt class="e">数据与案例</dt>
+        <dd><p>通用汽车 1980–1986 年投入 450 亿美元搞自动化，结论是效率没有提升；马自达组装同款车只需福特约 60% 的时间；丰田固定资产周转率长期只有福特的六成多；一家半导体设备商季度出货从约 200 台跌到 6 台，全部固定成本摊在 6 台上。</p></dd>
+      </dl>
+    </article>
+
+    <article class="mod">
+      <div class="head"><div class="id">M3</div><h3>外包的三个层面与重资产剥离</h3><div class="ch">第二章</div></div>
+      <dl class="rows">
+        <dt class="q">问题场景</dt>
+        <dd><p>强周期行业在雇人与裁人、开厂与关厂之间反复（泛林研发）；订单溢出转给同行，外包商越加越多却越来越不稳；老产品自制几十年，想外包遇到心理和组织阻力；资产剥离一拖十年。</p></dd>
+        <dt class="r">原因·逻辑</dt>
+        <dd>
+          <p>外包把固定成本变成变动成本，降低盈亏平衡点；供应商有需求聚合效应——你的业务只占它 1/5 时，你增长 30% 对它只是 6%。</p>
+          <p>外包的目标未必是“单价最低”：已折旧完的老工厂单价可能更低（像开破旧二手车），但长期总成本更高。海尔同时追求“去重资产”和“单品最低价”，两个目标在执行层互相打架。</p>
+        </dd>
+        <dt class="s">解决方法</dt>
+        <dd>
+          <p><b>订单外包</b>：资源互补型要增加确定性（少而精、适度承诺、接受合理溢价）；能力互补型靠战略取舍。</p>
+          <p><b>新产品</b>：走科尔尼决策树，从“哪些必须自己做”开始，其余默认外包。<b>老产品</b>：先回答“告别旧优势、靠什么差异化、外包后干什么”。</p>
+          <p><b>结构性外包</b>：用科尔尼四分法给每座工厂定性，用 BCG 成本驱动器逐项“货比货”，每两三年重评一次。</p>
+          <p><b>剥离</b>：忽略沉没成本，选择拆分上市、转让、停产、转产或关厂；避免长期悬而不决。</p>
+        </dd>
+        <dt class="k">关键结论</dt>
+        <dd><p class="quote">问题不是“哪些该外包”，而是“哪些该自己做”。</p><p>有富余产能不是自制的理由。新产品开发是游击战，不要用阵地战的重资产去打。所有供应商报价都比你算的高时，错的多半是你的成本账。做加法容易，做减法困难；请神容易送神难。</p></dd>
+        <dt class="e">数据与案例</dt>
+        <dd><p>泛林研发 2001–2003 年全面外包，总部从十几栋楼收缩到 4 栋，营收从应用材料的 1/5 升到约 2/3（2019）；德尔福 1999 年拆分上市、2005 年破产，通用汽车为此至少花费 125 亿美元，2011 年才彻底出清；AMD 支付 3.35 亿美元买断格罗方德的独家协议；IBM 倒贴 15 亿美元才出手芯片制造厂；海尔外包台式机、笔记本、电视等次要产品，EVA 在 2007 年前为负、之后持续上升（作者提醒不能全归功于外包）。</p></dd>
+      </dl>
+    </article>
+
+    <article class="mod">
+      <div class="head"><div class="id">M4</div><h3>外包的前提：核心竞争力与模块化</h3><div class="ch">第三章前半</div></div>
+      <dl class="rows">
+        <dt class="q">问题场景</dt>
+        <dd><p>服装企业关厂后接了大单却手忙脚乱，板型在不同代工厂走样；整车厂疫情中想自制零件；乐高外包给伟创力三年即终止；菲亚特把设计也外包后，失去整车集成能力；家电巨头外包时找不到能做整机集成测试的供应商。</p></dd>
+        <dt class="r">原因·逻辑</dt>
+        <dd>
+          <p><b>核心竞争力</b>必须同时满足：延展性（能生金蛋的鸡）、有用性（客户或股东真的愿意为它买单）、独特性（难以模仿）。三个满足两个也不算。</p>
+          <p><b>模块化</b>：功能与部件一一对应是模块式，一对多、多对一是集成式。产品结构决定组织结构：集成式产品配垂直整合，模块式产品配外包。产品越复杂，模块化越是外包的前提。</p>
+          <p><b>外包解决不了的</b>：需求端的复杂度、无法清晰描述的规范、混乱的计划——乐高的问题在制造上游，外包只会更糟。</p>
+        </dd>
+        <dt class="s">解决方法</dt>
+        <dd>
+          <p>用排除法识别核心竞争力：先列“不做”清单。按菲亚特 2×2 给部件分级投入；样板车型深度自研，衍生车型外包并用样板经验管理供应商。</p>
+          <p>模块化自上而下推动：划清标准化与定制的边界、统一接口；用“按订单组装”把推拉结合点放到模块层。大众的路径：平台化 → 模块化 → 组件化，从大到小、由易到难。</p>
+        </dd>
+        <dt class="k">关键结论</dt>
+        <dd><p>“刀”不是核心竞争力，“用刀的能力”才是——富士康的核心竞争力是管理和整合重资产的能力。警惕“得不到的就是关键的”：急迫性不等于重要性。外包过度会掏空核心（菲亚特、波音 787 的 8 次延误）。模块化降低入行门槛，利润向关键供应商转移。把外包只交给采购、把模块化只交给设计，企业注定走不远。</p></dd>
+        <dt class="e">数据与案例</dt>
+        <dd><p>乐高供应商 11,000 多家，约为波音两倍；约 65% 需求集中在第四季度。菲亚特衍生车型的研发与资本支出只有样板车型的 41%，第二代衍生仅 32%。克莱斯勒 90 年代自制约 30%，通用汽车约 70%。2015 年美国定制车不到 5%，欧洲约 50%。</p></dd>
+      </dl>
+    </article>
+
+    <article class="mod">
+      <div class="head"><div class="id">M5</div><h3>外包之后：供应商管理是核心能力</h3><div class="ch">第三章后半</div></div>
+      <dl class="rows">
+        <dt class="q">问题场景</dt>
+        <dd><p>刀具企业每月给代工厂 30 万元订单只交付 10 万元，于是想自建产能；供应商越换越多、表现越来越差；代工厂推出外观相同的低价品牌（华硕从做电路板一路做到替戴尔设计主机）；关掉的组装线三年后又建起来。</p></dd>
+        <dt class="r">原因·逻辑</dt>
+        <dd>
+          <p>外包让依赖升级：自制 → 产能依赖 → 知识依赖，力量对比改变，竞合成为常态。</p>
+          <p>所谓“供应商问题”，大多是采购方问题：设计不优化、验收标准不清、预测不准。以竞争代替管理 → 供应商膨胀 → 每家都不确定 → “不见兔子不撒鹰”。</p>
+        </dd>
+        <dt class="s">解决方法</dt>
+        <dd>
+          <p><b>解竞合</b>：商务上用长期关系把竞合变协作；技术上用标准化、模块化把它简化为代工或持币购物。</p>
+          <p><b>管供应商</b>：有选择、有管理，先督促、后帮助，谁选择、谁管理。</p>
+          <p><b>建“大采购”</b>：靠自动化、两层分离、长期协议把资源从订单层释放到品类和供应商层；组建供应商工程师团队，接住“产品设计—工艺设计”这座桥。</p>
+          <p><b>分级合作</b>：在独资、合资、合作开发、付定金、期权、短期合同之间选择，不搞非黑即白。</p>
+          <p><b>防代工变对手</b>：只外包老产品、核心技术人员不直连代工厂、约定外观不得用于自有品牌、提供核心件让其单纯代工、增强客户黏性；把代工企业动态分为通融合作／剥削利用／断绝关系三类。</p>
+        </dd>
+        <dt class="k">关键结论</dt>
+        <dd><p class="quote">外包减少的是蓝领的工作量，增加的是白领的工作量。</p><p>有一个实质性竞争对手就算充分竞争。越是管理弱的企业，越执迷于寻找完美供应商。外包有麻烦，答案不是自动跳到另一个极端去自建。</p></dd>
+        <dt class="e">数据与案例</dt>
+        <dd><p>丰田：发动机全自制；变速器自己设计、约 70% 由供应商制造；电子件知识和产能都依赖供应商。作者在半导体设备行业的经验：自家业务占供应商营收 20%–35% 较合适。一项手机行业研究：34 家代工企业自有品牌平均累计销量约 2300 万部，顶尖品牌商约 4.51 亿部——代工变对手的威胁被高估，但不能因此放松。</p></dd>
+      </dl>
+    </article>
+  </div>
+</section>
+<section class="block" id="b1-models">
+  <div class="wrap">
+    <h2>模型工具箱</h2>
+    <p class="sub">每个模型写清“什么时候用”。遇到具体决策时，直接翻到对应模型。</p>
+    <div class="models">
+
+      <div class="plate wide">
+        <h3>三层降本</h3>
+        <p class="use">用于判断企业的降本努力停在哪一层。难度和影响力逐层增加。</p>
+        <div class="steps3">
+          <div><span class="lv">第一层（采购主导）</span><b>要素成本</b><p>谈判降价；压力转向设计（标准化、模块化、系列化）或低成本地区。产品成本约 70% 来自供应商。</p></div>
+          <div><span class="lv">第二层（生产、计划主导）</span><b>运营成本</b><p>精益、六西格玛、流程再造、改善计划以降低库存和产能浪费。</p></div>
+          <div><span class="lv">第三层（公司战略层）</span><b>固定成本</b><p>关停并转、外包，把固定成本变动化；对应本书主题。</p></div>
+        </div>
+        <p class="formula">固定资产周转率 ＝ 营业收入 ÷ 平均固定资产净值　→　做大分子（增收）或做小分母（减资产）</p>
+      </div>
+
+      <div class="plate wide">
+        <h3>资源获取光谱</h3>
+        <p class="use">用于给某一类采购或某个环节定位：现在靠什么约束对方，能否往更简单的一端移动。</p>
+        <div class="spectrum">
+          <div><b>垂直整合</b><p>没选择、有管理；担全部重资产风险，控制力最强。</p></div>
+          <div><b>协作关系</b><p>不确定性大，靠长期关系（社会契约）约束。</p></div>
+          <div><b>竞合关系</b><p>合同约束不住、互信又不够；最常见也最难管。</p></div>
+          <div><b>代工关系</b><p>界面清楚、不确定性低，主要靠合同约束。</p></div>
+          <div><b>持币购物</b><p>有选择、没管理；不担风险，控制力最弱。</p></div>
+        </div>
+        <div class="axis"><span>靠关系与行政约束</span><span>靠合同与市场约束</span></div>
+      </div>
+
+      <div class="plate">
+        <h3>重资产的三条出路</h3>
+        <p class="use">用于已经形成的重资产：按顺序检验。</p>
+        <ul class="tree">
+          <li class="yes"><b>能转移吗？</b> <span>产品或品牌差异化足够强，客户愿为高成本买单 → 继续持有（台积电）。但技术优势终会大众化。</span></li>
+          <li class="yes"><b>能改善吗？</b> <span>精益、六西格玛、厂中厂内部消化 → 运营变好，结构性问题仍在。</span></li>
+          <li class="no"><b>都不行 → 外包</b> <span>依靠规模效益更大、利用率更高的专业供应商。</span></li>
+        </ul>
+      </div>
+
+      <div class="plate">
+        <h3>科尔尼决策树：新产品自制还是外购</h3>
+        <p class="use">用于新产品寻源决策，防止“有产能就自制”的路径依赖。</p>
+        <ul class="tree">
+          <li>1　是否符合制造战略？</li>
+          <li>2　自制成本是否有竞争力？</li>
+          <li>3　自制是否有足够产能？</li>
+          <li>4　有没有合适的代工企业？</li>
+          <li>5　代工是否带来知识产权风险？</li>
+          <li>6　是否必须制造这个产品？</li>
+        </ul>
+        <div class="outcomes"><span class="chip">自制</span><span class="chip">投资产能后自制</span><span class="chip">外购</span><span class="chip">投资代工企业后外购</span><span class="chip">放弃或重新定义产品</span></div>
+        <p class="src">要点：符合战略、成本有竞争力、有产能 → 自制；不符合战略但 IP 风险不可控 → 自制；不符合战略、IP 可控、代工绩效有竞争力 → 外购。</p>
+      </div>
+
+      <div class="plate">
+        <h3>科尔尼四分法：工厂留还是剥离</h3>
+        <p class="use">用于结构性外包，给整个生产或仓储网络定性。</p>
+        <div class="quad">
+          <div class="ya">战略价值 ↑</div>
+          <div class="cell"><b>绿叶或鸡肋</b><p>战略价值高、绩效偏弱：差距可改进算绿叶，绩效太差算鸡肋。</p></div>
+          <div class="cell hi"><b>红花</b><p>双高；优先投新产品、持续投入。</p></div>
+          <div class="cell lo"><b>敝屣</b><p>双低；尽快处理，老产品也外包。</p></div>
+          <div class="cell"><b>绿叶或鸡肋</b><p>绩效好、战略价值偏低：能与红花配套算绿叶，战略价值太低算鸡肋。</p></div>
+          <div class="xa">运营绩效 →</div>
+        </div>
+        <p class="src">战略价值权重：盈利 25%、技术差异 20%、营收成长 15%、制造能力 15%、离市场距离 10%、贸易因素 10%、宏观经济 5%。运营绩效权重：加工成本 40%、灵活性 20%、百万次品率、按时交货、设备完好率、产能利用率各 10%。处置：红花持续投入并优先导入新品；绿叶随战略与绩效变化可升可降；鸡肋先改进，改不好就关停并转、慎投新品；敝屣连老产品也外包。</p>
+      </div>
+
+      <div class="plate">
+        <h3>BCG 工厂成本驱动器</h3>
+        <p class="use">用于给四分法提供数据，逐项“货比货”，再做敏感度分析。</p>
+        <ul>
+          <li><b>要素成本</b>：人工、材料、物流，随业务量线性变化；受地域影响大。</li>
+          <li><b>生产效率</b>：复杂度、生产率、产能利用率；受计划与需求管理影响，非线性。</li>
+          <li><b>规模效益</b>：决定固定成本摊销、波动大小、所需安全库存与富余产能，以及议价权。</li>
+        </ul>
+      </div>
+
+      <div class="plate wide">
+        <h3>核心竞争力三条件检验</h3>
+        <p class="use">用于判断某项能力该不该持续投入、能不能外包。三项全满足才算。</p>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>能力</th><th>延展性</th><th>有用性（愿意买单）</th><th>独特性</th><th>结论</th></tr></thead>
+            <tbody>
+              <tr><td>本田的发动机技术</td><td class="ok">是</td><td class="ok">是</td><td class="ok">是</td><td>核心竞争力</td></tr>
+              <tr><td>高科技企业自建钣金车间</td><td class="ng">否</td><td class="ng">否</td><td class="ng">否</td><td>应外包</td></tr>
+              <tr><td>京东自建物流</td><td class="ok">是</td><td class="ng">否（消费者和股东都不买单）</td><td class="ok">是</td><td>不是，最终独立核算</td></tr>
+              <tr><td>亚马逊物流</td><td class="ok">是</td><td>消费者不买单，股东暂时买单</td><td class="ok">是</td><td>暂可持有，股价放缓后存疑</td></tr>
+              <tr><td>特斯拉自动驾驶 ／ 自造座椅</td><td>是 ／ —</td><td>是 ／ 否</td><td>是 ／ 否</td><td>前者是，后者不是</td></tr>
+              <tr><td>富士康管理重资产的能力</td><td class="ok">是</td><td class="ok">是</td><td class="ok">是</td><td>对代工企业是核心竞争力</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="plate">
+        <h3>菲亚特部件 2×2</h3>
+        <p class="use">用于外包设计时决定自己保留多少知识，防止外包过度。</p>
+        <div class="quad">
+          <div class="ya">与其他部件依赖度 ↑</div>
+          <div class="cell"><b>合作设计</b><p>如安全系统；知识主要依赖供应商。</p></div>
+          <div class="cell hi"><b>自己设计</b><p>如悬挂系统；投入最多资源。</p></div>
+          <div class="cell"><b>通用规范</b><p>如空调系统；交给专业供应商。</p></div>
+          <div class="cell"><b>详细规范</b><p>如刹车系统；供应商做具体设计。</p></div>
+          <div class="xa">对整车性能影响 →</div>
+        </div>
+        <p class="src">补充做法：样板车型全面自研，衍生车型全部外包并用样板经验管理供应商。</p>
+      </div>
+
+      <div class="plate">
+        <h3>丰田：知识依赖 × 产能依赖</h3>
+        <p class="use">用于给每类部件定位依赖程度，进而决定供应商关系类型。</p>
+        <div class="quad">
+          <div class="ya">知识依赖 ↑</div>
+          <div class="cell"><b>—</b><p>书中未举例。</p></div>
+          <div class="cell lo"><b>电子件</b><p>知识和产能都依赖 → 战略供应商，最难管。</p></div>
+          <div class="cell hi"><b>发动机</b><p>都不依赖 → 完全自制。</p></div>
+          <div class="cell"><b>变速器</b><p>自己设计、约 70% 外包制造 → 优选供应商，可替代。</p></div>
+          <div class="xa">产能依赖 →</div>
+        </div>
+      </div>
+
+      <div class="plate">
+        <h3>竞合关系的两条解法</h3>
+        <p class="use">用于和“有能力也有脾气”的关键供应商陷入僵局时。</p>
+        <ul>
+          <li><b>商务路线</b>：长期关系 → 变竞合为协作。失败的话，要么继续忍受绩效问题，要么垂直整合。</li>
+          <li><b>技术路线</b>：标准化、模块化，把需求描述清楚 → 变竞合为代工甚至持币购物；同时降低入行门槛、增加竞争。</li>
+        </ul>
+        <p class="src">两条路相辅相成，常同时推进。</p>
+      </div>
+
+      <div class="plate">
+        <h3>协作关系的三个必要条件</h3>
+        <p class="use">用于检验“战略合作”是不是真协作。三条缺一，多半是竞合。</p>
+        <ol>
+          <li><b>长期关系</b>：关系导向而非时间长短；“凡事先替对方着想”。</li>
+          <li><b>数量有限</b>：精心维护需要资源，“收口子”。</li>
+          <li><b>共同解决问题</b>：而不是把问题转移给供应商。</li>
+        </ol>
+      </div>
+
+      <div class="plate">
+        <h3>供应商管理的四句话</h3>
+        <p class="use">用于设计供应商管理的分工与顺序。</p>
+        <ul>
+          <li><b>有选择</b>：首发命中，选择不可替代。</li>
+          <li><b>有管理</b>：选出来的也只是“矮子里的将军”，差距靠管理补。</li>
+          <li><b>先督促、后帮助</b>：督促是商务手段（采购），帮助是技术手段（设计、质量），顺序不能乱。</li>
+          <li><b>谁选择、谁管理</b>：采购选了供应商，就对其交付、质量、服务整体负责。</li>
+        </ul>
+      </div>
+
+      <div class="plate wide">
+        <h3>灵活性—控制力光谱</h3>
+        <p class="use">用于在“完全外包”和“完全自建”之间找中间方案。越往左越重、控制越强；越往右越轻、越灵活。</p>
+        <div class="outcomes"><span class="chip">独资所有</span><span class="chip">合资</span><span class="chip">合作开发</span><span class="chip">支付定金／买断部分产能</span><span class="chip">期权购买</span><span class="chip">短期合同</span><span class="chip">持币购物</span></div>
+        <p class="src">来源：Quinn &amp; Hilmer 模型，排列为示意。例：美国政府资助阿斯利康研发并预订 3 亿剂疫苗属“合作开发”；苹果为新技术买断设备与产能，接近“独资所有”却远轻于自建工厂。</p>
+      </div>
+
+      <div class="plate">
+        <h3>模块化与外包的三条路径</h3>
+        <p class="use">用于判断外包前是否必须先改设计。起点是集成式设计＋垂直整合制造。</p>
+        <ul>
+          <li><b>路径一</b>：设计模块化，制造仍垂直整合。</li>
+          <li><b>路径二</b>：设计仍集成，制造外包——产品简单时可行，复杂时风险高（宝丽来）。</li>
+          <li><b>路径三</b>：设计模块化＋制造外包，兼顾效率、成本与灵活度。</li>
+        </ul>
+      </div>
+
+      <div class="plate">
+        <h3>推拉结合点</h3>
+        <p class="use">用于在库存风险与交付风险之间取平衡。</p>
+        <ul>
+          <li><b>按库存生产</b>：结合点在成品，保交付、担库存。</li>
+          <li><b>按订单组装</b>：结合点在模块，以模块化设计为前提，是更好的第三选择。</li>
+          <li><b>按订单生产</b>：结合点在原材料，控库存、担交付。</li>
+        </ul>
+        <p class="src">折中：主要模块（交期长、成本高）模块化，次要部件按订单定制。</p>
+      </div>
+
+      <div class="plate">
+        <h3>大变革的三个条件</h3>
+        <p class="use">用于评估一家企业能否真正推动大规模外包。</p>
+        <ol>
+          <li>一套完整的方法论（外包什么、怎么外包）</li>
+          <li>一个执行的组织班子</li>
+          <li>一场“完美风暴”逼企业下决心</li>
+        </ol>
+        <p class="src">海尔具备后两条，缺第一条。</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+<section class="block" id="b1-stages">
+  <div class="wrap">
+    <h2>阶段模型</h2>
+    <p class="sub">同一个决策，放在不同阶段答案不同。这里把书中所有“随时间演进”的模型集中起来。</p>
+    <div class="stages">
+      <div class="stage-card">
+        <h3>企业成长：纺锤形不是宿命</h3>
+        <ol class="ladder">
+          <li><b>初创：天生轻资产</b><p>有执行、没计划；业务小，供应商用富余产能“挤一挤”即可。</p></li>
+          <li><b>成长：最容易变重</b><p>需要计划却仍粗放，无限博弈让供应商不敢备产能 → 交付、质量失控 → 自建产能。</p></li>
+          <li><b>成熟：再次变轻</b><p>管理能力提升，外包条件成熟。</p></li>
+        </ol>
+        <p class="small">替代路径：成长期就加强供应链职能、改善计划、适度分担供应商风险，总成本往往低于自建。</p>
+      </div>
+      <div class="stage-card">
+        <h3>产品与行业生命周期</h3>
+        <ol class="ladder">
+          <li><b>新兴期：集成式设计＋垂直整合</b><p>接口未定义、设计变更多、速度比成本重要。特斯拉、早期芯片厂“有晶圆厂才挺得直腰”。</p></li>
+          <li><b>成熟期：模块化＋外包</b><p>设计与工艺分离、毛利下降，成本成为决定因素。芯片设计与制造分离，AMD、IBM 剥离晶圆厂。</p></li>
+        </ol>
+        <p class="small">一级供应商也有成长三阶段：零部件制造 → 模块制造 → 模块设计与制造。</p>
+      </div>
+      <div class="stage-card">
+        <h3>美国企业应对重资产的路径</h3>
+        <ol class="ladder">
+          <li><b>20 世纪 70 年代前：转移</b><p>全球竞争有限，高成本转给客户。</p></li>
+          <li><b>80 年代：精益、全面质量管理</b><p>应对日本竞争，内部挖潜。</p></li>
+          <li><b>90 年代：六西格玛</b><p>按投资回报率选项目，重点突破。</p></li>
+          <li><b>2000 年后：大规模外包</b><p>华尔街的回报率压力＋互联网泡沫破裂，固定成本变动化。</p></li>
+        </ol>
+      </div>
+      <div class="stage-card">
+        <h3>京东物流的轮回</h3>
+        <ol class="ladder">
+          <li><b>持币购物</b><p>规模小，得到什么算什么。</p></li>
+          <li><b>类代工关系</b><p>要求变多，物流商投入通用资源。</p></li>
+          <li><b>竞合关系</b><p>要求专属资产（为大促建设施），物流商不愿承担风险。</p></li>
+          <li><b>自建物流（2007）</b><p>博弈解决了，但需求单一、成本高，长期不盈利。</p></li>
+          <li><b>独立核算（2017）→ 上市（2021）</b><p>找外部客户、与京东零售走向“一分钱一分货”的均衡。</p></li>
+        </ol>
+      </div>
+      <div class="stage-card">
+        <h3>依赖升级：自制 → 产能依赖 → 知识依赖</h3>
+        <ol class="ladder">
+          <li><b>自制</b><p>知识和产能都独立。</p></li>
+          <li><b>外包制造（产能依赖）</b><p>先部分、后全部外包；供应商可替代，属“优选供应商”。</p></li>
+          <li><b>外包设计（知识依赖）</b><p>供应商“戏份”大增，采购方技术人员流失，竞合成为常态。</p></li>
+        </ol>
+        <p class="small">另一条轴是外包的三个层面：订单外包 → 产品外包 → 结构性外包，难度和影响依次增加。</p>
+      </div>
+      <div class="stage-card">
+        <h3>大众：从大到小的模块化</h3>
+        <ol class="ladder">
+          <li><b>平台化</b><p>同一级别车型共用平台（地基一样，上面楼盘可变）。</p></li>
+          <li><b>模块化</b><p>跨级别共用模块（梁、柱、板也标准化）。</p></li>
+          <li><b>组件化</b><p>跨级别、跨车身共用组件（门窗内装也标准化），离消费者最近、最难。</p></li>
+        </ol>
+      </div>
+      <div class="stage-card">
+        <h3>与代工企业的关系：U 形回报</h3>
+        <ol class="ladder">
+          <li><b>通融合作</b><p>供应商能力弱：提高待遇、签长期合同，回报高于贡献。</p></li>
+          <li><b>剥削利用</b><p>能力变强、有竞争苗头：互相利用、各取所需，采购方压价、引入竞争，供应商回报下降。</p></li>
+          <li><b>断绝关系</b><p>已具实质竞争风险：切断合作；供应商若成功做品牌，回报再上升。</p></li>
+        </ol>
+      </div>
+      <div class="stage-card">
+        <h3>行业变化节拍（由慢到快）</h3>
+        <ol class="ladder">
+          <li><b>基础研究、基础材料</b><p>核心竞争力持有期最长。</p></li>
+          <li><b>设备（半导体设备、商用飞机）</b><p>结构定型，微观改进。</p></li>
+          <li><b>耐用品（汽车、家电）</b></li>
+          <li><b>快消品</b></li>
+          <li><b>新零售、新媒体</b><p>变化最快，重资产风险最大，以轻资产为主。</p></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="block" id="b1-data">
+  <div class="wrap">
+    <h2>如何从数据与细节中找问题</h2>
+    <p class="sub">先看指标判断“是不是重了、重得值不值”，再看日常细节里的信号判断“病根在哪”。注意：周转率只是起点，“重”的杀伤力还取决于业务波动和固定成本占比。</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>指标</th><th>怎么算／怎么看</th><th>危险信号</th><th>书中参照</th></tr></thead>
+        <tbody>
+          <tr><td>固定资产周转率</td><td>营收 ÷ 平均固定资产净值；只与同行比。BCG 把行业内前 25% 视为轻资产、后 25% 视为重资产。</td><td>持续下滑，或明显低于同行</td><td>京东自建物流后、亚马逊 2015 年后持续下降；丰田约为福特六成多；台积电约 1 次／年，中芯约 0.5 次／年</td></tr>
+          <tr><td>业务波动 × 固定成本占比</td><td>收入或出货的峰谷幅度；固定成本占总成本的比例（经营杠杆）</td><td>波动大且固定成本占比高：周转率看着不差，下行时照样被拖垮</td><td>作者在脚注里说，“重”指的是重资产的影响：波音周转率高于福特，却因小批量、强周期受冲击更大（PDF 第34页）</td></tr>
+          <tr><td>毛利率 vs 折旧</td><td>折旧不在销货成本里，要靠毛利覆盖</td><td>毛利薄却持续加重资产</td><td>台积电毛利率近 50%，净利率 10 年均超 30%；中芯毛利率不到其一半</td></tr>
+          <tr><td>产能利用率</td><td>实际产出 ÷ 设计产能；看淡旺季分布</td><td>按峰值建厂、长期半空</td><td>2018 年需求拐点后，作者走访所得：国内汽车行业约 50%；“建教堂只为复活节”</td></tr>
+          <tr><td>库存周转率</td><td>作者若只选一个运营指标会选它</td><td>长期走低</td><td>福特 90 年代追上并超过丰田</td></tr>
+          <tr><td>经济增加值 EVA</td><td>扣除资本成本后的利润</td><td>账面盈利、EVA 为负：“钱都赚进了库存和设备里”</td><td>海尔 2007 年前为负、之后持续上升；美菱多数年份为负</td></tr>
+          <tr><td>资本市场相对表现</td><td>股东是否为重资产买单</td><td>重资产投入后股价长期不温不火</td><td>泛林研发 vs 应用材料；AMD vs 英特尔；京东 vs 亚马逊</td></tr>
+          <tr><td>占供应商营收比</td><td>你的业务 ÷ 供应商总营收</td><td>太低驱动不了；太高互相绑架；若占比极高，供应商能力可能没你想的强</td><td>作者经验 20%–35%（半导体设备行业）</td></tr>
+          <tr><td>供应商数量与 SKU 数</td><td>看规模与数量是否匹配</td><td>生意不大、供应商一堆；型号泛滥</td><td>乐高 11,000 多家供应商</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="signals">
+      <div class="sig"><div class="s">“每家供应商报价都比我们算的高”</div><div class="m">多半低估了隐形成本：良率、淡旺季、设计变更、账期、年降。先查自己的账。</div></div>
+      <div class="sig"><div class="s">第三方做不到不能忍，自己做不到可以忍</div><div class="m">自圆其说＋沉没成本错觉，常导致追加投资。</div></div>
+      <div class="sig"><div class="s">有富余产能，就把下一个新品留给自己做</div><div class="m">“小熊分饼”式路径依赖，一路自制下去。</div></div>
+      <div class="sig"><div class="s">子公司拿到内部订单转手外包</div><div class="m">“市场化”后的理性反应，说明这块资产已无优势。</div></div>
+      <div class="sig"><div class="s">内部团队多年维护老系统、跳不了槽</div><div class="m">内置资源已劣质化（IT、仓储、精益工程师同理）。</div></div>
+      <div class="sig"><div class="s">“精益”二字只在生产线上还听得到</div><div class="m">运动式改善已退潮，低效做法正在回流。</div></div>
+      <div class="sig"><div class="s">采购大部分时间在催货、跟单、加急</div><div class="m">典型“小采购”，供应商层面无人管理。</div></div>
+      <div class="sig"><div class="s">设计工程师兼职处理供应商工艺问题</div><div class="m">缺少供应商工程师这座“桥”。</div></div>
+      <div class="sig"><div class="s">一边关老厂，一边因优惠政策开新厂</div><div class="m">没有制造战略，机会主义驱动。</div></div>
+      <div class="sig"><div class="s">官网以固定资产规模为荣</div><div class="m">把“刀”当成了“用刀的能力”。</div></div>
+    </div>
+  </div>
+</section>
+<section class="block" id="b1-roles">
+  <div class="wrap">
+    <h2>不同执行人的视角</h2>
+    <p class="sub">重资产决策之所以反复出错，常常是因为每个角色都在局部理性。</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>角色</th><th>关注点</th><th>常见误区</th><th>书中建议</th></tr></thead>
+        <tbody>
+          <tr><td>创始人／老板</td><td>控制力、速度、规模</td><td>控制欲强，凡管不住的都视为风险；集裁判与球员于一身；“肥水不流外人田”</td><td>先写“不做”清单；重资产决策需要制衡；新品开发打游击战</td></tr>
+          <tr><td>CFO／股东</td><td>投资回报率、周转率、EVA</td><td>把“单品最低价”当外包目标；被沉没成本绑架</td><td>外包可以以“成本变动化”为目标；做小分母；及时止损</td></tr>
+          <tr><td>研发／设计</td><td>性能、项目进度</td><td>集成式设计短平快、牺牲长期；不懂部件知识时参数保守、要求过度设计</td><td>推动模块化、把规范写清楚；外包后仍要与工艺交互优化</td></tr>
+          <tr><td>采购</td><td>价格、交付</td><td>只做订单层“小采购”；以竞争代替管理；率先博弈</td><td>主导外包决策（最熟外部资源、立场中立）；建“大采购”；谁选择谁管理；配技术力量</td></tr>
+          <tr><td>生产／工厂</td><td>产能利用、保住业务</td><td>受外包影响最大，难以客观；有产能就想自制</td><td>与外部标杆对比；用四分法给工厂定性</td></tr>
+          <tr><td>销售／项目经理</td><td>客户定制、当下交付</td><td>尽量定制，推高复杂度</td><td>在平台和模块边界内定制</td></tr>
+          <tr><td>计划／供应链</td><td>交付与库存</td><td>计划混乱就外包，问题只会更糟</td><td>先理顺计划（预测、库存、执行三道防线），给供应商预测与必要承诺</td></tr>
+          <tr><td>内部供应商（子公司）</td><td>生存与资源</td><td>“赛马”下两头不讨好，逐步边缘化</td><td>若非核心竞争力，尽早剥离，不必寄望于“市场化”</td></tr>
+          <tr><td>外部供应商／代工企业</td><td>确定性、合理回报、成长</td><td>不确定就“不见兔子不撒鹰”；能力强了可能偷师</td><td>采购方适度承诺、给合理利润；按三种关系动态管理</td></tr>
+          <tr><td>客户／消费者</td><td>价值与价格</td><td>口头称赞不等于买单</td><td>用“愿不愿意付钱”检验核心竞争力</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+<section class="block" id="b1-traps">
+  <div class="wrap">
+    <h2>误区与反直觉结论</h2>
+    <p class="sub">左侧灰字是常见想法，下面是书中的回应。</p>
+    <ul class="traps">
+      <li><div class="x">“做强先做大，规模越大越有规模效益”</div><div class="v">靠垂直整合做大是“虚胖”；规模越大、管理越弱，固定资产周转往往越慢，丰田、本田也不例外。</div></li>
+      <li><div class="x">“轻资产好，重资产坏”</div><div class="v">轻重本身无好坏，跨行业不可比；同行业内，资产越轻财务绩效一般越好。台积电、富士康很重但很强。</div></li>
+      <li><div class="x">“供应商不行，就再找一家”</div><div class="v">这是以竞争代替管理。供应商越多越不确定，连没能力的供应商也会“欺负”你。</div></li>
+      <li><div class="x">“外包了，自己的竞争力会被抽空”</div><div class="v">竞争力不在制造本身，而在产品设计与需求定义——同样的石头可修宫殿也可盖民房。但外包到设计层要防过度。</div></li>
+      <li><div class="x">“设备买了，最后还落在自己手里”</div><div class="v">小农思维：随设备而来的是人员、场地、闲置与安置成本。投资代工企业常比自建更划算。</div></li>
+      <li><div class="x">“重资产才是护城河”</div><div class="v">护城河防住了外人也困住了自己；硅谷公司靠三四百名博士建立的壁垒，不靠实体资产。</div></li>
+      <li><div class="x">“外包能解决我们生产上的乱”</div><div class="v">复杂度、无法描述的规范、混乱的计划，外包后只会更乱。外包成功的企业外包的是制造本身，而不是造成制造问题的问题。</div></li>
+      <li><div class="x">“精益做好了，就不需要外包”</div><div class="v">精益改善运营，但改不了需求单一和竞争不充分；在强周期行业还难以持续推进。</div></li>
+      <li><div class="x">“代工企业迟早变成竞争对手，所以别外包”</div><div class="v">威胁常被高估：大多数代工企业做自有品牌并不成功。用预防措施管控，而非退回垂直整合。</div></li>
+      <li><div class="x">“关厂外包是一次性动作”</div><div class="v">重资产网络评估要每两三年做一次；环境变了，自制与外包都可能反转（A 君重建组装线即是理性调整）。</div></li>
+    </ul>
+  </div>
+</section>
+<section class="block" id="b1-practice">
+  <div class="wrap">
+    <h2>延伸思考：外包与供应商管理实操</h2>
+    <p class="sub">读后追问的五个问题：哪些该外包、质量会不会下降、怎么防层层转包、怎么选供应商、怎么管供应商。</p>
+    <div class="note"><p>前提：作者不是主张“外包越多越好”。他的原则是先定清楚哪些必须自己做，其余默认外包；外包能不能成，要看企业有没有能力托底。质量下降、转包失控在书中也被承认是真实风险（服装企业板型走样、菲亚特丧失集成能力、波音 787 八次延误）。</p><p>本节以书中原则为骨架；PPAP、卡拉杰克矩阵等属于〔补充〕，不是本书内容。</p></div>
+
+    <div class="qblock">
+      <h3><span class="qn">Q1</span>哪些业务该外包：四步判断</h3>
+      <p><b>第一步，按业务特征快速分类。</b></p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>业务特征</th><th>倾向</th></tr></thead>
+          <tbody>
+            <tr><td>客户愿为它付溢价、难模仿、能延展到更多产品</td><td>自己做，持续投入</td></tr>
+            <tr><td>对整体性能影响大，且与其他部分高度耦合</td><td>自己设计，制造可外包（丰田变速器：自己设计、约七成外包制造）</td></tr>
+            <tr><td>标准化程度高、供应商多、规模效益明显</td><td>外包</td></tr>
+            <tr><td>需求峰谷大、季节性强</td><td>外包或部分外包，借用供应商服务多家客户带来的需求聚合</td></tr>
+            <tr><td>知识产权敏感、容易被模仿</td><td>关键环节自制，或只外包成熟产品</td></tr>
+            <tr><td>行业处在新兴期，接口还没定义清楚</td><td>适度自己做，速度优先，但留好退路</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>即使决定外包制造，也要保留“说得清、管得住”的知识：设计能力、对关键工艺的理解、系统集成能力。菲亚特的教训是放得太多，最后连供应商的设计好不好都判断不了。</p>
+      <p><b>第二步，检查“能不能外包”。</b>乐高外包三年就失败，说明有些问题外包解决不了：规格和验收标准写不清楚、需求计划经常变、产品型号泛滥。三样有任何一样严重，先在内部治理，再谈外包。</p>
+      <p><b>第三步，算总账，不比单价。</b>自制成本要算上闲置产能、良率损耗和管理精力。外包的价值有时不在单价更低，而在把固定成本变成变动成本、扛得住业务波动。所有供应商报价都比你自己算的高时，先怀疑自己的账算漏了。</p>
+      <p><b>第四步，选外包的程度，不是二选一。</b>完全自建和完全外包之间有很多中间做法：付定金、买断部分产能、合作开发，或者保留一条小产线专门做新品导入，同时作为对标供应商的参照。</p>
+    </div>
+
+    <div class="qblock">
+      <h3><span class="qn">Q2</span>外包会不会导致质量下降</h3>
+      <p>切换期确实有风险。但质量下降通常不是外包本身造成的，而是下面几件事：</p>
+      <ul>
+        <li><b>设计和工艺被拆开了</b>：以前设计师可以直接跑到产线解决问题，外包后隐性知识没有传过去。</li>
+        <li><b>规范不清</b>：验收标准模糊，双方不停扯皮。</li>
+        <li><b>压价过度</b>：价格压到没有利润，供应商只能在材料和工艺上省。</li>
+        <li><b>采购方缺懂工艺的人</b>：没有供应商工程师，只能检验来料，管不到过程。</li>
+      </ul>
+      <p>反过来，交给真正专业的供应商，质量往往会变好。书里的清洗业务外包后，质量、准时率、损坏率都明显改善。</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>阶段</th><th>防范做法</th></tr></thead>
+          <tbody>
+            <tr><td>外包前</td><td>把隐性知识写下来：图纸、规范、验收标准、工艺文件、标准样件；单独标出关键特性。</td></tr>
+            <tr><td>切换期</td><td>首件检验、小批量试产，必要时自制和外包并行一段时间再切换。〔补充〕汽车行业常用的生产件批准程序（PPAP）是一套系统化的放行方法，可参考。</td></tr>
+            <tr><td>量产后</td><td>审核供应商的生产过程，不只检验来料；要求人员、设备、材料、方法的变更提前申请；关键供应商驻厂或不定期审核；组建供应商工程师团队——连接产品设计与工艺设计的“桥”不能外包。</td></tr>
+            <tr><td>商务上</td><td>质量条款和质量成本分担写进合同；给对方合理利润，靠长期业务换质量，而不是靠压价。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="qblock">
+      <h3><span class="qn">Q3</span>如何防止层层转包</h3>
+      <div class="note heavy"><p><b>术语澄清</b>：书里的“结构性外包”指关停工厂、外包整个业务流程，不是转包。这里讨论的是：活儿外包出去后，供应商又转给下一家，一层层转出去，最后没人管得住。</p></div>
+      <p>转包本身不一定是坏事——汽车行业由一级供应商管理二级供应商就是正常分工。问题在于“没经你同意”和“失控”。转包往往是被逼出来的：价格压得太低，中间有套利空间；订单不稳定，供应商不敢建产能，接了单只能再转出去；采购方只看结果、不看过程。书里就有千亿级企业的子公司拿到内部订单转手外包，交付和质量都失控。</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>层面</th><th>防范做法</th></tr></thead>
+          <tbody>
+            <tr><td>合同</td><td>未经书面批准不得转包或分包；关键工序和特殊工艺（如热处理、电镀、焊接）只能在你批准的工厂完成。</td></tr>
+            <tr><td>准入</td><td>要求供应商申报关键下级供应商，纳入你的管理名单，变更要经你批准；关键物料可由你指定下级供应商，甚至直接和下级谈价格。</td></tr>
+            <tr><td>过程</td><td>不提前通知的现场审核；核对产能（宣称的设备和班次能不能做出这个量）；批次可追溯到具体工厂和产线。</td></tr>
+            <tr><td>激励</td><td>给合理价格和稳定订单，让他自己做比转包更划算；控制你的业务在对方营收中的比例，作者经验是 20%–35%。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><b>预警信号</b>：报价明显低于同行；交期突然拉长或忽长忽短；不同批次的质量问题特征不一致；去现场看不到你的产品在生产。</p>
+    </div>
+
+    <div class="qblock">
+      <h3><span class="qn">Q4</span>如何选择供应商</h3>
+      <p>书中前提：没有完美的供应商——有能力的往往有脾气，没脾气的往往没能力。选择的目标是一次选中“最合适的”，差距靠管理来补，不要指望不停换供应商来找到完美的那一家。</p>
+      <ol class="apply">
+        <li><div><b>先给品类分级</b><span>按“对我有多重要”和“供应市场有多难”两个维度分类。〔补充〕常用卡拉杰克矩阵：战略型、瓶颈型、杠杆型、常规型。分级决定后面花多少力气。</span></div></li>
+        <li><div><b>确定评估维度</b><span>技术与工艺能力、质量体系、产能与弹性、成本结构、财务健康、管理团队、客户结构。服务过要求更高的客户是好信号；如果你的业务占了对方的大头，说明他的能力可能没你想的强。</span></div></li>
+        <li><div><b>分层验证</b><span>资料问卷 → 现场审核（看产线、数据和问题处理记录，不只听介绍）→ 样件 → 小批量试产 → 正式导入。</span></div></li>
+        <li><div><b>控制数量</b><span>关键品类少而精。一个品类有一个实力相当的竞争对手，就足以形成充分竞争。</span></div></li>
+      </ol>
+      <p><b>最常见的两个错误</b>：只按最低价选；供应商一出问题就再加一家（以竞争代替管理）。</p>
+    </div>
+
+    <div class="qblock">
+      <h3><span class="qn">Q5</span>如何管理供应商</h3>
+      <p>总原则：有选择、有管理，先督促、后帮助，谁选择、谁管理。</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>做法</th><th>要点</th></tr></thead>
+          <tbody>
+            <tr><td>按分级区别对待</td><td>战略供应商由双方高层签框架协议，定年度的成本、交付、质量、技术目标并定期回顾；表现好但可替代的供应商靠绩效和份额竞争；常规件用长期协议和自动化下单，释放人力。</td></tr>
+            <tr><td>用数据管绩效</td><td>按月统计准时交付率、不良率、年度降本达成、响应速度；每季度回顾，结果与份额、新项目分配挂钩。</td></tr>
+            <tr><td>先督促</td><td>用数据和业务分配推动供应商自己投入资源改进。</td></tr>
+            <tr><td>再帮助</td><td>很多“供应商问题”的根子在采购方——设计不优化、规范不清、预测不准。拉上设计、质量、计划部门一起解决。</td></tr>
+            <tr><td>给确定性</td><td>分享滚动预测并设定冻结期；对专用设备和长周期物料，适当付定金或承诺采购量。</td></tr>
+            <tr><td>谁选择、谁管理</td><td>选供应商的部门对交付、质量、服务整体负责，避免采购只管价格、工厂收拾残局。</td></tr>
+            <tr><td>长期合作防“杀熟”</td><td>多家询价和成本分析核对价格；设持续改进目标；定期调整合格供应商名单；采购轮岗；商务和技术分开对接。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="block" id="b1-critique">
+  <div class="wrap">
+    <h2>批判性阅读：证据审计与压力测试</h2>
+    <p class="sub">不复述作者，而是检验作者：证据有多硬、哪里可能有偏差、什么条件下结论会收窄或翻转。</p>
+    <div class="note heavy"><p>本节为〔我的分析〕。标“需核实”的内容涉及书出版后的变化，引用前请查最新资料。</p></div>
+    <h3>证据结构观察</h3>
+    <ul class="traps">
+      <li><div class="x">证据类型</div><div class="v">大量结论来自作者在硅谷半导体设备行业的从业观察和培训中听到的企业案例；可复核的财务数据（周转率、毛利率、股价）主要用于对比说明，而非严格检验因果。</div></li>
+      <li><div class="x">混杂因素</div><div class="v">泛林研发与应用材料的股价对比，混杂了行业回升和双方并购；海尔 EVA 改善同期还有多项变革，作者自己也承认不能全归功于外包。</div></li>
+      <li><div class="x">一个容易被忽略的逻辑</div><div class="v">作者认为“能力”同时决定资产轻重和投资回报。若如此，“资产轻的企业回报更高”是相关而非因果——轻资产是能力的结果，不是原因。没有能力托底就照搬“减资产”，结果可能更差（乐高）。</div></li>
+      <li><div class="x">时代前提</div><div class="v">全书在效率优先、全球化顺畅的前提下论证；“外包趋势不可逆、只是换地方”是基于这一前提的判断。</div></li>
+    </ul>
+    <h3 style="margin-top:30px">反例与挑战</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>反例或挑战</th><th>挑战的论点</th><th>推翻还是收窄</th><th>备注</th></tr></thead>
+        <tbody>
+          <tr><td>比亚迪在电动车时代依靠电池等核心部件的高度垂直整合，成为领先的新能源车企之一</td><td>书中把比亚迪当作垂直整合度高、周转慢的例子</td><td>收窄：技术快速迭代、核心部件即核心竞争力、自身规模足以形成需求聚合时，垂直整合可以同时化解“需求单一”与“竞争不充分”</td><td>需核实最新经营数据；其零部件业务是否大量对外供货也值得核实</td></tr>
+          <tr><td>亚马逊 AWS：内部基础设施能力对外开放，成为独立的大业务</td><td>“内置资源劣质化、很难找到第二个客户”</td><td>收窄：内部能力若被当作核心竞争力投入并直接参与市场竞争，可以避开劣质化——与书中“核心竞争力例外”一致，但说明非核心可以被培育成核心</td><td>属于少数成功案例，警惕幸存者偏差</td></tr>
+          <tr><td>英特尔在本书写作后提出 IDM 2.0，加码自建代工而不是全面外包</td><td>书中认为英特尔的重资产制造正在劣质化，外包是必然</td><td>待观察：后续结果可以检验书中判断</td><td>需核实最新进展</td></tr>
+          <tr><td>疫情与地缘政治之后，企业更看重供应链安全，出现回流、多地布局</td><td>“外包不可逆，只是换地方”</td><td>收窄：安全优先于效率时，企业愿为控制力支付溢价；但多数情况下仍是换地方外包，而非回到垂直整合</td><td>需结合具体行业看</td></tr>
+          <tr><td>台积电、富士康资产很重但很强</td><td>“重资产＝问题”</td><td>不构成反例：书中已明确这是专业化的重资产，核心竞争力是管理重资产的能力</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 style="margin-top:30px">修正后的边界条件</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>作者结论更可能成立</th><th>垂直整合更可能合理</th></tr></thead>
+        <tbody>
+          <tr><td>行业成熟，产品与工艺接口清晰、可描述</td><td>行业新兴，接口未定义，设计与工艺需要频繁交互</td></tr>
+          <tr><td>供应市场充分，有多家合格供应商</td><td>供应市场薄，资产专用性高，供应商不愿投资</td></tr>
+          <tr><td>自身需求小或波动大，难以填满产能</td><td>自身需求足够大且稳定，或能力可对外输出、形成需求聚合</td></tr>
+          <tr><td>该环节不满足核心竞争力三条件</td><td>该环节是核心竞争力，或是系统集成的关键知识</td></tr>
+          <tr><td>效率优先、供应链畅通</td><td>供应安全、知识产权保护优先于效率</td></tr>
+          <tr><td>企业有选择和管理供应商的能力</td><td>企业暂时缺乏这种能力——但这时更应补能力，而不是把垂直整合当长期答案</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+<section class="block" id="b1-ledger">
+  <div class="wrap">
+    <h2>细节账本：回原文的导航</h2>
+    <p class="sub">摘要会抹平细节，而新想法常常长在细节里。这里收集最值得回原文看的数据、脚注里的猜测、作者的疑点，以及几个大案例的时间线。页码对应你上传的 PDF 版本。</p>
+    <div class="filters" role="group" aria-label="按类型筛选">
+      <button type="button" data-f="all" aria-pressed="true">全部</button>
+      <button type="button" data-f="d" aria-pressed="false">出乎意料的数据</button>
+      <button type="button" data-f="f" aria-pressed="false">脚注与猜测</button>
+      <button type="button" data-f="t" aria-pressed="false">张力与疑点</button>
+      <button type="button" data-f="l" aria-pressed="false">案例时间线</button>
+    </div>
+    <ul class="ledger">
+      <li data-cat="d"><div class="cat d">数据</div><div><p class="what">2015 年，中国 500 强里近 1/4 企业的投资回报不如把钱存银行。</p><p class="why">重资产问题不是个别企业现象；作者在脚注里把行业性问题归结为库存和产能两类投资回报问题。</p></div><div class="loc"><b>PDF 第4页</b>序言一</div></li>
+      <li data-cat="d"><div class="cat d">数据</div><div><p class="what">某工程设备商为迎接 4 万亿刺激，据说按 3000 亿元营收目标建产能；刺激结束后营收连原来的几百亿都保不住，几年后采购总监还在卖当年的设备。</p><p class="why">“进得快、退得慢”最直观的画面。</p></div><div class="loc"><b>PDF 第4–5页</b>序言一</div></li>
+      <li data-cat="d"><div class="cat d">数据</div><div><p class="what">产品成本约 70% 来自供应商，约 20% 在生产线，约 10% 在物流。</p><p class="why">解释了为什么企业最先在采购谈判上降本。作者没有注明出处，宜当经验值看。</p></div><div class="loc"><b>PDF 第9页</b>序言二</div></li>
+      <li data-cat="d"><div class="cat d">数据</div><div><p class="what">2009 年一季度，一家硅谷半导体设备商的出货量从平常每季度约 200 台跌到 6 台，全部固定资产摊在这 6 台上。</p><p class="why">比任何定义都能让你“感到”固定成本刚性。</p></div><div class="loc"><b>PDF 第83页</b>第一章 · 精益生产：小批量行业</div></li>
+      <li data-cat="d"><div class="cat d">数据</div><div><p class="what">台积电 2017 年研发费用约 26 亿美元，而中芯国际当年总营收约 31 亿美元；3 纳米工艺开发需 40–50 亿美元。</p><p class="why">重资产行业的门槛不只是设备，还有持续研发；差异化是“把成本转移给客户”的前提。</p></div><div class="loc"><b>PDF 第73页</b>第一章 · 追求差异化优势</div></li>
+      <li data-cat="d"><div class="cat d">数据</div><div><p class="what">2017–2019 年泛林研发平均净利率 21.8%，三年净利润之和超过联想近 20 年，营收只有联想的 1/5。</p><p class="why">轻资产＋强技术的利润结构。它保留的是研发、销售、现场支持——护城河在这三项，不在外包本身。</p></div><div class="loc"><b>PDF 第95页</b>第二章 · 案例：一个高科技公司的外包战略</div></li>
+      <li data-cat="d"><div class="cat d">数据</div><div><p class="what">2002–2006 年五家电信运营商累计投入 11,235 亿元建基础设施，光缆利用率仅约 1/3。</p><p class="why">需求聚合原理在国家层面的例子（后来成立铁塔公司）。</p></div><div class="loc"><b>PDF 第100页</b>第二章 · 泛林研发案例脚注</div></li>
+      <li data-cat="d"><div class="cat d">数据</div><div><p class="what">乐高供应商 11,000 多家，约为波音的两倍；约 65% 的需求集中在第四季度。</p><p class="why">外包失败的根因在制造的上游：复杂度和计划。</p></div><div class="loc"><b>PDF 第163页</b>第三章 · 案例：有些问题是无法外包的</div></li>
+      <li data-cat="d"><div class="cat d">数据</div><div><p class="what">波音 787 开发预算 60 亿美元，相当于波音前 20 年净利润总和的 3 倍；总开发成本后来升到约 150 亿美元。</p><p class="why">外包不只为降本，也为分摊巨大的研发与商业风险——解释了波音为何明知风险仍要外包。</p></div><div class="loc"><b>PDF 第172页</b>第三章 · 实践者问（波音 787）脚注</div></li>
+      <li data-cat="d"><div class="cat d">数据</div><div><p class="what">刀具行业一条产线约 300 万元，其中设备 250 万元，设备投入产出约 1:1；同一处给出的对比是：飞机行业（波音）固定资产周转率达到 6.1（2019）。</p><p class="why">“重资产行业”不一定周转率低——再次说明“重”要看影响，而不只看周转率。</p></div><div class="loc"><b>PDF 第222–223页</b>第三章 · 案例：不能供应商绩效不理想，就想到自制</div></li>
+      <li data-cat="d"><div class="cat d">数据</div><div><p class="what">作者前公司只有 1900 多人时，就有三四百名博士。</p><p class="why">壁垒可以是人才，不一定是实体资产。</p></div><div class="loc"><b>PDF 第157页</b>第三章 · 核心竞争力的几个误区</div></li>
+      <li data-cat="d"><div class="cat d">数据</div><div><p class="what">2015 年美国售出的汽车不到 5% 是定制的，欧洲约 50%。</p><p class="why">模块化与大规模定制在不同市场的落地差异很大。</p></div><div class="loc"><b>PDF 第178页</b>第三章 · 小贴士：模块化的驱动因素</div></li>
+      <li data-cat="d"><div class="cat d">数据</div><div><p class="what">有销售数据的 34 家手机代工企业，自有品牌平均累计销量约 2300 万部；顶尖品牌商约 4.51 亿部。</p><p class="why">代工企业变竞争对手的威胁常被高估。</p></div><div class="loc"><b>PDF 第233页</b>第三章 · 小贴士：与代工企业的三种关系</div></li>
+      <li data-cat="f"><div class="cat f">脚注与猜测</div><div><p class="what">波音的固定资产周转率反而比福特高；作者说资产轻重“其实指的是重资产的影响”——小批量行业受牛鞭效应和周期影响更大。</p><p class="why">修正“只看周转率”的用法：要同时看业务波动幅度和固定成本占比。此前的笔记漏了这一点。</p></div><div class="loc"><b>PDF 第34页</b>第一章 · 复杂度越高，固定资产就越重（脚注）</div></li>
+      <li data-cat="f"><div class="cat f">脚注与猜测</div><div><p class="what">丰田大举投入重资产的那些年，正好是日本贷款利率从 1991 年的 7.5% 跌到 2000 年的 2%；作者说不知道是巧合还是必然。</p><p class="why">把资产轻重和资金成本、利率周期连了起来——做投资研究时延展性很强。</p></div><div class="loc"><b>PDF 第42页</b>第一章 · 小贴士：资源的边际回报递减（脚注）</div></li>
+      <li data-cat="f"><div class="cat f">脚注与猜测</div><div><p class="what">日本企业在重组、外包、为生产而设计、模块化上全面滞后；索尼、三菱直到 1999 年才大幅裁员。</p><p class="why">解释日本企业周转率走低的另一条线索。</p></div><div class="loc"><b>PDF 第43页</b>第一章 · 同一小贴士（脚注）</div></li>
+      <li data-cat="f"><div class="cat f">脚注与猜测</div><div><p class="what">苹果的轻资产是试错学来的：1983 年乔布斯在总部对面建厂，1992 年关闭；1990 年又为 NeXT 建厂；1998 年库克加盟后全面外包。</p><p class="why">支持“纺锤形是交学费”的论点；苹果不是天生轻资产。</p></div><div class="loc"><b>PDF 第26页</b>第一章 · 开篇脚注</div></li>
+      <li data-cat="f"><div class="cat f">脚注与猜测</div><div><p class="what">“任何时候都有一半的资产低于其平均投资回报率”，所以财务指标不能是剥离的唯一标准——但“战略”又很容易被滥用为不作为的保护伞。</p><p class="why">剥离决策的两难，作者两头都提醒了。</p></div><div class="loc"><b>PDF 第131页</b>第二章 · 小贴士：是什么阻止了资产剥离</div></li>
+      <li data-cat="f"><div class="cat f">脚注与猜测</div><div><p class="what">作者认为日本“失去的二十年”一大原因是没有彻底处理重资产和冗员，并特意说明用“觉得”是因为一直找不到相应数据。</p><p class="why">作者主动标出的无数据判断，阅读时应降权。</p></div><div class="loc"><b>PDF 第132页</b>第二章 · 同一小贴士（脚注）</div></li>
+      <li data-cat="f"><div class="cat f">脚注与猜测</div><div><p class="what">丰田周转率下滑的几条解释（全球扩张摊薄管理资源、供应链拉长、设计能力掩盖供应链低效、体系封闭），作者明说只是舍恩伯格的“假说”。</p><p class="why">多个因果假说并列，未经检验。</p></div><div class="loc"><b>PDF 第247页</b>附录 · 丰田和福特：不是双城的双城记</div></li>
+      <li data-cat="t"><div class="cat t">张力与疑点</div><div><p class="what">作者断言几十年来没见过哪家企业运作全产业链成功过。</p><p class="why">证据是个人观察而非系统样本；比亚迪等后来的案例值得对照。</p></div><div class="loc"><b>PDF 第6页</b>序言一（脚注）</div></li>
+      <li data-cat="t"><div class="cat t">张力与疑点</div><div><p class="what">用“阿里市值是京东 4.7 倍”支持轻资产路线更优。</p><p class="why">两家业务结构差异很大（作者在脚注里提到支付等因素并予以反驳），市值差距难以单独归因于资产轻重。</p></div><div class="loc"><b>PDF 第53、57页</b>第一章 · 京东案例</div></li>
+      <li data-cat="t"><div class="cat t">张力与疑点</div><div><p class="what">泛林研发与应用材料的股价、营收对比，用来说明外包战略的效果。</p><p class="why">作者自己也提到行业回升和双方大型并购的影响——外包的贡献无法单独剥离。</p></div><div class="loc"><b>PDF 第96–100页</b>第二章 · 泛林研发案例</div></li>
+      <li data-cat="t"><div class="cat t">张力与疑点</div><div><p class="what">第一章回应读者时，作者对“京东自建物流是否值得”说“下结论还为时尚早”；第三章则明确判定京东物流不是核心竞争力。</p><p class="why">两处讨论的问题不同（决策对错 vs 是否核心竞争力），但确定性差别明显，值得回原文对照。</p></div><div class="loc"><b>PDF 第56、150页</b>第一章 · 实践者说；第三章 · 核心竞争力的三个条件</div></li>
+      <li data-cat="t"><div class="cat t">张力与疑点</div><div><p class="what">书中写“底特律汽车三巨头（通用汽车、福特、菲亚特）”。</p><p class="why">底特律三巨头通常指通用、福特、克莱斯勒，疑似笔误。</p></div><div class="loc"><b>PDF 第179页</b>第三章 · 小贴士：模块化的驱动因素</div></li>
+      <li data-cat="t"><div class="cat t">张力与疑点</div><div><p class="what">对波音外包的批评者，作者用“白人、男人、花白头发”及其刻板形象来描述。</p><p class="why">这是作者的个人看法，不能当作支持外包的证据。</p></div><div class="loc"><b>PDF 第170页</b>第三章 · 实践者问（波音 787）</div></li>
+      <li data-cat="t"><div class="cat t">张力与疑点</div><div><p class="what">“外包的趋势不会逆转，无非是外包给哪个国家或地区的问题。”</p><p class="why">高确定性的预测，前提是资本逐利与效率优先；供应链安全诉求上升后需要重新检验。</p></div><div class="loc"><b>PDF 第99页</b>第二章 · 实践者问</div></li>
+    </ul>
+
+    <div class="tl-grid">
+      <div class="tl-card" data-cat="l"><h4>京东物流</h4><p class="loc">第一章 · PDF 第48–56页</p><ol class="tl">
+        <li><span class="y">早期</span><span>持币购物 → 类代工关系 → 围绕专属资产的竞合</span></li>
+        <li><span class="y">2007</span><span>开始自建物流</span></li>
+        <li><span class="y">此后</span><span>连续 12 年“不盈利”：外部订单太少、内部成本太高</span></li>
+        <li><span class="y">2017</span><span>成立独立的京东物流公司，独立核算</span></li>
+        <li><span class="y">2021.5</span><span>赴港上市（本书付印之际）</span></li></ol></div>
+      <div class="tl-card" data-cat="l"><h4>通用汽车与德尔福</h4><p class="loc">第二章 · PDF 第134–135页</p><ol class="tl">
+        <li><span class="y">80 年代</span><span>零部件集团逐渐与通用分离</span></li>
+        <li><span class="y">1999</span><span>拆分上市，通用仍持有 80.1%，随后把股份配送给股东</span></li>
+        <li><span class="y">2004</span><span>德尔福一半收入仍来自通用</span></li>
+        <li><span class="y">2005</span><span>申请破产保护</span></li>
+        <li><span class="y">2009</span><span>脱离破产；通用为此至少花费 125 亿美元，并回购部分业务</span></li>
+        <li><span class="y">2011</span><span>通用以 38 亿美元出售所持权益，彻底“离婚”</span></li>
+        <li><span class="y">2017</span><span>德尔福拆分为安波福和德尔福科技</span></li></ol></div>
+      <div class="tl-card" data-cat="l"><h4>AMD 与格罗方德</h4><p class="loc">第二章 · PDF 第136页</p><ol class="tl">
+        <li><span class="y">2008</span><span>AMD 剥离芯片制造，成为格罗方德的主体</span></li>
+        <li><span class="y">2009–2019</span><span>先后签署 7 次补充协议，格罗方德整体上是独家供应商</span></li>
+        <li><span class="y">2016</span><span>AMD 支付 3.35 亿美元，换取与第三方合作的自由</span></li>
+        <li><span class="y">2019</span><span>格罗方德开始出售新加坡、纽约等晶圆厂</span></li></ol></div>
+      <div class="tl-card" data-cat="l"><h4>英特尔</h4><p class="loc">第一章 · PDF 第58–68页</p><ol class="tl">
+        <li><span class="y">2011</span><span>PC 销量见顶，60% 以上业务来自 PC 的英特尔产能利用率承压</span></li>
+        <li><span class="y">之后</span><span>宣布进入代工，大客户只有阿尔特拉</span></li>
+        <li><span class="y">2015</span><span>以 167 亿美元收购阿尔特拉</span></li>
+        <li><span class="y">2018</span><span>14 纳米产能不足，反过来四处找代工</span></li>
+        <li><span class="y">2020.7</span><span>7 纳米一再延迟，考虑外包制造，股价跌 16%</span></li></ol></div>
+      <div class="tl-card" data-cat="l"><h4>泛林研发</h4><p class="loc">第二章 · PDF 第95–97页</p><ol class="tl">
+        <li><span class="y">2001</span><span>互联网泡沫破裂，处在牛鞭末端的设备商受冲击最大</span></li>
+        <li><span class="y">2001–2003</span><span>全面外包：仓储、物流、生产、IT、财务、人事</span></li>
+        <li><span class="y">2004 起</span><span>固定资产周转率迅速提高（叠加行业回升）</span></li>
+        <li><span class="y">2007</span><span>股价从 10 余美元升到 50 多美元</span></li>
+        <li><span class="y">2019</span><span>营收从应用材料的 1/5 升到约 2/3（期间双方都有大型并购）</span></li></ol></div>
+      <div class="tl-card" data-cat="l"><h4>刀具行业</h4><p class="loc">第三章 · PDF 第222–223页</p><ol class="tl">
+        <li><span class="y">2005–2010</span><span>拿到大手机厂订单，约两年收回设备投资，谁敢投谁赚钱</span></li>
+        <li><span class="y">之后</span><span>进入者增多，回收期变成三年，“谁有能力谁赚钱”</span></li>
+        <li><span class="y">近年</span><span>手机饱和、疫情后产能过剩，回本遥遥无期</span></li></ol></div>
+      <div class="tl-card" data-cat="l"><h4>A 君：关了的工厂又建起来</h4><p class="loc">第三章 · PDF 第235–237页</p><ol class="tl">
+        <li><span class="y">起点</span><span>营收几千万元，把成品组装外包，其他费用降一半</span></li>
+        <li><span class="y">三年后</span><span>营收翻两三倍，细分市场份额约 30%</span></li>
+        <li><span class="y">转折</span><span>代工厂绕开非竞争条款、模仿产品低价竞争</span></li>
+        <li><span class="y">结果</span><span>重建组装线；研发人员“轮流戍边”管产线，成本优势待验证</span></li></ol></div>
+      <div class="tl-card" data-cat="l"><h4>苹果：轻资产是学来的</h4><p class="loc">第一章 · PDF 第26页</p><ol class="tl">
+        <li><span class="y">1983</span><span>乔布斯在苹果总部对面建厂生产麦金塔</span></li>
+        <li><span class="y">1990</span><span>为 NeXT 在硅谷再建工厂，产量撑不起</span></li>
+        <li><span class="y">1992</span><span>麦金塔工厂关闭</span></li>
+        <li><span class="y">1998</span><span>库克加盟，全面推动生产外包</span></li></ol></div>
+    </div>
+
+    <h3>回原文验证的 5 个问题</h3>
+    <ol class="apply">
+      <li><div><b>“重”到底该怎么量？</b><span>对照第34页脚注和第223页刀具与波音的数据：用周转率，还是用“业务波动 × 固定成本占比”，更能预测重资产的风险？</span></div></li>
+      <li><div><b>泛林研发的改善有多少来自外包？</b><span>读第95–100页，把行业回升、并购和外包三个因素分开看。</span></div></li>
+      <li><div><b>京东物流是否曾满足“有用性”？</b><span>读第48–57页的案例和两段“实践者说”，再对照第150页作者的判定。</span></div></li>
+      <li><div><b>刀具企业想自建、A 君真的自建——他们的条件落在边界条件表的哪一边？</b><span>读第222–223页和第235–237页。</span></div></li>
+      <li><div><b>丰田周转率下滑的几种解释，哪种证据最强？</b><span>利率（第42页）、全球扩张与设计集成（第247页）、与福特的对比（第80页）。</span></div></li>
+    </ol>
+  </div>
+</section>
+<section class="block" id="b1-quiz">
+  <div class="wrap">
+    <h2>自测</h2>
+    <p class="sub">先自己回答，再点开核对。</p>
+    <details class="qa"><summary>垂直整合的重资产有哪两大结构性问题？为什么精益解决不了？</summary><div class="ans">需求单一导致规模效益低；竞争不充分导致资源劣质化。精益改善的是流程效率和浪费，不改变需求来源的单一性，也不引入外部竞争压力。</div></details>
+    <details class="qa"><summary>京东物流满足核心竞争力的哪几个条件？为什么仍不算？</summary><div class="ans">满足延展性和独特性，但不满足有用性——消费者不愿为它支付覆盖成本的价格，股东也没有用股价买单。三条件缺一不可。</div></details>
+    <details class="qa"><summary>科尔尼决策树的六个问题和五种结局分别是什么？</summary><div class="ans">问题：符合制造战略？自制成本有竞争力？自制产能够？有合适代工？有 IP 风险？必须做这个产品？结局：自制、投资产能自制、外购、投资代工企业外购、放弃或重新定义。</div></details>
+    <details class="qa"><summary>协作关系的三个必要条件是什么？</summary><div class="ans">长期关系、与数量有限的供应商合作、共同解决问题而不是转移问题。</div></details>
+    <details class="qa"><summary>“有选择、有管理”之后的两句话是什么，各由谁负责？</summary><div class="ans">“先督促、后帮助”——督促是商务手段，由采购负责；帮助是技术手段，由设计、质量等负责。“谁选择、谁管理”——选供应商的部门对其整体绩效负责。</div></details>
+    <details class="qa"><summary>乐高外包失败的三个根因是什么？给你什么启示？</summary><div class="ans">产品复杂度高、需求计划准确度低、供应链（供应商数量）过于复杂。启示：外包解决不了上游的复杂度与计划问题，要先做“两端防杂、中间治乱”。</div></details>
+    <details class="qa"><summary>为什么说外包的目标可以不是“单价最低”？</summary><div class="ans">外包的核心价值是把固定成本变成变动成本、降低盈亏平衡点、提高韧性。折旧完的老厂单价可能更低，但长期总成本和风险更高。</div></details>
+    <details class="qa"><summary>〔延伸〕供应商私自层层转包，通常是被什么逼出来的？</summary><div class="ans">价格压得太低留出套利空间；订单不稳定，供应商不敢建产能；采购方只看结果、不看过程。</div></details>
+    <details class="qa"><summary>〔延伸〕为什么“轻资产企业回报更高”不等于“减资产就能提高回报”？</summary><div class="ans">按作者的逻辑，能力同时决定了资产轻重和回报高低，两者是相关而非因果。没有选择和管理供应商的能力，照搬外包可能更差（乐高）。</div></details>
+    <details class="qa"><summary>〔细节〕为什么波音的固定资产周转率比福特高，却被认为受重资产拖累更大？</summary><div class="ans">小批量、强周期行业受牛鞭效应影响大，业务波动剧烈，同样的固定成本在下行期摊销压力更大。所以“重”要看影响，而不只看周转率。</div></details>
+    <details class="qa"><summary>菲亚特如何在外包设计后找回核心能力？</summary><div class="ans">按“对性能影响”和“与其他部件依赖度”给部件分四类差异化投入；再用样板车型全面自研、衍生车型外包，以样板经验管理供应商。</div></details>
+  </div>
+</section>
+<section class="block" id="b1-apply">
+  <div class="wrap">
+    <h2>迁移应用：用这本书拆解一家公司</h2>
+    <p class="sub">把全书压缩成一张六步检查表，可用于行业研究或战略分析。</p>
+    <ol class="apply">
+      <li><div><b>定位行业的“天然重量”</b><span>产品复杂度 × 工艺复杂度在哪一档？区分“行业属性带来的重”与“垂直整合选择带来的重”。</span></div></li>
+      <li><div><b>同业对标关键数据</b><span>固定资产周转率（前后 25%）、毛利率能否覆盖折旧、EVA 是否为正；再看业务波动幅度和固定成本占比——它们决定“重”的杀伤力。</span></div></li>
+      <li><div><b>列出所有垂直整合环节，逐一做三条件检验</b><span>延展性、有用性（谁在买单：客户还是股东）、独特性。不全满足的，就是潜在的外包或剥离对象。</span></div></li>
+      <li><div><b>判断生命周期与变化节拍</b><span>新兴期为速度而整合可能合理；成熟期、快节拍行业里的重资产多半是负担。</span></div></li>
+      <li><div><b>看供应商管理能力的信号</b><span>供应商数量、采购组织是“小采购”还是“大采购”、有没有买断产能等“第三条路”做法。</span></div></li>
+      <li><div><b>评估退出难度</b><span>资产专用性、股权集中度与创始人风格、过往是否有剥离经验——决定重资产的“可逆性”。</span></div></li>
+    </ol>
+  </div>
+</section>
+<section class="hero book-head b2" id="b2-top">
+  <div class="wrap">
+    <p class="book"><span class="bookno">第 2 本</span><b>《采购与供应链管理：一个实践者的角度》（第3版）</b>刘宝红</p>
+    <h2 class="thesis"><span class="c">七成增值在<span class="h">供应商</span>，</span><span class="c">管好它，要靠<span class="l">“大采购”</span>。</span></h2>
+    <p class="lead">全书从大到小、从宽到窄：先给供应链的全局观（三大职能、三条流、复杂度、牛鞭、库存、降本三台阶），再聚焦供应商管理（三大误区、五步流程、整合、下级与指定供应商），最后落到采购职能本身——从围着订单转的“小采购”，升级为管需求、管供应商、管总成本的“大采购”。</p>
+    <p class="scope">这是作者系列里的“红皮书”，也是《供应链管理：重资产到轻资产的解决方案》里“选好、管好供应商”的详细展开。</p>
+    
+  </div>
+</section>
+<section class="block" id="b2-spine">
+  <div class="wrap">
+    <h2>全书骨架：六步逻辑</h2>
+    <p class="sub">三篇的递进关系：供应链 → 供应商 → 采购。色块从深到浅，对应从“全局”收窄到“采购职能”。</p>
+    <ol class="chain">
+      <li><div class="n">1</div><div class="t">全局观：三职能＋三条流</div><div class="d">采购、运营、物流由计划驱动；产品流、信息流、资金流的集成管理。</div><span class="c">第一篇</span></li>
+      <li><div class="n">2</div><div class="t">病根：协作不起来</div><div class="d">纵向效率指标强、横向服务指标弱；复杂度、牛鞭、库存是症状。</div><span class="c">第一篇</span></li>
+      <li><div class="n">3</div><div class="t">降本三台阶</div><div class="d">谈判（约 10%）→ 流程（约 20%）→ 设计（约 70%）；猎人模式 vs 牧人模式。</div><span class="c">第一篇</span></li>
+      <li><div class="n">4</div><div class="t">七成在供应商</div><div class="d">三大误区：公共草地、没有供应商流程、口子收不起来。</div><span class="c">第二篇</span></li>
+      <li><div class="n">5</div><div class="t">五步流程</div><div class="d">分类 → 评估 → 选择 → 绩效管理 → 集成；再加整合、下级与指定供应商。</div><span class="c">第二篇</span></li>
+      <li><div class="n">6</div><div class="t">大采购</div><div class="d">管需求、战略寻源、管供应商绩效；靠人才、释放资源、理顺组织来实现。</div><span class="c">第三篇</span></li>
+    </ol>
+    <div class="weight"><span>全局：供应链为什么难管</span><span>落点：采购职能怎么升级</span></div>
+  </div>
+</section>
+<section class="block" id="b2-map">
+  <div class="wrap">
+    <h2>思维导图</h2>
+    <p class="sub">点击节点展开或收起。一级分支按全书三篇的顺序排列。</p>
+    <div class="mm-tools">
+      <button class="btn" type="button" data-mm="open">全部展开</button>
+      <button class="btn" type="button" data-mm="close">全部收起</button>
+    </div>
+    <div class="mm" id="b2-mm">
+      <ul>
+        <li class="open"><button class="node" type="button" aria-expanded="true"><span class="k">▶</span>采购与供应链管理</button>
+          <ul><li><button class="node b-heavy" type="button" aria-expanded="false"><span class="k">▶</span>A　供应链全局观</button><ul><li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>三大职能＋计划</button><ul><li><span class="leaf">采购（寻源）、运营（加工）、物流（交付），计划是引擎</span></li><li><span class="leaf">供应链 = 从客户的客户到供应商的供应商</span></li></ul></li><li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>三条流</button><ul><li><span class="leaf">产品流：供应商 → 客户</span></li><li><span class="leaf">资金流：客户 → 供应商，是血液</span></li><li><span class="leaf">信息流：双向，是神经系统，支配另外两条流</span></li></ul></li><li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>为什么不协作</button><ul><li><span class="leaf">纵向效率指标强，横向服务指标弱</span></li><li><span class="leaf">横向指标权重低、无法客观量化</span></li><li><span class="leaf">解法：强相关的横向指标＋电子商务支撑</span></li></ul></li><li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>集成＝关系＋连接</button><ul><li><span class="leaf">关系：愿不愿意，靠绩效考核</span></li><li><span class="leaf">连接：能不能，靠流程与信息系统</span></li><li><span class="leaf">三层集成：新产品开发／S&OP／订单执行</span></li></ul></li><li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>供应链战略（费雪）</button><ul><li><span class="leaf">功能性产品配经济型供应链</span></li><li><span class="leaf">创新性产品配响应型供应链</span></li><li><span class="leaf">又快又便宜的供应链不存在</span></li></ul></li></ul></li><li><button class="node b-amber" type="button" aria-expanded="false"><span class="k">▶</span>B　供应链的三个敌人</button><ul><li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>复杂度</button><ul><li><span class="leaf">由行家制造、出于善意、难以度量</span></li><li><span class="leaf">客户愿付钱的是好复杂度，不愿付钱的是坏复杂度</span></li><li><span class="leaf">大并不是伟大</span></li></ul></li><li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>牛鞭效应</button><ul><li><span class="leaf">四成因：多重预测、批量、价格与促销、短缺博弈</span></li><li><span class="leaf">三解法：跨行、外包、信息共享</span></li><li><span class="leaf">单一预测：S&OP、CPFR</span></li></ul></li><li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>库存</button><ul><li><span class="leaf">周转库存靠缩短周期降</span></li><li><span class="leaf">安全库存靠减少不确定性降</span></li><li><span class="leaf">拿信息换库存；短缺与积压都是噪音，根源在需求管理</span></li></ul></li></ul></li><li><button class="node b-heavy" type="button" aria-expanded="false"><span class="k">▶</span>C　降本</button><ul><li><span class="leaf">三台阶：谈判约 10%、流程约 20%、设计约 70%</span></li><li><span class="leaf">谈判降价本质是利润转移</span></li><li><span class="leaf">猎人模式：短期、一臂距离、怎么降是你的事</span></li><li><span class="leaf">牧人模式：长期、协作、目标成本；缺点是新供应商难进入</span></li><li><span class="leaf">集中采购做成“纸面整合”时，只是在转移利润</span></li></ul></li><li><button class="node b-light" type="button" aria-expanded="false"><span class="k">▶</span>D　供应商管理</button><ul><li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>三大误区</button><ul><li><span class="leaf">多权分立，供应商成了公共草地</span></li><li><span class="leaf">有订单流程，没有供应商选择与管理流程</span></li><li><span class="leaf">口子收不起来，一直在找新供应商</span></li></ul></li><li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>五步流程</button><ul><li><span class="leaf">分类：品类＋分级，五类供应商</span></li><li><span class="leaf">评估：财务＋质量、生产、物料管理体系</span></li><li><span class="leaf">选择：规模效益、竞争充分、供应风险</span></li><li><span class="leaf">绩效管理：七大目标，定期统计</span></li><li><span class="leaf">集成：早期介入、JIT／VMI、电子商务</span></li></ul></li><li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>企业大了</button><ul><li><span class="leaf">重选择、重管理、轻淘汰</span></li><li><span class="leaf">淘汰不是供应商管理</span></li><li><span class="leaf">整合要解决用户部门的问题</span></li></ul></li><li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>下级与指定供应商</button><ul><li><span class="leaf">关键下级供应商：谁处于最佳位置谁来管</span></li><li><span class="leaf">本田直接管原材料、通用扣件、皮革、面料</span></li><li><span class="leaf">指定供应商“不服管”，实质是“不愿管”</span></li></ul></li></ul></li><li><button class="node b-light" type="button" aria-expanded="false"><span class="k">▶</span>E　从小采购到大采购</button><ul><li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>采购五阶段</button><ul><li><span class="leaf">确保供料 → 最低价 → 总成本 → 需求管理 → 全面增值</span></li></ul></li><li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>大采购三任务</button><ul><li><span class="leaf">管理需求、战略寻源、供应商绩效</span></li><li><span class="leaf">预测三法则：都会错但要有、多职能参与、滚动逼近</span></li></ul></li><li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>怎么做到</button><ul><li><span class="leaf">人才先行</span></li><li><span class="leaf">释放资源：信息化、两层分离、长期协议</span></li><li><span class="leaf">先做重要不紧急的事</span></li><li><span class="leaf">理顺总部与分公司、多头管理；设供应商工程师</span></li></ul></li><li><button class="node" type="button" aria-expanded="false"><span class="k">▶</span>成本角色</button><ul><li><span class="leaf">集中采购：看管理能力与业务需求</span></li><li><span class="leaf">年度降价要师出有名</span></li><li><span class="leaf">谈判不等于讨价还价</span></li></ul></li></ul></li></ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+<section class="block" id="b2-modules">
+  <div class="wrap">
+    <h2>七模块笔记</h2>
+    <p class="sub">每个模块按“问题场景 → 原因·逻辑 → 解决方法 → 关键结论 → 数据与案例”记录。</p>
+    
+    <article class="mod">
+      <div class="head"><div class="id">M1</div><h3>供应链全局观：为什么职能协作不起来</h3><div class="ch">第一篇 · 前半</div></div>
+      <dl class="rows">
+        <dt class="q">问题场景</dt>
+        <dd><p>计划按需求日期统计供应商按时交货率，结果很差；采购按标准交期统计，结果很好；告到老板那里，只能“以客户为导向”地教育一番，不了了之。咨询公司讲“无缝集成”，现实中客服连一个可靠的交期都给不了客户。</p></dd>
+        <dt class="r">原因·逻辑</dt>
+        <dd><p><b>指标结构</b>：驱动员工的是自上而下的纵向效率指标（采购价、产能利用率），横向的服务指标（按时交货、质量）权重低，又难以客观量化——“没法量化就不知道，不知道就没法管理”。</p><p><b>集成的两个问题</b>：关系（愿不愿意协作）和连接（能不能有效协作）。前者靠绩效考核，后者靠流程与信息系统。</p></dd>
+        <dt class="s">解决方法</dt>
+        <dd><p>建立“强相关”的横向指标，让兄弟职能之间有类似上下级的联系。按时交货率以三方认可的<b>供应商承诺日期</b>为基准，并用电子商务自动处理八九成订单，人只管例外。</p><p>三层集成：新产品开发（营销、研发、供应链）、S&OP（一个计划）、订单执行。华为 90 年代后期导入 IBM 集成供应链流程，是解决“连接”的典型。</p></dd>
+        <dt class="k">关键结论</dt>
+        <dd><p><span class="quote">供应链的根本是协作。</span></p><p>公司大了，愿不愿意的问题要靠绩效考核，不能只靠企业文化。很多企业的挑战仍在“工业 2.0”：MRP 能否运转、库存数据准不准、端到端的承诺逻辑是否建立。</p></dd>
+        <dt class="e">数据与案例</dt>
+        <dd><p>物流成本曾占中国 GDP 约 20%、美国约 10%；到 2018 年中国有望降到约 14%，美国约 7.2%，全球平均约 11.2%（PDF 第21页）。</p></dd>
+      </dl>
+    </article>
+    <article class="mod">
+      <div class="head"><div class="id">M2</div><h3>复杂度、牛鞭与库存：供应链的三个敌人</h3><div class="ch">第一篇 · 中段</div></div>
+      <dl class="rows">
+        <dt class="q">问题场景</dt>
+        <dd><p>营收年年增长，利润率一路下滑；摩托罗拉 60 多款手机配了 100 多种电池；2006 年铝锭短缺时，交期从 13 周拉到 18 周、26 周，每家都加订一锭；季末“降库存运动”打不死库存这个妖怪。</p></dd>
+        <dt class="r">原因·逻辑</dt>
+        <dd><p><b>复杂度</b>难控：由各领域的行家制造、出于满足合理诉求的善意、传统成本会计又无法度量。</p><p><b>牛鞭四成因</b>：多重需求预测（层层加保险）、批量生产与采购、价格浮动与促销、短缺时的理性博弈。</p><p><b>库存二分</b>：周转库存由周转周期驱动；安全库存由不确定性驱动，而很多不确定性是人为的（信息不对称、压货）。</p></dd>
+        <dt class="s">解决方法</dt>
+        <dd><p>用“客户是否愿意付钱”区分好复杂度与坏复杂度；对已发生的复杂度难有作为，重点是不再制造（摩托罗拉规定新机型只能从 5 种电池里选）。</p><p>单一预测（公司内 S&OP，公司间 CPFR）；用多少买多少——宁花明钱，不花暗钱；促销及早通知或干脆不促销；牛鞭的结构性解法是跨行、外包、信息共享。</p><p>缩短周转周期（把供应商交期压到六周、在粗胚环节设中间库存、VMI）；拿信息换库存；让计划员与销售定期对需求，而不是互相催料。</p></dd>
+        <dt class="k">关键结论</dt>
+        <dd><p><span class="quote">复杂度是供应链成本的驱动器。</span></p><p>库存比成本难降：成本可以通过谈判转移给供应商，库存只能靠真正解决问题。短缺与积压都是噪音，根源在需求管理。</p></dd>
+        <dt class="e">数据与案例</dt>
+        <dd><p>应用材料库存周转约 3.6 次／年，规模只有其 1/5 的泛林研发约 6.3 次（2007）；通用汽车全球采购零部件约 16 万种；一家供应商因客户对新品信息“全部保密”，安全库存备到 10 周（一般客户三四周）。</p></dd>
+      </dl>
+    </article>
+    <article class="mod">
+      <div class="head"><div class="id">M3</div><h3>降本三台阶，以及“猎人”与“牧人”</h3><div class="ch">第一篇 · 后段</div></div>
+      <dl class="rows">
+        <dt class="q">问题场景</dt>
+        <dd><p>年年谈判降价，低处的果子早已摘完；集中采购后，供应商一枪头的买卖输不起，只能让利；通用汽车干脆从供应商货款里一刀切扣点。</p></dd>
+        <dt class="r">原因·逻辑</dt>
+        <dd><p><b>三台阶</b>：谈判降价最熟悉也最被过度使用，本质是利润转移，大致只影响产品成本的 10%；流程优化约 20%；设计优化约 70%——成本主要由设计阶段决定。</p><p><b>猎人模式</b>：短期关系、一臂距离、“给我降 x 个点，怎么降是你的事”，不行就转厂。<b>牧人模式</b>：长期关系、目标成本、与供应商一起优化工艺和设计。</p></dd>
+        <dt class="s">解决方法</dt>
+        <dd><p>从谈判台阶迈向流程（精益生产降生产成本、电子商务降交易成本）和设计（价值工程、价值分析）台阶；需求整合与供应整合要真实发生——型号、设计、送货方式都要变，而不是纸面汇总；用供应商的净利润判断对方是否真有超额利润。</p></dd>
+        <dt class="k">关键结论</dt>
+        <dd><p><span class="quote">不能光通过更努力来做到更好，而要改变做法。</span></p><p>客户怎么对待供应商，供应商也会怎么对待客户——有了新技术，供应商最想先卖给丰田、本田，最不愿意给通用。牧人模式也有代价：新供应商、新技术难进入，差供应商难淘汰。</p></dd>
+        <dt class="e">数据与案例</dt>
+        <dd><p>通用汽车美国份额从 60 年代约 50% 降到 2016 年 17.3%；2009 年底美国 27 家汽车供应商申请破产保护；丰田通过工艺和设计优化在一款新车型上降本约 30%；京东方 2008–2017 年只有两三年净资产回报率超过存款利率。</p></dd>
+      </dl>
+    </article>
+    <article class="mod">
+      <div class="head"><div class="id">M4</div><h3>供应商管理的三大误区，以及组织、流程、系统</h3><div class="ch">第二篇 · 前半</div></div>
+      <dl class="rows">
+        <dt class="q">问题场景</dt>
+        <dd><p>董事长半夜批订单；供应商受了委屈没人出头，只好私下找“靠山”；问团队“去年给最大的供应商花了多少钱”，没人答得上；供应商像进出风筒，前端不断吸入、后端不断淘汰。</p></dd>
+        <dt class="r">原因·逻辑</dt>
+        <dd><p><b>误区一：多权分立</b>。为防腐把采购拆成寻源、谈价、核价、管理、下单、验收等多段，谁也不对供应商整体负责，供应商成了“公共草地”。</p><p><b>误区二：有订单流程，没有供应商流程</b>。怎么选、怎么管全凭经办人个人能力。</p><p><b>误区三：口子收不起来</b>。每个料号、项目都询价比价，局部最优，几年后一个品类本该 3 家却有 N 家，对谁都不是大客户。</p></dd>
+        <dt class="s">解决方法</dt>
+        <dd><p>设专职的品类经理／供应商经理，对内协调设计、质量、采购“三兄弟”，对外代表公司；建立组织、流程（五步流程）、信息系统三位一体的能力；按品类“收口子”，只与少数供应商深度合作。</p></dd>
+        <dt class="k">关键结论</dt>
+        <dd><p><span class="quote">没有供应商管理，就没有供应链管理。</span></p><p>多权分立对制衡“小采购”有点用，却前门驱虎、后门进狼。有选择、没管理，是粗放管理的典型。</p></dd>
+        <dt class="e">数据与案例</dt>
+        <dd><p>企业约 60% 的时间花在战略寻源上；没有绩效管理，约 75% 的寻源成果会在 18 个月内消失（PDF 第217、321页）。</p></dd>
+      </dl>
+    </article>
+    <article class="mod">
+      <div class="head"><div class="id">M5</div><h3>供应商管理五步流程</h3><div class="ch">第二篇 · 主体</div></div>
+      <dl class="rows">
+        <dt class="q">问题场景</dt>
+        <dd><p>服装企业生产总监把“三天两头打电话催货、砍价、让老板来道歉”当作管理战略供应商；“一品两点”让排产、物流、车间全乱套；新业务经理上任逼供应商降价 25%–30%，好端端的供应商被毁掉。</p></dd>
+        <dt class="r">原因·逻辑</dt>
+        <dd><p>没有完美的供应商：有能力的有脾气，没脾气的没能力。选择只是“矬子里拔将军”，差距必须靠管理弥补。</p><p>短期关系下，供应商的理性选择是不投入、能坑多少算多少；长期关系下，双方有很多可失去的，才会理性合作。</p></dd>
+        <dt class="s">解决方法</dt>
+        <dd><p><b>① 分类分级</b>：品类管理＋五类供应商（战略、优选、资格未定、消极淘汰、积极淘汰）。</p><p><b>② 评估</b>：财务（清偿、盈利、周转、资本结构）＋质量、生产、物料管理体系——物料管理用来判断它管下级供应商的能力。</p><p><b>③ 选择</b>：兼顾规模效益、竞争充分、供应风险；控制你在供应商营收中的占比。</p><p><b>④ 绩效管理</b>：价格、质量、交货、服务、技术、资产管理、人员／流程七大目标，定期统计、及时纠偏。</p><p><b>⑤ 集成</b>：关键供应商早期介入设计，JIT／VMI 简化物流，电子商务连接信息流。</p><p>战略供应商：3 年长期协议（约定年降、交付与质量改进、知识产权、优先拒绝权）＋季度会议＋改进小组。</p></dd>
+        <dt class="k">关键结论</dt>
+        <dd><p><span class="quote">战略供应商是天生的，优选供应商是挣来的。</span></p><p>别指望把沙和尚培养成孙悟空。两个能形成实质性竞争的供应商，就是充分竞争。选择代替不了管理，管理也代替不了选择。</p></dd>
+        <dt class="e">数据与案例</dt>
+        <dd><p>作者在半导体设备行业的原则：业务占供应商营收不超过 35%、不低于 20%；福陆让供应商早期介入，降本 4%–8%、进度加快 10%–15%；一次为降单价的大批量生产，五年后留下 80 多万美元呆滞（约为年采购额 15%）。</p></dd>
+      </dl>
+    </article>
+    <article class="mod">
+      <div class="head"><div class="id">M6</div><h3>整合、关键下级供应商与客户指定供应商</h3><div class="ch">第二篇 · 后半</div></div>
+      <dl class="rows">
+        <dt class="q">问题场景</dt>
+        <dd><p>迪尔 14 个工厂用着 424 种手套；整合后的供应商反而不降价；电镀、阳极氧化这类关键下级供应商成了“三不管”；一级供应商总抱怨客户指定的下级供应商不服管。</p></dd>
+        <dt class="r">原因·逻辑</dt>
+        <dd><p>供应商过多来自分散采购、设计多样化和兼并。整合失败多因只解决采购自己的问题（降价），没解决设计（打样快）和生产（交付稳）的问题。</p><p>关键下级供应商：采购方不愿管，一级供应商没能力管。</p></dd>
+        <dt class="s">解决方法</dt>
+        <dd><p>整合三对策：集中采购、标准化、合格供应商清单——前提是解决用户部门的问题，例如新产品阶段也让合格供应商支持，量产不二次招标。</p><p>下级供应商分三层：多数靠市场机制，少数报备批准，极少数关键的由采购方直接管。一级供应商多而下级供应商少时，采购方更需要深度介入。</p><p>客户指定供应商：采购方是处于主导地位的“婆婆”，要主动协调，而不是挑刺。</p></dd>
+        <dt class="k">关键结论</dt>
+        <dd><p><span class="quote">谁处于最佳位置，谁就应该去管。</span></p><p>有些东西没法外包，比如关键下级供应商的管理。所谓“不服管”，实质往往是“不愿管”。</p></dd>
+        <dt class="e">数据与案例</dt>
+        <dd><p>供应商整合可一次性降价 6%–12%，外加每年 2%–4%；朗讯把 3000 多家供应商压缩到 60 家关键供应商，占采购额 80%；迪尔手套从 424 种标准化为 24 种、6 家供应商变 1 家、价格降 50%。</p></dd>
+      </dl>
+    </article>
+    <article class="mod">
+      <div class="head"><div class="id">M7</div><h3>从“小采购”到“大采购”</h3><div class="ch">第三篇</div></div>
+      <dl class="rows">
+        <dt class="q">问题场景</dt>
+        <dd><p>采购部每周招近 200 个标；连锁酒店的大厨想买块黑猪肉试新菜，审批走了一两周；采购汇报给 CFO；内部客户要的是青蛙，招投标招来的是蛤蟆。</p></dd>
+        <dt class="r">原因·逻辑</dt>
+        <dd><p>“小采购”被动、分散、过程导向：围着订单转，供应导向，监督功能压倒服务功能。</p><p>被动不是意愿问题，是能力问题——组织、流程、系统三位一体，信息化滞后，就只能用人去填，重要不紧急的事一拖再拖。</p></dd>
+        <dt class="s">解决方法</dt>
+        <dd><p><b>升级路径</b>：确保供料 → 最低价 → 总成本 → 需求管理 → 全面增值（哈克特五阶段）。</p><p><b>三大任务</b>：管理需求（预测三法则）、战略寻源、供应商绩效管理。</p><p><b>能力建设</b>：人才先行；靠信息化、两层分离、长期协议把资源从订单层释放出来（正三角变倒三角）；先做重要不紧急的事；用职能划分表理顺多头管理；设全职供应商工程师。</p><p><b>成本角色</b>：集中采购取决于管理能力和业务需求；年度降价要师出有名；谈判是共同解决问题，不是讨价还价。</p></dd>
+        <dt class="k">关键结论</dt>
+        <dd><p><span class="quote">采购是采购与销售的结合体。</span></p><p>要像销售一样做采购，主动理解和影响内部需求。若只能二选一，作者宁选懂技术的供应商工程师，而非文科型的供应商经理。</p></dd>
+        <dt class="e">数据与案例</dt>
+        <dd><p>美国大公司平均年度降本约 2.5%（2010 年近 3.5%），加上通胀实际约 5%；一位首席采购官说年度降价占采购绩效的 70%；硅谷某公司裁员到 2000 人后推行外包、重建采购，三年后资产利用率、库存周转、按时交货跃居行业首位。</p></dd>
+      </dl>
+    </article>
+  </div>
+</section>
+<section class="block" id="b2-models">
+  <div class="wrap">
+    <h2>模型工具箱</h2>
+    <p class="sub">每个模型写清“什么时候用”。遇到具体决策时，直接翻到对应模型。</p>
+    <div class="models">
+      <div class="plate">
+        <h3>费雪：产品与供应链的匹配</h3>
+        <p class="use">判断一条供应链该追求效率还是响应速度；一家公司常常需要不止一条供应链。</p>
+        <div class="quad">
+          <div class="ya">预测难度 ↑</div>
+          <div class="cell lo"><b>错配</b><p>创新性产品配经济型供应链：缺货与积压并存（快时尚走经济型路线的苦头）。</p></div><div class="cell hi"><b>创新性 × 响应型</b><p>生命周期短、型号多、毛利高；靠缓冲产能或库存换速度。</p></div><div class="cell hi"><b>功能性 × 经济型</b><p>生命周期长、好预测、毛利低；靠高利用率、快周转换低成本。</p></div><div class="cell lo"><b>错配</b><p>功能性产品配响应型供应链：为不需要的速度付高成本。</p></div>
+          <div class="xa">供应链类型 →</div>
+        </div><p class="src">左为经济型、右为响应型。又快又便宜的供应链不存在。</p>
+      </div>
+      <div class="plate">
+        <h3>集成的两个问题</h3>
+        <p class="use">跨部门、跨公司协作推不动时，先判断卡在哪一个。</p>
+        <ul><li><b>关系</b>：愿不愿意。铺铁轨的两组人各自修好却对不上——要把“对接”写进绩效合同。</li><li><b>连接</b>：能不能。流程是否通畅、信息系统是否对接，信息孤岛让想协作也协作不了。</li><li><b>三层集成</b>：新产品开发（营销、研发、供应链）→ S&OP（一个计划）→ 订单执行（端到端承诺）。</li></ul>
+      </div>
+      <div class="plate">
+        <h3>好复杂度与坏复杂度</h3>
+        <p class="use">面对定制需求、非标件、新供应商时做取舍。</p>
+        <ul><li><b>试金石</b>：客户愿意付钱的是好复杂度——要在上面赚钱。</li><li>客户不愿付钱的是坏复杂度——要在上面降本，或者不做。</li><li>复杂度难控的三个原因：行家制造、出于善意、难以度量。</li></ul>
+      </div>
+      <div class="plate">
+        <h3>牛鞭效应：四个成因与对策</h3>
+        <p class="use">需求在供应链上逐级放大、库存和产能大起大落时。</p>
+        <div class="tbl-wrap"><table><thead><tr><th>成因</th><th>对策</th></tr></thead><tbody><tr><td>多重需求预测</td><td>单一预测：S&OP（公司内）、CPFR（公司间）</td></tr><tr><td>批量生产、采购</td><td>减小批量；用多少买多少，宁花明钱不花暗钱</td></tr><tr><td>价格浮动与促销</td><td>及早通知供应链；或干脆不促销（但不能简单照搬“天天低价”）</td></tr><tr><td>短缺时的理性博弈</td><td>信息共享；按真实需求分配</td></tr></tbody></table></div><p class="src">结构性解法还有跨行（分散需求波动）和外包（借供应商的需求聚合）。</p>
+      </div>
+      <div class="plate">
+        <h3>库存二分法</h3>
+        <p class="use">降库存运动失效时，先分清是哪一种库存。</p>
+        <ul><li><b>周转库存</b>：由周转周期驱动。缩短采购、生产、运输周期；推拉结合点放到合适位置（如粗胚中间库存）；VMI。</li><li><b>安全库存</b>：由不确定性驱动。很多不确定性是人为的——信息不对称、渠道压货。拿信息换库存。</li><li>库存问题的根源常在需求管理。</li></ul>
+      </div>
+      <div class="plate wide">
+        <h3>降本三台阶</h3>
+        <p class="use">判断降本努力停在哪一层，能否往上走。</p>
+        <div class="steps3">
+          <div><span class="lv">台阶一（约 10%）</span><b>谈判降价</b><p>利润转移；扫浮财、整合采购额可一次见效，之后每年两三个点。</p></div>
+          <div><span class="lv">台阶二（约 20%）</span><b>流程优化</b><p>精益生产降生产成本；电子商务降交易成本。</p></div>
+          <div><span class="lv">台阶三（约 70%）</span><b>设计优化</b><p>价值工程、价值分析；需要营销、研发、供应链跨职能协作。</p></div>
+        </div><p class="src">比例为作者给出的大致值。</p>
+      </div>
+      <div class="plate wide">
+        <h3>猎人模式 vs 牧人模式</h3>
+        <p class="use">审视自家对待供应商的方式，以及它的长期代价。</p>
+        <div class="tbl-wrap"><table><thead><tr><th></th><th>猎人模式</th><th>牧人模式</th></tr></thead><tbody><tr><td>代表</td><td>通用汽车、克莱斯勒</td><td>传统的丰田、本田</td></tr><tr><td>关系</td><td>短期、一臂距离</td><td>长期、深度协作</td></tr><tr><td>降本方式</td><td>“降 x 个点，怎么降是你的事”，不行就转厂</td><td>目标成本＋一起优化工艺和设计</td></tr><tr><td>结果</td><td>供应商关系调查长期垫底，新技术最后才给你</td><td>供应商愿意投入，新技术优先给你</td></tr><tr><td>代价</td><td>供应商逆向淘汰，供应链脆弱</td><td>新供应商、新技术难进入，差供应商难淘汰</td></tr></tbody></table></div>
+      </div>
+      <div class="plate">
+        <h3>供应商管理五步流程</h3>
+        <p class="use">建立或检查一家公司的供应商管理体系。</p>
+        <ol><li><b>分类</b>：摸清家底、区别对待、合理化（太多要整合，太少要开发）</li><li><b>评估</b>：历史绩效、财务能力、质量／生产／物料管理体系</li><li><b>选择</b>：规模效益、竞争充分、供应风险</li><li><b>绩效管理</b>：七大目标，定期统计，及时纠偏</li><li><b>集成</b>：早期介入设计、JIT／VMI、电子商务</li></ol><p class="src">前三步是战略寻源（生下健康的宝宝），后两步是管理与提升（后天教育、让孩子成才）。</p>
+      </div>
+      <div class="plate">
+        <h3>供应商五类</h3>
+        <p class="use">决定新生意给谁、管理资源投向谁。</p>
+        <div class="tbl-wrap"><table><thead><tr><th>类别</th><th>特征</th><th>对待方式</th></tr></thead><tbody><tr><td>战略</td><td>决定生死存亡，替代困难（两三年内淘汰不了）</td><td>长期协议、季度会议、改进小组</td></tr><tr><td>优选</td><td>绩效好但可替代，身份是挣来的</td><td>优先给新生意</td></tr><tr><td>资格未定</td><td>新供应商或“留校察看”</td><td>限期考察后升降级</td></tr><tr><td>消极淘汰</td><td>不给新生意，老生意继续</td><td>逐步退出</td></tr><tr><td>积极淘汰</td><td>不给新生意，移走老生意</td><td>尽快退出</td></tr></tbody></table></div>
+      </div>
+      <div class="plate">
+        <h3>供应商选择的三个考量</h3>
+        <p class="use">决定一个品类和几家合作、各给多少。</p>
+        <ul><li><b>规模效益</b>：把钱花在有限的供应商身上，做它的大客户。</li><li><b>竞争充分</b>：两个能形成实质性竞争的供应商就够了。</li><li><b>供应风险</b>：业务不能太集中——作者经验占供应商营收 20%–35%；占比过高时要导入第二家，并接受新供应商初期价格偏高。</li></ul>
+      </div>
+      <div class="plate">
+        <h3>供应商绩效的七大目标</h3>
+        <p class="use">避免“只看钱”造成的长期损失。</p>
+        <div class="outcomes"><span class="chip">价格</span><span class="chip">质量</span><span class="chip">交货</span><span class="chip">服务</span><span class="chip">技术</span><span class="chip">资产管理（库存）</span><span class="chip">人员／流程</span></div><p class="src">后两项最不直观：大批量压单价会转化为呆滞库存；赤裸裸的价格竞争会让供应商留不住关键人员。</p>
+      </div>
+      <div class="plate">
+        <h3>关键下级供应商：管不管、怎么管</h3>
+        <p class="use">决定哪些二级、三级供应商由你直接管。</p>
+        <div class="quad">
+          <div class="ya">下级供应商数量 ↑</div>
+          <div class="cell"><b>采购方少介入</b><p>一级少而强、下级多而门槛低：交给一级供应商管。</p></div><div class="cell"><b>视情况</b><p>两层都多：多数靠市场机制，少数报备批准。</p></div><div class="cell"><b>视情况</b><p>两层都少：关注关键工艺与独家资源。</p></div><div class="cell hi"><b>采购方深度介入</b><p>一级多而弱、下级少而门槛高（如机加厂背后的电镀、阳极氧化）：采购方直接管。</p></div>
+          <div class="xa">一级供应商数量 →</div>
+        </div><p class="src">本田美国直接管理：规格统一的原材料、全车型通用的扣件、占成本高的皮革、影响体验的面料。直接管的是技术、质量与商务关系，订单流仍归一级供应商。示意图为对原文图 2-28 的转述。</p>
+      </div>
+      <div class="plate">
+        <h3>采购管理五阶段（哈克特）</h3>
+        <p class="use">定位一家公司的采购处在哪一级。</p>
+        <ol><li><b>确保供料</b>：采购员下单跟单，对价格影响甚微</li><li><b>最低价</b>：谈判员，统计节支与采购价差</li><li><b>总成本</b>：兼顾运输、仓储、关税、使用、回收</li><li><b>需求管理</b>：尽早介入需求定义，理顺需求以理顺供应</li><li><b>全面增值</b>：为公司全面增值</li></ol><p class="src">前三阶段是供应导向，后两阶段是需求导向。“大采购”“小采购”是作者的提法。</p>
+      </div>
+      <div class="plate">
+        <h3>小采购 vs 大采购</h3>
+        <p class="use">诊断采购职能的定位。</p>
+        <div class="tbl-wrap"><table><thead><tr><th></th><th>小采购</th><th>大采购</th></tr></thead><tbody><tr><td>围绕</td><td>订单</td><td>供应商</td></tr><tr><td>导向</td><td>供应导向</td><td>需求导向</td></tr><tr><td>角色</td><td>行政文秘、监督为主</td><td>战略职能、服务为主</td></tr><tr><td>资源分布</td><td>正三角：大量在订单层</td><td>倒三角：大量在供应商层</td></tr><tr><td>信号</td><td>每周招大量标、汇报给财务或审计</td><td>管需求、做品类战略、对供应商整体绩效负责</td></tr></tbody></table></div>
+      </div>
+      <div class="plate">
+        <h3>释放资源的三条途径</h3>
+        <p class="use">采购被订单淹没、没空做供应商管理时。</p>
+        <ol><li><b>信息化</b>：请购、下单、确认、三单合一付款自动化</li><li><b>两层分离</b>：供应商经理、供应商工程师管供应商层；采购员、催货员管订单层</li><li><b>长期协议</b>：避免一单一议、一单一操作</li></ol><p class="src">两层分离后，要用“谁选择、谁管理”防止选择者只看价格。</p>
+      </div>
+      <div class="plate">
+        <h3>供应商管理团队配置</h3>
+        <p class="use">搭建采购与供应商管理团队。</p>
+        <div class="tbl-wrap"><table><thead><tr><th>角色</th><th>聚焦</th><th>负责</th></tr></thead><tbody><tr><td>供应商经理</td><td>供应商层面</td><td>主导关系，对总体绩效负责</td></tr><tr><td>采购员</td><td>订单层面</td><td>围绕订单的按时交货与日常事务</td></tr><tr><td>供应商工程师</td><td>技术、工艺、质量</td><td>新品导入、质量与生产问题，产品设计与工艺设计之间的桥</td></tr></tbody></table></div>
+      </div>
+      <div class="plate">
+        <h3>年度降价的四个依据</h3>
+        <p class="use">与供应商谈年降时做到师出有名。</p>
+        <ol><li>生产效率提高，供应商不能独享</li><li>生产价格指数下降</li><li>供应商持续改进（新工艺、新设备、精益）</li><li>学习曲线</li></ol><p class="src">同时要统一降价基准、与财务口径一致；目标成本也有合理性问题。</p>
+      </div>
+      <div class="plate">
+        <h3>集中采购的三个阶段（中石化为例）</h3>
+        <p class="use">推动集中采购时判断该走到哪一步。</p>
+        <ol><li><b>对口管理</b>：采购权从各职能归口到采购部门</li><li><b>分公司集中</b>：单一领导负责制，消除多头管理</li><li><b>总部集中</b>：总部直接集采或授权集采，“两级集中、三级执行”</li></ol><p class="src">管理能力越强、成本压力越大，越可能集中；对速度要求越高（如新品开发），越可能分散。</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="block" id="b2-stages">
+  <div class="wrap">
+    <h2>阶段模型</h2>
+    <p class="sub">同一件事，在企业、产品、采购职能的不同阶段，最优做法不同。</p>
+    <div class="stages">
+      <div class="stage-card">
+        <h3>采购管理五阶段</h3>
+        <ol class="ladder"><li><b>确保供料</b><p>工程师定需求、选供应商，采购下单跟单。</p></li><li><b>最低价</b><p>谈判员；统计节支、证明价格合理。</p></li><li><b>总成本</b><p>兼顾运输、仓储、关税、使用、回收。</p></li><li><b>需求管理</b><p>尽早介入设计与计划，理顺需求。</p></li><li><b>全面增值</b><p>成为公司的战略职能。</p></li></ol><p class="small">从供应导向走向需求导向，就是从“小采购”走向“大采购”。</p>
+      </div>
+      <div class="stage-card">
+        <h3>供应商绩效的三种走势</h3>
+        <ol class="ladder"><li><b>有选择、没管理</b><p>寻源成果迅速流失，像考上大学后把书烧了。</p></li><li><b>有绩效管理</b><p>定期“考试”，维持并小幅提高绩效。</p></li><li><b>协作与集成</b><p>督促、帮助关键供应商在流程、交易和设计上降本，绩效更上一层楼。</p></li></ol>
+      </div>
+      <div class="stage-card">
+        <h3>企业从“小白兔”到“狮子”</h3>
+        <ol class="ladder"><li><b>小企业</b><p>议价能力弱，换供应商（逃避）是理性选择。</p></li><li><b>大企业</b><p>最好的供应商多半已在合作，别人也没那么多富余产能等你——逃避不再是解决方案。</p></li><li><b>应对</b><p>重选择、重管理、轻淘汰；管理需求、平滑需求，及早驱动供应商准备产能。</p></li></ol><p class="small">很多本土企业体量已是狮子，做法仍是小白兔：轻选择、重淘汰。</p>
+      </div>
+      <div class="stage-card">
+        <h3>集中采购的专业化</h3>
+        <ol class="ladder"><li><b>各职能各买各的</b><p>研发、工厂、项目都在花钱。</p></li><li><b>对口管理</b><p>花钱的事集中到采购部门，但不同品类汇报给不同老总。</p></li><li><b>统一组织与流程</b><p>同一个采购老总、同一套流程和系统。</p></li><li><b>总部集中</b><p>部分采购决策集中到总部。</p></li></ol>
+      </div>
+      <div class="stage-card">
+        <h3>供应商管理五步</h3>
+        <ol class="ladder"><li><b>分类</b><p>摸清家底，区别对待。</p></li><li><b>评估</b><p>财务＋三大管理体系。</p></li><li><b>选择</b><p>规模、竞争、风险。</p></li><li><b>绩效管理</b><p>定期统计，及时纠偏。</p></li><li><b>集成</b><p>早期介入、JIT／VMI、电子商务。</p></li></ol>
+      </div>
+      <div class="stage-card">
+        <h3>产品属性会随生命周期变化</h3>
+        <ol class="ladder"><li><b>新产品导入</b><p>即使是功能性产品，也常以“创新性”的面目出现——预测不准，需要响应。</p></li><li><b>成熟期</b><p>创新性产品会大众化，变成功能性产品，需要转向效率。</p></li></ol><p class="small">供应链要随产品阶段切换重心，而不是一条供应链打到底。</p>
+      </div>
+      <div class="stage-card">
+        <h3>牛鞭沿链放大（示意）</h3>
+        <ol class="ladder"><li><b>消费者需求</b><p>预测轻微增长 2%</p></li><li><b>整机厂</b><p>可能变成 5%</p></li><li><b>一级供应商（芯片）</b><p>可能变成 10%</p></li><li><b>次级供应商（设备）</b><p>可能变成 20%</p></li></ol><p class="small">越靠供应链后端，波动越大。</p>
+      </div>
+      <div class="stage-card">
+        <h3>2006 年铝锭短缺的博弈</h3>
+        <ol class="ladder"><li><b>正常</b><p>交期 13 周。</p></li><li><b>短缺开始</b><p>交期 18 周，采购方加订第二锭。</p></li><li><b>恐慌传播</b><p>交期 26 周，再下第三单。</p></li><li><b>结果</b><p>冶炼厂把虚假订单当真实需求，扩张产能。</p></li></ol>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="block" id="b2-data">
+  <div class="wrap">
+    <h2>如何从数据与细节中找问题</h2>
+    <p class="sub">先看指标判断供应链和采购“健康不健康”，再看日常细节里的信号判断“病根在哪”。</p>
+    
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>指标</th><th>怎么算／怎么看</th><th>危险信号</th><th>书中参照</th></tr></thead>
+        <tbody>
+          <tr><td>按时交货率</td><td>以三方认可的供应商承诺日期为基准，而不是需求日期或标准交期</td><td>计划与采购各用各的口径，数字相差悬殊</td><td>第一篇“协作”一节（PDF 第44页起）</td></tr>
+          <tr><td>安全库存周数</td><td>与同类客户、同类物料对比</td><td>远高于常规水平：多半是信息不对称</td><td>为“全保密”客户备到 10 周，一般客户三四周（第166页）</td></tr>
+          <tr><td>库存周转率</td><td>与同行对比；区分周转库存与安全库存</td><td>大而全的企业周转显著慢于专注同行</td><td>应用材料 3.6 次 vs 泛林研发 6.3 次（第129页）</td></tr>
+          <tr><td>品类集中度</td><td>每个品类的采购额、供应商数、前几家占比</td><td>该 3 家却有 N 家；采购额小却供应商很多</td><td>某公司 1.5 亿美元采购额、1200 多家供应商（第554页）</td></tr>
+          <tr><td>占供应商营收比</td><td>你的业务 ÷ 供应商总营收</td><td>太低没人重视；太高互相绑架</td><td>20%–35%（第291页）</td></tr>
+          <tr><td>供应商净利润</td><td>查主要供应商的财报</td><td>你以为在“被宰”，对方其实微利甚至亏损</td><td>京东方多数年份 ROE 不及存款利率（第178页）</td></tr>
+          <tr><td>年度降本率</td><td>统一基准，与财务口径一致</td><td>采购说省 100 万，财务报表只认 70 万</td><td>美国大公司平均约 2.5%（第562页）</td></tr>
+          <tr><td>寻源后的绩效衰减</td><td>导入后 6、12、18 个月的绩效趋势</td><td>导入时很好，之后一路下滑</td><td>约 75% 成果 18 个月内消失（第321页）</td></tr>
+          <tr><td>采购资源分布</td><td>订单层 vs 供应商层的工时占比</td><td>正三角：大部分时间在下单、跟单、催货</td><td>第三篇“正三角到倒三角”（第505页）</td></tr>
+          <tr><td>供应商财务健康</td><td>清偿能力、盈利、应收应付与库存周转、资本结构</td><td>交付质量下滑，客服、销售、司机频繁换人</td><td>第二篇“供应商评估”（第274页）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="signals">
+      <div class="sig"><div class="s">新采购经理上任先砍价</div><div class="m">打破原有平衡，常以质量、交付和技术支持的流失为代价。</div></div>
+      <div class="sig"><div class="s">每周招大量标，或采购汇报给财务、审计</div><div class="m">监督功能主导，典型的“小采购”。</div></div>
+      <div class="sig"><div class="s">质量部门眼里，合格供应商清单都是淘汰供应商</div><div class="m">风筒式管理：前端吸入、后端淘汰。</div></div>
+      <div class="sig"><div class="s">优质供应商不再报价，甚至屏蔽你的邮件</div><div class="m">你正在被优质供应商逆向淘汰。</div></div>
+      <div class="sig"><div class="s">供应商派三个班子分别对接你的采购、设计、运营</div><div class="m">多头管理，形不成合力，容易被各个击破。</div></div>
+      <div class="sig"><div class="s">工程师绕开合格供应商清单找小供应商</div><div class="m">整合只解决了采购的问题，没解决设计的问题。</div></div>
+      <div class="sig"><div class="s">设计工程师兼职处理供应商质量问题</div><div class="m">缺全职供应商工程师，问题只能一拖再拖。</div></div>
+      <div class="sig"><div class="s">为凑最小起订量批量采购</div><div class="m">省下的是明钱，花掉的是呆滞库存的暗钱。</div></div>
+      <div class="sig"><div class="s">答不出去年给最大供应商花了多少钱</div><div class="m">信息系统割裂，谈不上供应商绩效管理。</div></div>
+      <div class="sig"><div class="s">计划员与销售一见面就是催料或处理呆滞</div><div class="m">需求管理缺位，整条供应链被动反应。</div></div>
+    </div>
+  </div>
+</section>
+<section class="block" id="b2-roles">
+  <div class="wrap">
+    <h2>不同执行人的视角</h2>
+    <p class="sub">供应商管理是跨职能行为：每个角色都在局部理性，合起来却可能把供应商变成“公共草地”。</p>
+    <div class="tbl-wrap"><table><thead><tr><th>角色</th><th>关注点</th><th>常见误区</th><th>书中建议</th></tr></thead><tbody><tr><td>老板／CEO</td><td>规模、成本、风险</td><td>把多权分立当防腐良方；新官上任式砍价当政绩</td><td>设专职统筹供应商关系；用绩效考核解决“愿不愿意”</td></tr><tr><td>采购</td><td>价格、交付</td><td>围着订单转；以竞争代替管理；轻选择、重淘汰</td><td>做“大采购”：管需求、做品类战略、谁选择谁管理</td></tr><tr><td>设计／研发</td><td>性能、进度、打样快</td><td>制造非标件和坏复杂度；绕开合格供应商</td><td>标准化、模块化；让关键供应商早期介入</td></tr><tr><td>质量</td><td>品质标准</td><td>只看来料，不管过程</td><td>参与供应商评估与改进小组</td></tr><tr><td>计划</td><td>交付与库存</td><td>多重预测、只按需求日期统计交付</td><td>一个计划（S&OP）；以承诺日期为准；拿信息换库存</td></tr><tr><td>销售／营销</td><td>客户与业绩</td><td>压货、促销、迟迟不给预测</td><td>区分好坏复杂度；尽早给出“精心计算过风险”的预测</td></tr><tr><td>财务</td><td>合规、成本</td><td>只认采购价，忽视总成本</td><td>与采购统一降本口径；关注库存与资产管理</td></tr><tr><td>生产</td><td>稳定交付</td><td>把供应问题全推给采购</td><td>参与需求与供应商整合，提出真实需求</td></tr><tr><td>战略供应商</td><td>长期业务、合理回报</td><td>有能力有脾气，短期关系下能坑就坑</td><td>长期协议约束双方行为，年降写进合同</td></tr><tr><td>一级供应商</td><td>自身利润</td><td>没能力或不愿管关键下级供应商</td><td>采购方在最佳位置时直接管；指定供应商要主动协调</td></tr></tbody></table></div>
+  </div>
+</section>
+<section class="block" id="b2-traps">
+  <div class="wrap">
+    <h2>误区与反直觉结论</h2>
+    <p class="sub">左侧灰字是常见想法，下面是书中的回应。</p>
+    <ul class="traps"><li><div class="x">新供应商总比老供应商好</div><div class="v">“别人家园子里的草更绿”。老供应商做不到、新供应商就能做到吗？多半是没选好或没管好。</div></li><li><div class="x">多权分立能根治采购腐败</div><div class="v">供应商成了公共草地，被迫找“靠山”，反而系统地造成更大的腐败。</div></li><li><div class="x">一品多点能降风险、压价格</div><div class="v">排产、物流、车间难以区分供应商，问题频出；本质是以竞争代替管理。</div></li><li><div class="x">淘汰就是供应商管理</div><div class="v">不教而诛是为虐；前任没淘汰掉，往往是可替代性低或转换成本高。</div></li><li><div class="x">集中采购必然降本</div><div class="v">型号、设计、送货方式都没变的“纸面整合”，只是把供应商的利润转过来。</div></li><li><div class="x">谈判就是讨价还价</div><div class="v">讨价还价是转移问题；谈判是通过影响成本来影响价格，共同解决问题。</div></li><li><div class="x">最小起订量只能接受</div><div class="v">用多少买多少，单价高但花的是明钱；批量采购单价低，呆滞库存花的是暗钱。</div></li><li><div class="x">供应商赚钱就是在坑我</div><div class="v">去看它的净利润。新官砍价打破平衡，代价是质量、交付和技术支持。</div></li><li><div class="x">供应商早期介入后就会垄断涨价</div><div class="v">作者认为这是短期关系在作怪；长期关系下，供应商有很多可失去的，会理性合作。</div></li><li><div class="x">采购是花钱的活儿，谁都能做</div><div class="v">与强势供应商掰手腕、协调跨职能诉求，需要资深的能人。</div></li><li><div class="x">上了工业 4.0 就能解决供应链问题</div><div class="v">很多企业的挑战仍在工业 2.0：MRP 能否运转、库存数据是否准确。</div></li></ul>
+  </div>
+</section>
+<section class="block" id="b2-critique">
+  <div class="wrap">
+    <h2>批判性阅读：证据审计与压力测试</h2>
+    <p class="sub">不复述作者，而是检验作者：证据有多硬、哪里可能有偏差、什么条件下结论会收窄。</p>
+    
+    <div class="note heavy"><p>本节为〔我的分析〕。标“需核实”的内容涉及成书（第 3 版，2019 年）之后的变化，引用前请查最新资料。</p></div>
+    <h3>证据结构观察</h3>
+    <ul class="traps">
+      <li><div class="x">证据类型</div><div class="v">主体是作者在硅谷半导体设备行业的采购与计划经历、培训中听到的企业故事，以及美国协会和咨询机构的二手统计。故事生动、可迁移，但多数数字（10%／20%／70%、75%／18 个月、9%）属于经验值，原文未给完整出处。</div></li>
+      <li><div class="x">美日对比框架</div><div class="v">“猎人 vs 牧人”是全书的主线对比，论据以汽车业供应商关系调查为主。作者也写明了牧人模式的缺陷，但正文的倾向性很强。</div></li>
+      <li><div class="x">时代前提</div><div class="v">主要论证建立在全球化顺畅、供应充足的年代。少数供应商、长期关系的主张，在供应剧烈波动的年代需要重新检验。</div></li>
+    </ul>
+    <h3 style="margin-top:30px">反例与挑战</h3>
+    <div class="tbl-wrap"><table><thead><tr><th>反例或挑战</th><th>挑战的论点</th><th>推翻还是收窄</th><th>备注</th></tr></thead><tbody><tr><td>近年芯片短缺与疫情冲击后，不少企业转向多源采购、提高安全库存</td><td>少数供应商、长期关系、轻淘汰</td><td>收窄：在供应风险极高的品类，冗余与多源的价值上升；但作者本身就主张按风险控制集中度、必要时开二供</td><td>需核实具体行业与企业做法</td></tr><tr><td>“中国商飞与波音、空客在技术上没有明显差距，差距在管理”</td><td>复杂产品的核心是供应链整合能力</td><td>待检验：作者的判断，缺少系统证据</td><td>需结合近年 C919 的进展核实</td></tr><tr><td>作者猜测日本大企业的困境与牧人模式“不无关系”</td><td>牧人模式的长期代价</td><td>待检验：作者自己标为推测</td><td>可与《重资产》书中丰田周转率下滑的讨论对照</td></tr><tr><td>电信三巨头集采与设备商利润下滑</td><td>集中采购＝利润转移</td><td>收窄：作者同时列出行业低迷、海外转嫁、进入手机等原因，集采的贡献无法单独剥离</td><td>—</td></tr></tbody></table></div>
+    <h3 style="margin-top:30px">边界条件</h3>
+    <div class="tbl-wrap"><table><thead><tr><th>少数供应商＋长期关系更可能成立</th><th>多源与竞争机制更可能合理</th></tr></thead><tbody><tr><td>采购方规模大、管理能力强，能真正“管”供应商</td><td>初创或小客户，议价和管理能力都弱</td></tr><tr><td>需求可预测，计划体系稳定</td><td>需求高度不确定，或技术快速迭代</td></tr><tr><td>供应市场有实质性的替代者作为后盾</td><td>地缘、灾害等系统性供应风险高</td></tr><tr><td>供应商需要专属投入（早期介入、专用设备）</td><td>标准件、通用件，转换成本低</td></tr></tbody></table></div>
+  </div>
+</section>
+<section class="block" id="b2-ledger">
+  <div class="wrap">
+    <h2>细节账本：回原文的导航</h2>
+    <p class="sub">摘要会抹平细节。这里收集最值得回原文看的数据、作者的猜测与经验标尺、疑点，以及几个案例的时间线。页码对应你上传的 PDF 版本（共 576 页）。</p>
+    <div class="filters" role="group" aria-label="按类型筛选">
+      <button type="button" data-f="all" aria-pressed="true">全部</button>
+      <button type="button" data-f="d" aria-pressed="false">出乎意料的数据</button>
+      <button type="button" data-f="f" aria-pressed="false">脚注与猜测</button>
+      <button type="button" data-f="t" aria-pressed="false">张力与疑点</button>
+      <button type="button" data-f="l" aria-pressed="false">案例时间线</button>
+    </div>
+    <ul class="ledger">
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">物流成本曾占中国 GDP 约 20%、美国约 10%；到 2018 年中国有望降到约 14%，美国约 7.2%，全球约 11.2%。</p><p class="why">解释了为什么国内很长时间把物流当成供应链的全部。</p></div><div class="loc"><b>PDF 第21页</b>第一篇 · 供应链管理与“盲人摸象”</div></li>
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">通用汽车全球采购约 16 万种零部件，“每天出问题的机会有 16 万个”。</p><p class="why">复杂度是供应链难管的根源，而不是技术有多难。</p></div><div class="loc"><b>PDF 第100页</b>第一篇 · 复杂度是供应链的大敌</div></li>
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">波音每架飞机 40 万到 600 万个零件，年采购额 280 亿美元，来自 5400 个工厂。</p><p class="why">飞机难以“山寨”，难在复杂供应链的整合。</p></div><div class="loc"><b>PDF 第101页</b>第一篇 · 复杂度是供应链的大敌</div></li>
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">应用材料库存周转约 3.6 次／年；规模只有其 1/5 的泛林研发约 6.3 次（2007）。</p><p class="why">“大并不是伟大”的量化证据；也与《重资产》书中泛林研发的外包案例相连。</p></div><div class="loc"><b>PDF 第129页</b>第一篇 · 供应链：大并不是伟大</div></li>
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">降本三台阶：谈判约影响产品成本 10%，流程约 20%，设计约 70%。</p><p class="why">降本重心应前移到设计；比例为作者的经验值。</p></div><div class="loc"><b>PDF 第175页</b>第一篇 · 跨越供应链降本三台阶</div></li>
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">一次性大幅整合供应商的降价，北美经验值约 9%；之后靠谈判每年降两三个点就很不错。</p><p class="why">谈判降本的天花板。</p></div><div class="loc"><b>PDF 第177页</b>第一篇 · 降本三台阶</div></li>
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">京东方 2008–2017 年只有两三年净资产回报率超过银行存款利率；三星平泽芯片厂扩产需 276 亿美元。</p><p class="why">你以为被供应商“宰”，对方可能正承担巨大的重资产风险。</p></div><div class="loc"><b>PDF 第178页</b>第一篇 · 降本三台阶</div></li>
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">通用汽车美国份额从 60 年代约 50% 降到 2016 年 17.3%。</p><p class="why">猎人模式的长期代价之一。</p></div><div class="loc"><b>PDF 第180页</b>第一篇 · 降本三台阶</div></li>
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">2009 年底美国 27 家汽车供应商申请破产保护，主要一级供应商一半面临破产威胁。</p><p class="why">把供应商压到极限，最终也拖垮了整车厂。</p></div><div class="loc"><b>PDF 第202页</b>第一篇 · 猎人模式与牧人模式</div></li>
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">丰田通过生产工艺和产品设计优化，在一款新车型上降本约 30%。</p><p class="why">牧人模式下降幅可以比砍价更大。</p></div><div class="loc"><b>PDF 第203页</b>第一篇 · 猎人模式与牧人模式</div></li>
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">没有绩效管理，约 75% 的战略寻源成果会在 18 个月内消失。</p><p class="why">“有选择、没管理”的代价；原文引用的是二手统计。</p></div><div class="loc"><b>PDF 第321页</b>第二篇 · 供应商绩效管理</div></li>
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">一家给苹果做小零件的二三级供应商，七八成业务来自苹果，老板寝食不安，甚至盼着苹果开二供。</p><p class="why">业务过度集中，风险是双向的。</p></div><div class="loc"><b>PDF 第291页</b>第二篇 · 供应商选择</div></li>
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">供应商整合可一次性降价 6%–12%，外加每年 2%–4%；朗讯把 3000 多家压缩到 60 家关键供应商，占采购额 80%。</p><p class="why">整合的经济账。</p></div><div class="loc"><b>PDF 第411页</b>第二篇 · 供应商整合</div></li>
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">迪尔 14 个工厂收集到 424 种手套 → 标准化为 24 种，6 家供应商变 1 家，价格降 50%。</p><p class="why">象征意义大于金额：用人人熟悉的东西让厂长们看到分散采购的问题。</p></div><div class="loc"><b>PDF 第420页</b>第二篇 · 案例：迪尔的 424 种手套</div></li>
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">某公司年销售约 5 亿美元、原材料采购约 1.5 亿美元，却有 1200 多家供应商。</p><p class="why">多次并购与分散研发留下的复杂度。</p></div><div class="loc"><b>PDF 第554页</b>第三篇 · 集中采购：解决谁的问题</div></li>
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">美国大公司平均年度降本约 2.5%（2010 年近 3.5%），加上通胀实际约 5%。</p><p class="why">给年降目标一个外部参照。</p></div><div class="loc"><b>PDF 第562页</b>第三篇 · 年度降价怎么定</div></li>
+<li data-cat="d"><div class="cat d">数据</div><div><p class="what">一家几百亿元规模的制造企业，采购部每周要招近 200 个标；另一家企业每年几亿元采购额，有 100 多个采购合同章。</p><p class="why">“小采购”与分散采购的极端形态。</p></div><div class="loc"><b>PDF 第471、531页</b>第三篇</div></li>
+<li data-cat="f"><div class="cat f">脚注与猜测</div><div><p class="what">判断供应商有无超额利润的标尺：街头卖羊肉串的净利润约 20%。</p><p class="why">作者的经验参照，不是统计。</p></div><div class="loc"><b>PDF 第177页</b>第一篇 · 降本三台阶</div></li>
+<li data-cat="f"><div class="cat f">脚注与猜测</div><div><p class="what">作者推测：众多日本大型企业陷入困境，与“牧人模式”的供应商管理“不无关系”。</p><p class="why">作者自己标为推测，阅读时应降权。</p></div><div class="loc"><b>PDF 第203页</b>第一篇 · 猎人模式与牧人模式</div></li>
+<li data-cat="f"><div class="cat f">脚注与猜测</div><div><p class="what">战略供应商的操作性定义：如果两三年内淘汰不了，就按战略供应商对待。</p><p class="why">把“战略”从口号变成可执行的判断。</p></div><div class="loc"><b>PDF 第250页</b>第二篇 · 供应商分类</div></li>
+<li data-cat="f"><div class="cat f">脚注与猜测</div><div><p class="what">作者判断：就技术而言，中国商飞与波音、空客没有明显差距，差距在管理。</p><p class="why">强判断，缺少系统证据。</p></div><div class="loc"><b>PDF 第101页</b>第一篇 · 复杂度是供应链的大敌</div></li>
+<li data-cat="f"><div class="cat f">脚注与猜测</div><div><p class="what">读者来信：丰田上月 20 日锁定下月计划，锁定后若调整给供应商造成损失，丰田要赔偿。</p><p class="why">“牧人模式”背后的计划纪律，是平准化拉动的前提。</p></div><div class="loc"><b>PDF 第396页</b>第二篇 · 当你成为狮子后</div></li>
+<li data-cat="f"><div class="cat f">脚注与猜测</div><div><p class="what">J.C.Penney 从苹果请来零售负责人照搬“天天低价”，一年销售额降 29%、净亏近 10 亿美元。</p><p class="why">不促销是好方向，但不能简单照搬。</p></div><div class="loc"><b>PDF 第142页</b>第一篇 · 牛鞭效应成因 3</div></li>
+<li data-cat="t"><div class="cat t">张力与疑点</div><div><p class="what">作者批评一品多点，又建议在业务过于集中时开二供。</p><p class="why">区别在于层面：料号层面避免多点，品类层面控制集中度与风险。值得回原文对照。</p></div><div class="loc"><b>PDF 第291、304页</b>第二篇 · 供应商选择；案例：“一品两点”</div></li>
+<li data-cat="t"><div class="cat t">张力与疑点</div><div><p class="what">电信三巨头的集中采购被称为“利润转移的屠宰场”。</p><p class="why">作者同时列出行业低迷、海外转嫁、进入手机等原因，集采的贡献无法单独剥离。</p></div><div class="loc"><b>PDF 第177页</b>第一篇 · 降本三台阶</div></li>
+<li data-cat="t"><div class="cat t">张力与疑点</div><div><p class="what">10%／20%／70%、75%／18 个月、9% 等关键数字。</p><p class="why">多为经验值或二手统计，原文未给完整出处。</p></div><div class="loc"><b>PDF 第175、321、177页</b>第一篇；第二篇</div></li>
+<li data-cat="t"><div class="cat t">张力与疑点</div><div><p class="what">书中高度肯定牧人模式，也指出其缺陷：新供应商、新技术难进入，差供应商难淘汰。</p><p class="why">与《重资产》书中丰田周转率下滑、体系封闭的讨论可以互相印证。</p></div><div class="loc"><b>PDF 第203页</b>第一篇 · 猎人模式与牧人模式</div></li>
+    </ul>
+    <div class="tl-grid"><div class="tl-card" data-cat="l"><h4>通用汽车的猎人模式</h4><p class="loc">第一篇 · PDF 第180、201–205页；第三篇 第559页</p><ol class="tl"><li><span class="y">80 年代</span><span>日本车冲击，强迫供应商逐年降价</span></li><li><span class="y">之后</span><span>行业低迷时一刀切，从货款里直接扣点，同行跟风</span></li><li><span class="y">多年</span><span>一级供应商关系调查长期垫底</span></li><li><span class="y">2007</span><span>被丰田超越</span></li><li><span class="y">2009</span><span>27 家供应商破产保护，通用破产；美国份额从约 50% 降到 2016 年 17.3%</span></li></ol></div><div class="tl-card" data-cat="l"><h4>按时交货率为什么是 70%</h4><p class="loc">第二篇 · PDF 第368–369页</p><ol class="tl"><li><span class="y">起点</span><span>新业务经理重新询价，韩国报价低约 40%</span></li><li><span class="y">施压</span><span>行业不景气，逼供应商降价 25%–30%</span></li><li><span class="y">后果</span><span>供应商无利可图，请不起合格工人和工程师</span></li><li><span class="y">结果</span><span>质量、交付一路下滑，按时交货率长期约 70%</span></li></ol></div><div class="tl-card" data-cat="l"><h4>价格值多少钱</h4><p class="loc">第二篇 · PDF 第375–376页</p><ol class="tl"><li><span class="y">前任</span><span>新零件量产后不二次招标，供应商愿意支持开发</span></li><li><span class="y">新经理</span><span>拿一年用量重新询价、二轮竞价</span></li><li><span class="y">几个月后</span><span>按时交付从 96% 以上跌破 90%</span></li><li><span class="y">另一笔账</span><span>2000 年为降单价大批量生产，2005 年处理 80 多万美元呆滞（约年采购额 15%）</span></li></ol></div><div class="tl-card" data-cat="l"><h4>2006 年铝锭短缺</h4><p class="loc">第一篇 · PDF 第143–144页</p><ol class="tl"><li><span class="y">正常</span><span>交期 13 周</span></li><li><span class="y">短缺</span><span>交期 18 周，加订第二锭</span></li><li><span class="y">恐慌</span><span>交期 26 周，再下第三单</span></li><li><span class="y">结果</span><span>冶炼厂误判需求，扩张产能</span></li></ol></div><div class="tl-card" data-cat="l"><h4>迪尔的 424 种手套</h4><p class="loc">第二篇 · PDF 第420页</p><ol class="tl"><li><span class="y">调查</span><span>实习生走遍 14 个工厂，每种手套收集一副</span></li><li><span class="y">发现</span><span>424 种，同一手套不同工厂价格也不同</span></li><li><span class="y">展示</span><span>做成展板给来总部开会的厂长看</span></li><li><span class="y">结果</span><span>24 种、1 家供应商、价格降 50%</span></li></ol></div><div class="tl-card" data-cat="l"><h4>硅谷某公司的采购转型</h4><p class="loc">第三篇 · PDF 第492页</p><ol class="tl"><li><span class="y">2000 年后</span><span>泡沫破裂，从 5000 多人裁到 2000 人</span></li><li><span class="y">决策</span><span>推行外包，采购被推到前台</span></li><li><span class="y">重建</span><span>外聘有两家“采购金牌”公司背景的执行总监，内外招聘中层</span></li><li><span class="y">三年后</span><span>资产利用率、库存周转、按时交货跃居行业首位，股价翻番</span></li></ol></div><div class="tl-card" data-cat="l"><h4>中石化集中采购</h4><p class="loc">第三篇 · PDF 第531–533页</p><ol class="tl"><li><span class="y">阶段一</span><span>对口管理，采购权归口采购部门</span></li><li><span class="y">阶段二</span><span>分公司集中，单一领导负责制</span></li><li><span class="y">阶段三</span><span>总部集中，“两级集中、三级执行”</span></li></ol></div><div class="tl-card" data-cat="l"><h4>摩托罗拉的 100 多种电池</h4><p class="loc">第一篇 · PDF 第118–119页</p><ol class="tl"><li><span class="y">问题</span><span>60 多款手机、100 多种电池，库存“要了命”</span></li><li><span class="y">应对</span><span>成立电池委员会统筹标准化</span></li><li><span class="y">现实</span><span>已上市的难以改动，手机一年半就下市</span></li><li><span class="y">规则</span><span>新机型只能从 5 种电池里选</span></li></ol></div></div>
+    <h3>回原文验证的 5 个问题</h3>
+    <ol class="apply">
+      <li><div><b>“降本三台阶”的 10%／20%／70% 从何而来？</b><span>读第175页：是经验值还是有研究出处？在你熟悉的行业里，设计决定成本的比例大概是多少？</span></div></li>
+      <li><div><b>“两个供应商就是充分竞争”，“实质性”怎么判断？</b><span>读第291–292页，用你关注的行业试着判断一组供应商。</span></div></li>
+      <li><div><b>集中采购是在降成本，还是在转移利润？</b><span>对照第175–178页与第531–556页的集采雷区、公司 B 案例。</span></div></li>
+      <li><div><b>牧人模式在供应剧烈波动的年代还成立吗？</b><span>读第201–207页，再对照你看到的近年供应链事件。</span></div></li>
+      <li><div><b>本田直接管的四类下级供应商有什么共同特征？</b><span>读第428–433页；换成你关注的产品，哪些下级供应商该由品牌方直接管？</span></div></li>
+    </ol>
+  </div>
+</section>
+<section class="block" id="b2-quiz">
+  <div class="wrap">
+    <h2>自测</h2>
+    <p class="sub">先自己回答，再点开核对。</p>
+    <details class="qa"><summary>为什么职能之间协作不起来？</summary><div class="ans">纵向效率指标强、横向服务指标弱；横向指标在考核中权重低，又难以客观量化。</div></details><details class="qa"><summary>供应商按时交货率应该以哪个日期为基准？</summary><div class="ans">三方认可的供应商承诺日期。需求日期对采购不公平，标准交期对计划不公平；大量订单要靠电子商务来维护承诺日期。</div></details><details class="qa"><summary>费雪的“合适的产品配合适的供应链”是什么？</summary><div class="ans">功能性产品配经济型供应链，创新性产品配响应型供应链；难点在一家公司往往只有一条供应链。</div></details><details class="qa"><summary>牛鞭效应的四个成因是什么？</summary><div class="ans">多重需求预测、批量生产与采购、价格浮动与促销、短缺时的理性博弈。</div></details><details class="qa"><summary>周转库存和安全库存分别靠什么降？</summary><div class="ans">周转库存靠缩短周转周期；安全库存靠减少不确定性，尤其是信息不对称等人为的不确定性。</div></details><details class="qa"><summary>降本三台阶各自大致影响多少产品成本？</summary><div class="ans">谈判约 10%，流程约 20%，设计约 70%。</div></details><details class="qa"><summary>战略供应商和优选供应商的根本区别？</summary><div class="ans">战略供应商难以替代，身份是天生的；优选供应商绩效好但可替代，身份是挣来的。</div></details><details class="qa"><summary>供应商选择要兼顾哪三点？为什么业务占比要有上下限？</summary><div class="ans">规模效益、竞争充分、供应风险。占比太低不受重视，太高则你的业务波动会拖累供应商、风险反噬自己。</div></details><details class="qa"><summary>什么情况下采购方要直接管理下级供应商？</summary><div class="ans">一级供应商多而弱、下级供应商少而门槛高，或该下级供应商关乎质量一致性、成本、用户体验且采购方处于最佳管理位置时。</div></details><details class="qa"><summary>“小采购”变“大采购”，释放资源的三条途径？</summary><div class="ans">信息化、两层分离、长期协议。</div></details>
+  </div>
+</section>
+<section class="block" id="b2-apply">
+  <div class="wrap">
+    <h2>迁移应用：诊断一家公司的采购与供应商管理</h2>
+    <p class="sub">把全书压缩成一张六步检查表，可用于行业研究、尽职调查或自家企业的体检。</p>
+    <ol class="apply"><li><div><b>看钱花在哪</b><span>按品类汇总采购额、供应商数和集中度；能否立刻答出去年给最大供应商花了多少钱。</span></div></li><li><div><b>看分类与新生意流向</b><span>有没有五类分级；新生意是否流向优选和战略供应商。</span></div></li><li><div><b>看指标口径</b><span>按时交货率以什么日期为基准；绩效是否定期统计；横向指标在考核中的权重。</span></div></li><li><div><b>看组织</b><span>是否多权分立；有无两层分离和供应商工程师；采购汇报给谁。</span></div></li><li><div><b>看关系</b><span>猎人还是牧人；有无长期协议；年降的依据；主要供应商的净利润水平。</span></div></li><li><div><b>看需求端</b><span>预测是不是一个；复杂度是否受控；促销和压货是否在人为制造波动。</span></div></li></ol>
+  </div>
+</section>
+<section class="hero book-head sh" id="s-top" style="border-top-color:var(--amber);padding-bottom:8px"><div class="wrap"><p class="book"><span class="bookno" style="background:var(--amber-ink)">合读</span>两本书放在一起</p></div></section>
+<section class="block" id="s-link">
+  <div class="wrap">
+    <h2>两本书的连接</h2>
+    <p class="sub">《重资产到轻资产》讲“为什么要外包、外包什么”；这本红皮书讲“外包后供应商怎么选、怎么管”。两本合起来读，正好是一条完整的链。</p>
+    <div class="tbl-wrap"><table><thead><tr><th>主题</th><th>《重资产到轻资产》</th><th>本书（红皮书）</th></tr></thead><tbody><tr><td>核心问题</td><td>重资产是管理能力不足的替代品</td><td>管好供应商，才能管好供应链</td></tr><tr><td>供应商关系</td><td>资源获取光谱：垂直整合 ↔ 持币购物；竞合是常态</td><td>猎人模式 vs 牧人模式；长期关系是协作的前提</td></tr><tr><td>选与管</td><td>“有选择、有管理，先督促、后帮助，谁选择、谁管理”（概述）</td><td>五步流程、五类供应商、评估方法、绩效七大目标（详述）</td></tr><tr><td>业务占比</td><td>20%–35%</td><td>20%–35%，并解释上下限的理由</td></tr><tr><td>组织能力</td><td>“大采购”、供应商工程师</td><td>大采购的五阶段、三任务、释放资源、团队配置</td></tr><tr><td>下级供应商</td><td>防层层转包（延伸思考）</td><td>本田、苹果的关键下级供应商管理；客户指定供应商</td></tr><tr><td>丰田</td><td>周转率长期下滑、体系封闭</td><td>牧人模式的典范，同时写明其缺陷</td></tr></tbody></table></div>
+    <p class="small" style="margin-top:12px">回到 <a href="#b1-top">第 1 本</a> 或 <a href="#b2-top">第 2 本</a> 的开头。</p>
+  </div>
+</section>
+<section class="block" id="s-method">
+  <div class="wrap">
+    <h2>读法与提示词：让 AI 陪读，而不是代读</h2>
+    <p class="sub">AI 摘要读着陌生、记不牢、难拓展，根源是同一个：过程和原料都被压缩掉了，只剩结论。下面是原因、改法和可直接复制的提示词。</p>
+    <div class="why-grid">
+      <div><h3>为什么读着吃力、记不住</h3><ol>
+        <li><b>生成效应</b>：自己推出来、写出来的东西记得牢；读摘要只是确认，编码很浅。</li>
+        <li><b>流畅性错觉</b>：总结结构清楚、语言顺滑，读时觉得懂了，其实只是“认得”。</li>
+        <li><b>缺少锚点</b>：故事、意外和具体数字最好记；摘要把它们换成了彼此相似的抽象词。</li>
+        <li><b>结构不是你的</b>：按别人的框架、全是高密度结论，没有铺垫，读起来累。</li></ol></div>
+      <div><h3>为什么信服度和拓展性下降</h3><ol>
+        <li><b>结论和证据脱钩</b>：看不到结论靠的是数据、案例还是作者感受，无法判断该信几分。</li>
+        <li><b>压缩抹平异常</b>：脚注、保留意见、前后不一致、反常数据，正是产生新想法的地方。</li>
+        <li><b>拓展需要原料</b>：新想法来自具体细节与已有知识的重组，抽象结论很难被组合。</li>
+        <li><b>筛选不可见</b>：这份笔记是有选择地读出来的——重点章节细读，部分章节略读，你看不到筛掉了什么。</li></ol></div>
+    </div>
+
+    <h3>六步陪读流程</h3>
+    <ol class="apply">
+      <li><div><b>读前，只要地图和问题</b><span>让 AI 列出章节结构和每章要回答的问题，你先猜作者的答案，再去读。猜错的地方记得最牢。</span></div></li>
+      <li><div><b>挑 20%–30% 读原文</b><span>根据地图和目的选关键章节读原文，尤其是案例、数据和脚注；其余看摘要即可。本页的细节账本就是这一步的导航。</span></div></li>
+      <li><div><b>读的时候记“细节账本”</b><span>记下意外的数据、作者含糊或自相矛盾的地方、你不同意的地方；让 AI 去查证、找反例、补背景。</span></div></li>
+      <li><div><b>读完先自己写，再对照</b><span>先写一页总结或画结构图，再让 AI 指出漏了什么、哪里和原文不符。这一步把“认得”变成“会用”。</span></div></li>
+      <li><div><b>间隔复习</b><span>让 AI 在 1 天、1 周、1 个月后出题，要求用书中框架分析新情境，而不是复述。</span></div></li>
+      <li><div><b>改变对 AI 摘要的要求</b><span>每条结论附出处和关键数据；单列“异常与张力”；按“案例 → 机制 → 原则”的顺序写。</span></div></li>
+    </ol>
+
+    <h3 style="margin-top:30px">五层阅读框架</h3>
+    <p class="small">原来的七个维度（问题场景、原因逻辑、解决方法、重要结论、阶段模型、数据找问题、角色视角）都保留在其中，新增的是论证、系统动力和证据审计。</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>层</th><th>回答的问题</th><th>用在这本书上抓什么</th></tr></thead>
+        <tbody>
+          <tr><td>1 论证骨架</td><td>作者主张什么，靠什么推出来</td><td>主论点 → 分论点 → 证据；区分原文事实、作者推论、作者个人观察</td></tr>
+          <tr><td>2 系统动力</td><td>现象背后的反馈结构是什么</td><td>劣质化回路：资源内置 → 没有竞争 → 能力下降 → 外部业务流失 → 规模更小 → 成本更高。供应商膨胀回路：以竞争代替管理 → 供应商变多 → 不确定性变高 → 供应商博弈 → 绩效变差 → 再加供应商。沉没成本回路：已经投入 → 自圆其说 → 追加投资。</td></tr>
+          <tr><td>3 决策模型卡</td><td>遇到什么决策用哪个工具</td><td>每个模型的触发场景、输入、判断规则、输出、失效条件</td></tr>
+          <tr><td>4 证据审计与反例</td><td>结论有多可靠</td><td>案例挑选、相关当因果、书出版后的世界变化</td></tr>
+          <tr><td>5 边界与迁移</td><td>什么条件下结论翻转，怎么用到我的问题上</td><td>“垂直整合合理”的条件清单；拆解一家真实公司</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:30px">提示词一：提取原料（读原文前用）</h3>
+    <div class="prompt-wrap"><button class="btn copy" type="button">复制提示词</button><pre class="prompt">请从原文中提取“原料”，不要概括观点：
+1. 最出乎意料的 10 个数据或细节，附章节位置和一句原文
+2. 脚注和括号里的限定条件、保留意见和作者的猜测
+3. 作者前后不一致、证据薄弱或一笔带过的地方
+4. 每个大案例的时间线：起点、转折点、结果
+不要给结论。最后只提出 5 个值得我回原文验证的问题。</pre></div>
+
+    <h3>提示词二：分阶段深度分析</h3>
+    <p class="small">长书分阶段跑，深度明显高于一次输出全部；阶段 4 打开联网搜索；换书时只需改输入区，读科普或历史类书时把“模型卡”换成“概念卡”。</p>
+    <div class="prompt-wrap"><button class="btn copy" type="button">复制提示词</button><pre class="prompt"># 角色
+你是一位兼具战略咨询、行业研究和批判性阅读能力的分析师。任务不是复述这本书，而是帮我把它变成可检验、可调用的思维工具。
+
+# 输入
+- 书：{书名／作者}，全文见附件
+- 阅读目的：{例如：用于行业研究，判断企业轻重资产战略是否合理}
+- 我的背景：{例如：做过产品管理，正在学习行业分析}
+
+# 总规则
+1. 每条内容标注类型：【原文事实】书中的数据与案例；【作者观点】作者的判断与推论；【你的分析】你的推断或补充。
+2. 关键结论注明出处（章节，尽量到页码）。引用原文每处不超过一句，其余用自己的话。
+3. 书中没有的信息不编造；涉及出版后的新进展，标注“需核实”，能联网就先检索。
+4. 优先用表格、Mermaid 图、层级结构呈现。
+5. 分阶段执行。每完成一个阶段就停下，等我回复“继续”再进入下一阶段。
+
+# 阶段 0：建立骨架（只读序言、目录、各章小结）
+- 一句话写出全书主论点；列出 3–6 个分论点及其在书中的位置
+- 说明作者要解决的核心问题、目标读者、讨论范围（明确不讨论什么）
+- 用 Mermaid flowchart 画出全书逻辑链
+
+# 阶段 1：论证地图
+对每个分论点按“主张 → 理由 → 证据 → 隐含前提 → 作者自己承认的限定条件”拆解。
+最后指出：哪一环证据最弱？哪个隐含前提一旦不成立，主论点就会动摇？
+
+# 阶段 2：系统动力
+找出书中描述的反馈回路（增强回路 R、调节回路 B），用 Mermaid 画因果回路图。
+每条回路说明：起点、放大机制、现实中通常被什么打断、作者给出的干预点。
+
+# 阶段 3：模型卡
+把书中所有可复用的框架、模型、决策规则整理成卡片，每张包括：
+名称｜触发场景｜输入｜判断规则｜输出｜书中案例｜失效条件｜与其他模型的关系
+再按“战略层—结构层—运营层”分层，并画出模型之间的调用顺序。
+
+# 阶段 4：证据审计与压力测试
+1. 给主要证据评级：A 可复核的数据或研究；B 有名有姓的案例；C 作者个人经历与观察；D 纯断言。统计每个分论点主要依赖哪一级证据。
+2. 检查偏差：幸存者偏差、案例挑选、相关当因果、混杂因素（行业周期、并购等）、作者立场。
+3. 找出至少 5 个反例或挑战（含书出版后的变化），说明它推翻的是主论点，还是只收窄了适用范围。
+4. 写出作者最强的反对者会如何反驳，以及作者可能的回应。
+
+# 阶段 5：边界条件与阶段模型
+- 表格对照：“结论成立的条件”与“结论翻转的条件”
+- 整理书中所有随阶段变化的模型（企业生命周期、产品生命周期、行业节拍、关系演化等），说明每个阶段的最优选择为何不同
+- 列出可观测的数据指标与细节信号：怎么算、和谁比、说明什么问题
+
+# 阶段 6：迁移与内化
+1. 角色视角：关键决策中的各个角色（老板、财务、研发、采购、生产、供应商、客户等）各自的激励、常见误判、书中建议。
+2. 迁移：用本书框架分析 {一家公司／一个行业}，给出结论和还需要补充的数据。
+3. 自测：出 8 道题，至少 4 道是书中没有的新情境应用题，附参考答案。
+4. 一页总结：不超过 300 字，写清我该记住什么，以及最该保持怀疑的地方。</pre></div>
+  </div>
+</section>
+  </main>
+  <footer>
+    <div class="wrap">
+      <p>两本书的笔记均依据全书提炼，主要章节精读，部分长案例略读或未读，各书开头已分别说明范围。书中数据多截至 2018–2021 年，用于理解逻辑与量级，引用前请核对最新数据。</p>
+    </div>
+  </footer>
+  </div>
+</div>
+<script>
+(function(){
+  // mind maps (one per book)
+  document.querySelectorAll('.mm').forEach(function(mm){
+    mm.querySelectorAll('.node').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var li=btn.parentElement; var open=li.classList.toggle('open');
+        btn.setAttribute('aria-expanded',open?'true':'false');
+      });
+    });
+    var tools=mm.previousElementSibling;
+    if(!tools||!tools.classList.contains('mm-tools')) return;
+    function setAll(open){
+      mm.querySelectorAll('li').forEach(function(li){
+        if(!li.querySelector(':scope > ul')) return;
+        li.classList.toggle('open',open);
+        var b=li.querySelector(':scope > .node'); if(b) b.setAttribute('aria-expanded',open?'true':'false');
+      });
+      if(!open){var r=mm.querySelector(':scope > ul > li'); if(r){r.classList.add('open'); var rb=r.querySelector(':scope > .node'); if(rb) rb.setAttribute('aria-expanded','true');}}
+    }
+    var o=tools.querySelector('[data-mm="open"]'), c=tools.querySelector('[data-mm="close"]');
+    if(o) o.addEventListener('click',function(){setAll(true)});
+    if(c) c.addEventListener('click',function(){setAll(false)});
+  });
+  // ledger filters (scoped per section)
+  document.querySelectorAll('.filters').forEach(function(group){
+    var sec=group.closest('section'); var btns=group.querySelectorAll('button');
+    btns.forEach(function(b){
+      b.addEventListener('click',function(){
+        var f=b.getAttribute('data-f');
+        btns.forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});
+        sec.querySelectorAll('[data-cat]').forEach(function(it){it.hidden=!(f==='all'||it.getAttribute('data-cat')===f)});
+        var grid=sec.querySelector('.tl-grid'); if(grid) grid.hidden=!(f==='all'||f==='l');
+        var list=sec.querySelector('.ledger'); if(list) list.hidden=(f==='l');
+      });
+    });
+  });
+  // copy prompt buttons
+  document.querySelectorAll('.copy').forEach(function(b){
+    b.addEventListener('click',function(){
+      var pre=b.parentElement.querySelector('pre'); var txt=pre.innerText;
+      function done(m){b.textContent=m;setTimeout(function(){b.textContent='复制提示词'},2000)}
+      function fallback(){var r=document.createRange();r.selectNodeContents(pre);var s=window.getSelection();s.removeAllRanges();s.addRange(r);done('已选中，请按 Ctrl+C')}
+      try{ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){done('已复制')},fallback)} else fallback() }catch(e){fallback()}
+    });
+  });
+  // TOC drawer (narrow screens)
+  var body=document.body;
+  var openBtn=document.querySelector('.toc-open'), closeBtn=document.querySelector('.toc-close');
+  function setDrawer(open){ body.classList.toggle('toc-open',open); if(openBtn) openBtn.setAttribute('aria-expanded',open?'true':'false'); }
+  if(openBtn) openBtn.addEventListener('click',function(){setDrawer(true)});
+  if(closeBtn) closeBtn.addEventListener('click',function(){setDrawer(false)});
+  document.querySelectorAll('.toc a').forEach(function(a){a.addEventListener('click',function(){setDrawer(false)})});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')setDrawer(false)});
+  // scrollspy
+  var links={}; document.querySelectorAll('.toc ol a').forEach(function(a){links[a.getAttribute('href').slice(1)]=a});
+  var where=document.querySelector('.topbar .where');
+  var books={b1:'第 1 本：重资产到轻资产',b2:'第 2 本：采购与供应链管理',s:'两本书合读'};
+  var targets=[].slice.call(document.querySelectorAll('main section[id]'));
+  var current=null;
+  function update(){
+    var y=window.innerHeight*0.25, best=null;
+    for(var i=0;i<targets.length;i++){ if(targets[i].getBoundingClientRect().top<=y) best=targets[i]; else break; }
+    var id=best?best.id:null; if(id===current) return; current=id;
+    Object.keys(links).forEach(function(k){links[k].removeAttribute('aria-current')});
+    if(id&&links[id]){
+      links[id].setAttribute('aria-current','true');
+      var tocEl=document.getElementById('toc');
+      if(window.innerWidth>=1100&&tocEl){var r=links[id].getBoundingClientRect(); if(r.top<80||r.bottom>window.innerHeight-40) links[id].scrollIntoView({block:'center'});}
+    }
+    if(where){
+      if(!id){where.innerHTML='<b>总览</b>';return;}
+      var p=id.split('-')[0]; var name=links[id]?links[id].textContent:'';
+      where.innerHTML='<b>'+(books[p]||'')+'</b>'+(name?'，'+name:'');
+    }
+  }
+  var ticking=false;
+  window.addEventListener('scroll',function(){ if(!ticking){ticking=true;requestAnimationFrame(function(){ticking=false;update()})} },{passive:true});
+  window.addEventListener('resize',update);
+  update();
+})();
+</script>
+</body>
+</html>

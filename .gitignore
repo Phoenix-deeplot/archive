@@ -1,0 +1,16 @@
+.history
+.vercel
+.env*
+.vscode/
+node_modules/
+package-lock.json
+index_dev.html
+.venv/
+.venv
+__pycache__
+*.pyc
+.git
+.vscode
+.history
+
+# vercel.json 不要放进忽略列表（vercel 命令行在没有 .vercelignore 时按本文件过滤上传）
