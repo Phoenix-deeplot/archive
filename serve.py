@@ -19,6 +19,7 @@ Only the Python standard library is used. The server listens on 127.0.0.1 by
 default; it writes files, so do not expose it to a public network.
 """
 import argparse
+import hashlib
 import http.server
 import json
 import os
@@ -32,10 +33,50 @@ import urllib.parse
 import webbrowser
 
 from build_index import (LIBRARY, ROOT, SKIP_DIRS, load_meta, norm_category, project_entry, safe_dirname,
-                         safe_filename, safe_relpath, save_meta, scan_library, write_manifest)
+                         safe_filename, safe_relpath, save_meta, scan_library, site_directory, write_manifest)
 
 MAX_UPLOAD = 80 * 1024 * 1024
 RANGE_RE = re.compile(r'bytes=(\d*)-(\d*)$')
+
+_SHA = {}                          # path -> (mtime_ns, size, sha1 of the content): a file is read again only when it changed
+
+
+def file_sha1(path):
+    try:
+        st = os.stat(path)
+    except OSError:
+        return ''
+    hit = _SHA.get(path)
+    if hit and hit[:2] == (st.st_mtime_ns, st.st_size):
+        return hit[2]
+    h = hashlib.sha1()
+    try:
+        with open(path, 'rb') as f:
+            for chunk in iter(lambda: f.read(1 << 20), b''):
+                h.update(chunk)
+    except OSError:
+        return ''
+    _SHA[path] = (st.st_mtime_ns, st.st_size, h.hexdigest())
+    return h.hexdigest()
+
+
+def item_sha1(it):
+    return '' if it.get('project') else file_sha1(os.path.join(ROOT, *str(it.get('path') or '').split('/')))
+
+
+def mark_duplicates(items):
+    """Give every item whose file has exactly the content of an earlier one a `same` (the id of that earlier one). For the page only, never written
+    to the manifest. A project folder (one card made of many files) is not compared."""
+    first = {}
+    for it in sorted(items, key=lambda x: (x.get('added', 0), x['id'])):
+        sha = item_sha1(it)
+        if not sha:
+            continue
+        if sha in first:
+            it['same'] = first[sha]
+        else:
+            first[sha] = it['id']
+    return items
 
 
 class _Limited:
@@ -164,7 +205,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if not self._host_ok():
             return
         if urllib.parse.urlparse(self.path).path == '/api/list':
-            return self._json({'mode': 'server', 'items': refresh()})
+            return self._json({'mode': 'server', 'items': mark_duplicates(refresh()), 'directory': site_directory()})
         return super().do_GET()
 
     def do_POST(self):
@@ -190,6 +231,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             folder = os.path.realpath(os.path.join(LIBRARY, self._category_dir(q.get('category'))))
             if not self._inside_library(folder):
                 return self._json({'error': 'bad category'}, 400)
+            if q.get('force') not in ('1', 'true'):               # the same content is in the library already: say so, unless the page insists
+                sha = hashlib.sha1(data).hexdigest()
+                for it in refresh():
+                    if item_sha1(it) == sha:
+                        return self._json({'error': 'duplicate', 'id': it['id'], 'title': it.get('title', '')}, 409)
             os.makedirs(folder, exist_ok=True)
             stem, ext = os.path.splitext(name)
             target, n = os.path.join(folder, name), 2
@@ -318,7 +364,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 return self._json({'error': 'bad id'}, 400)
             meta = load_meta()
             entry = meta.get(item_id, {})
-            for k in ('featured', 'hidden', 'title', 'summary'):
+            for k in ('featured', 'hidden', 'title', 'summary', 'nodirectory'):
                 if k in body:
                     entry[k] = body[k]
             meta[item_id] = entry

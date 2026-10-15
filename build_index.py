@@ -33,6 +33,7 @@ import argparse
 import json
 import os
 import re
+import sys
 import time
 from html.parser import HTMLParser
 
@@ -201,7 +202,7 @@ def _extract_md(path, st, is_txt=False):
     kw = fm.get('tags') or fm.get('keywords') or []
     if isinstance(kw, str):
         kw = [k.strip() for k in re.split(r'[,，、;；]', kw) if k.strip()]
-    return {
+    out = {
         'title': _truncate(fm.get('title') or title or os.path.splitext(os.path.basename(path))[0], 120),
         'summary': _truncate(fm.get('description') or fm.get('summary') or summary, 220),
         'keywords': kw, 'lang': lang, 'minutes': minutes,
@@ -209,6 +210,11 @@ def _extract_md(path, st, is_txt=False):
         'cover': fm.get('cover') or '', 'featured': str(fm.get('featured', '')).lower() in ('true', '1', 'yes'),
         'metaCategory': fm.get('category') or '',
     }
+    if fm.get('slug'):                               # the address part to use on the published site (see seo.py)
+        out['slug'] = str(fm['slug']).strip()
+    if str(fm.get('directory', '')).strip().lower() in ('false', 'no', '0', 'off'):      # keep it out of every public directory (see seo.py `_shelf.listed`)
+        out['nodirectory'] = True
+    return out
 
 
 def _pdf_string(raw):
@@ -303,7 +309,7 @@ def _extract_html(path, st, name=None):
     summary = m.get('description') or m.get('og:description') or p.lead or p.first_p or ''
     keywords = [k.strip() for k in re.split(r'[,，、;；]', m.get('keywords', '')) if k.strip()]
     date = m.get('archive:date') or m.get('article:published_time', '')[:10]
-    return {
+    out = {
         'title': _truncate(title, 120),
         'summary': _truncate(summary, 220),
         'keywords': keywords,
@@ -314,6 +320,13 @@ def _extract_html(path, st, name=None):
         'featured': (m.get('archive:featured', '').lower() in ('true', '1', 'yes')),
         'metaCategory': m.get('archive:category', ''),
     }
+    if 'noindex' in m.get('robots', '').lower():     # the page itself asks search engines to skip it
+        out['noindex'] = True
+    if m.get('archive:slug'):                        # the address part to use on the published site (see seo.py)
+        out['slug'] = m['archive:slug'].strip()
+    if m.get('archive:directory', '').strip().lower() in ('no', 'false', '0', 'off'):   # <meta name="archive:directory" content="no">: out of every public directory
+        out['nodirectory'] = True
+    return out
 
 
 def load_meta():
@@ -367,9 +380,11 @@ def project_stats(dirpath):
 
 def _apply_overrides(item, overrides):
     o = overrides.get(item['id']) or {}
-    for k in ('title', 'summary', 'featured', 'hidden', 'keywords', 'cover'):
+    for k in ('title', 'summary', 'featured', 'hidden', 'keywords', 'cover', 'noindex', 'slug', 'nodirectory'):
         if k in o and o[k] not in (None, ''):
             item[k] = o[k]
+    if item.get('nodirectory') is False:             # switched back on in the page: the key only exists while it is true
+        del item['nodirectory']
 
 
 def load_previous():
@@ -438,22 +453,50 @@ def scan_library(keep_dates=False, skip=()):
     return items
 
 
-def write_manifest(items):
-    """Write manifest.json and manifest.js, but only when the library changed.
+_WARNED = []
+
+
+def site_directory():
+    """site.json "directory": the address of the public directory (the docs/ of a shelf-directory repo). '' when not set.
+
+    https only; plain http only for this computer (trying the directory locally). The page reads it from the manifest.
+    """
+    try:
+        with open(os.path.join(ROOT, 'site.json'), 'r', encoding='utf-8-sig') as f:
+            url = str((json.load(f) or {}).get('directory') or '').strip()
+    except (OSError, ValueError, AttributeError):
+        return ''
+    if not re.match(r'^(https://|http://(127\.0\.0\.1|localhost)(:\d+)?/)', url):
+        return ''
+    if not url.startswith('https://') and not _WARNED:
+        _WARNED.append(1)
+        print('NOTE: site.json "directory" is an address of this computer (%s): the public space works here only. Put the https:// address there before you deploy.' % url, file=sys.stderr)
+    return url.rstrip('/') + '/'
+
+
+def write_manifest(items, root=None):
+    """Write manifest.json and manifest.js (into `root`, the project folder by default), but only when the library changed.
 
     Rewriting an identical file on every page load would keep touching it (editors ask to reload,
     deploys see a change), and `generated` then means "when the library last changed".
     """
-    js_path = os.path.join(ROOT, 'manifest.js')
+    root = root or ROOT
+    json_path = os.path.join(root, 'manifest.json')
+    js_path = os.path.join(root, 'manifest.js')
+    directory = site_directory()
     try:
-        with open(MANIFEST_JSON, 'r', encoding='utf-8') as f:
-            if json.load(f).get('items') == items and os.path.exists(js_path):
+        with open(json_path, 'r', encoding='utf-8') as f:
+            old = json.load(f)
+            if old.get('items') == items and old.get('directory', '') == directory and os.path.exists(js_path):
                 return
     except (OSError, ValueError):
         pass
-    data = {'generated': time.strftime('%Y-%m-%d %H:%M'), 'items': items}
+    data = {'generated': time.strftime('%Y-%m-%d %H:%M')}
+    if directory:
+        data['directory'] = directory
+    data['items'] = items
     text = json.dumps(data, ensure_ascii=False, indent=1)
-    with open(MANIFEST_JSON, 'w', encoding='utf-8') as f:
+    with open(json_path, 'w', encoding='utf-8') as f:
         f.write(text)
     # manifest.js lets index.html work when opened directly from disk (file://)
     with open(js_path, 'w', encoding='utf-8') as f:
@@ -498,6 +541,12 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser(description='Scan library/ and write manifest.json / manifest.js.')
     ap.add_argument('--keep-dates', action='store_true',
                     help='keep the old added/date of unchanged items (use when building on Vercel)')
+    ap.add_argument('--seo', action='store_true',
+                    help='also build the site to deploy into dist/: SEO tags on every page, article pages, sitemap.xml, robots.txt, '
+                         'no hidden items (see seo.py). Your own files are never changed.')
+    ap.add_argument('--site-url', default='',
+                    help='public address of the site, e.g. https://example.com (else $SITE_URL, else on Vercel the project domain)')
+    ap.add_argument('--out', default='dist', help='folder for --seo (default: dist)')
     args = ap.parse_args()
     found = scan_library(keep_dates=args.keep_dates)
     write_manifest(found)
@@ -506,3 +555,20 @@ if __name__ == '__main__':
         cats[it['category']] = cats.get(it['category'], 0) + 1
     projects = sum(1 for it in found if it.get('project'))
     print(f'manifest.json / manifest.js written: {len(found)} items ({projects} project folders)', cats)
+    if args.seo:
+        import seo
+        base = seo.site_url(args.site_url)
+        r = seo.publish(found, base, ROOT, LIBRARY, _front_matter, write_manifest, args.out)
+        print(f'SEO: site for deployment written to {r["out"]}/ without {r["skipped"]["hidden"]} hidden item(s); '
+              f'tags added to {r["patched"]} HTML page(s); {r["pages"]} Markdown/TXT article page(s) with full text')
+        if base:
+            print(f'SEO: sitemap.xml has {r["urls"]} URLs for {base}; robots.txt written; {r["skipped"]["noindex"]} noindex item(s) kept out of the sitemap')
+            if r['feeds']:
+                print(f'SEO: subscription feeds written: {base}/feed.xml (Atom) and {base}/feed.json (JSON Feed)')
+        else:
+            print('SEO: no site address known, so sitemap.xml / robots.txt / canonical were NOT written: '
+                  'set SITE_URL or pass --site-url https://your-domain')
+        if r['notice']:
+            print('SEO: ' + r['notice'])
+        for problem, ids in r['problems'].items():
+            print(f'SEO: {len(ids)} page(s) with {problem}: ' + ', '.join(ids[:5]) + (' ...' if len(ids) > 5 else ''))

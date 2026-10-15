@@ -22,7 +22,8 @@
     "hidden": true
   },
   "tools/supplychain/index.html": {
-    "hidden": false
+    "hidden": false,
+    "nodirectory": false
   },
   "books/采购与供应链管理-读书笔记.html": {
     "hidden": false
@@ -54,6 +55,8 @@
   },
   "tools/20220119-国金证券-餐饮行业供应链专题分析报告：餐饮供应链专题一，如何看待预制菜在餐饮标准化供应中的应用？ ( etc.) (z-library.sk, 1lib.sk, z-lib.sk).pdf": {
     "title": "20220119-国金证券-餐饮行业供应链专题分析报告",
-    "summary": "20220119-国金证券-餐饮行业供应链专题分析报告：餐饮供应链专题一，如何看待预制菜在餐饮标准化供应中的应用？ ( etc.) (z-library.sk, 1lib.sk, z-lib.sk)"
+    "summary": "20220119-国金证券-餐饮行业供应链专题分析报告：餐饮供应链专题一，如何看待预制菜在餐饮标准化供应中的应用？ ( etc.) (z-library.sk, 1lib.sk, z-lib.sk)",
+    "nodirectory": true,
+    "hidden": true
   }
 }

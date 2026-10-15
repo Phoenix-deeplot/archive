@@ -1,5 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "python3 build_index.py --keep-dates || python build_index.py --keep-dates",
-  "outputDirectory": "."
+  "buildCommand": "python3 build_index.py --keep-dates --seo --site-url https://books.zhitree.cn || python build_index.py --keep-dates --seo --site-url https://books.zhitree.cn",
+  "outputDirectory": "dist",
+  "redirects": [
+    { "source": "/library/:path*", "destination": "/:path*", "statusCode": 301 }
+  ]
 }
