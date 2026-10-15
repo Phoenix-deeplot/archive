@@ -427,6 +427,7 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
       <div class="seg" id="submitTabs" role="group" hidden>
         <button type="button" data-stab="url" aria-pressed="true" data-i="stabUrl">网址</button>
         <button type="button" data-stab="post" aria-pressed="false" data-i="stabPost">写文章</button>
+        <button type="button" data-stab="card" aria-pressed="false" data-i="stabCard">资料卡</button>
       </div>
       <div id="paneUrl">
         <p class="sub-hint" data-i="submitHint"></p>
@@ -448,6 +449,22 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
         <label for="postBody" data-i="postBodyLbl">正文（Markdown）</label>
         <textarea id="postBody" rows="9" spellcheck="false"></textarea>
         <p class="counter" id="postCount"></p>
+      </div>
+      <div id="paneCard" hidden>
+        <p class="sub-hint" data-i="cardHint"></p>
+        <label for="cardPick" data-i="cardPick">从我的书架里选一项（书、PDF、网页工具……）</label>
+        <select id="cardPick"></select>
+        <label for="cardTitle" data-i="postTitleLbl">标题</label>
+        <input type="text" id="cardTitle" maxlength="120" autocomplete="off">
+        <label for="cardAuthor" data-i="cardAuthorLbl">作者（可选）</label>
+        <input type="text" id="cardAuthor" maxlength="40" autocomplete="off">
+        <label for="cardTags" data-i="postTagsLbl">标签（可选，逗号分隔，最多 5 个）</label>
+        <input type="text" id="cardTags" autocomplete="off">
+        <label for="cardSummary" data-i="cardSummaryLbl">摘要（一两句话，说说它讲什么）</label>
+        <textarea id="cardSummary" rows="4" spellcheck="false"></textarea>
+        <p class="counter" id="cardCount"></p>
+        <label for="cardUrl" data-i="cardUrlLbl">网址（可选：它在网上有地址的话）</label>
+        <input type="text" id="cardUrl" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://">
       </div>
       <div class="check-card" id="submitCheck" hidden></div>
       <input type="text" id="submitHp" class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -553,7 +570,7 @@ const I18N = {
     spaceMine:'我的书架', spaceDir:'公共目录', dirTitle:'公共目录', dirShelves:'书架', tagsLabel:'标签', dirLoading:'正在读取公共目录…',
     dirError:'读取公共目录失败', dirRetry:'重试', dirSub:(n,s,d)=>`共 ${n} 条，来自 ${s} 个书架${d?`，更新于 ${d}`:''}`,
     dirEmpty:'<h2>目录里还没有内容</h2><p>还没有收录任何书架。点右上角“收录”提交第一个。</p>',
-    ty_article:'文章', ty_note:'笔记', ty_video:'视频', ty_audio:'音频', ty_pdf:'PDF', ty_tool:'工具',
+    ty_article:'文章', ty_note:'笔记', ty_video:'视频', ty_audio:'音频', ty_pdf:'PDF', ty_tool:'工具', ty_book:'书籍资料卡',
     srcDir:(h,d)=>`公共目录数据来自 <b>${h}</b>${d?`，更新于 ${d}`:''}。只记标题、摘要和链接，点击都会去原站`,
     saveToShelf:'收藏到我的书架', savedTip:'已收藏，点击取消', savedToast:t=>`已把《${t}》收藏到“我的书架”（只保存在这个浏览器里）`, unsavedToast:t=>`已取消收藏《${t}》`,
     badgeLink:'收藏的链接', openOriginal:'打开原文', showMore:'显示更多', clearTag:'取消筛选', moreTags:n=>`展开其余 ${n} 个`, visitSite:'访问原站',
@@ -564,15 +581,18 @@ const I18N = {
     kind_gist:'识别为：Gist 文章', kind_video:'识别为：单个视频', kind_pdf:'识别为：PDF 文件', kind_md:'识别为：Markdown / 文本文档',
     kind_site:'识别为：网站或网页。有订阅源就收录整个网站（每天更新），否则只收录这一页', kind_bad:'这不是有效的网址', kind_ghUser:'请贴具体的仓库网址（github.com/用户/仓库），不是用户主页', kind_ghOther:'这个 GitHub 网址不是仓库、文件夹或文件',
     gistTitle:'没有地方发文章？', gistSteps:['打开 gist.github.com（没有账号先免费注册一个）','新建一个 Gist：文件名以 .md 结尾，把文章粘贴进去','点 Create public gist，复制地址栏里的网址，贴到上面'],
-    stabUrl:'网址', stabPost:'写文章',
+    stabUrl:'网址', stabPost:'写文章', stabCard:'资料卡',
+    cardHint:'没有网址、也没法托管的东西（一本书、一个 PDF 或 HTML 文件、一个网页工具），可以只公开一张资料卡：标题、作者、摘要。不含文件本身，也不含链接（它在网上有地址的话可以附上）。审核通过后出现在公共目录里，查重看标题、作者和摘要。',
+    cardPick:'从我的书架里选一项（书、PDF、网页工具……）', cardPickNone:'— 不选，自己填 —', cardAuthorLbl:'作者（可选）', cardSummaryLbl:'摘要（一两句话，说说它讲什么）', cardUrlLbl:'网址（可选：它在网上有地址的话）',
+    cardCount:(n,m)=>`${n} / ${m} 字（至少 10 字）`, cardRights:'我有权公开这些信息（标题、作者、摘要）', chkSummary:'摘要', chkAddress:'网址',
     postHint:'把一篇 Markdown 文章交给目录托管：审核通过后出现在目录里，署你填的作者名，公开可见。图片不会显示（只保留链接），之后可以随时要求下架。不需要 GitHub 账号。提交后会先成为目录仓库里的一个公开 issue，审核前所有人可见。',
     postPick:'从我的书架里选一篇（Markdown / TXT）', postPickNone:'— 不选，自己写 —', postTitleLbl:'标题', postAuthorLbl:'作者（可选，可以用笔名）',
     postTagsLbl:'标签（可选，逗号分隔，最多 5 个）', postBodyLbl:'正文（Markdown）', postCount:(n,m)=>`${n} / ${m} 字符`,
     postRights:'我是作者，同意把这篇文章公开发布在目录里（可随时要求下架）', submitSend:'提交', submitDone:'已提交，审核通过后会出现在目录里。',
     submitNet:'连不上提交服务，请稍后再试。', skippedDup:'没有添加（内容重复）', publishTip:'公开到公共空间（提交给站长审核）', publishAgain:'已提交过，点击可再次提交',
     publishDone:'已经在公共目录里了，不需要再提交',
-    publishNoUrl:'这个文件只在你自己的电脑或浏览器里，没有网址，而公共目录只能托管 Markdown / TXT 文章。可以：① 把内容另存成 Markdown 或 TXT 再添加，然后点它卡片上的地球图标；② 把文件放到你自己的网站上，把它的网址贴在下面收录。',
-    publishNoUrlTool:'这是一个只在你自己电脑上的网页工具（文件夹），没有网址，公共目录也托管不了它。把它部署到你自己的网站上，再把网址贴在下面收录。', badgeAsked:'已提交，等待审核',
+    badgeAsked:'已提交，等待审核',
+    kind_reader: s=>`这是你书架里《${s}》在阅读器里的地址，别人打不开，不是公开网址。点“检查”会改为直接申请这一本。`, kind_readerGone:'这是阅读器里的地址，别人打不开，不是公开网址；而且这一项已经不在你的书架里了。请用书架里卡片上的地球图标申请。',
     kindListed: s=>`公共目录里已经有这个网址了（${s}），不需要再提交`, checkSlow:'这个网站响应太慢，检查没有完成。稍后再点“检查”试一次。', checkBtn:'检查', checking:'正在检查…', chkOk:'检查结果如下。确认无误后勾选下面的声明并提交，站长审核通过后才会出现在目录里。',
     chkKind:'识别为', chkName:'名称', chkSource:'来源', chkFound:'找到', chkLang:'语言', chkTags:'标签', chkLicense:'许可', chkAbout:'简介', chkTitle:'标题', chkAuthor:'作者',
     chkChars:'长度', chkLinks:'链接', chkExcerpt:'开头', chkLatest:'最新几条', chkFoundN:n=>`${n} 条`, chkCharsN:n=>`${n} 个字符`, chkLinksN:(n,d)=>`${n} 个${d?`：${d}`:''}`, publishNoApi:'这个目录还没有开通在线投稿。',
@@ -633,7 +653,7 @@ const I18N = {
     spaceMine:'My shelf', spaceDir:'Public directory', dirTitle:'Public directory', dirShelves:'Shelves', tagsLabel:'Tags', dirLoading:'Loading the public directory…',
     dirError:'Could not load the public directory', dirRetry:'Retry', dirSub:(n,s,d)=>`${n} ${n===1?'entry':'entries'} from ${s} ${s===1?'shelf':'shelves'}${d?`, updated ${d}`:''}`,
     dirEmpty:'<h2>The directory is empty</h2><p>No shelf has been listed yet. Use “Submit” at the top right to add the first one.</p>',
-    ty_article:'Articles', ty_note:'Notes', ty_video:'Videos', ty_audio:'Audio', ty_pdf:'PDF', ty_tool:'Tools',
+    ty_article:'Articles', ty_note:'Notes', ty_video:'Videos', ty_audio:'Audio', ty_pdf:'PDF', ty_tool:'Tools', ty_book:'Book cards',
     srcDir:(h,d)=>`Directory data from <b>${h}</b>${d?`, updated ${d}`:''}. Only titles, summaries and links are kept; clicking goes to the original site`,
     saveToShelf:'Save to my shelf', savedTip:'Saved; click to remove', savedToast:t=>`Saved “${t}” to My shelf (kept in this browser only)`, unsavedToast:t=>`Removed “${t}” from your saved links`,
     badgeLink:'Saved link', openOriginal:'Open the original', showMore:'Show more', clearTag:'Clear this filter', moreTags:n=>`Show ${n} more`, visitSite:'Visit the site',
@@ -644,15 +664,18 @@ const I18N = {
     kind_gist:'Recognised: a gist', kind_video:'Recognised: a single video', kind_pdf:'Recognised: a PDF file', kind_md:'Recognised: a Markdown / text document',
     kind_site:'Recognised: a site or page. With a feed the whole site is listed (refreshed daily); otherwise just this page', kind_bad:'This is not a valid address', kind_ghUser:'Give a repository address (github.com/user/repo), not a profile', kind_ghOther:'This GitHub address is not a repository, folder or file',
     gistTitle:'Nowhere to publish your writing?', gistSteps:['Open gist.github.com (sign up for free if you have no account)','Create a gist: a file name ending in .md, and paste the article in','Click Create public gist, copy the address from the address bar and paste it above'],
-    stabUrl:'Address', stabPost:'Write a post',
+    stabUrl:'Address', stabPost:'Write a post', stabCard:'Catalogue card',
+    cardHint:'For something that has no address and cannot be hosted (a book, a PDF or HTML file, a web tool) you can publish just a catalogue card: title, author, summary. It has no file and no link (add an address if it has one online). It appears in the public directory once approved; the check looks at title, author and summary.',
+    cardPick:'Pick one from my shelf (a book, a PDF, a web tool…)', cardPickNone:'— none, I will fill it in —', cardAuthorLbl:'Author (optional)', cardSummaryLbl:'Summary (a sentence or two on what it is about)', cardUrlLbl:'Address (optional: if it has one online)',
+    cardCount:(n,m)=>`${n} / ${m} characters (at least 10)`, cardRights:'I have the right to publish this information (title, author, summary)', chkSummary:'Summary', chkAddress:'Address',
     postHint:'Hand in a Markdown article to be hosted by the directory: once approved it appears in the directory under the author name you give, publicly. Pictures are not shown (only a link is kept) and you can ask for removal at any time. No GitHub account needed. Once sent it is first a public issue in the directory repository, visible to everyone until it is decided.',
     postPick:'Pick one from my shelf (Markdown / TXT)', postPickNone:'— none, I will write it —', postTitleLbl:'Title', postAuthorLbl:'Author (optional, a pen name is fine)',
     postTagsLbl:'Tags (optional, comma separated, at most 5)', postBodyLbl:'Text (Markdown)', postCount:(n,m)=>`${n} / ${m} characters`,
     postRights:'I am the author and agree to publish this text in the directory (I can ask for removal at any time)', submitSend:'Submit', submitDone:'Submitted. It appears in the directory once approved.',
     submitNet:'Could not reach the submission service; try again later.', skippedDup:'Nothing added (duplicates)', publishTip:'Publish to the public space (sent to the maintainer for review)', publishAgain:'Already sent; click to send again',
     publishDone:'Already in the public directory; there is no need to submit it again',
-    publishNoUrl:'This file only exists on your own computer or in your browser, so it has no address, and the public directory can only host Markdown / TXT articles. You can: 1) save the content as Markdown or TXT, add that, and use the globe on its card; or 2) put the file on your own website and paste its address below.',
-    publishNoUrlTool:'This is a web tool (a folder) that only exists on your own computer: it has no address and the directory cannot host it. Deploy it to your own website and paste its address below.', badgeAsked:'Sent, waiting for review',
+    badgeAsked:'Sent, waiting for review',
+    kind_reader: s=>`This is the reader address of “${s}” on your shelf: nobody else can open it, it is not a public address. “Check” will ask for that item itself instead.`, kind_readerGone:'This is a reader address, not a public one, and the item is no longer on your shelf. Use the globe on its card instead.',
     kindListed: s=>`The public directory has this address already (${s}); there is no need to submit it again`, checkSlow:'This site answers too slowly, so the check did not finish. Try “Check” again a little later.', checkBtn:'Check', checking:'Checking…', chkOk:'This is what the check found. If it is right, tick the declaration below and submit; it appears in the directory once the maintainer approves.',
     chkKind:'Recognised as', chkName:'Name', chkSource:'Source', chkFound:'Found', chkLang:'Language', chkTags:'Tags', chkLicense:'License', chkAbout:'About', chkTitle:'Title', chkAuthor:'Author',
     chkChars:'Length', chkLinks:'Links', chkExcerpt:'Beginning', chkLatest:'Latest', chkFoundN:n=>`${n}`, chkCharsN:n=>`${n} characters`, chkLinksN:(n,d)=>`${n}${d?`: ${d}`:''}`, publishNoApi:'This directory does not take online submissions yet.',
@@ -1498,8 +1521,8 @@ function pickTag(name){
    Read-only data from a shelf-directory repo (directory.json, written by its aggregate.py). Everything in it comes from other
    people's sites, so it is only ever shown as escaped text, as http(s) links with rel="nofollow ugc", or as https pictures
    loaded without a referrer. "Save to my shelf" keeps a link in this browser's own storage; nothing is sent anywhere. */
-const DIR_TYPES=['article','note','video','audio','pdf','tool'], DIR_PAGE=60, DIR_SHELVES=12;
-const TYPE_COLOR={article:'notes',note:'notes',video:'featured',audio:'featured',pdf:'books',tool:'tools'};
+const DIR_TYPES=['article','note','video','audio','pdf','tool','book'], DIR_PAGE=60, DIR_SHELVES=12;
+const TYPE_COLOR={article:'notes',note:'notes',video:'featured',audio:'featured',pdf:'books',tool:'tools',book:'books'};
 const dirOn = () => state.space==='dir' && !!state.dirCfg;
 const dirBase = () => httpUrl(state.dirData && state.dirData.base) || state.dirCfg;
 async function loadDirectory(force){
@@ -1605,7 +1628,7 @@ async function toggleSaveLink(did){
 /* What a card's globe sends to the maintainer, by what the item is:
    'url'  the item has an address of its own on the internet (a page of a deployed site, a saved link): that address is checked and submitted like one typed in;
    'post' a Markdown / TXT article that only exists in my space (this browser, a folder, serve.py): its text, hosted by the directory once approved;
-   'info' any other personal file (HTML, PDF, a tool folder): no address and nothing the directory can host, the dialog says what can be done instead;
+   'card' any other personal file (a book, HTML, PDF, a tool folder): no address and nothing the directory can host, so a catalogue card: title, author, summary, tags;
    ''     nothing to offer (no submission service, or not mine). */
 function publishAddress(it){
   const u = it.type==='link' ? httpUrl(it.url) : it.source==='static' ? directHref(it) : '';
@@ -1616,7 +1639,7 @@ function publishKind(it){
   if(!state.dirCfg || !submitApi()) return '';
   if(publishAddress(it)) return 'url';
   if(!(it.source==='local' || it.source==='folder' || it.source==='server')) return '';
-  return it.type==='md' || it.type==='txt' ? 'post' : 'info';
+  return it.type==='md' || it.type==='txt' ? 'post' : 'card';
 }
 async function publishItem(id){
   const it=state.items.find(x=>x.id===id); if(!it) return;
@@ -1625,7 +1648,7 @@ async function publishItem(id){
   const kind=publishKind(it);
   if(kind==='post') openSubmit({tab:'post', item:it});
   else if(kind==='url') openSubmit({tab:'url', item:it, url:publishAddress(it)});
-  else if(kind==='info') openSubmit({tab:'url', item:it, note:t(it.project?'publishNoUrlTool':'publishNoUrl')});
+  else if(kind==='card') openSubmit({tab:'card', item:it});
 }
 function setSpace(s){
   if(s==='dir' && !state.dirCfg) return;
@@ -1699,6 +1722,10 @@ function classifyUrl(raw){
   if(!/^[a-z][a-z0-9+.-]*:\/\//i.test(s)) s='https://'+s;
   let u; try{ u=new URL(s); }catch(e){ return {key:'bad'}; }
   if(!/^https?:$/.test(u.protocol) || !/^[\w.-]+\.[a-z]{2,}$/i.test(u.hostname) && !/^\[|^\d+\.\d+\.\d+\.\d+$/.test(u.hostname)) return {key:'bad'};
+  if(/^#read\//.test(u.hash)){                                       // the address bar of this page's own reader: not a public address, it is one of my items
+    let id=u.hash.slice(6); try{ id=decodeURIComponent(id); }catch(e){}
+    return {key:'reader', id};
+  }
   u.hash=''; const h=u.hostname.toLowerCase().replace(/^www\./,''), seg=u.pathname.split('/').filter(Boolean), url=u.href, k=key=>({key,url});
   if(h==='github.com'){
     if(seg.length<2) return k('ghUser');
@@ -1717,7 +1744,7 @@ const BAD_KINDS=['bad','ghUser','ghOther'];
 /* Is this address in the public directory already? Answered from the directory the page has loaded, before anything is sent: the same spelling rules as the
    aggregator (urlKey), a repository or a folder under a listed repository counts too. The service and the Action check again; this only saves the visitor's time. */
 function listedShelf(c){
-  const d=state.dirData; if(!d || !c || BAD_KINDS.includes(c.key)) return '';
+  const d=state.dirData; if(!d || !c || c.key==='reader' || BAD_KINDS.includes(c.key)) return '';
   const key=urlKey(c.url), nameOf=s=>(s&&(s.name||s.id))||'';
   const gh=u=>{ try{ const x=new URL(u); if(x.hostname.replace(/^www\./,'')!=='github.com') return null; const s=x.pathname.split('/').filter(Boolean); return s.length>=2 ? {o:s[0].toLowerCase(), r:s[1].toLowerCase().replace(/\.git$/,''), path:(s[2]==='tree'||s[2]==='blob') ? s.slice(4).join('/').toLowerCase() : ''} : null; }catch(e){ return null; } };
   const want=(c.key==='repo'||c.key==='folder') ? gh(c.url) : null;
@@ -1735,6 +1762,8 @@ function submitApi(){ const a=String((state.dirData&&state.dirData.submit_api)||
 const submitRepo = () => state.dirData && /^[\w.-]+\/[\w.-]+$/.test(state.dirData.repo||'') ? state.dirData.repo : '';
 let submitTab='url';
 function postData(){ return {title:$('#postTitle').value.trim(), author:$('#postAuthor').value.trim(), tags:$('#postTags').value, body:$('#postBody').value}; }
+function cardData(){ return {title:$('#cardTitle').value.trim(), author:$('#cardAuthor').value.trim(), tags:$('#cardTags').value, summary:$('#cardSummary').value.replace(/\s+/g,' ').trim(), url:$('#cardUrl').value.trim()}; }
+const CARD_MIN=10, CARD_MAX=1000;
 const plainLen = md => String(md).replace(/```[\s\S]*?```/g,' ').replace(/!\[[^\]]*\]\([^)]*\)/g,' ').replace(/\[([^\]]*)\]\([^)]*\)/g,'$1').replace(/[#>*_`~|\-]+/g,'').replace(/\s+/g,' ').trim().length;
 function setResult(msg, kind){ const r=$('#submitResult'); r.textContent=msg||''; r.className='result-line'+(kind?' '+kind:''); }
 /* Two steps: "check" (the service reads the address / the text and says what will become of it: nothing is created), then "submit" after the declaration.
@@ -1745,6 +1774,8 @@ function renderCheck(r){
   const box=$('#submitCheck'), zh=state.lang==='zh', row=(k,v)=>v?`<tr><th>${esc(t(k))}</th><td>${esc(v)}</td></tr>`:'';
   const rows = r.what==='post'
     ? row('chkTitle',r.title)+row('chkAuthor',r.author||'—')+row('chkChars',t('chkCharsN',r.chars))+row('chkLinks',t('chkLinksN',r.links,(r.domains||[]).join(', ')))+row('chkTags',(r.tags||[]).join(', '))+row('chkExcerpt',r.excerpt)
+    : r.what==='record'
+    ? row('chkTitle',r.title)+row('chkAuthor',r.author||'—')+row('chkTags',(r.tags||[]).join(', '))+row('chkSummary',r.summary)+row('chkAddress',r.url||'—')
     : row('chkKind',zh?r.kind_zh:r.kind_en)+row('chkName',r.name)+row('chkSource',r.source)+row('chkFound',t('chkFoundN',r.found))+row('chkLang',r.lang)+row('chkTags',(r.tags||[]).join(', '))+row('chkLicense',r.license)+row('chkAbout',r.description);
   const latest=(r.latest||[]).map(i=>`<li>${esc(i.title)}${i.date?` <span class="muted">${esc(i.date)}</span>`:''}</li>`).join('');
   const warn=(r.warnings||[]).map(w=>`<p class="warn">⚠️ ${esc(zh?w[0]:w[1])}</p>`).join('');
@@ -1753,8 +1784,14 @@ function renderCheck(r){
 }
 const msgOf = (d,r) => (d && (state.lang==='zh' ? d.message : d.message_en || d.message)) || (t('saveFail')+(r&&r.status||''));
 async function runCheck(){
-  const api=submitApi(), post=submitTab==='post'; if(!api) return;
-  const payload = post ? {kind:'check', what:'post', ...postData(), website:$('#submitHp').value} : {kind:'check', what:'url', url:classifyUrl($('#submitUrl').value).url, website:$('#submitHp').value};
+  const api=submitApi(), post=submitTab==='post', card=submitTab==='card'; if(!api) return;
+  const own=submitTab==='url' && classifyUrl($('#submitUrl').value);
+  if(own && own.key==='reader'){                                       // the reader's address of one of my items: ask for that item itself (its text, or its own address)
+    const it=state.items.find(x=>x.id===own.id); if(it){ submitDlg.close(); publishItem(it.id); }
+    return;
+  }
+  const hp=$('#submitHp').value;
+  const payload = post ? {kind:'check', what:'post', ...postData(), website:hp} : card ? {kind:'check', what:'record', ...cardData(), website:hp} : {kind:'check', what:'url', url:classifyUrl($('#submitUrl').value).url, website:hp};
   $('#submitGo').disabled=true; setResult(t('checking'));
   const ctl=new AbortController(), timer=setTimeout(()=>ctl.abort(),28000);                  // the service gives up reading after 20 s; a slower answer is not coming
   try{
@@ -1766,27 +1803,32 @@ async function runCheck(){
   updateSubmit();
 }
 function updateSubmit(){
-  const api=submitApi(), post=submitTab==='post', ticked=$('#submitRights').checked, checked=!!submitCheck;
+  const api=submitApi(), post=submitTab==='post', card=submitTab==='card', ticked=$('#submitRights').checked, checked=!!submitCheck;
   $('#rightsRow').hidden = api && !checked;                              // with the service the declaration comes after the result
-  $('#submitRightsText').textContent=t(post?'postRights':'submitRights');
+  $('#submitRightsText').textContent=t(post?'postRights':card?'cardRights':'submitRights');
   $('#submitGo').textContent = api ? t(checked?'submitSend':'checkBtn') : t('submitGo');
-  $('#submitTitle').textContent=t(post?'stabPost':'submitTitle');
+  $('#submitTitle').textContent=t(post?'stabPost':card?'stabCard':'submitTitle');
   let valid=false;
-  if(post){
+  if(card){
+    const d=cardData(), n=d.summary.length, c=d.url ? classifyUrl(d.url) : null;
+    $('#cardCount').textContent=t('cardCount',n,CARD_MAX); $('#cardCount').className='counter'+(n>CARD_MAX||(n>0&&n<CARD_MIN)?' bad':'');
+    valid = !!api && d.title.length>0 && n>=CARD_MIN && n<=CARD_MAX && (!d.url || !!(c && !BAD_KINDS.includes(c.key) && c.key!=='reader'));
+  } else if(post){
     const d=postData(), n=d.body.length, plain=plainLen(d.body);
     $('#postCount').textContent=t('postCount',n,POST_MAX); $('#postCount').className='counter'+(n>POST_MAX||(n>0&&plain<POST_MIN)?' bad':'');
     valid = !!api && d.title.length>0 && plain>=POST_MIN && n<=POST_MAX;
   } else {
-    const c=classifyUrl($('#submitUrl').value), k=$('#submitKind'), have=listedShelf(c);
-    k.textContent = have ? t('kindListed',have) : c ? t('kind_'+c.key) : ''; k.className = 'kind-line' + ((c && BAD_KINDS.includes(c.key)) || have ? ' bad' : '');
-    valid = !!(c && !BAD_KINDS.includes(c.key) && !have && (api || submitRepo()));
+    const c=classifyUrl($('#submitUrl').value), k=$('#submitKind'), have=listedShelf(c), mine=c && c.key==='reader' ? state.items.find(x=>x.id===c.id) : null;
+    k.textContent = c && c.key==='reader' ? t(mine?'kind_reader':'kind_readerGone',mine&&mine.title) : have ? t('kindListed',have) : c ? t('kind_'+c.key) : '';
+    k.className = 'kind-line' + ((c && BAD_KINDS.includes(c.key)) || have || (c && c.key==='reader' && !mine) ? ' bad' : '');
+    valid = c && c.key==='reader' ? !!(api && mine) : !!(c && !BAD_KINDS.includes(c.key) && !have && (api || submitRepo()));
   }
   $('#submitGo').disabled = !valid || ((api ? checked : true) && !ticked);
 }
 function setSubmitTab(tab){
-  submitTab = tab==='post' && submitApi() ? 'post' : 'url';
+  submitTab = (tab==='post' || tab==='card') && submitApi() ? tab : 'url';
   document.querySelectorAll('[data-stab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.stab===submitTab)));
-  $('#paneUrl').hidden=submitTab!=='url'; $('#panePost').hidden=submitTab!=='post'; setResult(''); resetCheck();
+  $('#paneUrl').hidden=submitTab!=='url'; $('#panePost').hidden=submitTab!=='post'; $('#paneCard').hidden=submitTab!=='card'; setResult(''); resetCheck();
   const w=$('#submitWarn'); w.hidden=false; w.textContent = submitApi() ? '' : t(submitRepo()?'submitNeedGh':'submitNoRepo'); w.hidden=!w.textContent;
   updateSubmit();
 }
@@ -1800,29 +1842,38 @@ async function fillPostFrom(it){
   }catch(e){ setResult(t('openFail')+e.message,'bad'); }
   updateSubmit();
 }
+/* a catalogue card for something that has no address and cannot be hosted (a book, a PDF, a web tool): its title, tags and summary come from the card, the author is typed */
+function shelfCards(){ return state.items.filter(it=>!isHidden(it) && it.type!=='md' && it.type!=='txt' && it.type!=='link' && (it.source==='local'||it.source==='folder'||it.source==='server')); }
+function fillCardFrom(it){
+  $('#cardTitle').value=it.title||''; $('#cardSummary').value=String(it.summary||'').replace(/\s+/g,' ').trim();
+  if(!$('#cardTags').value) $('#cardTags').value=(it.keywords||[]).slice(0,5).join(', ');
+  resetCheck(); setResult(''); updateSubmit();
+}
 function openSubmit(opts){
   opts=opts||{}; submitFrom=opts.item||null;
   $('#submitUrl').value=''; $('#submitRights').checked=false; $('#submitHp').value='';
-  ['#postTitle','#postAuthor','#postTags','#postBody'].forEach(s=>{ $(s).value=''; });
+  ['#postTitle','#postAuthor','#postTags','#postBody','#cardTitle','#cardAuthor','#cardTags','#cardSummary','#cardUrl'].forEach(s=>{ $(s).value=''; });
   $('#gistSteps').innerHTML=t('gistSteps').map(x=>`<li>${esc(x)}</li>`).join('');
-  const posts=shelfPosts(), pick=$('#postPick');
+  const posts=shelfPosts(), pick=$('#postPick'), cards=shelfCards(), cpick=$('#cardPick');
   pick.innerHTML=`<option value="">${esc(t('postPickNone'))}</option>`+posts.map(it=>`<option value="${esc(it.id)}">${esc(it.title)}</option>`).join('');
+  cpick.innerHTML=`<option value="">${esc(t('cardPickNone'))}</option>`+cards.map(it=>`<option value="${esc(it.id)}">${esc(it.title)}</option>`).join('');
   $('#submitTabs').hidden=!submitApi();
   setSubmitTab(opts.tab||'url');
-  submitDlg.showModal(); ($('#submitTabs').hidden || submitTab==='url' ? $('#submitUrl') : $('#postTitle')).focus();
+  submitDlg.showModal(); ($('#submitTabs').hidden || submitTab==='url' ? $('#submitUrl') : submitTab==='card' ? $('#cardTitle') : $('#postTitle')).focus();
   if(opts.url){ $('#submitUrl').value=opts.url; updateSubmit(); if(!$('#submitGo').disabled) runCheck(); }                // a card with an address of its own: that address, checked at once
   else if(opts.item && submitTab==='post'){ pick.value=opts.item.id; fillPostFrom(opts.item).then(()=>{ if(submitApi() && !$('#submitGo').disabled) runCheck(); }); }       // a card with an article: filled in and checked at once
-  if(opts.note){ const w=$('#submitWarn'); w.textContent=opts.note; w.hidden=false; }                                          // a card with nothing to send: why, and what to do instead
+  else if(opts.item && submitTab==='card'){ cpick.value=opts.item.id; fillCardFrom(opts.item); if(submitApi() && !$('#submitGo').disabled) runCheck(); }          // a card with a book or a file: its details, checked at once when they are enough
 }
 async function sendSubmit(){
-  const api=submitApi(), post=submitTab==='post';
+  const api=submitApi(), post=submitTab==='post', card=submitTab==='card';
   if(api && !submitCheck) return runCheck();
   if(!api){                                                          // no service: GitHub's own form (an address only)
     const c=classifyUrl($('#submitUrl').value), repo=submitRepo(); if(!c || !repo || BAD_KINDS.includes(c.key)) return;
     const u=new URL(c.url), q=new URLSearchParams({template:'submit.yml', title:('[收录] '+hostOf(c.url)+(u.pathname==='/'?'':u.pathname)).slice(0,80), url:c.url, rights:RIGHTS_OPTION});
     window.open(`https://github.com/${repo}/issues/new?${q}`,'_blank','noopener'); submitDlg.close(); return;
   }
-  const payload = post ? {kind:'post', ...postData(), rights:true, website:$('#submitHp').value} : {kind:'url', url:classifyUrl($('#submitUrl').value).url, rights:true, website:$('#submitHp').value};
+  const hp=$('#submitHp').value;
+  const payload = post ? {kind:'post', ...postData(), rights:true, website:hp} : card ? {kind:'record', ...cardData(), rights:true, website:hp} : {kind:'url', url:classifyUrl($('#submitUrl').value).url, rights:true, website:hp};
   $('#submitGo').disabled=true; setResult('…');
   try{
     const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
@@ -1835,7 +1886,8 @@ async function sendSubmit(){
   }catch(e){ setResult(t('submitNet'),'bad'); }
   updateSubmit();
 }
-['#submitUrl','#postTitle','#postAuthor','#postTags','#postBody'].forEach(s=>$(s).addEventListener('input',()=>{ setResult(''); resetCheck(); updateSubmit(); }));
+['#submitUrl','#postTitle','#postAuthor','#postTags','#postBody','#cardTitle','#cardAuthor','#cardTags','#cardSummary','#cardUrl'].forEach(s=>$(s).addEventListener('input',()=>{ setResult(''); resetCheck(); updateSubmit(); }));
+$('#cardPick').addEventListener('change',e=>{ const it=state.items.find(x=>x.id===e.target.value); if(it){ submitFrom=it; fillCardFrom(it); } });
 $('#submitRights').addEventListener('change',updateSubmit);
 $('#submitCancel').addEventListener('click',()=>submitDlg.close()); $('#submitGo').addEventListener('click',sendSubmit);
 $('#submitUrl').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); if(!$('#submitGo').disabled) sendSubmit(); } });

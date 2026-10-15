@@ -622,7 +622,7 @@ def _fill_site(text, cfg):
 
 
 # ======================================================================= the published copy
-SKIP_ROOT_FILES = {'serve.py', 'build_index.py', 'seo.py', 'README.md', 'vercel.json', 'manifest.json', 'manifest.js', 'site.json'}
+SKIP_ROOT_FILES = {'serve.py', 'build_index.py', 'seo.py', 'README.md', 'PROMO.md', 'vercel.json', 'manifest.json', 'manifest.js', 'site.json'}
 SKIP_DIRS = {'__pycache__', 'node_modules'}
 
 
