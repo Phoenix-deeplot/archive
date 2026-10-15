@@ -296,6 +296,33 @@ def _quote(path):
     return urllib.parse.quote(path, safe='/')
 
 
+def check_sitemap(rows, base, out):
+    """What Google Search Console would object to in the sitemap, found before the deploy: every address must be the site's own, ASCII only (anything else
+    percent-encoded: Chinese names are fine that way), unique, short enough, and an existing page of the folder that is about to be deployed. -> list of problems."""
+    problems, seen = [], set()
+    site = urllib.parse.urlsplit(base)
+    for loc, day in rows:
+        p, shown = urllib.parse.urlsplit(loc), (loc if len(loc) <= 100 else loc[:97] + '...')
+        if (p.scheme, p.netloc) != (site.scheme, site.netloc):
+            problems.append('not an address of this site: ' + shown)
+        if not re.fullmatch(r"(?:[A-Za-z0-9\-._~!$&'()*+,;=:@/]|%[0-9A-Fa-f]{2})*", p.path):
+            problems.append('has characters that are not percent-encoded: ' + shown)
+        if len(loc) > 2048:
+            problems.append('longer than 2048 characters: ' + shown)
+        if loc in seen:
+            problems.append('listed twice: ' + shown)
+        seen.add(loc)
+        if day and not DAY.match(day):
+            problems.append('last-modified date is not YYYY-MM-DD: ' + shown)
+        rel = urllib.parse.unquote(p.path).lstrip('/')
+        target = os.path.join(out, *rel.split('/')) if rel else out
+        if not rel or rel.endswith('/'):
+            target = os.path.join(target, 'index.html')
+        if not os.path.isfile(target):
+            problems.append('there is no such page in %s/: %s' % (os.path.basename(out), shown))
+    return problems
+
+
 LEGAL_PAGES = ('about.html', 'privacy.html', 'terms.html')      # hand-written files in the project root
 LEGAL_KIND = {'about.html': 'about', 'privacy.html': 'page', 'terms.html': 'page'}
 LEGAL_LINKS = '<a href="/about.html">关于本站</a> · <a href="/privacy.html">隐私政策</a> · <a href="/terms.html">使用条款</a>'
@@ -799,7 +826,7 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
     write_manifest(published, out)
 
     # --- sitemap.xml + robots.txt (a hand-written one at the project root is kept as it is)
-    notice = ''
+    notice, sitemap_problems = '', []
     entries = [it for it in listed if it.get('type') in ('html', 'pdf') or it['id'] in pages]
     if base:
         dates = [i['date'] for i in entries if DAY.match(i.get('date') or '')]
@@ -818,6 +845,7 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
                 notice += ('; ' if notice else '') + '%s at the project root is yours, so it is published as it is' % name
             else:
                 _write_if_changed(os.path.join(out, name), text)
+        sitemap_problems = check_sitemap(rows, base, out)
     if base and not make_feeds:
         notice += ('; ' if notice else '') + 'feed.xml / feed.json at the project root are yours, so no feed was generated'
     if make_feeds:
@@ -854,4 +882,4 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
         _write_if_changed(index_path, _inject(_inject(index, 'head', '\n'.join(head)), 'body', '\n'.join(body)))
 
     return {'urls': len(entries) + 1 + len(legal) if base else 0, 'pages': len(pages), 'patched': patched, 'skipped': skipped,
-            'problems': problems, 'notice': notice, 'out': out_name, 'legal': len(legal), 'feeds': make_feeds, 'owner': bool(owner), 'contact': bool(str(cfg.get('contact') or '').strip())}
+            'problems': problems, 'sitemap_problems': sitemap_problems, 'notice': notice, 'out': out_name, 'legal': len(legal), 'feeds': make_feeds, 'owner': bool(owner), 'contact': bool(str(cfg.get('contact') or '').strip())}

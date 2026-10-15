@@ -191,6 +191,7 @@ details.how ol{margin:6px 0 0;padding-left:1.3em}
 .card-foot .icon{width:20px;height:20px;stroke-width:2}
 .ibtn[aria-pressed="true"]{color:var(--c-featured);opacity:1}
 .ibtn[aria-pressed="true"] .icon{fill:currentColor}
+.card-foot .ibtn.is-done{color:var(--accent);opacity:1}                  /* the globe of what is in the public directory already: same place, green, says so when pressed */
 
 .grid.list{grid-template-columns:minmax(0,1fr);gap:12px}
 .grid.list .card{flex-direction:row}
@@ -568,8 +569,11 @@ const I18N = {
     postPick:'从我的书架里选一篇（Markdown / TXT）', postPickNone:'— 不选，自己写 —', postTitleLbl:'标题', postAuthorLbl:'作者（可选，可以用笔名）',
     postTagsLbl:'标签（可选，逗号分隔，最多 5 个）', postBodyLbl:'正文（Markdown）', postCount:(n,m)=>`${n} / ${m} 字符`,
     postRights:'我是作者，同意把这篇文章公开发布在目录里（可随时要求下架）', submitSend:'提交', submitDone:'已提交，审核通过后会出现在目录里。',
-    submitNet:'连不上提交服务，请稍后再试。', skippedDup:'没有添加（内容重复）', publishTip:'公开到公共空间（提交给站长审核）', publishAgain:'已提交过，点击可再次提交', badgeAsked:'已提交，等待审核',
-    kindListed: s=>`公共目录里已经有这个网址了（${s}），不需要再提交`, checkBtn:'检查', checking:'正在检查…', chkOk:'检查结果如下。确认无误后勾选下面的声明并提交，站长审核通过后才会出现在目录里。',
+    submitNet:'连不上提交服务，请稍后再试。', skippedDup:'没有添加（内容重复）', publishTip:'公开到公共空间（提交给站长审核）', publishAgain:'已提交过，点击可再次提交',
+    publishDone:'已经在公共目录里了，不需要再提交',
+    publishNoUrl:'这个文件只在你自己的电脑或浏览器里，没有网址，而公共目录只能托管 Markdown / TXT 文章。可以：① 把内容另存成 Markdown 或 TXT 再添加，然后点它卡片上的地球图标；② 把文件放到你自己的网站上，把它的网址贴在下面收录。',
+    publishNoUrlTool:'这是一个只在你自己电脑上的网页工具（文件夹），没有网址，公共目录也托管不了它。把它部署到你自己的网站上，再把网址贴在下面收录。', badgeAsked:'已提交，等待审核',
+    kindListed: s=>`公共目录里已经有这个网址了（${s}），不需要再提交`, checkSlow:'这个网站响应太慢，检查没有完成。稍后再点“检查”试一次。', checkBtn:'检查', checking:'正在检查…', chkOk:'检查结果如下。确认无误后勾选下面的声明并提交，站长审核通过后才会出现在目录里。',
     chkKind:'识别为', chkName:'名称', chkSource:'来源', chkFound:'找到', chkLang:'语言', chkTags:'标签', chkLicense:'许可', chkAbout:'简介', chkTitle:'标题', chkAuthor:'作者',
     chkChars:'长度', chkLinks:'链接', chkExcerpt:'开头', chkLatest:'最新几条', chkFoundN:n=>`${n} 条`, chkCharsN:n=>`${n} 个字符`, chkLinksN:(n,d)=>`${n} 个${d?`：${d}`:''}`, publishNoApi:'这个目录还没有开通在线投稿。',
     badgeInDir:'公共目录 ✓', badgeSame:x=>`重复：与《${x}》相同`, dupAsk:x=>`库里已经有内容完全相同的《${x}》。\n仍然要添加吗？`,
@@ -645,8 +649,11 @@ const I18N = {
     postPick:'Pick one from my shelf (Markdown / TXT)', postPickNone:'— none, I will write it —', postTitleLbl:'Title', postAuthorLbl:'Author (optional, a pen name is fine)',
     postTagsLbl:'Tags (optional, comma separated, at most 5)', postBodyLbl:'Text (Markdown)', postCount:(n,m)=>`${n} / ${m} characters`,
     postRights:'I am the author and agree to publish this text in the directory (I can ask for removal at any time)', submitSend:'Submit', submitDone:'Submitted. It appears in the directory once approved.',
-    submitNet:'Could not reach the submission service; try again later.', skippedDup:'Nothing added (duplicates)', publishTip:'Publish to the public space (sent to the maintainer for review)', publishAgain:'Already sent; click to send again', badgeAsked:'Sent, waiting for review',
-    kindListed: s=>`The public directory has this address already (${s}); there is no need to submit it again`, checkBtn:'Check', checking:'Checking…', chkOk:'This is what the check found. If it is right, tick the declaration below and submit; it appears in the directory once the maintainer approves.',
+    submitNet:'Could not reach the submission service; try again later.', skippedDup:'Nothing added (duplicates)', publishTip:'Publish to the public space (sent to the maintainer for review)', publishAgain:'Already sent; click to send again',
+    publishDone:'Already in the public directory; there is no need to submit it again',
+    publishNoUrl:'This file only exists on your own computer or in your browser, so it has no address, and the public directory can only host Markdown / TXT articles. You can: 1) save the content as Markdown or TXT, add that, and use the globe on its card; or 2) put the file on your own website and paste its address below.',
+    publishNoUrlTool:'This is a web tool (a folder) that only exists on your own computer: it has no address and the directory cannot host it. Deploy it to your own website and paste its address below.', badgeAsked:'Sent, waiting for review',
+    kindListed: s=>`The public directory has this address already (${s}); there is no need to submit it again`, checkSlow:'This site answers too slowly, so the check did not finish. Try “Check” again a little later.', checkBtn:'Check', checking:'Checking…', chkOk:'This is what the check found. If it is right, tick the declaration below and submit; it appears in the directory once the maintainer approves.',
     chkKind:'Recognised as', chkName:'Name', chkSource:'Source', chkFound:'Found', chkLang:'Language', chkTags:'Tags', chkLicense:'License', chkAbout:'About', chkTitle:'Title', chkAuthor:'Author',
     chkChars:'Length', chkLinks:'Links', chkExcerpt:'Beginning', chkLatest:'Latest', chkFoundN:n=>`${n}`, chkCharsN:n=>`${n} characters`, chkLinksN:(n,d)=>`${n}${d?`: ${d}`:''}`, publishNoApi:'This directory does not take online submissions yet.',
     badgeInDir:'In the directory ✓', badgeSame:x=>`Duplicate of “${x}”`, dupAsk:x=>`The library has “${x}” with exactly the same content.\nAdd it anyway?`,
@@ -1020,17 +1027,18 @@ function cardHTML(it, tk, hiddenView){
   const where = isLink ? t('badgeLink') : it.source==='local' ? t('badgeLocal') : it.source==='folder' ? t('badgeFolder') : '';
   const ext = isLink ? ' target="_blank" rel="noopener noreferrer"' : '';
   // the public directory: is this one in it (a deployed page whose address the directory lists), does the owner keep it out, is it a copy of another file
-  const inDir = !!(state.dirKeys && it.source==='static' && href && state.dirKeys.has(urlKey(new URL(href,location.href).href)));
+  const inDir = !!(state.dirKeys && ((it.source==='static' && href && state.dirKeys.has(urlKey(new URL(href,location.href).href))) || (isLink && state.dirKeys.has(urlKey(it.url)))));
   const same = it.same ? state.items.find(x=>x.id===it.same) : null;
-  // an article in my personal space (this browser, a folder of mine, or my serve.py library) can be handed to the public directory: the globe asks the maintainer to review it
-  const personal = it.source==='local' || it.source==='folder' || it.source==='server';
-  const canPublish = !!state.dirCfg && !!submitApi() && personal && !isLink && (it.type==='md'||it.type==='txt');       // an article can only be handed over when the directory has a submission service
-  const listedPost = canPublish && !!state.dirData && state.dirData.items.some(i=>i.shelf==='posts' && i.title===it.title);
-  const asked = canPublish && !listedPost && !!state.pubReq[it.id];
-  const badges = (inDir||listedPost?`<span class="where good">${esc(t('badgeInDir'))}</span>`:'') + (asked?`<span class="where">${esc(t('badgeAsked'))}</span>`:'') + (same?`<span class="where warn" title="${esc(same.title)}">${esc(t('badgeSame',cut(same.title,16)))}</span>`:'');
+  // every card in my shelf can ask the maintainer to take it into the public space (the globe), unless it is there already: what is sent depends on what the item is (see publishKind)
+  const pubKind = publishKind(it);
+  const listedPost = pubKind==='post' && !!state.dirData && state.dirData.items.some(i=>i.shelf==='posts' && i.title===it.title);
+  const listed = inDir || listedPost;
+  const canPublish = !!pubKind && !listed;
+  const asked = canPublish && !!state.pubReq[it.id];
+  const badges = (listed?`<span class="where good">${esc(t('badgeInDir'))}</span>`:'') + (asked?`<span class="where">${esc(t('badgeAsked'))}</span>`:'') + (same?`<span class="where warn" title="${esc(same.title)}">${esc(t('badgeSame',cut(same.title,16)))}</span>`:'');
   const acts = hiddenView
     ? `<button class="btn restore-btn" type="button" data-act="restore">${ICON.restore}${esc(t('restore'))}</button>${manage?`<button class="btn danger" type="button" data-act="purge">${ICON.trash}${esc(t('delForever'))}</button>`:''}`
-    : `<span class="acts">${ib('star',ICON.star,star?t('unstarTip'):t('starTip'),star)}${ib('hide',ICON.hide,t('hide'))}${manage?ib('move',ICON.move,t('move')):''}${canPublish&&!listedPost?ib('publish',ICON.globe,t(asked?'publishAgain':'publishTip')):''}${ib('shuffle',ICON.shuffle,t('shuffle'))}${href?`<a class="ibtn" href="${esc(href)}" target="_blank" rel="noopener" title="${esc(t('newTab'))}" aria-label="${esc(t('newTab'))}">${ICON.ext}</a>`:''}</span>`;
+    : `<span class="acts">${ib('star',ICON.star,star?t('unstarTip'):t('starTip'),star)}${ib('hide',ICON.hide,t('hide'))}${manage?ib('move',ICON.move,t('move')):''}${canPublish?ib('publish',ICON.globe,t(asked?'publishAgain':'publishTip')):listed&&pubKind?`<button class="ibtn is-done" type="button" data-act="published" title="${esc(t('publishDone'))}" aria-label="${esc(t('publishDone'))}">${ICON.globe}</button>`:''}${ib('shuffle',ICON.shuffle,t('shuffle'))}${href?`<a class="ibtn" href="${esc(href)}" target="_blank" rel="noopener" title="${esc(t('newTab'))}" aria-label="${esc(t('newTab'))}">${ICON.ext}</a>`:''}</span>`;
   return `<article class="card${hiddenView?' is-hidden':''}" data-id="${esc(it.id)}">
     <button class="cover" type="button" data-act="open" aria-label="${esc(it.title)}">${coverHTML(it)}${prog>1?`<span class="prog" style="width:${Math.min(prog,100)}%"></span>`:''}</button>
     <div class="card-body">
@@ -1594,11 +1602,30 @@ async function toggleSaveLink(did){
 }
 /* my personal space -> the public space: the globe on a card of mine. The article is sent to the directory's review queue (checked first), the maintainer approves it in the
    admin page, and it is published as a hosted post: nothing to deploy or restart, on either side. An article of the site's own deployed library is public already. */
+/* What a card's globe sends to the maintainer, by what the item is:
+   'url'  the item has an address of its own on the internet (a page of a deployed site, a saved link): that address is checked and submitted like one typed in;
+   'post' a Markdown / TXT article that only exists in my space (this browser, a folder, serve.py): its text, hosted by the directory once approved;
+   'info' any other personal file (HTML, PDF, a tool folder): no address and nothing the directory can host, the dialog says what can be done instead;
+   ''     nothing to offer (no submission service, or not mine). */
+function publishAddress(it){
+  const u = it.type==='link' ? httpUrl(it.url) : it.source==='static' ? directHref(it) : '';
+  if(!u) return '';
+  try{ const x=new URL(u,location.href); return /^https?:$/.test(x.protocol) && /^[\w-]+(\.[\w-]+)+$/.test(x.hostname) && !/^\d+\.\d+\.\d+\.\d+$/.test(x.hostname) ? x.href : ''; }catch(e){ return ''; }      // a public-looking name, not localhost or an IP
+}
+function publishKind(it){
+  if(!state.dirCfg || !submitApi()) return '';
+  if(publishAddress(it)) return 'url';
+  if(!(it.source==='local' || it.source==='folder' || it.source==='server')) return '';
+  return it.type==='md' || it.type==='txt' ? 'post' : 'info';
+}
 async function publishItem(id){
   const it=state.items.find(x=>x.id===id); if(!it) return;
   if(!state.dirData) await loadDirectory();
   if(!submitApi()){ toast(t('publishNoApi')); return; }
-  openSubmit({tab:'post', item:it});
+  const kind=publishKind(it);
+  if(kind==='post') openSubmit({tab:'post', item:it});
+  else if(kind==='url') openSubmit({tab:'url', item:it, url:publishAddress(it)});
+  else if(kind==='info') openSubmit({tab:'url', item:it, note:t(it.project?'publishNoUrlTool':'publishNoUrl')});
 }
 function setSpace(s){
   if(s==='dir' && !state.dirCfg) return;
@@ -1729,11 +1756,13 @@ async function runCheck(){
   const api=submitApi(), post=submitTab==='post'; if(!api) return;
   const payload = post ? {kind:'check', what:'post', ...postData(), website:$('#submitHp').value} : {kind:'check', what:'url', url:classifyUrl($('#submitUrl').value).url, website:$('#submitHp').value};
   $('#submitGo').disabled=true; setResult(t('checking'));
+  const ctl=new AbortController(), timer=setTimeout(()=>ctl.abort(),28000);                  // the service gives up reading after 20 s; a slower answer is not coming
   try{
-    const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}), d=await r.json().catch(()=>({}));
+    const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:ctl.signal}), d=await r.json().catch(()=>({}));
     if(r.ok && d.ok && d.result){ submitCheck=d.result; setResult(''); renderCheck(d.result); updateSubmit(); $('#submitRights').focus(); return; }
     setResult(msgOf(d,r),'bad');
-  }catch(e){ setResult(t('submitNet'),'bad'); }
+  }catch(e){ setResult(t(e && e.name==='AbortError' ? 'checkSlow' : 'submitNet'),'bad'); }
+  finally{ clearTimeout(timer); }
   updateSubmit();
 }
 function updateSubmit(){
@@ -1781,7 +1810,9 @@ function openSubmit(opts){
   $('#submitTabs').hidden=!submitApi();
   setSubmitTab(opts.tab||'url');
   submitDlg.showModal(); ($('#submitTabs').hidden || submitTab==='url' ? $('#submitUrl') : $('#postTitle')).focus();
-  if(opts.item){ pick.value=opts.item.id; fillPostFrom(opts.item).then(()=>{ if(submitApi() && !$('#submitGo').disabled) runCheck(); }); }       // from a card: filled in and checked at once
+  if(opts.url){ $('#submitUrl').value=opts.url; updateSubmit(); if(!$('#submitGo').disabled) runCheck(); }                // a card with an address of its own: that address, checked at once
+  else if(opts.item && submitTab==='post'){ pick.value=opts.item.id; fillPostFrom(opts.item).then(()=>{ if(submitApi() && !$('#submitGo').disabled) runCheck(); }); }       // a card with an article: filled in and checked at once
+  if(opts.note){ const w=$('#submitWarn'); w.textContent=opts.note; w.hidden=false; }                                          // a card with nothing to send: why, and what to do instead
 }
 async function sendSubmit(){
   const api=submitApi(), post=submitTab==='post';
@@ -1848,6 +1879,7 @@ $('#grid').addEventListener('click',async e=>{
   }
   else if(act==='star') toggleStar(id);
   else if(act==='publish') publishItem(id);
+  else if(act==='published') toast(t('publishDone'));
   else if(act==='hide') hideItem(id);
   else if(act==='restore') restoreItem(id);
   else if(act==='move') openMove(id);

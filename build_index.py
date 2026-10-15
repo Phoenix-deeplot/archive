@@ -563,6 +563,12 @@ if __name__ == '__main__':
               f'tags added to {r["patched"]} HTML page(s); {r["pages"]} Markdown/TXT article page(s) with full text')
         if base:
             print(f'SEO: sitemap.xml has {r["urls"]} URLs for {base}; robots.txt written; {r["skipped"]["noindex"]} noindex item(s) kept out of the sitemap')
+            if r['sitemap_problems']:
+                print(f'SEO: sitemap check found {len(r["sitemap_problems"])} problem(s) (Search Console would object):')
+                for p in r['sitemap_problems']:
+                    print('SEO:   - ' + p)
+            else:
+                print(f'SEO: sitemap check passed: all {r["urls"]} addresses are of this site, percent-encoded, unique, and exist in {r["out"]}/')
             if r['feeds']:
                 print(f'SEO: subscription feeds written: {base}/feed.xml (Atom) and {base}/feed.json (JSON Feed)')
         else:
