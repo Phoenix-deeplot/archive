@@ -14,6 +14,7 @@ Hidden items are not copied at all (they are not published), and library/_meta.j
 published but get no sitemap entry. Only the standard library is used. Markdown is converted here and everything
 that is not a tag built by this file is HTML-escaped, so an article cannot inject markup.
 """
+import hashlib
 import json
 import os
 import posixpath
@@ -325,7 +326,65 @@ def check_sitemap(rows, base, out):
 
 LEGAL_PAGES = ('about.html', 'privacy.html', 'terms.html')      # hand-written files in the project root
 LEGAL_KIND = {'about.html': 'about', 'privacy.html': 'page', 'terms.html': 'page'}
-LEGAL_LINKS = '<a href="/about.html">关于本站</a> · <a href="/privacy.html">隐私政策</a> · <a href="/terms.html">使用条款</a>'
+LEGAL_LINKS = '<a href="/all.html">全部内容</a> · <a href="/about.html">关于本站</a> · <a href="/privacy.html">隐私政策</a> · <a href="/terms.html">使用条款</a>'
+
+
+def _dupes(items, library):
+    """Files in library/ with exactly the same content (a book kept under books/ and again under notes/): {id of the copy: id of the one that counts}.
+    The first by address counts; the copies stay published but are left out of the sitemap and the lists, and point to it with their canonical address."""
+    seen, out = {}, {}
+    for it in sorted(items, key=lambda i: i['id']):
+        if it.get('project') or it.get('type') not in ('html', 'pdf', 'md', 'txt'):
+            continue
+        try:
+            with open(os.path.join(library, *it['id'].split('/')), 'rb') as f:
+                h = hashlib.sha1(f.read()).hexdigest()
+        except OSError:
+            continue
+        if h in seen:
+            out[it['id']] = seen[h]
+        else:
+            seen[h] = it['id']
+    return out
+
+
+def _moved(canonical, target):
+    """The page left at an address a page used to have: it sends the browser (and says to search engines, with the canonical address) where it is now.
+    The browser is sent to the address without the host, so it works on any domain this build is served from."""
+    c, t = esc(canonical), esc(target)
+    return ('<!DOCTYPE html>\n<html lang="zh-CN"><head><meta charset="utf-8"><title>页面已移动</title><link rel="canonical" href="%s">'
+            '<meta http-equiv="refresh" content="0; url=%s"><script>location.replace(%s)</script></head>'
+            '<body><p>这个页面已经移到：<a href="%s">%s</a></p></body></html>\n' % (c, t, json.dumps(target).replace('</', '<\\/'), t, c))
+
+
+def _all_page(entries, public, base, site_title, brand, site_desc, newest=''):
+    """One page that links every published page: where a crawler (or a person) starts to find all of it."""
+    groups = {}
+    for it in entries:
+        groups.setdefault(it.get('category') or 'other', []).append(it)
+    order = [c for c in ('featured', 'books', 'notes', 'tools') if c in groups] + sorted(c for c in groups if c not in ('featured', 'books', 'notes', 'tools'))
+    title = '全部内容 · %s' % brand
+    desc = '%s 的全部内容：共 %d 篇，按分类（%s）列出，每一篇都可以直接打开。' % (site_title, len(entries), '、'.join(CATEGORY_LABEL.get(c, c) for c in order[:4]) + ('等' if len(order) > 4 else ''))
+    url = base + '/all.html' if base else ''
+    head = ['<meta charset="utf-8">', '<meta name="viewport" content="width=device-width, initial-scale=1">', '<title>%s</title>' % esc(title, quote=False),
+            '<meta name="description" content="%s">' % esc(desc), '<meta name="robots" content="index, follow">']
+    if url:
+        listing = [{'@type': 'ListItem', 'position': n, 'url': base + '/' + _quote(public(i)), 'name': i['title']} for n, i in enumerate(entries[:500], 1)]
+        head += ['<link rel="canonical" href="%s">' % esc(url), '<meta property="og:title" content="%s">' % esc(title), '<meta property="og:url" content="%s">' % esc(url),
+                 '<meta property="og:site_name" content="%s">' % esc(brand),
+                 '<script type="application/ld+json">%s</script>' % json.dumps({'@context': 'https://schema.org', '@type': 'CollectionPage', 'name': title, 'url': url, 'description': desc,
+                                                                                 'isPartOf': {'@type': 'WebSite', 'name': brand, 'url': base + '/'}, 'mainEntity': {'@type': 'ItemList', 'itemListElement': listing}},
+                                                                                ensure_ascii=False).replace('</', '<\\/')]
+    head.append('<style>%s</style>' % CSS + '<style>li{margin:.5em 0}.s{color:#5A6670;font-size:15px}</style>')
+    body = ['<article class="doc">', '<p class="meta"><a href="/">%s</a></p>' % esc(site_title, quote=False), '<h1>全部内容</h1>', '<p>%s</p>' % esc(desc, quote=False)]
+    for c in order:
+        body.append('<h2>%s（%d）</h2>\n<ul>' % (esc(CATEGORY_LABEL.get(c, c), quote=False), len(groups[c])))
+        for it in sorted(groups[c], key=lambda i: i.get('date') or '', reverse=True):
+            body.append('<li><a href="/%s">%s</a>%s%s</li>' % (esc(_quote(public(it))), esc(it['title'], quote=False), ' <span class="s">%s</span>' % esc(it['date']) if DAY.match(it.get('date') or '') else '',
+                                                              '<br><span class="s">%s</span>' % esc(it['summary'], quote=False) if it.get('summary') else ''))
+        body.append('</ul>')
+    body += ['<footer><a href="/">返回首页</a><br>%s</footer>' % LEGAL_LINKS, '</article>']
+    return '<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n%s\n</head>\n<body>\n%s\n</body>\n</html>\n' % ('\n'.join(head), '\n'.join(body))
 
 
 def _ld(kind, title, desc, url, lang, base, site_title, date='', owner=''):
@@ -519,23 +578,42 @@ def slugify(s):
     return s[:60].rstrip('-') or 'page'
 
 
-def _seg(s):
-    return s if re.fullmatch(r'[\w.\-]+', s) else slugify(s)
+def ascii_slug(name, key):
+    """An address part made of ASCII only: what is ASCII in the name stays (lower case), anything else is replaced by a short code that is the same on every
+    build for the same `key` (the item's path in library/): 重资产 读书笔记 -> n-3f9a1c ; AI_劳动力报告 -> ai-9d02be ; plain ASCII names are left alone."""
+    s = slugify(name)
+    if re.fullmatch(r'[a-z0-9.\-]+', s):
+        return s
+    part = re.sub(r'[^a-z0-9]+', '-', s).strip('-')[:40].rstrip('-')
+    return (part + '-' if part else 'n-') + hashlib.sha1(key.encode('utf-8')).hexdigest()[:6]
 
 
-def map_dir(d):
-    return '/'.join(_seg(s) for s in d.split('/') if s)
+def _seg(s, key='', ascii_urls=False):
+    if re.fullmatch(r'[\w.\-]+', s) and (not ascii_urls or s.isascii()):
+        return s
+    return ascii_slug(s, key or s) if ascii_urls else slugify(s)
 
 
-def plan(items):
+def map_dir(d, ascii_urls=False):
+    parts, out = [s for s in d.split('/') if s], []
+    for i, s in enumerate(parts):
+        out.append(_seg(s, '/'.join(parts[:i + 1]), ascii_urls))
+    return '/'.join(out)
+
+
+def plan(items, ascii_urls=False):
     """Public address of every published item, relative to the site root (no leading slash).
 
     library/books/重资产 读书笔记.html -> books/重资产-读书笔记.html ; library/tools/My App/index.html -> tools/my-app/ ;
     `slug` in _meta.json / <meta name="archive:slug"> / front matter overrides the name. Two items never share an address.
+    With ascii_urls a name that is not ASCII becomes an ASCII address (ascii_slug): books/n-3f9a1c.html (a `slug` you wrote yourself is kept as you wrote it).
     Returns (file_map {id: path}, proj_map {old folder: new folder}, page_map {id: articles/....html}).
     """
     used, used_pages = set(), set()
     file_map, proj_map, page_map = {}, {}, {}
+
+    def name_part(it, own, key):
+        return slugify(it['slug']) if it.get('slug') else (ascii_slug(own, key) if ascii_urls else slugify(own))
 
     def unique(path, pool):
         stem, ext = posixpath.splitext(path)
@@ -550,11 +628,11 @@ def plan(items):
         parent = posixpath.dirname(it['id'])
         if it.get('project'):
             gp = posixpath.dirname(parent)
-            new_dir = unique('/'.join(x for x in (map_dir(gp), slugify(it.get('slug') or posixpath.basename(parent))) if x), used)
+            new_dir = unique('/'.join(x for x in (map_dir(gp, ascii_urls), name_part(it, posixpath.basename(parent), parent)) if x), used)
             proj_map[parent] = new_dir
             continue
         stem, ext = posixpath.splitext(posixpath.basename(it['id']))
-        file_map[it['id']] = unique('/'.join(x for x in (map_dir(parent), slugify(it.get('slug') or stem) + ext.lower()) if x), used)
+        file_map[it['id']] = unique('/'.join(x for x in (map_dir(parent, ascii_urls), name_part(it, stem, it['id']) + ext.lower()) if x), used)
         if it.get('type') in ('md', 'txt'):
             page_map[it['id']] = unique(ARTICLES + '/' + posixpath.splitext(file_map[it['id']])[0] + '.html', used_pages)
     return file_map, proj_map, page_map
@@ -622,7 +700,7 @@ def _fill_site(text, cfg):
 
 
 # ======================================================================= the published copy
-SKIP_ROOT_FILES = {'serve.py', 'build_index.py', 'seo.py', 'README.md', 'PROMO.md', 'vercel.json', 'manifest.json', 'manifest.js', 'site.json'}
+SKIP_ROOT_FILES = {'serve.py', 'build_index.py', 'seo.py', 'indexnow.py', 'README.md', 'PROMO.md', 'vercel.json', 'manifest.json', 'manifest.js', 'site.json'}
 SKIP_DIRS = {'__pycache__', 'node_modules'}
 
 
@@ -684,7 +762,7 @@ def _root_names(root, library, out_name):
     return names
 
 
-def _copy_site(root, library, out, out_name, hidden_files, hidden_dirs, file_map, proj_map):
+def _copy_site(root, library, out, out_name, hidden_files, hidden_dirs, file_map, proj_map, ascii_urls=False):
     def dest_rel(relfile):
         if relfile in file_map:
             return file_map[relfile]
@@ -692,7 +770,7 @@ def _copy_site(root, library, out, out_name, hidden_files, hidden_dirs, file_map
             if relfile.startswith(old + '/'):
                 return new + relfile[len(old):]
         d, f = posixpath.split(relfile)
-        return (map_dir(d) + '/' + f) if d else f
+        return (map_dir(d, ascii_urls) + '/' + f) if d else f
 
     for name in _root_names(root, library, out_name):
         src = os.path.join(root, name)
@@ -711,6 +789,32 @@ def _copy_site(root, library, out, out_name, hidden_files, hidden_dirs, file_map
             os.makedirs(os.path.dirname(dst), exist_ok=True)
             shutil.copy2(os.path.join(d, f), dst)
     return dest_rel
+
+
+PRIVATE_FILES = ('site.json', 'PROMO.md', 'indexnow.py', '.indexnow-state.json', 'serve.py', 'build_index.py', 'seo.py', 'README.md', 'vercel.json')
+
+
+def verify_site(out):
+    """What must be true of the folder that is about to be deployed, whatever else changed: the page is there, the published manifest points at files that exist (the pages of the
+    site open), no library/ folder (vercel.json sends /library/* to the same path without it, so everything in it would be a 404), no private file of the project is published.
+    -> list of problems. build_index.py stops the build on any: a failed build is not deployed, and the site that is online stays as it is."""
+    problems = []
+    if not os.path.isfile(os.path.join(out, 'index.html')):
+        problems.append('index.html is missing')
+    if os.path.isdir(os.path.join(out, 'library')):
+        problems.append('a library/ folder is in the site: /library/* is redirected away by vercel.json, so every page in it would be a 404')
+    problems += ['%s is a private file of the project and must not be published' % n for n in PRIVATE_FILES if os.path.exists(os.path.join(out, n))]
+    try:
+        with open(os.path.join(out, 'manifest.json'), 'r', encoding='utf-8') as f:
+            items = json.load(f).get('items') or []
+    except (OSError, ValueError):
+        return problems + ['manifest.json is missing or is not valid JSON']
+    for it in items:
+        for key in ('path', 'page'):
+            rel = it.get(key)
+            if rel and not os.path.isfile(os.path.join(out, *str(rel).split('/'))):
+                problems.append('%s of "%s" points to %s, which is not in the site' % (key, it.get('id'), rel))
+    return problems
 
 
 def publish(items, base, root, library, front_matter, write_manifest, out_name='dist'):
@@ -741,9 +845,15 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
         else:
             listed.append(it)
     visible = [it for it in items if not it.get('hidden')]          # what is published at all (noindex ones too)
+    dupes = _dupes(listed, library)                                  # the same file twice: the copy is published but not promoted
+    listed = [it for it in listed if it['id'] not in dupes]
+    skipped['duplicate'] = len(dupes)
 
-    file_map, proj_map, page_map = plan(visible)
-    reserved = {n.lower() for n in _root_names(root, library, out_name)} | {ARTICLES, MARKER.lower(), 'sitemap.xml', 'robots.txt', 'manifest.json', 'manifest.js', 'index.html', 'feed', 'feed.xml', 'feed.json'}
+    cfg = load_site_config(root)
+    ascii_urls = cfg.get('ascii_urls') is not False                   # site.json "ascii_urls": false keeps names with Chinese in the address
+    file_map, proj_map, page_map = plan(visible, ascii_urls)
+    legacy = plan(visible, False)                                      # where the same items were published before (readable names, Chinese included)
+    reserved = {n.lower() for n in _root_names(root, library, out_name)} | {ARTICLES, MARKER.lower(), 'sitemap.xml', 'robots.txt', 'manifest.json', 'manifest.js', 'index.html', 'feed', 'feed.xml', 'feed.json', 'all.html', 'urls.txt', 'sw.js', 'manifest.webmanifest', 'icons'}
     clash = sorted({p.split('/')[0] for p in list(file_map.values()) + list(proj_map.values()) if p.split('/')[0].lower() in reserved})
     if clash:
         raise SystemExit('these names in library/ would collide with files of the site itself: %s. Rename them.' % ', '.join(clash))
@@ -752,11 +862,10 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
         shutil.rmtree(out)
     os.makedirs(out)
     _write_if_changed(os.path.join(out, MARKER), 'Written by build_index.py --seo; emptied and rewritten on every run.\n')
-    cfg = load_site_config(root)
     owner = str(cfg.get('owner') or '').strip()
     # feeds are written only with a site address, and never over a feed.xml / feed.json the owner put in the project root
     make_feeds = bool(base) and not any(os.path.exists(os.path.join(root, n)) for n in ('feed.xml', 'feed.json'))
-    dest_rel = _copy_site(root, library, out, out_name, hidden_files, hidden_dirs, file_map, proj_map)
+    dest_rel = _copy_site(root, library, out, out_name, hidden_files, hidden_dirs, file_map, proj_map, ascii_urls)
 
     def resolve(joined):                                             # a library path -> where it is published
         return page_map.get(joined) or dest_rel(joined)
@@ -765,13 +874,14 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
     index = _read(index_path) if os.path.exists(index_path) else ''
     m = re.search(r'<title>(.*?)</title>', index, re.S)
     site_title, site_desc = (m.group(1).strip() if m else 'My Archive'), _meta_of(index, 'description')
+    brand = str(cfg.get('name') or '').strip() or re.split(r'\s+[-–—|·]\s+', site_title)[0]       # the short name: 知识树 - 个人数字图书馆 -> 知识树 (page titles end with it)
 
     # --- a page with the full text for every Markdown / TXT article
     pages = {}
     for it in [x for x in listed if x.get('type') in ('md', 'txt')]:
         try:
             rel = page_map[it['id']]
-            _write_if_changed(os.path.join(out, *rel.split('/')), _page(it, _article_body(it, library, front_matter, resolve), base, site_title, rel, owner, make_feeds))
+            _write_if_changed(os.path.join(out, *rel.split('/')), _page(it, _article_body(it, library, front_matter, resolve), base, brand, rel, owner, make_feeds))
             pages[it['id']] = rel
         except OSError:
             continue
@@ -793,7 +903,8 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
         except (OSError, UnicodeDecodeError):
             problems.setdefault('not UTF-8, tags not added', []).append(it['id'])
             continue
-        new, probs = patch_page(text, it, base, site_title, url_path(it, file_map, proj_map), 'article', owner)
+        main = next((x for x in visible if x['id'] == dupes[it['id']]), None) if it['id'] in dupes else None      # a copy names the original as its canonical address
+        new, probs = patch_page(text, it, base, brand, url_path(main or it, file_map, proj_map), 'article', owner)
         for p in probs:
             problems.setdefault(p, []).append(it['id'])
         if new != text:
@@ -811,7 +922,7 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
         t = re.search(r'<title>(.*?)</title>', text, re.S)
         d = re.search(r'最后更新[：:]\s*(\d{4}-\d{2}-\d{2})', text)
         pseudo = {'title': (t.group(1).strip() if t else name), 'summary': _meta_of(text, 'description'), 'date': d.group(1) if d else '', 'lang': 'zh'}
-        text, probs = patch_page(text, pseudo, base, site_title, name, LEGAL_KIND[name], owner)
+        text, probs = patch_page(text, pseudo, base, brand, name, LEGAL_KIND[name], owner)
         _write_if_changed(target, text)
         legal.append((name, pseudo['date']))
 
@@ -825,12 +936,45 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
         published.append(d)
     write_manifest(published, out)
 
-    # --- sitemap.xml + robots.txt (a hand-written one at the project root is kept as it is)
+    # --- the way to everything: all.html (every page linked from one page, for crawlers and for people), urls.txt (every address, one per line)
     notice, sitemap_problems = '', []
     entries = [it for it in listed if it.get('type') in ('html', 'pdf') or it['id'] in pages]
+    dates = [i['date'] for i in entries if DAY.match(i.get('date') or '')]
+    newest = max(dates) if dates else ''
+    _write_if_changed(os.path.join(out, 'all.html'), _all_page(entries, public, base, site_title, brand, site_desc, newest))
     if base:
-        dates = [i['date'] for i in entries if DAY.match(i.get('date') or '')]
-        rows = [(base + '/', max(dates) if dates else '')] + [(base + '/' + _quote(public(i)), i.get('date') or '') for i in entries]
+        _write_if_changed(os.path.join(out, 'urls.txt'), '\n'.join([base + '/', base + '/all.html'] + [base + '/' + _quote(public(i)) for i in entries] + [base + '/' + n for n, d in legal]) + '\n')
+    key = str(cfg.get('indexnow_key') or '').strip()                   # IndexNow (Bing, Yandex ...): the key file that proves the site is yours; indexnow.py sends the addresses
+    if re.fullmatch(r'[A-Za-z0-9-]{8,128}', key):
+        _write_if_changed(os.path.join(out, key + '.txt'), key)
+
+    # --- the addresses these pages had before they became ASCII: a small page that sends people and crawlers on (the old address keeps working)
+    moved, unmoved = 0, []
+    old_files, old_dirs, old_pages = legacy
+
+    def moved_page(old, new):
+        nonlocal moved
+        path = os.path.join(out, *old.split('/'))
+        if old == new or os.path.exists(path):
+            return
+        _write_if_changed(path, _moved(base + '/' + _quote(new) if base else '/' + _quote(new), '/' + _quote(new)))
+        moved += 1
+
+    for it in visible:
+        if it.get('project'):
+            moved_page(old_dirs[posixpath.dirname(it['id'])] + '/index.html', proj_map[posixpath.dirname(it['id'])] + '/index.html')
+        elif it.get('type') == 'html':
+            moved_page(old_files[it['id']], file_map[it['id']])
+        elif it.get('type') == 'pdf' and old_files[it['id']] != file_map[it['id']]:
+            unmoved.append(old_files[it['id']])                              # a PDF: nothing can stand in for it at its old address
+        if it['id'] in pages and it['id'] in old_pages:
+            moved_page(old_pages[it['id']], pages[it['id']])
+    if unmoved:
+        notice += ('; ' if notice else '') + '%d PDF file(s) have a new address and no redirect from the old one (add redirects to vercel.json if the old ones were shared): %s' % (len(unmoved), ', '.join(unmoved[:3]))
+
+    # --- sitemap.xml + robots.txt (a hand-written one at the project root is kept as it is)
+    if base:
+        rows = [(base + '/', newest), (base + '/all.html', newest)] + [(base + '/' + _quote(public(i)), i.get('date') or '') for i in entries]
         rows += [(base + '/' + n, d) for n, d in legal]
         xml = ['<?xml version="1.0" encoding="UTF-8"?>', '<!-- %s -->' % GENERATED, '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
         for loc, d in rows:
@@ -870,7 +1014,9 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
                 head.append('<meta name="%s" content="%s">' % (name, esc(os.environ[env].strip())))
         if base:
             listing = [{'@type': 'ListItem', 'position': n, 'url': base + '/' + _quote(public(i)), 'name': i['title']} for n, i in enumerate(entries[:100], 1)]
-            site = {'@type': 'WebSite', 'name': site_title, 'url': base + '/', 'description': site_desc}
+            site = {'@type': 'WebSite', 'name': brand, 'url': base + '/', 'description': site_desc}
+            if site_title != brand:
+                site['alternateName'] = site_title
             if owner:
                 site['publisher'] = {'@type': 'Person', 'name': owner}
             head.append('<script type="application/ld+json">%s</script>' % json.dumps({'@context': 'https://schema.org', '@graph': [site, {'@type': 'ItemList', 'itemListElement': listing}]}, ensure_ascii=False).replace('</', '<\\/'))
@@ -881,5 +1027,5 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
         body += ['</ul>', '<p>%s</p>' % LEGAL_LINKS.replace('href="/', 'href="'), '</noscript>']
         _write_if_changed(index_path, _inject(_inject(index, 'head', '\n'.join(head)), 'body', '\n'.join(body)))
 
-    return {'urls': len(entries) + 1 + len(legal) if base else 0, 'pages': len(pages), 'patched': patched, 'skipped': skipped,
-            'problems': problems, 'sitemap_problems': sitemap_problems, 'notice': notice, 'out': out_name, 'legal': len(legal), 'feeds': make_feeds, 'owner': bool(owner), 'contact': bool(str(cfg.get('contact') or '').strip())}
+    return {'urls': len(entries) + 2 + len(legal) if base else 0, 'moved': moved, 'pages': len(pages), 'patched': patched, 'skipped': skipped,
+            'problems': problems, 'sitemap_problems': sitemap_problems, 'verify': verify_site(out), 'notice': notice, 'out': out_name, 'legal': len(legal), 'feeds': make_feeds, 'owner': bool(owner), 'contact': bool(str(cfg.get('contact') or '').strip())}

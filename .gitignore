@@ -13,6 +13,7 @@ __pycache__
 .vscode
 .history
 dist/
+.indexnow-state.json
 
 
 # vercel.json 不要放进忽略列表（vercel 命令行在没有 .vercelignore 时按本文件过滤上传）

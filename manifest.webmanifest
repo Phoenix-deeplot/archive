@@ -1,0 +1,16 @@
+{
+  "name": "知识树 - 个人数字图书馆",
+  "short_name": "知识树",
+  "description": "收藏、搜索和在线阅读读书笔记、PDF、Markdown 与网页小工具。",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F7F5EF",
+  "theme_color": "#0B4F3B",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

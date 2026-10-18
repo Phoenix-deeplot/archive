@@ -4,17 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="JqEA6scVOjONIV_9sFf99oApnsBHqrfp7jU4paGmhkk" />
-<title>个人数字图书馆</title>
-<meta name="description" content="个人收藏库：读书笔记、网页小工具和个人笔记，收录 HTML、Markdown 与 PDF，可搜索、可站内阅读。">
+<title>知识树 - 个人数字图书馆</title>
+<meta name="description" content="知识树 · 个人数字图书馆：收藏、搜索和在线阅读读书笔记、PDF、Markdown 与网页小工具，支持 RSS 订阅；还有公共目录，聚合博客与文章，投稿无需注册。">
+<meta name="keywords" content="知识树,个人数字图书馆,读书笔记,电子书,PDF,Markdown,网页工具,RSS订阅,公共目录">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:type" content="website">
-<meta property="og:title" content="个人数字图书馆">
-<meta property="og:description" content="个人收藏库：读书笔记、网页小工具和个人笔记，收录 HTML、Markdown 与 PDF，可搜索、可站内阅读。">
+<meta property="og:title" content="知识树 - 个人数字图书馆">
+<meta property="og:site_name" content="知识树">
+<meta property="og:description" content="知识树 · 个人数字图书馆：收藏、搜索和在线阅读读书笔记、PDF、Markdown 与网页小工具，支持 RSS 订阅；还有公共目录，聚合博客与文章，投稿无需注册。">
 <meta property="og:locale" content="zh_CN">
 <meta name="twitter:card" content="summary">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0B4F3B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="知识树">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
+<link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <!-- seo:head -->
 <!-- /seo:head -->
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet">
@@ -112,7 +122,7 @@ details.how ol{margin:6px 0 0;padding-left:1.3em}
 /* ---------- layout ---------- */
 .app{display:grid;grid-template-columns:276px minmax(0,1fr);min-height:100vh}
 .side{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;height:100vh;height:100dvh;display:flex;flex-direction:column;background:var(--side);border-right:1px solid var(--rule)}
-.side-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:22px 18px 10px 22px}
+.side-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:12px;row-gap:8px;padding:18px 18px 14px 20px}
 .brand{font-family:var(--serif);font-weight:900;font-size:22px;line-height:1.25;margin:0}
 .brand-sub{font-size:13px;color:var(--muted);margin:2px 0 0}
 .side-close{display:none}
@@ -210,7 +220,49 @@ details.how ol{margin:6px 0 0;padding-left:1.3em}
 
 .reader-prog{height:2px;background:transparent}
 .reader-prog span{display:block;height:100%;width:0;background:var(--accent);transition:width .15s linear}
-.reader iframe{flex:1;width:100%;border:0;background:#fff}
+.frame-wrap{position:relative;flex:1;min-height:0;background:var(--bg)}
+.reader iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+.reader iframe.inv{filter:invert(1) hue-rotate(180deg)}                       /* dark colours for a page that is shown as it is (HTML, PDF): inverted, not restyled */
+.tint{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;display:none}      /* sepia / green over a page that is shown as it is */
+.rpanel{position:absolute;z-index:5;background:var(--surface);color:var(--ink);border:1px solid var(--rule);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.18);padding:14px 16px}
+.rpanel:not(.rside){top:8px;right:10px;width:min(340px,calc(100% - 20px))}
+.rpanel.rside{top:0;right:0;bottom:0;width:min(88vw,340px);border-radius:0;border-width:0 0 0 1px;display:flex;flex-direction:column;padding:0}
+.rpanel[hidden]{display:none}
+.rrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 0;font-size:14px}
+.rrow.col{flex-direction:column;align-items:stretch;gap:8px}
+.rrow[hidden]{display:none}
+.seg2{display:inline-flex;border:1.5px solid var(--rule);border-radius:9px;overflow:hidden}
+.seg2 button,.seg2 output{min-width:44px;height:36px;padding:0 10px;border:0;background:none;color:var(--ink);font-size:14px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.seg2 output{cursor:default;color:var(--muted);font-variant-numeric:tabular-nums}
+.seg2 button+button,.seg2 output+button,.seg2 button+output{border-left:1.5px solid var(--rule)}
+.seg2 button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.themes{display:flex;flex-wrap:wrap;gap:8px}
+.themes button{height:36px;padding:0 12px;border:1.5px solid var(--rule);border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;color:#1A2229;background:#FBFBF9}
+.themes button[data-th="dark"]{background:#15191C;color:#E2E7E9}
+.themes button[data-th="sepia"]{background:#F4ECD8;color:#3B2F1E}
+.themes button[data-th="green"]{background:#CCE8CF;color:#1F3A27}
+.themes button[aria-pressed="true"]{outline:2.5px solid var(--accent);outline-offset:1px}
+.rnote{margin:6px 0 0;font-size:12.5px;color:var(--muted);line-height:1.5}
+.rtabs{display:flex;border-bottom:1px solid var(--rule)}
+.rtabs button{flex:1;height:46px;border:0;background:none;color:var(--muted);font-size:14.5px;font-weight:700;cursor:pointer;border-bottom:2.5px solid transparent}
+.rtabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.rbody{flex:1;overflow-y:auto;padding:8px 6px}
+.rbody .empty{padding:18px 12px;color:var(--muted);font-size:14px}
+.toc-i{display:block;width:100%;text-align:left;border:0;background:none;color:var(--ink);padding:9px 12px;border-radius:8px;font-size:14.5px;line-height:1.4;cursor:pointer}
+.toc-i:hover{background:var(--bg)}
+.toc-i.on{background:var(--bg);font-weight:700;box-shadow:inset 3px 0 0 var(--accent)}
+.toc-i.l2{padding-left:26px}.toc-i.l3{padding-left:40px;font-size:13.5px;color:var(--muted)}.toc-i.l4{padding-left:54px;font-size:13px;color:var(--muted)}
+.mark-i{display:flex;align-items:center;gap:6px;padding:2px 6px 2px 0}
+.mark-i .toc-i{flex:1;min-width:0}
+.mark-i .toc-i small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.mark-i .x{flex:none;width:34px;height:34px;border:0;background:none;color:var(--muted);font-size:20px;cursor:pointer;border-radius:8px}
+.mark-i .x:hover{background:var(--bg);color:var(--ink)}
+.rbody .add-mark{margin:4px 6px 8px;width:calc(100% - 12px);justify-content:center}
+.rfoot{display:none;gap:8px;padding:10px;border-top:1px solid var(--rule)}
+.rfoot .btn{flex:1;justify-content:center}
+.aa{font-weight:800;font-size:15px;letter-spacing:-.5px}
+.rbtn.ico{padding:0 12px}
+@media (max-width:620px){.rfoot{display:flex}.rpanel:not(.rside){left:10px;right:10px;width:auto}}
 
 /* ---------- add dialog ---------- */
 dialog{border:1px solid var(--rule);border-radius:10px;background:var(--surface);color:var(--ink);padding:0;width:min(680px,calc(100vw - 24px));max-height:calc(100dvh - 40px)}
@@ -310,10 +362,39 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
   .rbtn{padding:0 11px}
   .pos{min-width:44px}
 }
+@media (max-width:620px){
+  .reader-bar{grid-template-columns:auto 1fr;grid-template-areas:"back right" "title title"}
+  .rb-center{display:none}                                  /* previous / next live in the contents panel on a phone */
+  .rb-right{gap:6px}
+  .rbtn{height:38px;padding:0 10px}
+}
 .pending .ptype{font-weight:700;margin-right:6px}
 .warn{color:var(--c-tools);font-size:13px;margin:6px 0 0}
 .pick-row{display:flex;align-items:center;gap:12px;margin:12px 0 0;font-size:13px;color:var(--muted);line-height:1.5}
 .pick-row .btn{flex:none}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.logo {
+  width: 42px;
+  height: 42px;
+  flex: none;
+  object-fit: contain;
+}
+
+.brand {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.brand-copy{min-width:0}
+.brand-sub{margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side-head .space{grid-column:1 / -1;width:max-content;margin:0}
 </style>
 </head>
 <body>
@@ -322,15 +403,18 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
 <div class="app">
   <aside class="side" id="side" aria-label="Sidebar">
     <div class="side-head">
-      <div>
-        <p class="brand" data-i="brand">个人数字图书馆</p>
-        <p class="brand-sub" data-i="brandSub">笔记、读书与工具</p>
-        <div class="seg space" id="spaceSwitch" role="group" aria-label="Space" hidden>
-          <button type="button" data-space="mine" aria-pressed="true" data-i="spaceMine">我的书架</button>
-          <button type="button" data-space="dir" aria-pressed="false" data-i="spaceDir">公共目录</button>
+      <div class="brand-row">
+        <img class="logo" src="icons/zhishishu-icon.svg" alt="" aria-hidden="true">
+        <div class="brand-copy">
+          <p class="brand" data-i="brand">知识树</p>
+          <p class="brand-sub" data-i="brandSub">个人数字图书馆</p>
         </div>
       </div>
       <button class="ibtn side-close" type="button" id="sideClose" data-i-aria="close"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="seg space" id="spaceSwitch" role="group" aria-label="Space" hidden>
+        <button type="button" data-space="mine" aria-pressed="true" data-i="spaceMine">我的书架</button>
+        <button type="button" data-space="dir" aria-pressed="false" data-i="spaceDir">公共目录</button>
+      </div>
     </div>
     <div class="side-scroll">
       <nav class="cats" id="cats" aria-label="Categories"></nav>
@@ -341,6 +425,7 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
     <div class="side-foot">
       <p class="source" id="source"></p>
       <div class="foot-row"><button class="btn" type="button" id="connectBtn" hidden></button><button class="btn" type="button" id="disconnectBtn" hidden data-i="disconnect">断开</button></div>
+      <div class="foot-row"><button class="btn" type="button" id="installBtn" hidden data-i="installApp">安装到主屏幕</button></div>
       <div class="foot-row">
         <div class="seg" role="group" aria-label="Language">
           <button type="button" data-lang="zh" aria-pressed="true">中文</button>
@@ -400,12 +485,31 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
       <button class="rbtn nav" type="button" id="readerNext"><span class="lbl" data-i="next">下一篇</span><svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     </div>
     <div class="rb-right">
+      <button class="rbtn ico" type="button" id="readerToc" aria-expanded="false"><svg class="icon" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span class="lbl" data-i="tocTab">目录</span></button>
+      <button class="rbtn ico" type="button" id="readerSet" aria-expanded="false"><span class="aa" aria-hidden="true">Aa</span><span class="lbl" data-i="readerSet">阅读设置</span></button>
+      <button class="rbtn ico" type="button" id="readerMark"><svg class="icon" viewBox="0 0 24 24"><path d="M6.5 4h11a1 1 0 0 1 1 1v15l-6.5-4-6.5 4V5a1 1 0 0 1 1-1z"/></svg><span class="lbl" data-i="readerMark">加书签</span></button>
       <button class="rbtn" type="button" id="readerStar" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg><span class="lbl" id="readerStarLbl"></span></button>
       <a class="rbtn" id="readerNew" target="_blank" rel="noopener"><svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span class="lbl" data-i="newTab">新标签打开</span></a>
     </div>
   </div>
   <div class="reader-prog"><span id="readerProg"></span></div>
-  <iframe id="frame" title="Reader"></iframe>
+  <div class="frame-wrap">
+    <iframe id="frame" title="Reader"></iframe>
+    <div class="tint" id="tint" aria-hidden="true"></div>
+    <div class="rpanel" id="rSetPanel" hidden>
+      <div class="rrow" id="rowFs"><span data-i="fontSize">字号</span><div class="seg2"><button type="button" data-fs="-10">A−</button><output id="fsVal">100%</output><button type="button" data-fs="10">A+</button></div></div>
+      <div class="rrow" id="rowLh"><span data-i="lineHeight">行距</span><div class="seg2" data-key="lh"><button type="button" data-v="s" data-i="lhS">紧</button><button type="button" data-v="m" data-i="lhM">中</button><button type="button" data-v="l" data-i="lhL">松</button></div></div>
+      <div class="rrow" id="rowW"><span data-i="pageWidth">版面宽度</span><div class="seg2" data-key="w"><button type="button" data-v="n" data-i="wN">窄</button><button type="button" data-v="m" data-i="wM">中</button><button type="button" data-v="w" data-i="wW">宽</button></div></div>
+      <div class="rrow col"><span data-i="readerColor">颜色</span><div class="themes" id="rThemes">
+        <button type="button" data-th="follow" data-i="thFollow">跟随系统</button><button type="button" data-th="light" data-i="thLight">浅色</button><button type="button" data-th="dark" data-i="thDark">深色</button><button type="button" data-th="sepia" data-i="thSepia">米黄</button><button type="button" data-th="green" data-i="thGreen">护眼绿</button></div></div>
+      <p class="rnote" id="rOrigNote" data-i="origNote" hidden></p>
+    </div>
+    <div class="rpanel rside" id="rTocPanel" hidden role="complementary" aria-label="目录">
+      <div class="rtabs" role="tablist"><button type="button" role="tab" data-tab="toc" aria-selected="true" data-i="tocTab">目录</button><button type="button" role="tab" data-tab="marks" aria-selected="false" data-i="marksTab">书签</button></div>
+      <div class="rbody" id="rTocBody"></div>
+      <div class="rfoot" id="rTocFoot"><button type="button" class="btn" id="rtPrev" data-i="prev">上一篇</button><button type="button" class="btn" id="rtNext" data-i="next">下一篇</button></div>
+    </div>
+  </div>
 </div>
 
 <dialog id="subDlg" aria-labelledby="subTitle">
@@ -532,11 +636,11 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
 /* ================= i18n ================= */
 const I18N = {
   zh: {
-    brand:'个人数字图书馆', brandSub:'笔记、读书与工具', dir:'卡片目录', search:'搜索标题、摘要、关键词、类型', lfAll:'全部',
+    brand:'知识树', brandSub:'个人数字图书馆', siteTitle:'知识树 - 个人数字图书馆', dir:'卡片目录', search:'搜索标题、摘要、关键词、类型', lfAll:'全部',
     sortRecent:'最近添加', sortRead:'最近阅读', sortTitle:'标题', add:'添加', back:'返回', prev:'上一篇', next:'下一篇',
     star:'设为精选', unstar:'已精选', starTip:'设为精选', unstarTip:'取消精选', newTab:'新标签打开', shuffle:'换一张封面',
     hide:'隐藏', restore:'恢复', remove:'移除', delForever:'彻底删除', close:'关闭', menu:'目录',
-    move:'移动到其他分类', moveTitle:t=>`把《${t}》移到…`, movedToast:(t,c)=>`已把《${t}》移到「${c}」`, moveFail:'移动失败：',
+    move:'移动到其他分类', moveTitle:t=>`把《${t}》移到…`, movedToast:(t,c)=>`已把《${t}》移到「${c}」`, movedLocal:'分类调整只保存在这个浏览器里，不会改动网站。', movedMeta:'分类记在这个文件夹的 _meta.json 里，文件没有挪动。', moveFail:'移动失败：',
     confirmPurge:t=>`彻底删除《${t}》？\n文件会从 library 里删掉，无法恢复。`, purged:'已彻底删除',
     viewGrid:'切换为列表', viewList:'切换为卡片',
     all:'全部', featured:'精选', books:'书籍', tools:'工具', notes:'个人笔记', hidden:'已隐藏',
@@ -591,6 +695,10 @@ const I18N = {
     postRights:'我是作者，同意把这篇文章公开发布在目录里（可随时要求下架）', submitSend:'提交', submitDone:'已提交，审核通过后会出现在目录里。',
     submitNet:'连不上提交服务，请稍后再试。', skippedDup:'没有添加（内容重复）', publishTip:'公开到公共空间（提交给站长审核）', publishAgain:'已提交过，点击可再次提交',
     publishDone:'已经在公共目录里了，不需要再提交',
+    tocTab:'目录', marksTab:'书签', readerSet:'阅读设置', readerMark:'加书签', tocEmpty:'这一篇没有可用的目录。', marksEmpty:'还没有书签。', markAddHere:'＋ 在当前位置加书签', markAdded:'已在这里加了书签。', markGone:'已删除书签。', markNone:'这个文件不能加书签。',
+    fontSize:'字号', lineHeight:'行距', pageWidth:'版面宽度', readerColor:'颜色', lhS:'紧', lhM:'中', lhL:'松', wN:'窄', wM:'中', wW:'宽',
+    thFollow:'跟随系统', thLight:'浅色', thDark:'深色', thSepia:'米黄', thGreen:'护眼绿', origNote:'这一篇按原样显示，只能换颜色；字号请用浏览器的缩放。',
+    installApp:'安装到主屏幕', installHint:'安装方法：点“分享”→“添加到主屏幕”。',
     badgeAsked:'已提交，等待审核',
     kind_reader: s=>`这是你书架里《${s}》在阅读器里的地址，别人打不开，不是公开网址。点“检查”会改为直接申请这一本。`, kind_readerGone:'这是阅读器里的地址，别人打不开，不是公开网址；而且这一项已经不在你的书架里了。请用书架里卡片上的地球图标申请。',
     kindListed: s=>`公共目录里已经有这个网址了（${s}），不需要再提交`, checkSlow:'这个网站响应太慢，检查没有完成。稍后再点“检查”试一次。', checkBtn:'检查', checking:'正在检查…', chkOk:'检查结果如下。确认无误后勾选下面的声明并提交，站长审核通过后才会出现在目录里。',
@@ -615,11 +723,11 @@ const I18N = {
     noRenderer:'没有找到 vendor/marked.min.js，Markdown 以纯文本显示。', toc:'目录', openPdf:'打开 PDF', pdfMobile:'手机浏览器通常无法在页面内显示 PDF，点下面的按钮用系统阅读器打开。'
   },
   en: {
-    brand:'My Archive', brandSub:'Notes, books and tools', dir:'Card index', search:'Search titles, summaries, keywords, types', lfAll:'All',
+    brand:'Knowledge Tree', brandSub:'Personal digital library', siteTitle:'Knowledge Tree - Personal Digital Library', dir:'Card index', search:'Search titles, summaries, keywords, types', lfAll:'All',
     sortRecent:'Recently added', sortRead:'Recently read', sortTitle:'Title', add:'Add', back:'Back', prev:'Previous', next:'Next',
     star:'Feature', unstar:'Featured', starTip:'Mark as featured', unstarTip:'Remove from featured', newTab:'Open in new tab', shuffle:'Shuffle cover',
     hide:'Hide', restore:'Restore', remove:'Remove', delForever:'Delete forever', close:'Close', menu:'Index',
-    move:'Move to another category', moveTitle:t=>`Move “${t}” to…`, movedToast:(t,c)=>`Moved “${t}” to “${c}”`, moveFail:'Move failed: ',
+    move:'Move to another category', moveTitle:t=>`Move “${t}” to…`, movedToast:(t,c)=>`Moved “${t}” to “${c}”`, movedLocal:'The move is kept in this browser only; the site is not changed.', movedMeta:'The category is recorded in this folder\'s _meta.json; the file stays where it is.', moveFail:'Move failed: ',
     confirmPurge:t=>`Delete “${t}” for good?\nThe file is removed from library/ and cannot be recovered.`, purged:'Deleted',
     viewGrid:'Switch to list', viewList:'Switch to cards',
     all:'All', featured:'Featured', books:'Books', tools:'Tools', notes:'Notes', hidden:'Hidden',
@@ -691,6 +799,10 @@ const I18N = {
     emptyHidden:'<h2>Nothing hidden</h2><p>Items you hide appear here, ready to be restored.</p>',
     emptySearch:q=>`<h2>No cards match “${q}”</h2><p>Try a shorter keyword, or <button class="btn" type="button" data-clear style="margin-left:6px">clear filters</button></p>`,
     staticNote:'Static mode: featured and hidden marks are saved in this browser only.',
+    tocTab:'Contents', marksTab:'Bookmarks', readerSet:'Reading settings', readerMark:'Bookmark', tocEmpty:'This one has no contents to show.', marksEmpty:'No bookmarks yet.', markAddHere:'+ Bookmark this place', markAdded:'Bookmark added.', markGone:'Bookmark removed.', markNone:'Bookmarks are not available for this file.',
+    fontSize:'Text size', lineHeight:'Line spacing', pageWidth:'Page width', readerColor:'Colour', lhS:'Tight', lhM:'Normal', lhL:'Loose', wN:'Narrow', wM:'Normal', wW:'Wide',
+    thFollow:'Follow system', thLight:'Light', thDark:'Dark', thSepia:'Sepia', thGreen:'Green (easy on the eyes)', origNote:'This one is shown as it is, so only the colour can change; use the browser zoom for the size.',
+    installApp:'Install the app', installHint:'To install: Share → Add to Home Screen.',
     featuredFolder:'This file lives in the featured folder; move it out to unfeature it.',
     fsUnsupported:'This browser cannot connect folders. Use Chrome or Edge, or run serve.py.',
     needServe:'Markdown / TXT cannot be read when the page is opened straight from disk. Use serve.py, or click “Connect folder” at the bottom left.',
@@ -745,6 +857,8 @@ const idb = (function(){
 const state = {
   lang: LS.get('lang', (navigator.language||'zh').toLowerCase().startsWith('zh')?'zh':'en'),
   theme: LS.get('theme','auto'), view: LS.get('view','grid'), sort: LS.get('sort','recent'),
+  rs: Object.assign({fs:100, lh:'m', w:'m', th:'follow'}, LS.get('reader',{})),        // reader settings: font scale %, line height s/m/l, width n/m/w, colours follow|light|dark|sepia|green
+  marks: LS.get('marks',{}),                                                           // bookmarks (a place in a document): {id:[{pct,label,at}]}
   cat:'all', q:'', lf:'all', loaded:false,
   items:[], mode:'none', generated:'', dir:null, dirPending:null,
   flags: LS.get('flags',{}),               // static mode: {id:{featured,hidden}}
@@ -883,7 +997,7 @@ async function loadStatic(){
   if(!m){ try{ const r=await fetch('manifest.json',{cache:'no-store'}); if(r.ok) m=await r.json(); }catch(e){} }
   if(!m || !Array.isArray(m.items)) return null;
   state.generated = m.generated || ''; state.dirCfg = httpUrl(m.directory);
-  return m.items.map(x=>({type:'html',...x, source:'static'}));
+  return m.items.map(x=>{ const it={type:'html',...x, source:'static'}, o=state.flags[it.id]; if(o && o.category) it.category=o.category; return it; });      // a move made in this browser wins over the site's own category
 }
 async function readFolderMeta(dir){ try{ const fh=await dir.getFileHandle('_meta.json'); return JSON.parse(await (await fh.getFile()).text()) || {}; }catch(e){ return {}; } }
 async function writeFolderMeta(dir, data){ const fh=await dir.getFileHandle('_meta.json',{create:true}); const w=await fh.createWritable(); await w.write(JSON.stringify(data,null,2)); await w.close(); }
@@ -895,6 +1009,7 @@ async function scanFolder(dir){
     // 'folder:' keeps these ids apart from the server's own items, which can have the same path
     const it = {...info, id:'folder:'+rel, rel, path:'library/'+rel, category, size:f.size, added:Math.floor(f.lastModified/1000), date:info.date||today(f.lastModified), source:'folder', handle};
     const o=overrides[rel]||{}; ['title','summary','featured','hidden','keywords'].forEach(k=>{ if(o[k]!==undefined && o[k]!=='') it[k]=o[k]; });
+    if(o.category) it.category=normCat(o.category);                                   // a move made in this page: recorded in _meta.json, the file stays where it is
     out.push(it);
   }
   const ok = n => typeOf(n) && !/^[._]/.test(n);
@@ -1047,6 +1162,7 @@ function cardHTML(it, tk, hiddenView){
     : it.type==='pdf' ? [it.pages?t('pages',it.pages):'', it.size?fmtSize(it.size):''].filter(Boolean).join('，') : t('minutes',it.minutes||1);
   // moving / deleting only for what the visitor owns: the library served by serve.py, or files added in this browser
   const manage = it.source==='server' || it.source==='local';
+  const canMove = manage || it.source==='static' || it.source==='folder';          // on a deployed site or in a connected folder a move is kept in this browser / in the folder's _meta.json
   const where = isLink ? t('badgeLink') : it.source==='local' ? t('badgeLocal') : it.source==='folder' ? t('badgeFolder') : '';
   const ext = isLink ? ' target="_blank" rel="noopener noreferrer"' : '';
   // the public directory: is this one in it (a deployed page whose address the directory lists), does the owner keep it out, is it a copy of another file
@@ -1061,7 +1177,7 @@ function cardHTML(it, tk, hiddenView){
   const badges = (listed?`<span class="where good">${esc(t('badgeInDir'))}</span>`:'') + (asked?`<span class="where">${esc(t('badgeAsked'))}</span>`:'') + (same?`<span class="where warn" title="${esc(same.title)}">${esc(t('badgeSame',cut(same.title,16)))}</span>`:'');
   const acts = hiddenView
     ? `<button class="btn restore-btn" type="button" data-act="restore">${ICON.restore}${esc(t('restore'))}</button>${manage?`<button class="btn danger" type="button" data-act="purge">${ICON.trash}${esc(t('delForever'))}</button>`:''}`
-    : `<span class="acts">${ib('star',ICON.star,star?t('unstarTip'):t('starTip'),star)}${ib('hide',ICON.hide,t('hide'))}${manage?ib('move',ICON.move,t('move')):''}${canPublish?ib('publish',ICON.globe,t(asked?'publishAgain':'publishTip')):listed&&pubKind?`<button class="ibtn is-done" type="button" data-act="published" title="${esc(t('publishDone'))}" aria-label="${esc(t('publishDone'))}">${ICON.globe}</button>`:''}${ib('shuffle',ICON.shuffle,t('shuffle'))}${href?`<a class="ibtn" href="${esc(href)}" target="_blank" rel="noopener" title="${esc(t('newTab'))}" aria-label="${esc(t('newTab'))}">${ICON.ext}</a>`:''}</span>`;
+    : `<span class="acts">${ib('star',ICON.star,star?t('unstarTip'):t('starTip'),star)}${ib('hide',ICON.hide,t('hide'))}${canMove?ib('move',ICON.move,t('move')):''}${canPublish?ib('publish',ICON.globe,t(asked?'publishAgain':'publishTip')):listed&&pubKind?`<button class="ibtn is-done" type="button" data-act="published" title="${esc(t('publishDone'))}" aria-label="${esc(t('publishDone'))}">${ICON.globe}</button>`:''}${ib('shuffle',ICON.shuffle,t('shuffle'))}${href?`<a class="ibtn" href="${esc(href)}" target="_blank" rel="noopener" title="${esc(t('newTab'))}" aria-label="${esc(t('newTab'))}">${ICON.ext}</a>`:''}</span>`;
   return `<article class="card${hiddenView?' is-hidden':''}" data-id="${esc(it.id)}">
     <button class="cover" type="button" data-act="open" aria-label="${esc(it.title)}">${coverHTML(it)}${prog>1?`<span class="prog" style="width:${Math.min(prog,100)}%"></span>`:''}</button>
     <div class="card-body">
@@ -1083,7 +1199,7 @@ function render(){
   $('#sort').value=state.sort;
   const vl=state.view==='grid'?t('viewGrid'):t('viewList'); $('#viewBtn').innerHTML=state.view==='grid'?ICON.list:ICON.grid; $('#viewBtn').title=vl; $('#viewBtn').setAttribute('aria-label',vl);
   $('#themeBtn').textContent=t(state.theme==='light'?'themeLight':state.theme==='dark'?'themeDark':'themeAuto');
-  document.title=t('brand');
+  document.title=t('siteTitle');
 
   const dirMode = dirOn();
   $('#spaceSwitch').hidden = !state.dirCfg;
@@ -1159,10 +1275,13 @@ const DOC_CSS = `
   box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15191C;--ink:#E2E7E9;--muted:#9AA7AE;--rule:#2C363C;--code:#1F262B;--accent:#5CC2B1;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#15191C;--ink:#E2E7E9;--muted:#9AA7AE;--rule:#2C363C;--code:#1F262B;--accent:#5CC2B1;color-scheme:dark}
+:root[data-theme="sepia"]{--bg:#F4ECD8;--ink:#3B2F1E;--muted:#7A6A55;--rule:#DCCFB4;--code:#EBE0C6;--accent:#8A5A00;color-scheme:light}
+:root[data-theme="green"]{--bg:#CCE8CF;--ink:#1F3A27;--muted:#4C6B55;--rule:#B3D3B8;--code:#BFDDC3;--accent:#1F6B3A;color-scheme:light}
 *,*::before,*::after{box-sizing:inherit}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.85}
-.doc{max-width:44em;margin:0 auto;padding:48px 24px 120px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:var(--fs,17px);line-height:var(--lh,1.85)}
+.doc{max-width:var(--w,44em);margin:0 auto;padding:48px 24px 120px}
+@media (max-width:620px){.doc{padding:28px 18px 96px}}
 .doc-meta{font-size:13.5px;color:var(--muted);margin:0 0 6px}
 h1,h2,h3,h4{font-family:var(--serif);line-height:1.35;margin:1.8em 0 .6em}
 h1{font-size:2.05em;font-weight:900;margin-top:0}
@@ -1190,9 +1309,13 @@ details.toc a{text-decoration:none;color:var(--ink)}
 .open-pdf.alt{background:none;color:var(--ink);border:1.5px solid var(--rule)}
 .note{border:1px solid var(--rule);border-left:3px solid #9A6A00;border-radius:6px;padding:8px 12px;font-size:14px;color:var(--muted)}
 `;
+/* what the reader settings mean for a Markdown / TXT document (the page is ours, so size, spacing, width and colours are native); a page shown as it is gets only a colour change (see applyReader) */
+const LH={s:1.65, m:1.85, l:2.1}, WD={n:'36em', m:'44em', w:'60em'};
+const docVars = () => `--fs:${(17*state.rs.fs/100).toFixed(1)}px;--lh:${LH[state.rs.lh]||1.85};--w:${WD[state.rs.w]||'44em'}`;
+const docTheme = () => state.rs.th!=='follow' ? state.rs.th : state.theme!=='auto' ? state.theme : '';
 function docShell(title, bodyHTML, meta){
-  const th = state.theme!=='auto' ? ` data-theme="${state.theme}"` : '';
-  return `<!DOCTYPE html><html lang="${state.lang==='zh'?'zh-CN':'en'}"${th}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>${esc(title)}</title><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet"><style>${DOC_CSS}</style></head><body><article class="doc">${meta?`<p class="doc-meta">${esc(meta)}</p>`:''}${bodyHTML}</article></body></html>`;
+  const th = docTheme() ? ` data-theme="${docTheme()}"` : '';
+  return `<!DOCTYPE html><html lang="${state.lang==='zh'?'zh-CN':'en'}"${th} style="${docVars()}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>${esc(title)}</title><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet"><style>${DOC_CSS}</style></head><body><article class="doc">${meta?`<p class="doc-meta">${esc(meta)}</p>`:''}${bodyHTML}</article></body></html>`;
 }
 function renderMarkdown(md, it, base){
   const {body} = frontMatter(md);
@@ -1224,6 +1347,18 @@ async function rawData(it){
 }
 function setBlob(content, type){ if(state.blobUrl){ URL.revokeObjectURL(state.blobUrl); } state.blobUrl=URL.createObjectURL(content instanceof Blob ? content : new Blob([content],{type})); return state.blobUrl; }
 
+/* A plain text has no headings, but a book in plain text has chapters: a short line that begins like "第三章", "第12回", "Chapter 4" becomes a heading (the reader's contents are made of them),
+   when at least two such lines are found; otherwise the text is shown as it is. */
+const CHAPTER = /^\s*(第\s*[零〇一二三四五六七八九十百千两0-9]+\s*[章节回卷部篇集]|卷\s*[一二三四五六七八九十0-9]+|chapter\s+(\d+|[ivxlc]+)\b|part\s+(\d+|[ivxlc]+)\b)/i;
+function txtBody(text){
+  const parts=[]; let buf=[], n=0;
+  const flush=()=>{ if(buf.length){ parts.push(`<div class="plain">${esc(buf.join('\n'))}</div>`); buf=[]; } };
+  for(const line of text.split(/\r?\n/)){
+    if(line.trim().length<=60 && CHAPTER.test(line)){ flush(); parts.push(`<h2 id="ch${++n}">${esc(line.trim())}</h2>`); } else buf.push(line);
+  }
+  flush();
+  return n>=2 ? parts.join('') : `<div class="plain">${esc(text)}</div>`;
+}
 /* ================= reader ================= */
 async function urlFor(it){
   if(state.blobUrl){ URL.revokeObjectURL(state.blobUrl); state.blobUrl=null; }
@@ -1234,7 +1369,7 @@ async function urlFor(it){
   if(it.type==='html') return setBlob(String(data||''), 'text/html;charset=utf-8');
   const base = direct ? new URL(it.path.replace(/[^/]*$/,''), location.href).href : '';
   const meta = [it.date, t('minutes',it.minutes||1)].filter(Boolean).join('，');
-  const body = it.type==='md' ? renderMarkdown(String(data||''), it, base) : `<h1>${esc(it.title)}</h1><div class="plain">${esc(String(data||''))}</div>`;
+  const body = it.type==='md' ? renderMarkdown(String(data||''), it, base) : `<h1>${esc(it.title)}</h1>${txtBody(String(data||''))}`;
   return setBlob(docShell(it.title, body, meta), 'text/html;charset=utf-8');
 }
 function syncReader(){
@@ -1250,9 +1385,10 @@ async function openReader(id, push){
   const it=state.items.find(x=>x.id===id); if(!it) return;
   if(it.type==='link'){ if(httpUrl(it.url)) window.open(it.url,'_blank','noopener,noreferrer'); return; }       // a saved link: the original site, not the reader
   let url; try{ url=await urlFor(it); }catch(e){ toast(t('openFail')+(e.message==='404'?t('notFound'):e.message)); return; }
-  state.readingId=id;
+  state.readingId=id; state.rkind = (it.type==='md'||it.type==='txt') ? 'doc' : 'orig'; state.rpdf = it.type==='pdf'; state.toc=[]; state.tocCur='';
   $('#readerTitle').textContent=it.title; $('#readerProg').style.width='0%';
   $('#readerNew').href = directHref(it) || url;
+  closePanels(); $('#readerToc').disabled = $('#readerMark').disabled = state.rpdf;               // a PDF is shown by the browser itself: no contents to read, no place to remember
   syncReader();
   $('#reader').hidden=false; document.body.classList.add('reading');
   const fr=$('#frame');
@@ -1268,6 +1404,7 @@ async function openReader(id, push){
 }
 function closeReader(fromPop){
   if($('#reader').hidden) return;
+  closePanels(); $('#frame').classList.remove('inv'); $('#tint').style.display='none';
   $('#reader').hidden=true; document.body.classList.remove('reading'); $('#frame').removeAttribute('srcdoc'); $('#frame').src='about:blank';
   if(state.blobUrl){ URL.revokeObjectURL(state.blobUrl); state.blobUrl=null; }
   const id=state.readingId; state.readingId=null;
@@ -1276,17 +1413,100 @@ function closeReader(fromPop){
   const card=id && document.querySelector(`.card[data-id="${CSS.escape(id)}"]`); if(card) card.querySelector('.card-title a').focus();
 }
 function step(d){ const i=state.visible.indexOf(state.readingId), n=state.visible[i+d]; if(n) openReader(n,false).then(()=>history.replaceState({read:n},'','#read/'+encodeURIComponent(n))); }
+/* ---- reader: colours and text size, contents, bookmarks ---- */
+function frameDoc(){ try{ const w=$('#frame').contentWindow, d=w.document; return d && d.body && d.documentElement ? {w,d} : null; }catch(e){ return null; } }       // null: another origin, or the browser's PDF viewer
+const scrollPct = ({w,d}) => { const max=d.documentElement.scrollHeight-w.innerHeight; return max>0 ? Math.min(100,w.scrollY/max*100) : 100; };
+function applyReader(){
+  const th=state.rs.th, fr=$('#frame'), tint=$('#tint'), fd=frameDoc();
+  fr.classList.remove('inv'); tint.style.display='none';
+  if(state.rkind==='doc'){
+    if(!fd) return;
+    const el=fd.d.documentElement; el.style.cssText=docVars();
+    if(docTheme()) el.setAttribute('data-theme',docTheme()); else el.removeAttribute('data-theme');
+  } else if(th==='dark') fr.classList.add('inv');
+  else if(th==='sepia' || th==='green'){ tint.style.background = th==='sepia' ? '#F4ECD8' : '#CCE8CF'; tint.style.display='block'; }
+}
+function syncSettings(){
+  const rs=state.rs, doc=state.rkind==='doc';
+  ['#rowFs','#rowLh','#rowW'].forEach(s=>{ $(s).hidden=!doc; }); $('#rOrigNote').hidden=doc;
+  $('#fsVal').textContent=rs.fs+'%';
+  document.querySelectorAll('#rSetPanel .seg2[data-key] button').forEach(b=>b.setAttribute('aria-pressed',String(rs[b.parentElement.dataset.key]===b.dataset.v)));
+  document.querySelectorAll('#rThemes button').forEach(b=>b.setAttribute('aria-pressed',String(rs.th===b.dataset.th)));
+}
+function saveReader(){ LS.set('reader',state.rs); applyReader(); syncSettings(); }
+function closePanels(){ ['#rSetPanel','#rTocPanel'].forEach(s=>{ $(s).hidden=true; }); $('#readerSet').setAttribute('aria-expanded','false'); $('#readerToc').setAttribute('aria-expanded','false'); }
+function togglePanel(which){
+  const set=which==='set', panel=$(set?'#rSetPanel':'#rTocPanel'), open=panel.hidden;
+  closePanels(); if(!open) return;
+  panel.hidden=false; $(set?'#readerSet':'#readerToc').setAttribute('aria-expanded','true');
+  if(set) syncSettings(); else renderTocPanel();
+}
+/* contents: the headings of the document (same origin only); marks: places the reader saved */
+function buildToc(){
+  state.toc=[]; const fd=frameDoc(); if(!fd || state.rpdf) return;
+  [...fd.d.querySelectorAll('h1,h2,h3,h4')].filter(h=>!h.closest('details.toc,nav')).forEach((h,i)=>{
+    const text=(h.textContent||'').replace(/\s+/g,' ').trim(); if(!text || state.toc.length>=300) return;
+    if(!h.id) h.id='rh-'+i;
+    state.toc.push({id:h.id, text, level:+h.tagName[1]});
+  });
+}
+function currentHeading(fd){
+  let cur=null; for(const x of state.toc){ const el=fd.d.getElementById(x.id); if(el && el.getBoundingClientRect().top<=90) cur=x; else if(el) break; } return cur;
+}
+let tocTab='toc';
+function renderTocPanel(){
+  document.querySelectorAll('#rTocPanel .rtabs button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===tocTab)));
+  const body=$('#rTocBody'), id=state.readingId;
+  if(tocTab==='toc'){
+    body.innerHTML = state.toc.length ? state.toc.map(x=>`<button class="toc-i l${x.level}${x.id===state.tocCur?' on':''}" type="button" data-h="${esc(x.id)}">${esc(x.text)}</button>`).join('') : `<p class="empty">${esc(t('tocEmpty'))}</p>`;
+  } else {
+    const list=(state.marks[id]||[]);
+    body.innerHTML = `<button class="btn add-mark" type="button" data-add="1">${esc(t('markAddHere'))}</button>` + (list.length ? list.map((m,i)=>`<div class="mark-i"><button class="toc-i" type="button" data-mark="${i}">${esc(m.label||Math.round(m.pct)+'%')}<small>${Math.round(m.pct)}% · ${esc(today(m.at))}</small></button><button class="x" type="button" data-del="${i}" aria-label="${esc(t('remove'))}">×</button></div>`).join('') : `<p class="empty">${esc(t('marksEmpty'))}</p>`);
+  }
+  const idx=state.visible.indexOf(id); $('#rtPrev').disabled=idx<=0; $('#rtNext').disabled=idx<0||idx>=state.visible.length-1;
+}
+function addMark(){
+  const fd=frameDoc(), id=state.readingId; if(!fd || !id || state.rpdf){ toast(t('markNone')); return; }
+  const pct=Math.round(scrollPct(fd)*10)/10, h=currentHeading(fd), list=(state.marks[id]||[]).filter(m=>Math.abs(m.pct-pct)>0.5);      // a second mark at the same place replaces the first
+  list.push({pct, label:h?h.text:'', at:Date.now()}); list.sort((a,b)=>a.pct-b.pct); state.marks[id]=list.slice(0,50); LS.set('marks',state.marks);
+  toast(t('markAdded')); if(!$('#rTocPanel').hidden && tocTab==='marks') renderTocPanel();
+}
+function goPct(pct, smooth){ const fd=frameDoc(); if(!fd) return; const max=fd.d.documentElement.scrollHeight-fd.w.innerHeight; fd.w.scrollTo({top:max*pct/100, behavior:smooth?'smooth':'auto'}); }
+$('#readerSet').addEventListener('click',()=>togglePanel('set'));
+$('#readerToc').addEventListener('click',()=>togglePanel('toc'));
+$('#readerMark').addEventListener('click',addMark);
+$('#rSetPanel').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return; const rs=state.rs;
+  if(b.dataset.fs) rs.fs=Math.max(70,Math.min(200,rs.fs+(+b.dataset.fs)));
+  else if(b.dataset.v) rs[b.parentElement.dataset.key]=b.dataset.v;
+  else if(b.dataset.th) rs.th=b.dataset.th;
+  else return;
+  saveReader();
+});
+$('#rTocPanel').addEventListener('click',e=>{
+  const tab=e.target.closest('.rtabs button'); if(tab){ tocTab=tab.dataset.tab; renderTocPanel(); return; }
+  const fd=frameDoc(), narrow=matchMedia('(max-width:620px)').matches;
+  const h=e.target.closest('[data-h]'); if(h && fd){ const el=fd.d.getElementById(h.dataset.h); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); if(narrow) closePanels(); return; }
+  const mk=e.target.closest('[data-mark]'); if(mk){ const m=(state.marks[state.readingId]||[])[+mk.dataset.mark]; if(m) goPct(m.pct,true); if(narrow) closePanels(); return; }
+  const del=e.target.closest('[data-del]'); if(del){ (state.marks[state.readingId]||[]).splice(+del.dataset.del,1); LS.set('marks',state.marks); toast(t('markGone')); renderTocPanel(); return; }
+  if(e.target.closest('[data-add]')){ addMark(); renderTocPanel(); }
+});
+$('#rtPrev').addEventListener('click',()=>{ closePanels(); step(-1); });
+$('#rtNext').addEventListener('click',()=>{ closePanels(); step(1); });
 $('#frame').addEventListener('load',()=>{
   const id=state.readingId; if(!id) return;
   try{
-    const w=$('#frame').contentWindow, d=w.document; if(!d || !d.body || !d.documentElement) return;
+    const fd=frameDoc(); if(!fd) return; const {w,d}=fd;
+    applyReader(); buildToc(); if(!$('#rTocPanel').hidden) renderTocPanel();
     const saved=(state.progress[id]||{}).pct||0;
     if(saved>3 && saved<95) setTimeout(()=>{ const max=d.documentElement.scrollHeight-w.innerHeight; w.scrollTo(0,max*saved/100); },120);
     let tick=false;
     w.addEventListener('scroll',()=>{ if(tick) return; tick=true; requestAnimationFrame(()=>{ tick=false;
-      const max=d.documentElement.scrollHeight-w.innerHeight, pct=max>0?Math.min(100,w.scrollY/max*100):100;
-      $('#readerProg').style.width=pct+'%'; state.progress[id]={pct,at:Date.now()}; LS.set('progress',state.progress); }); },{passive:true});
-    w.addEventListener('keydown',e=>{ if(e.key==='Escape') closeReader(); });
+      const pct=scrollPct(fd);
+      $('#readerProg').style.width=pct+'%'; state.progress[id]={pct,at:Date.now()}; LS.set('progress',state.progress);
+      const cur=currentHeading(fd); if((cur?cur.id:'')!==state.tocCur){ state.tocCur=cur?cur.id:''; if(!$('#rTocPanel').hidden && tocTab==='toc') renderTocPanel(); }
+      if(!$('#rSetPanel').hidden) $('#rSetPanel').hidden=true, $('#readerSet').setAttribute('aria-expanded','false'); }); },{passive:true});
+    w.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if(!$('#rSetPanel').hidden || !$('#rTocPanel').hidden) closePanels(); else closeReader(); } });
   }catch(e){ /* cross-origin or PDF viewer: progress unavailable */ }
 });
 $('#readerBack').addEventListener('click',()=>closeReader());
@@ -1483,12 +1703,17 @@ function openMove(id){
 async function moveItem(id, category){
   const it=state.items.find(x=>x.id===id); moveDlg.close();       // close first: the toast sits below an open dialog
   try{
+    let note='';
     if(it.source==='local'){ const rec={...it,category}; delete rec.source; await idb.put(rec); }     // a file added in this browser: just change its category
-    else{
+    else if(it.source==='static'){                                                                    // the deployed site cannot be written: the move is this browser's own, like a star or a hide
+      state.flags[id]={...(state.flags[id]||{}),category}; LS.set('flags',state.flags); it.category=category; note=t('movedLocal');
+    } else if(it.source==='folder' && state.dir){                                                     // a connected folder: the category is recorded in its _meta.json, the file stays
+      const m=await readFolderMeta(state.dir); m[it.rel]={...(m[it.rel]||{}),category}; await writeFolderMeta(state.dir,m); it.category=category; note=t('movedMeta');
+    } else {
       const d=await api('api/move',{id,category});
       for(const k of ['progress','lastRead']) if(state[k][id]!==undefined){ state[k][d.id]=state[k][id]; delete state[k][id]; LS.set(k,state[k]); }   // reading progress follows the card
     }
-    toast(t('movedToast',cut(it.title,24),catName(category)));
+    toast(t('movedToast',cut(it.title,24),catName(category))+(note?' '+note:''));
     await loadAll();
   }catch(e){ toast(t('moveFail')+e.message); }
 }
@@ -1984,7 +2209,7 @@ document.addEventListener('click',e=>{ if(document.body.classList.contains('draw
 document.addEventListener('keydown',e=>{
   const typing=/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement && document.activeElement.tagName);
   if(!$('#reader').hidden){
-    if(e.key==='Escape'){ e.preventDefault(); closeReader(); }
+    if(e.key==='Escape'){ e.preventDefault(); if(!$('#rSetPanel').hidden || !$('#rTocPanel').hidden) closePanels(); else closeReader(); }
     else if(!typing && e.key==='ArrowLeft') step(-1);
     else if(!typing && e.key==='ArrowRight') step(1);
     return;
@@ -1993,6 +2218,23 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='Escape') document.body.classList.remove('drawer');
 });
 window.addEventListener('focus',()=>{ if($('#reader').hidden && !dlg.open && (state.mode==='server'||state.dir)) loadAll(); });
+
+/* ================= app: install to the home screen, read again without a network ================= */
+/* The service worker (sw.js) is registered only on a deployed https site: serve.py always shows the folder as it is. */
+if('serviceWorker' in navigator && location.protocol==='https:'){
+  window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+  if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});          // ask the browser not to clear what this site keeps (files added here, reading places)
+}
+let installEv=null;
+const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent), standalone=(window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone===true;
+const syncInstall=()=>{ $('#installBtn').hidden = standalone || !(installEv || isIos); };
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); installEv=e; syncInstall(); });
+window.addEventListener('appinstalled',()=>{ installEv=null; syncInstall(); });
+$('#installBtn').addEventListener('click',async()=>{
+  if(installEv){ installEv.prompt(); try{ await installEv.userChoice; }catch(e){} installEv=null; syncInstall(); }
+  else toast(t('installHint'));                                                                             // iOS has no install prompt: say where the button is
+});
+syncInstall();
 
 /* ================= boot ================= */
 (async function boot(){

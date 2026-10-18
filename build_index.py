@@ -563,13 +563,19 @@ if __name__ == '__main__':
               f'tags added to {r["patched"]} HTML page(s); {r["pages"]} Markdown/TXT article page(s) with full text')
         if base:
             print(f'SEO: sitemap.xml has {r["urls"]} URLs for {base}; robots.txt written; {r["skipped"]["noindex"]} noindex item(s) kept out of the sitemap')
-            if r['sitemap_problems']:
-                print(f'SEO: sitemap check found {len(r["sitemap_problems"])} problem(s) (Search Console would object):')
-                for p in r['sitemap_problems']:
+            moved = r.get("moved", 0)
+            print(f'SEO: all.html links every page, urls.txt lists every address ({r["urls"]}); {moved} page(s) left at their old addresses to forward to the new ones')
+            # print(f'SEO: all.html links every page, urls.txt lists every address ({r["urls"]}); {r["moved"]} page(s) left at their old addresses to forward to the new ones')
+            if r['skipped'].get('duplicate'):
+                print(f'SEO: {r["skipped"]["duplicate"]} file(s) in library/ are exact copies of another one: published, but not in the sitemap or the lists, and their canonical address is the original\'s')
+            sitemap_problems = r.get('sitemap_problems')
+            if sitemap_problems:
+                print(f'SEO: sitemap check found {len(sitemap_problems)} problem(s) (Search Console would object):')
+                for p in sitemap_problems:
                     print('SEO:   - ' + p)
-            else:
+            elif sitemap_problems is not None:
                 print(f'SEO: sitemap check passed: all {r["urls"]} addresses are of this site, percent-encoded, unique, and exist in {r["out"]}/')
-            if r['feeds']:
+            if r.get('feeds'):
                 print(f'SEO: subscription feeds written: {base}/feed.xml (Atom) and {base}/feed.json (JSON Feed)')
         else:
             print('SEO: no site address known, so sitemap.xml / robots.txt / canonical were NOT written: '
@@ -578,3 +584,12 @@ if __name__ == '__main__':
             print('SEO: ' + r['notice'])
         for problem, ids in r['problems'].items():
             print(f'SEO: {len(ids)} page(s) with {problem}: ' + ', '.join(ids[:5]) + (' ...' if len(ids) > 5 else ''))
+        bad = r.get('verify')
+        if bad is None:                                                  # an seo.py that does not check its own result is not trusted either
+            bad = ['seo.py did not check the site it built (it is not the version that goes with this build_index.py)']
+        if bad:                                                          # a failed build is not deployed: the site that is online stays as it is
+            print(f'BUILD STOPPED: the site just built in {r["out"]}/ has {len(bad)} problem(s) and must not be deployed:')
+            for p in bad:
+                print('  - ' + p)
+            sys.exit(1)
+        print(f'SEO: site check passed: index.html, every item of the manifest, no library/ folder, no private file in {r["out"]}/')
