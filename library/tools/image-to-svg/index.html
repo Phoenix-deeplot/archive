@@ -173,7 +173,7 @@
         <h2 id="methodTitle">保守矢量化，而不是重新设计</h2>
       </div>
       <div class="method-columns">
-        <p><strong>内核：</strong>ImageTracerJS 1.2.6（Unlicense / public domain），以 RGBA 像素量化、轮廓追踪和贝塞尔路径输出为基础。默认将细线保留为填充轮廓，不猜测描边参数或字体。</p>
+        <p><strong>内核：</strong>ImageTracerJS 1.2.6（Unlicense / public domain），以 RGBA 像素量化、轮廓追踪和贝塞尔路径输出为基础。细长且宽度稳定的区域会额外比较 native stroke；其余细线仍保留为填充轮廓，不猜测字体。</p>
         <p><strong>渐变：</strong>仅对近二值单主体且残差足够低的线性 / 中心径向渐变尝试生成 <code>linearGradient</code> / <code>radialGradient</code>；否则保留近似色块并显示限制。</p>
         <p><strong>验收：</strong>同一 SVG 字符串经 Blob 栅格化成与原图同尺寸 PNG，在主体区域分别计算白底、深底和 alpha SSIM；透明像素的隐藏 RGB 不参与评分。</p>
       </div>

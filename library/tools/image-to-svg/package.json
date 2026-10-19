@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "fixtures": "python scripts/generate_fixtures.py",
-    "verify": "node scripts/verify-export.js"
+    "verify": "node scripts/verify-export.js",
+    "browser-validate": "node scripts/run-browser-validation.js"
   },
   "engines": {
     "node": ">=20"

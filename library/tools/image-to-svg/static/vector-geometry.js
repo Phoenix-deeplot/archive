@@ -295,7 +295,10 @@
     thresholds.forEach(function (threshold) {
       var loops = segmentsToLoops(marchingSegments(imageData, threshold));
       if (!loops.length) return;
-      var topology = countTopology(imageData, threshold);
+      // Contour fitting needs loops, not a second full connected-component
+      // scan.  Callers that are already measuring topology can opt out while
+      // they try several thresholds for one candidate.
+      var topology = options.includeTopology === false ? null : countTopology(imageData, threshold);
       tolerances.forEach(function (tolerance) {
         var path = loopsToPath(loops, tolerance, tension);
         if (path) output.push({ threshold: threshold, tolerance: tolerance, loops: loops, path: path, loopCount: loops.length, topology: topology });

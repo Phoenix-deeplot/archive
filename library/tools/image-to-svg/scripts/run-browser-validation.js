@@ -52,6 +52,8 @@ const fixtures = [
     minimums: { white: .99, dark: .95, alpha: .90, edgeF1: .90 }
   }
 ].map((fixture) => ({ ...fixture, file: path.join(root, 'test-fixtures', fixture.name) }));
+const fixtureLimit = positiveInteger(process.env.FIXTURE_LIMIT, fixtures.length);
+const selectedFixtures = fixtures.slice(0, fixtureLimit);
 
 const zeroAuditLabels = ['image', 'foreignObject', 'data URI', '外链 URL', '事件属性', '审计错误'];
 
@@ -446,7 +448,7 @@ async function validateFixture(page, fixture, options) {
 }
 
 async function main() {
-  const missingFixtures = fixtures.filter((fixture) => !fs.existsSync(fixture.file)).map((fixture) => fixture.file);
+  const missingFixtures = selectedFixtures.filter((fixture) => !fs.existsSync(fixture.file)).map((fixture) => fixture.file);
   if (missingFixtures.length) throw new Error(`缺少浏览器验收样例：${missingFixtures.join(', ')}`);
 
   const browser = await playwright.chromium.launch({ headless: true, executablePath });
@@ -465,13 +467,13 @@ async function main() {
   try {
     await page.goto(baseUrl, { waitUntil: 'networkidle', timeout: conversionTimeoutMs });
     await page.waitForSelector('#fileInput');
-    for (let index = 0; index < fixtures.length; index += 1) {
-      const fixture = fixtures[index];
+    for (let index = 0; index < selectedFixtures.length; index += 1) {
+      const fixture = selectedFixtures[index];
       try {
         results.push(await validateFixture(page, fixture, {
           exerciseControls: index === 0,
           screenshotPath: process.env.SCREENSHOT_PATH || '',
-          screenshotFixture: process.env.SCREENSHOT_FIXTURE || fixtures[0].name
+          screenshotFixture: process.env.SCREENSHOT_FIXTURE || selectedFixtures[0].name
         }));
       } catch (error) {
         results.push({ fixture: fixture.name, pass: false, failures: [error.message || String(error)] });
@@ -501,14 +503,17 @@ async function main() {
       && pageErrors.length === 0
       && unexpectedRequests.length === 0
       && controlsPass
-      && results.length === fixtures.length
+      && results.length === selectedFixtures.length
       && results.every((result) => result.pass)
   };
-  console.log(JSON.stringify(report, null, 2));
-  if (!report.pass) process.exitCode = 1;
+  return report;
 }
 
-main().catch((error) => {
-  console.error(error.stack || error);
-  process.exit(1);
+main().then((report) => {
+  // Playwright can retain a transport handle briefly on Windows even after
+  // browser.close().  Flush the complete report first, then end this optional
+  // one-shot verifier deterministically instead of leaving a stale Node task.
+  process.stdout.write(`${JSON.stringify(report, null, 2)}\n`, () => process.exit(report.pass ? 0 : 1));
+}).catch((error) => {
+  process.stderr.write(`${error.stack || error}\n`, () => process.exit(1));
 });

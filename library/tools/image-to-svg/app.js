@@ -9,6 +9,10 @@
   const $$ = (selector) => [...document.querySelectorAll(selector)];
   const MAX_BYTES = 20 * 1024 * 1024;
   const MAX_DIMENSION = 2048;
+  // This is an export-safety limit, not a quality target. A candidate beyond
+  // it is never previewed or downloaded, but must not prevent simpler
+  // candidates from being evaluated.
+  const MAX_PATH_COUNT = 8000;
   // Full connected-component and contour measurements are intentionally
   // bounded.  A 2048² upload can still use ImageTracer, but it must not turn
   // every candidate comparison into an unbounded multi-million-pixel BFS.
@@ -198,22 +202,40 @@
     state.gradientNote = gradientFits.note;
     const contourSpecs = buildContourSpecs(layerPlan, settings, gradientFits);
     const paletteContourSpecs = buildPaletteContourSpecs(layerPlan, gradientFits);
+    const foregroundMaskSpecs = buildForegroundMaskSpecs(layerPlan, settings);
     const reserveForStructuredCandidates = Math.min(
-      contourSpecs.length + Math.min(1, gradientFits.fits.length) + paletteContourSpecs.length,
+      contourSpecs.length + Math.min(1, gradientFits.fits.length) + paletteContourSpecs.length + foregroundMaskSpecs.length,
       Math.max(0, settings.candidateLimit - 1)
     );
     const basePlan = buildCandidatePlan(settings, Math.max(1, settings.candidateLimit - reserveForStructuredCandidates), layerPlan);
     const candidates = [];
+    const rejectedCandidates = [];
     let timedOut = false;
 
     try {
       const tracingData = sanitizeTransparentPixels(state.sourceData);
+      for (let index = 0; index < foregroundMaskSpecs.length && candidates.length < settings.candidateLimit; index += 1) {
+        if (performance.now() - started > settings.timeBudgetMs) { timedOut = true; break; }
+        const spec = foregroundMaskSpecs[index];
+        setStatus(`分离稳定底色并描摹前景候选 ${index + 1} / ${foregroundMaskSpecs.length}…`, 'busy');
+        await nextPaint();
+        const foregroundData = maskStableBackdrop(tracingData, layerPlan.opaqueBackdrop, spec.distance);
+        await tryAddCandidate(candidates, rejectedCandidates, () => makeTracedCandidate(
+          foregroundData,
+          spec.plan,
+          spec.plan.label
+        ));
+      }
       for (let index = 0; index < basePlan.length; index += 1) {
+        if (candidates.length >= settings.candidateLimit) break;
         if (performance.now() - started > settings.timeBudgetMs) { timedOut = true; break; }
         setStatus(`描摹候选 ${index + 1} / ${basePlan.length}${gradientFits.fits.length ? '，随后会尝试简单渐变拟合' : ''}…`, 'busy');
         await nextPaint();
-        const candidate = await makeTracedCandidate(tracingData, basePlan[index], basePlan[index].label || `色块候选 ${index + 1}`);
-        candidates.push(candidate);
+        await tryAddCandidate(candidates, rejectedCandidates, () => makeTracedCandidate(
+          tracingData,
+          basePlan[index],
+          basePlan[index].label || `色块候选 ${index + 1}`
+        ));
       }
       for (let index = 0; index < paletteContourSpecs.length && candidates.length < settings.candidateLimit; index += 1) {
         if (performance.now() - started > settings.timeBudgetMs) { timedOut = true; break; }
@@ -221,12 +243,16 @@
         setStatus(`按前景色层拟合共享像素边界候选 ${index + 1} / ${paletteContourSpecs.length}…`, 'busy');
         await nextPaint();
         const paletteCandidate = makePaletteContourCandidate(layerPlan, settings, paletteSpec);
-        if (paletteCandidate) candidates.push(await scoreSvgCandidate(paletteCandidate.svg, `前景色层 · 亚像素轮廓 ${Math.round(paletteSpec.threshold * 255)}`, {
-          paletteContour: true,
-          paletteSpec,
-          strokeCount: paletteCandidate.strokeCount,
-          fillCount: paletteCandidate.fillCount
-        }));
+        if (paletteCandidate) await tryAddCandidate(candidates, rejectedCandidates, () => scoreSvgCandidate(
+          paletteCandidate.svg,
+          `前景色层 · 亚像素轮廓 ${Math.round(paletteSpec.threshold * 255)}`,
+          {
+            paletteContour: true,
+            paletteSpec,
+            strokeCount: paletteCandidate.strokeCount,
+            fillCount: paletteCandidate.fillCount
+          }
+        ));
       }
       for (let index = 0; index < contourSpecs.length && candidates.length < settings.candidateLimit; index += 1) {
         if (performance.now() - started > settings.timeBudgetMs) { timedOut = true; break; }
@@ -234,13 +260,17 @@
         setStatus(`拟合亚像素 Alpha 轮廓候选 ${index + 1} / ${contourSpecs.length}…`, 'busy');
         await nextPaint();
         const svg = makeContourFillCandidate(spec, layerPlan);
-        if (svg) candidates.push(await scoreSvgCandidate(svg, `Alpha 等值轮廓 ${Math.round(spec.threshold * 255)} · ε${spec.tolerance}`, { contour: spec }));
+        if (svg) await tryAddCandidate(candidates, rejectedCandidates, () => scoreSvgCandidate(
+          svg,
+          `Alpha 等值轮廓 ${Math.round(spec.threshold * 255)} · ε${spec.tolerance}`,
+          { contour: spec }
+        ));
       }
-      if (!gradientFits.fits.length && candidates.length < settings.candidateLimit && performance.now() - started <= settings.timeBudgetMs) {
+      if (layerPlan.hasTransparency && !gradientFits.fits.length && candidates.length < settings.candidateLimit && performance.now() - started <= settings.timeBudgetMs) {
         setStatus('描摹二值透明边缘候选…', 'busy');
         await nextPaint();
         const binaryAlphaData = binaryAlphaForTrace(state.sourceData, 128);
-        candidates.push(await makeTracedCandidate(binaryAlphaData, {
+        await tryAddCandidate(candidates, rejectedCandidates, () => makeTracedCandidate(binaryAlphaData, {
           colors: settings.colors,
           line: Math.max(.05, settings.lineError * .55),
           curve: Math.max(.05, settings.curveError * .55),
@@ -254,18 +284,22 @@
         const contour = contourSpecs.find((spec) => spec.gradientPreferred) || null;
         const gradientSvg = makeGradientCandidate(gradientFits.fits[index], settings, contour);
         if (!gradientSvg) continue;
-        const candidate = await scoreSvgCandidate(gradientSvg, `简单${gradientFits.fits[index].kind === 'radial' ? '径向' : '线性'}渐变`, { gradient: gradientFits.fits[index] });
-        candidates.push(candidate);
+        await tryAddCandidate(candidates, rejectedCandidates, () => scoreSvgCandidate(
+          gradientSvg,
+          `简单${gradientFits.fits[index].kind === 'radial' ? '径向' : '线性'}渐变`,
+          { gradient: gradientFits.fits[index] }
+        ));
       }
-      if (!candidates.length) throw new Error('没有生成可用候选。请降低颜色数量、增大耗时上限，或换用边缘更清晰的 PNG。');
+      if (!candidates.length) throw new Error(noCandidateMessage(rejectedCandidates));
       const best = chooseBestCandidate(candidates);
       state.candidates = candidates;
       const elapsed = performance.now() - started;
       state.selected = best;
-      setFinalOutput(best, elapsed, candidates.length, timedOut);
+      setFinalOutput(best, elapsed, candidates.length, timedOut, rejectedCandidates);
+      const skipNote = candidateSkipMessage(rejectedCandidates);
       setStatus(timedOut
-        ? `已到 ${settings.timeBudgetSeconds} 秒上限，已从 ${candidates.length} 个完成候选中选出当前最佳结果。`
-        : `已完成 ${candidates.length} 个有限候选的真实栅格验收。`);
+        ? `已到 ${settings.timeBudgetSeconds} 秒上限，已从 ${candidates.length} 个完成候选中选出当前最佳结果。${skipNote}`
+        : `已完成 ${candidates.length} 个有限候选的真实栅格验收。${skipNote}`);
     } catch (error) {
       console.error(error);
       setStatus(error.message || '转换失败。请尝试减少图片尺寸或颜色数量，并检查浏览器控制台。', 'error');
@@ -290,7 +324,7 @@
   }
 
   function buildCandidatePlan(settings, maxCount, layerPlan) {
-    const base = [
+    const standardPlans = [
       { colors: settings.colors, line: settings.lineError, curve: settings.curveError, omit: settings.pathOmit, rightAngle: true, round: 3, sampling: 2, cycles: 5, layering: 0, linefilter: false, label: '色块基线 · 保角' },
       { colors: Math.max(2, settings.colors - 4), line: Math.max(.05, settings.lineError * .68), curve: Math.max(.05, settings.curveError * .65), omit: Math.max(0, settings.pathOmit - 2), rightAngle: true, round: 2, sampling: 2, cycles: 3, layering: 0, linefilter: false, label: '兼容细节基线' },
       { colors: settings.colors, line: Math.max(.03, settings.lineError * .55), curve: Math.max(.03, settings.curveError * .55), omit: 0, rightAngle: false, round: 4, sampling: 2, cycles: 6, layering: 0, linefilter: true, label: '曲线 / 细节优先' },
@@ -299,6 +333,24 @@
       { colors: Math.min(48, settings.colors + 3), line: settings.lineError, curve: settings.curveError, omit: Math.max(0, settings.pathOmit - 1), rightAngle: true, round: 4, sampling: 2, cycles: 6, layering: 1, linefilter: false, label: '相邻色块候选' },
       { colors: Math.max(2, settings.colors - 2), line: Math.min(3, settings.lineError * 1.25), curve: Math.min(3, settings.curveError * 1.25), omit: Math.min(16, settings.pathOmit + 2), rightAngle: false, round: 3, sampling: 2, cycles: 4, layering: 0, linefilter: true, label: '简化曲线候选' }
     ];
+    // A mostly opaque image with many color buckets often means a light
+    // background plus anti-aliasing, compression noise, or gentle tonal
+    // changes. Try a finite conservative plan first so an over-fragmented
+    // detailed trace cannot delay all usable candidates.
+    const conservativePlan = {
+      colors: Math.max(2, Math.min(6, Math.round(settings.colors * .5))),
+      line: Math.min(3, Math.max(1.2, settings.lineError * 1.75)),
+      curve: Math.min(3, Math.max(1.2, settings.curveError * 1.75)),
+      omit: Math.min(16, Math.max(5, settings.pathOmit + 4)),
+      rightAngle: false,
+      round: 2,
+      sampling: 2,
+      cycles: 3,
+      layering: 0,
+      linefilter: true,
+      label: '复杂色调 · 保守简化'
+    };
+    const base = layerPlan?.likelyToneFragmentation ? [conservativePlan, ...standardPlans] : standardPlans;
     const seen = new Set();
     return base.filter((plan) => {
       if (layerPlan?.likelyThinLine && plan.omit > 0) plan.omit = 0;
@@ -341,6 +393,44 @@
     };
   }
 
+  function buildForegroundMaskSpecs(layerPlan, settings) {
+    if (!layerPlan?.opaqueBackdrop || !layerPlan.likelyToneFragmentation) return [];
+    return [{
+      distance: 10,
+      plan: {
+        colors: Math.min(20, Math.max(8, settings.colors + 4)),
+        line: settings.lineError,
+        curve: settings.curveError,
+        omit: Math.max(1, settings.pathOmit),
+        rightAngle: true,
+        round: 3,
+        sampling: 2,
+        cycles: 5,
+        layering: 0,
+        linefilter: false,
+        foregroundMask: true,
+        label: '稳定底色分离 · 前景描摹'
+      }
+    }];
+  }
+
+  function maskStableBackdrop(imageData, backdrop, distance) {
+    const data = new Uint8ClampedArray(imageData.data);
+    const [red, green, blue] = backdrop.color;
+    const limit = Math.max(1, distance) ** 2;
+    for (let index = 0; index < data.length; index += 4) {
+      if (data[index + 3] <= VISIBLE_ALPHA) continue;
+      const squaredDistance = (data[index] - red) ** 2 + (data[index + 1] - green) ** 2 + (data[index + 2] - blue) ** 2;
+      if (squaredDistance <= limit) {
+        data[index] = 0;
+        data[index + 1] = 0;
+        data[index + 2] = 0;
+        data[index + 3] = 0;
+      }
+    }
+    return { width: imageData.width, height: imageData.height, data };
+  }
+
   function sanitizeTransparentPixels(imageData) {
     const data = new Uint8ClampedArray(imageData.data);
     for (let index = 0; index < data.length; index += 4) {
@@ -359,20 +449,80 @@
   }
 
   async function scoreSvgCandidate(svg, label, meta = {}) {
-    const audit = auditSvg(svg);
-    if (!audit.ok) throw new Error(`候选 SVG 未通过结构审计：${audit.errors.join('；')}`);
-    const rendered = await rasterizeSvg(svg, state.width, state.height);
+    const finalizedSvg = applyOpaqueBackdrop(svg);
+    const audit = auditSvg(finalizedSvg);
+    if (!audit.ok) throw candidateAuditRejection(label, audit);
+    const rendered = await rasterizeSvg(finalizedSvg, state.width, state.height);
     const metrics = measureCandidate(state.sourceData, rendered.data, state.width, state.height);
     return {
-      svg,
+      svg: finalizedSvg,
       label,
       meta,
       audit,
       rendered,
       metrics,
-      bytes: new Blob([svg], { type: 'image/svg+xml' }).size,
+      bytes: new Blob([finalizedSvg], { type: 'image/svg+xml' }).size,
       pathCount: audit.counts.path
     };
+  }
+
+  function applyOpaqueBackdrop(svg) {
+    const backdrop = state.layerPlan?.opaqueBackdrop;
+    if (!backdrop) return svg;
+    const doc = parseSvg(svg);
+    const root = doc.documentElement;
+    const rect = doc.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', '0');
+    rect.setAttribute('y', '0');
+    rect.setAttribute('width', String(state.width));
+    rect.setAttribute('height', String(state.height));
+    rect.setAttribute('fill', `rgb(${backdrop.color.join(',')})`);
+    const firstPaintedNode = [...root.children].find((node) => node.localName.toLowerCase() !== 'defs');
+    root.insertBefore(rect, firstPaintedNode || null);
+    return `<?xml version="1.0" encoding="UTF-8"?>\n${new XMLSerializer().serializeToString(root)}`;
+  }
+
+  function candidateAuditRejection(label, audit) {
+    const error = new Error(`候选 SVG 未通过结构审计：${audit.errors.join('；')}`);
+    error.code = 'candidate-audit-rejected';
+    error.candidateLabel = label;
+    error.audit = audit;
+    return error;
+  }
+
+  async function tryAddCandidate(candidates, rejectedCandidates, buildCandidate) {
+    try {
+      const candidate = await buildCandidate();
+      if (candidate) candidates.push(candidate);
+      return candidate;
+    } catch (error) {
+      if (error?.code !== 'candidate-audit-rejected') throw error;
+      rejectedCandidates.push({
+        label: error.candidateLabel || '未命名候选',
+        errors: error.audit?.errors || ['结构审计失败'],
+        pathCount: error.audit?.counts?.path ?? null
+      });
+      return null;
+    }
+  }
+
+  function candidateSkipStats(rejectedCandidates = []) {
+    const pathCap = rejectedCandidates.filter((candidate) => candidate.errors.includes(`路径数超过 ${MAX_PATH_COUNT}，疑似不适合作为本 Demo 的矢量结果`)).length;
+    return { total: rejectedCandidates.length, pathCap };
+  }
+
+  function candidateSkipMessage(rejectedCandidates = []) {
+    const { total, pathCap } = candidateSkipStats(rejectedCandidates);
+    if (!total) return '';
+    if (pathCap) return ` 已跳过 ${pathCap} 个路径超过 ${MAX_PATH_COUNT} 的过度碎片化候选。`;
+    return ` 已跳过 ${total} 个未通过结构审计的候选。`;
+  }
+
+  function noCandidateMessage(rejectedCandidates = []) {
+    const { total, pathCap } = candidateSkipStats(rejectedCandidates);
+    if (total && pathCap === total) return `所有候选都因路径数超过 ${MAX_PATH_COUNT} 而被拒绝。请降低颜色数量、提高“路径简化”，或换用边缘更清晰的 PNG。`;
+    if (total) return '所有候选均未通过 SVG 结构审计。请降低颜色数量、提高“路径简化”，或换用边缘更清晰的 PNG。';
+    return '没有生成可用候选。请降低颜色数量、增大耗时上限，或换用边缘更清晰的 PNG。';
   }
 
   function normalizeSvg(rawSvg) {
@@ -482,6 +632,17 @@
       ? [Math.round(weightedRed / colorWeight), Math.round(weightedGreen / colorWeight), Math.round(weightedBlue / colorWeight)]
       : [0, 0, 0];
     const flatEligible = opaque >= 24 && (dominantCoverage >= .82 || (palette.length <= 2 && paletteCoverage >= .94));
+    const likelyToneFragmentation = opaque / Math.max(1, visible) >= .98 && palette.length >= 48 && dominantCoverage >= .55;
+    // Alpha contours describe the visible silhouette, so they are useful for
+    // transparent / isolated flat artwork. On a fully opaque multi-colour
+    // image the silhouette is merely the complete canvas and would create a
+    // deceptively simple, low-fidelity rectangle.
+    const alphaContourEligible = flatEligible && (
+      semitransparent > 0 ||
+      visible / Math.max(1, Math.ceil(width / stride) * Math.ceil(height / stride)) < .96 ||
+      palette.length <= 2
+    );
+    const opaqueBackdrop = estimateOpaqueBackdrop(imageData, width, height, opaque / Math.max(1, visible));
     return {
       visibleRatio: visible / Math.max(1, Math.ceil(width / stride) * Math.ceil(height / stride)),
       opaqueRatio: opaque / Math.max(1, visible),
@@ -492,11 +653,47 @@
       dominantCoverage,
       primaryColor,
       flatEligible,
+      alphaContourEligible,
+      likelyToneFragmentation,
+      opaqueBackdrop,
       likelyThinLine,
       topology,
       topologyMeasured,
       hasHoles: topology.holeCount > 0,
       hasTransparency: semitransparent > 0 || visible < Math.ceil(width / stride) * Math.ceil(height / stride)
+    };
+  }
+
+  function estimateOpaqueBackdrop(imageData, width, height, opaqueRatio) {
+    if (opaqueRatio < .995 || width < 2 || height < 2) return null;
+    const data = imageData.data;
+    const bins = new Map();
+    let samples = 0;
+    const step = Math.max(1, Math.floor((2 * (width + height)) / 1200));
+    const add = (x, y) => {
+      const index = (y * width + x) * 4;
+      if (data[index + 3] < OPAQUE_ALPHA) return;
+      const key = `${data[index] >> 3}/${data[index + 1] >> 3}/${data[index + 2] >> 3}`;
+      const bin = bins.get(key) || { count: 0, red: 0, green: 0, blue: 0 };
+      bin.count += 1;
+      bin.red += data[index];
+      bin.green += data[index + 1];
+      bin.blue += data[index + 2];
+      bins.set(key, bin);
+      samples += 1;
+    };
+    for (let x = 0; x < width; x += step) { add(x, 0); add(x, height - 1); }
+    for (let y = step; y < height - 1; y += step) { add(0, y); add(width - 1, y); }
+    let dominant = null;
+    bins.forEach((bin) => { if (!dominant || bin.count > dominant.count) dominant = bin; });
+    if (!dominant || dominant.count / Math.max(1, samples) < .72) return null;
+    return {
+      color: [
+        Math.round(dominant.red / dominant.count),
+        Math.round(dominant.green / dominant.count),
+        Math.round(dominant.blue / dominant.count)
+      ],
+      coverage: dominant.count / samples
     };
   }
 
@@ -603,7 +800,7 @@
       const mask = new Uint8ClampedArray(sourceData.length);
       component.pixels.forEach((pixel) => { mask[pixel * 4 + 3] = sourceData[pixel * 4 + 3]; });
       const contours = window.NativeVectorGeometry.alphaContourCandidates({ width: source.width, height: source.height, data: mask }, {
-        thresholds: [spec.threshold], simplifyTolerances: [spec.simplify], tension: .72
+        thresholds: [spec.threshold], simplifyTolerances: [spec.simplify], tension: .72, includeTopology: false
       });
       const contour = contours[0];
       if (!contour?.path) return;
@@ -737,7 +934,7 @@
 
   function buildContourSpecs(layerPlan, settings, gradientFits) {
     if (!window.NativeVectorGeometry?.alphaContourCandidates) return [];
-    if (!layerPlan.flatEligible && !gradientFits.fits.length) return [];
+    if (!layerPlan.alphaContourEligible && !gradientFits.fits.length) return [];
     const large = state.width * state.height > MAX_STRUCTURED_PIXELS;
     const raw = window.NativeVectorGeometry.alphaContourCandidates(state.sourceData, {
       thresholds: large ? [.5] : [.38, .5, .62],
@@ -754,7 +951,7 @@
       ranked[0].gradientPreferred = true;
       picked.push(ranked[0]);
     }
-    if (layerPlan.flatEligible) {
+    if (layerPlan.alphaContourEligible) {
       for (const spec of ranked) {
         if (!picked.includes(spec)) picked.push(spec);
         if (picked.length >= 2) break;
@@ -768,7 +965,7 @@
   }
 
   function makeContourFillCandidate(spec, layerPlan) {
-    if (!spec?.path || !layerPlan.flatEligible) return null;
+    if (!spec?.path || !layerPlan.alphaContourEligible) return null;
     const [red, green, blue] = layerPlan.primaryColor;
     const fill = `rgb(${red},${green},${blue})`;
     return nativeSvg(`<path d="${spec.path}" fill="${fill}" fill-rule="evenodd"/>`);
@@ -863,7 +1060,7 @@
     return count ? total / (count * 255) : 0;
   }
 
-  function setFinalOutput(best, elapsed, candidateCount, timedOut) {
+  function setFinalOutput(best, elapsed, candidateCount, timedOut, rejectedCandidates = []) {
     state.svgText = best.svg;
     state.svgBlob = new Blob([state.svgText], { type: 'image/svg+xml' });
     el.download.dataset.svgFingerprint = stringFingerprint(state.svgText);
@@ -876,11 +1073,11 @@
     el.overlaySvg.insertAdjacentHTML('beforeend', inlineSvg);
     el.svgSize.textContent = `${formatBytes(best.bytes)} · ${best.pathCount} 条路径`;
     el.results.hidden = false;
-    renderMetrics(best, elapsed, candidateCount, timedOut);
+    renderMetrics(best, elapsed, candidateCount, timedOut, rejectedCandidates);
     renderAudit(best.audit, best.pathCount);
     renderLayerPlan(best);
     renderDiffs(state.sourceData.data, best.rendered.data, best.metrics, state.width, state.height);
-    renderLimitations(best, timedOut);
+    renderLimitations(best, timedOut, rejectedCandidates);
     el.download.disabled = false;
     updateComparisonSlider();
     setBackground(state.background);
@@ -888,9 +1085,10 @@
     el.results.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  function renderMetrics(best, elapsed, candidateCount, timedOut) {
+  function renderMetrics(best, elapsed, candidateCount, timedOut, rejectedCandidates = []) {
     const m = best.metrics;
     const passed = m.white >= .99 && m.dark >= .99 && m.alpha >= .99;
+    const skipped = candidateSkipStats(rejectedCandidates);
     el.verdict.className = `verdict ${passed ? 'pass' : 'warn'}`;
     el.verdict.dataset.quality = passed ? 'pass' : 'approximate';
     el.verdict.textContent = passed ? '达到本 Demo 的图像相似度目标' : '近似矢量版';
@@ -905,6 +1103,7 @@
       [state.layerPlan?.topologyMeasured ? '拓扑差' : '拓扑差（大图跳过）', state.layerPlan?.topologyMeasured ? String(m.topologyError) : '—', 'topology-error'],
       ['耗时', `${(elapsed / 1000).toFixed(2)} s`, 'elapsed'],
       ['候选', `${candidateCount}${timedOut ? '（超时截断）' : ''}`, 'candidate-count'],
+      ['跳过候选', skipped.total ? `${skipped.total}${skipped.pathCap ? `（${skipped.pathCap} 个路径超限）` : ''}` : '0', 'candidate-skipped'],
       ['SVG 大小', formatBytes(best.bytes), 'svg-size'],
       ['路径数量', String(best.pathCount), 'path-count'],
       ['ROI', `${m.roi.w} × ${m.roi.h} px`, 'roi'],
@@ -950,10 +1149,20 @@
         ? `最终候选保留 ${best.meta.strokeCount} 条经长度 / 宽度稳定性检测的原生描边，其余形状继续按填充轮廓处理。`
         : '细线候选禁用小轮廓剔除，并优先比较曲线与轮廓误差；当前仍用源像素验收，不自动补线。'
     });
-    if (plan.flatEligible) facts.push({
+    if (plan.alphaContourEligible) facts.push({
       kind: 'flat', action: 'try-alpha-contour', validation: best.meta?.contour ? 'accepted' : 'fallback',
       title: '检测到近似纯色层',
       text: '已额外尝试亚像素 Alpha 等值轮廓，避免将抗锯齿边缘误当成新色块。'
+    });
+    if (plan.opaqueBackdrop) facts.push({
+      kind: 'opaque-backdrop', action: 'preserve-opacity', validation: 'accepted',
+      title: '检测到连续不透明边缘底色',
+      text: '最终 SVG 在图层底部加入原生 rect，以保留原图的不透明背景；它不包含位图数据。'
+    });
+    if (best.meta?.plan?.foregroundMask) facts.push({
+      kind: 'foreground-mask', action: 'separate-background', validation: 'accepted',
+      title: '稳定底色已从前景描摹中分离',
+      text: '只将接近边缘底色的像素交给原生 rect，其余前景继续按原图颜色描摹；是否采用仍由同尺寸评分决定。'
     });
     if (best.meta?.gradient) facts.push({
       kind: 'gradient', action: 'fit-gradient', validation: 'accepted',
@@ -1003,7 +1212,7 @@
     }));
   }
 
-  function renderLimitations(best, timedOut) {
+  function renderLimitations(best, timedOut, rejectedCandidates = []) {
     const notes = [
       state.gradientNote,
       state.layerPlan?.likelyThinLine
@@ -1014,6 +1223,9 @@
       '相邻色块会比较顺序与并行分层；复杂半透明叠层和全局共享边界仍属于当前限制。'
     ];
     if (best.pathCount > 1200) notes.push('路径数较高：该输入可能超出少色 Logo / 图标的推荐范围。');
+    const skipped = candidateSkipStats(rejectedCandidates);
+    if (skipped.pathCap) notes.push(`已跳过 ${skipped.pathCap} 个路径超过 ${MAX_PATH_COUNT} 的过度碎片化候选；最终结果仍单独通过结构审计，不会以位图代替。`);
+    else if (skipped.total) notes.push(`已跳过 ${skipped.total} 个未通过结构审计的候选；最终结果仍单独通过结构审计。`);
     if (timedOut) notes.push('候选搜索达到耗时上限，展示的是已完成候选中的最佳结果。');
     el.limitations.textContent = notes.join(' ');
   }
@@ -1101,7 +1313,7 @@
       }
     }
     if (!counts.path && !counts.basicShapes) errors.push('没有可见的原生矢量图元');
-    if (counts.path > 8000) errors.push('路径数超过 8000，疑似不适合作为本 Demo 的矢量结果');
+    if (counts.path > MAX_PATH_COUNT) errors.push(`路径数超过 ${MAX_PATH_COUNT}，疑似不适合作为本 Demo 的矢量结果`);
     return { ok: !errors.length, errors: [...new Set(errors)], counts };
   }
 
@@ -1477,18 +1689,4 @@
   function nextPaint() { return new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 0))); }
   function loadImage(url) { return new Promise((resolve, reject) => { const image = new Image(); image.onload = () => resolve(image); image.onerror = () => reject(new Error('浏览器无法加载图片或 SVG。')); image.src = url; }); }
   function canvasToBlob(canvas, type) { return new Promise((resolve, reject) => canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('无法生成 PNG 栅格验证结果。')), type)); }
-  window.__imageToSvgDebug = {
-    layerPlan: () => ({
-      ...state.layerPlan,
-      topology: state.layerPlan?.topology ? { componentCount: state.layerPlan.topology.componentCount, holeCount: state.layerPlan.topology.holeCount } : null
-    }),
-    candidates: () => state.candidates.map((candidate) => ({
-      label: candidate.label,
-      meta: candidate.meta,
-      metrics: (({ white, dark, alpha, minSsim, edgeF1, boundaryAlphaMae, interiorColorMae, topologyError, score }) => ({ white, dark, alpha, minSsim, edgeF1, boundaryAlphaMae, interiorColorMae, topologyError, score }))(candidate.metrics),
-      pathCount: candidate.pathCount,
-      bytes: candidate.bytes
-    })),
-    svgFor: (label) => state.candidates.find((candidate) => candidate.label === label)?.svg || ''
-  };
 })();
