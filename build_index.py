@@ -26,7 +26,7 @@ Title and summary are read from the page itself; optional meta tags override the
 Markdown files may use front matter (title, description, tags, date, category,
 featured, cover). PDF titles come from the document metadata, else the file name.
 
-Edits made in the web page (featured star, hidden, title, summary) are stored in
+Edits made in the web page (featured star, pinned to the top, hidden, title, summary) are stored in
 library/_meta.json and merged here.
 """
 import argparse
@@ -380,11 +380,15 @@ def project_stats(dirpath):
 
 def _apply_overrides(item, overrides):
     o = overrides.get(item['id']) or {}
-    for k in ('title', 'summary', 'featured', 'hidden', 'keywords', 'cover', 'noindex', 'slug', 'nodirectory'):
+    for k in ('title', 'summary', 'featured', 'hidden', 'keywords', 'cover', 'noindex', 'slug', 'nodirectory', 'pinned'):
         if k in o and o[k] not in (None, ''):
             item[k] = o[k]
     if item.get('nodirectory') is False:             # switched back on in the page: the key only exists while it is true
         del item['nodirectory']
+    if not item.get('pinned'):                       # unpinned in the page (false): the key only exists while the item is pinned
+        item.pop('pinned', None)
+    elif isinstance(item['pinned'], bool) or not isinstance(item['pinned'], (int, float)):
+        item['pinned'] = 1                           # `"pinned": true` written by hand; the page writes the time it was pinned, and the latest pin goes first
 
 
 def load_previous():

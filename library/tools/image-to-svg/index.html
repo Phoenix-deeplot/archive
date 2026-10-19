@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="本地运行的 PNG/JPG 到原生 SVG 矢量化与可复现相似度验收 Demo。">
+  <title>图片转高保真 SVG · 本地 Demo</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./static/imagetracer_v1.2.6.js" defer></script>
+  <script src="./static/vector-geometry.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">LOCAL · RASTER → NATIVE SVG</p>
+        <h1>图片转高保真 SVG</h1>
+        <p class="lead">PNG / JPG 上传后，在本机浏览器完成 RGBA 轮廓描摹、有限候选搜索、同尺寸 PNG 栅格验收和下载。不会嵌入位图，也不会调用生成式模型。</p>
+      </div>
+      <div class="hero-badges" aria-label="能力说明">
+        <span>原生路径</span><span>透明度验证</span><span>Canvas SSIM</span>
+      </div>
+    </header>
+
+    <section class="control-card" aria-labelledby="uploadTitle">
+      <div class="section-heading">
+        <div>
+          <p class="kicker">01 · 输入</p>
+          <h2 id="uploadTitle">上传唯一参考原图</h2>
+        </div>
+        <p id="inputInfo" class="quiet">支持 PNG、JPG / JPEG，最大 20 MB，最长边 2048 px。</p>
+      </div>
+
+      <label id="dropzone" class="dropzone" for="fileInput" tabindex="0">
+        <input id="fileInput" type="file" accept="image/png,image/jpeg" hidden>
+        <span class="drop-icon" aria-hidden="true">⇧</span>
+        <strong>拖拽 PNG / JPG 到这里，或点击选择</strong>
+        <span>原图只留在当前浏览器内存中，用作描摹和验收的唯一参考源。</span>
+      </label>
+
+      <div class="control-row">
+        <button id="convertButton" class="button primary" type="button" disabled>开始矢量化</button>
+        <span id="statusLine" class="status" role="status" aria-live="polite">等待上传图片</span>
+      </div>
+
+      <details class="advanced" id="advancedPanel">
+        <summary>高级参数 <span>自动模式会在有限候选中选择最佳结果</span></summary>
+        <div class="advanced-grid">
+          <label class="field">
+            <span>颜色数量 <output id="colorCountOut">12</output></span>
+            <input id="colorCount" type="range" min="2" max="32" step="1" value="12">
+            <small>每个候选的调色板上限。</small>
+          </label>
+          <label class="field">
+            <span>轮廓拟合误差 <output id="lineErrorOut">0.80</output></span>
+            <input id="lineError" type="range" min="0.05" max="3" step="0.05" value="0.80">
+            <small>较低保留更多轮廓细节。</small>
+          </label>
+          <label class="field">
+            <span>曲线平滑程度 <output id="curveErrorOut">0.80</output></span>
+            <input id="curveError" type="range" min="0.05" max="3" step="0.05" value="0.80">
+            <small>二次贝塞尔拟合误差；较低更贴近像素边缘。</small>
+          </label>
+          <label class="field">
+            <span>路径简化 <output id="pathOmitOut">2 px</output></span>
+            <input id="pathOmit" type="range" min="0" max="16" step="1" value="2">
+            <small>移除小于该面积的噪点路径；0 适合细线。</small>
+          </label>
+          <label class="field compact">
+            <span>候选上限</span>
+            <input id="candidateLimit" type="number" min="1" max="10" value="7">
+            <small>最多 10 组，固定上限。</small>
+          </label>
+          <label class="field compact">
+            <span>耗时上限（秒）</span>
+            <input id="timeBudget" type="number" min="2" max="20" value="8">
+            <small>超时保留已完成的最佳候选。</small>
+          </label>
+        </div>
+      </details>
+    </section>
+
+    <section id="results" class="results" hidden aria-labelledby="resultTitle">
+      <div class="result-heading">
+        <div>
+          <p class="kicker">02 · 结果</p>
+          <h2 id="resultTitle">原图与最终 SVG</h2>
+        </div>
+        <div class="toolbar" aria-label="预览控制">
+          <div class="segmented" role="group" aria-label="背景">
+            <button class="bg-button active" type="button" data-background="light">白色</button>
+            <button class="bg-button" type="button" data-background="dark">深色</button>
+            <button class="bg-button" type="button" data-background="checker">棋盘格</button>
+          </div>
+          <div class="segmented" role="group" aria-label="预览尺寸">
+            <button class="size-button" type="button" data-size="32">32px</button>
+            <button class="size-button active" type="button" data-size="128">128px</button>
+            <button class="size-button" type="button" data-size="original">原始</button>
+            <button class="size-button" type="button" data-size="zoom">放大</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-grid">
+        <article class="preview-card">
+          <div class="card-title"><span>原图</span><span id="sourceSize" class="muted">—</span></div>
+          <div id="originalStage" class="preview-stage stage-light">
+            <img id="originalPreview" alt="上传的原图预览">
+          </div>
+        </article>
+        <article class="preview-card">
+          <div class="card-title"><span>最终 SVG</span><span id="svgSize" class="muted">—</span></div>
+          <div id="svgStage" class="preview-stage stage-light" aria-label="最终 SVG 预览"></div>
+        </article>
+      </div>
+
+      <article class="compare-card">
+        <div class="card-title"><span>可拖动叠加对比</span><span class="muted">左：原图 · 右：SVG</span></div>
+        <div id="overlayStage" class="overlay-stage stage-light">
+          <img id="overlayOriginal" alt="原图">
+          <div id="overlaySvgClip" class="overlay-svg-clip" aria-hidden="true"><div id="overlaySvg"></div></div>
+          <div id="sliderLine" class="slider-line" aria-hidden="true"></div>
+          <input id="compareSlider" aria-label="拖动比较原图与 SVG" type="range" min="0" max="100" value="50">
+        </div>
+      </article>
+
+      <div class="inspection-grid">
+        <article class="metrics-card">
+          <div class="card-title"><span>保真度检测</span><span id="verdict" class="verdict neutral">等待评分</span></div>
+          <div id="metricGrid" class="metric-grid"></div>
+          <p id="metricDefinition" class="method-note">评分方法将在转换后显示。</p>
+        </article>
+        <article class="audit-card">
+          <div class="card-title"><span>SVG 结构审计</span><span id="auditState" class="verdict neutral">未审计</span></div>
+          <dl id="auditList" class="audit-list"></dl>
+          <p id="limitations" class="method-note">—</p>
+        </article>
+      </div>
+
+      <section class="layer-plan-card" aria-labelledby="layerPlanTitle">
+        <div class="card-title">
+          <span id="layerPlanTitle">智能图层分析 / 修正策略</span>
+          <span class="local-analysis-badge">本地启发式</span>
+        </div>
+        <p id="layerPlanSummary" class="layer-plan-summary" aria-live="polite" aria-atomic="true">等待本地分析图层、边缘与细线特征。</p>
+        <ul id="layerPlanList" class="layer-plan-list" aria-label="本地图层分析与修正策略" aria-live="polite" aria-relevant="additions text">
+          <li class="layer-plan-placeholder">转换完成后将列出可验证的图层判断和候选修正策略。</li>
+        </ul>
+        <p id="localRefinementNote" class="method-note local-refinement-note">仅在当前浏览器内根据连通区域、颜色、边缘与形状特征进行启发式分析；不会上传图片、调用云端服务或使用生成式模型。每项修正仍以 SVG 栅格化后的像素验收为准。</p>
+      </section>
+
+      <div class="diff-grid">
+        <article class="diff-card">
+          <div class="card-title"><span>像素 / 透明度差异图</span><span class="muted">亮色差异更大</span></div>
+          <canvas id="differenceCanvas" width="1" height="1" aria-label="原图与 SVG 的像素差异图"></canvas>
+        </article>
+        <article class="diff-card">
+          <div class="card-title"><span>轮廓差异图</span><span class="muted">红：原图独有 · 青：SVG 独有</span></div>
+          <canvas id="edgeCanvas" width="1" height="1" aria-label="原图与 SVG 的轮廓差异图"></canvas>
+        </article>
+      </div>
+
+      <div class="download-row">
+        <p id="downloadHint">下载内容与本页 SVG 预览、栅格验收使用的是同一份已审计字符串。</p>
+        <button id="downloadButton" class="button primary" type="button" disabled>下载 SVG</button>
+      </div>
+    </section>
+
+    <section class="method-card" aria-labelledby="methodTitle">
+      <div>
+        <p class="kicker">实现范围</p>
+        <h2 id="methodTitle">保守矢量化，而不是重新设计</h2>
+      </div>
+      <div class="method-columns">
+        <p><strong>内核：</strong>ImageTracerJS 1.2.6（Unlicense / public domain），以 RGBA 像素量化、轮廓追踪和贝塞尔路径输出为基础。默认将细线保留为填充轮廓，不猜测描边参数或字体。</p>
+        <p><strong>渐变：</strong>仅对近二值单主体且残差足够低的线性 / 中心径向渐变尝试生成 <code>linearGradient</code> / <code>radialGradient</code>；否则保留近似色块并显示限制。</p>
+        <p><strong>验收：</strong>同一 SVG 字符串经 Blob 栅格化成与原图同尺寸 PNG，在主体区域分别计算白底、深底和 alpha SSIM；透明像素的隐藏 RGB 不参与评分。</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

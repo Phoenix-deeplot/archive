@@ -1,7 +1,25 @@
 window.ARCHIVE_MANIFEST = {
- "generated": "2026-10-16 15:43",
+ "generated": "2026-10-19 10:13",
  "directory": "https://adminbook.zhitree.cn/",
  "items": [
+  {
+   "id": "tools/image-to-svg/index.html",
+   "path": "library/tools/image-to-svg/index.html",
+   "category": "tools",
+   "title": "图片转高保真 SVG · 本地 Demo",
+   "summary": "本地运行的 PNG/JPG 到原生 SVG 矢量化与可复现相似度验收 Demo。",
+   "keywords": [],
+   "lang": "zh",
+   "minutes": 2,
+   "date": "2026-10-19",
+   "cover": "",
+   "featured": false,
+   "type": "html",
+   "size": 246290,
+   "added": 1792375992,
+   "project": true,
+   "files": 18
+  },
   {
    "id": "books/政治的人生 (王沪宁) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
    "path": "library/books/政治的人生 (王沪宁) (z-library.sk, 1lib.sk, z-lib.sk).pdf",

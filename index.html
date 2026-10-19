@@ -139,12 +139,30 @@ details.how ol{margin:6px 0 0;padding-left:1.3em}
 .dir-group{margin:0 0 14px;border-left:2px solid var(--rule);border-left-color:color-mix(in srgb,var(--gc,var(--c-other)) 55%,transparent);border-radius:0 0 0 2px}
 .dir-head{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;padding:5px 8px 5px 10px;margin:0 0 2px;border-radius:0 6px 6px 0;font-size:14px;font-weight:700;line-height:1.3;color:var(--ink);cursor:pointer;text-align:left}
 .dir-head:hover{background:var(--surface)}
+.dir-head.is-plain{cursor:default}
+.dir-head.is-plain:hover{background:none}
 .dir-head .dot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--gc,var(--c-other))}
 .dir-head .n{margin-left:auto;min-width:20px;padding:0 7px;border-radius:999px;background:var(--surface);border:1px solid var(--rule);font-size:12px;font-weight:600;line-height:1.5;text-align:center;color:var(--muted);font-variant-numeric:tabular-nums}
 .dir-item{display:block;width:100%;text-align:left;border:0;background:none;padding:5px 10px 5px 12px;border-radius:5px;font-size:13.5px;line-height:1.45;color:var(--muted);cursor:pointer;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .dir-item:hover{background:var(--surface);color:var(--ink)}
 .dir-more{display:block;border:0;background:none;padding:3px 10px 3px 12px;font-size:12.5px;font-weight:600;color:var(--accent);cursor:pointer;text-align:left}
 .dir-more:hover{text-decoration:underline}
+/* swipe an entry of the directory to the left (touch): the action under it shows (delete for what is the visitor's own, hide / restore for the site's books) */
+.dir-row{position:relative;overflow:hidden;border-radius:5px;-webkit-user-select:none;user-select:none}
+.dir-row .dir-item{position:relative;background:var(--side);touch-action:pan-y;will-change:transform}
+.dir-row .dir-item:hover{background:var(--surface)}
+.dir-swipe{position:absolute;top:0;right:0;bottom:0;width:84px;visibility:hidden;border:0;border-radius:0 5px 5px 0;background:var(--danger);color:var(--surface);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.dir-swipe.soft{background:var(--rule);color:var(--ink)}
+.dir-row.is-swiping .dir-swipe,.dir-row.is-open .dir-swipe{visibility:visible}
+/* collections in the side list (narrow screens: the list is the drawer) */
+.col-nav{display:flex;flex-direction:column;gap:2px;margin:6px 0 14px;padding-bottom:12px;border-bottom:1px solid var(--rule)}
+.col-nav[hidden]{display:none}
+.col-nav .dir-label{align-items:center;margin:0 10px 4px}
+.col-nav .link-btn{border:0;background:none;padding:2px 4px;font:inherit;font-size:12.5px;font-weight:600;color:var(--accent);cursor:pointer}
+.col-nav .link-btn:hover{text-decoration:underline}
+.col-nav .dot{background:var(--accent)}
+.col-nav .cat-btn[data-colnav="all"] .dot{background:transparent;border:1.5px solid var(--muted)}
+@media (min-width:981px){.col-nav{display:none}}
 .side-foot{border-top:1px solid var(--rule);padding:12px 16px calc(14px + env(safe-area-inset-bottom,0px)) 18px;display:flex;flex-direction:column;gap:10px}
 .source{font-size:12.5px;color:var(--muted);line-height:1.5;margin:0}
 .source b{color:var(--ink);font-weight:600}
@@ -190,6 +208,10 @@ details.how ol{margin:6px 0 0;padding-left:1.3em}
 .tag::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
 .tag.books{color:var(--c-books)} .tag.tools{color:var(--c-tools)} .tag.notes{color:var(--c-notes)} .tag.featured{color:var(--c-featured)} .tag.other{color:var(--c-other)}
 .star-badge{color:var(--c-featured);font-weight:600}
+.pin-badge{display:inline-flex;align-items:center;gap:3px;color:var(--accent);font-weight:600}
+.pin-badge .icon{width:13px;height:13px;fill:currentColor}
+.card-foot .ibtn[data-act="pin"][aria-pressed="true"]{color:var(--accent)}
+.card.is-pinned{border-color:color-mix(in srgb,var(--accent) 45%,var(--rule))}
 .card-title{font-family:var(--serif);font-weight:600;font-size:18.5px;line-height:1.4;margin:0 0 6px}
 .card-title a{text-decoration:none}
 .card-title a:hover{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
@@ -198,6 +220,7 @@ details.how ol{margin:6px 0 0;padding-left:1.3em}
 .card-foot .acts{margin-left:auto;display:flex;gap:2px}
 .card-foot .ibtn{width:36px;height:36px;color:var(--ink);opacity:.7}
 .card-foot .ibtn:hover{opacity:1;background:var(--bg)}
+.card-foot .ibtn.is-del:hover,.card-foot .ibtn.is-del:focus-visible{color:var(--danger)}
 .card-foot .icon{width:20px;height:20px;stroke-width:2}
 .ibtn[aria-pressed="true"]{color:var(--c-featured);opacity:1}
 .ibtn[aria-pressed="true"] .icon{fill:currentColor}
@@ -370,6 +393,18 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
 }
 .pending .ptype{font-weight:700;margin-right:6px}
 .warn{color:var(--c-tools);font-size:13px;margin:6px 0 0}
+.col-row{display:flex;align-items:center;gap:8px;margin:0 0 14px}
+.col-row label{font-size:13px;font-weight:700;color:var(--muted);flex:none}
+.col-row select{flex:1;min-width:0;max-width:340px;font:inherit;font-size:14.5px;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:8px 10px}
+.col-row .btn{flex:none}
+.colpick{margin:10px 0 0}
+.colpick label{display:block;margin:0 0 4px}
+.colpick input{margin-top:8px}
+.col-item{display:flex;align-items:center;gap:8px;margin:0 0 8px}
+.col-item input{flex:1;min-width:0}
+.col-item .n{flex:none;font-size:12.5px;color:var(--muted);min-width:46px;text-align:right}
+.col-new{display:flex;gap:8px;margin:12px 0 4px}
+.col-new input{flex:1;min-width:0}
 .pick-row{display:flex;align-items:center;gap:12px;margin:12px 0 0;font-size:13px;color:var(--muted);line-height:1.5}
 .pick-row .btn{flex:none}
 
@@ -417,6 +452,7 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
       </div>
     </div>
     <div class="side-scroll">
+      <nav class="col-nav" id="colNav" aria-label="Collections" hidden></nav>
       <nav class="cats" id="cats" aria-label="Categories"></nav>
       <div class="tagbox" id="tagbox" hidden></div>
       <p class="dir-label"><span id="dirLabel"></span><span id="dirCount"></span></p>
@@ -462,6 +498,11 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
       </div>
     </header>
 
+    <div class="col-row" id="colRow" hidden>
+      <label for="colSelect" data-i="colLabel">合集</label>
+      <select id="colSelect"></select>
+      <button class="btn" type="button" id="colManage" data-i="colManage">管理</button>
+    </div>
     <section class="view-head">
       <h1 id="viewTitle">全部</h1>
       <p id="viewSub"></p>
@@ -511,6 +552,19 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
     </div>
   </div>
 </div>
+
+<dialog id="colDlg" aria-labelledby="colTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h2 id="colTitle" data-i="colManageTitle">管理合集</h2></div>
+    <div class="dlg-body">
+      <p class="sub-hint" data-i="colHint">合集只存在这个浏览器里：一次导入的一批文件放在一起，随时切换。</p>
+      <div id="colList"></div>
+      <div class="col-new"><input type="text" id="colNewName" maxlength="40" autocomplete="off" data-i-ph="colNamePh" placeholder="合集名称"><button class="btn" type="button" id="colNewBtn" data-i="colNew">＋ 新建合集</button></div>
+      <p class="sub-hint" id="colStorage"></p>
+    </div>
+    <div class="dlg-foot"><button class="btn" type="button" id="colClose" data-i="close">关闭</button></div>
+  </div>
+</dialog>
 
 <dialog id="subDlg" aria-labelledby="subTitle">
   <div class="dlg">
@@ -607,6 +661,11 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
       <input type="file" id="folderInput" webkitdirectory multiple hidden>
       <div id="pendingList"></div>
       <p class="warn" id="addMsg" role="status" hidden></p>
+      <div class="colpick" id="colPick" hidden>
+        <label for="addCol" data-i="colLabel">合集</label>
+        <select id="addCol"></select>
+        <input type="text" id="addColName" maxlength="40" autocomplete="off" hidden data-i-ph="colNamePh" placeholder="合集名称">
+      </div>
       <div class="row2">
         <div>
           <label for="addCat" data-i="category">分类</label>
@@ -638,10 +697,13 @@ const I18N = {
   zh: {
     brand:'知识树', brandSub:'个人数字图书馆', siteTitle:'知识树 - 个人数字图书馆', dir:'卡片目录', search:'搜索标题、摘要、关键词、类型', lfAll:'全部',
     sortRecent:'最近添加', sortRead:'最近阅读', sortTitle:'标题', add:'添加', back:'返回', prev:'上一篇', next:'下一篇',
+    pinTip:'置顶', unpinTip:'取消置顶', pinned:'置顶', pinnedToast:t=>`已把《${t}》置顶`, unpinnedToast:t=>`已取消《${t}》的置顶`,
     star:'设为精选', unstar:'已精选', starTip:'设为精选', unstarTip:'取消精选', newTab:'新标签打开', shuffle:'换一张封面',
     hide:'隐藏', restore:'恢复', remove:'移除', delForever:'彻底删除', close:'关闭', menu:'目录',
     move:'移动到其他分类', moveTitle:t=>`把《${t}》移到…`, movedToast:(t,c)=>`已把《${t}》移到「${c}」`, movedLocal:'分类调整只保存在这个浏览器里，不会改动网站。', movedMeta:'分类记在这个文件夹的 _meta.json 里，文件没有挪动。', moveFail:'移动失败：',
-    confirmPurge:t=>`彻底删除《${t}》？\n文件会从 library 里删掉，无法恢复。`, purged:'已彻底删除',
+    confirmPurge:t=>`彻底删除《${t}》？\n文件会从你电脑上的 library 里删掉，无法恢复；网站上的副本要等你重新发布后才会消失。`, purged:'已彻底删除',
+    delTip:'删除…', delShort:'删除', hideSiteTip:'隐藏（只在这个浏览器里；网站上的内容只有站长能删除）', delFail:'删除失败：',
+    confirmPurgeFolder:t=>`彻底删除《${t}》？\n文件会从你连接的文件夹里删掉，无法恢复。`,
     viewGrid:'切换为列表', viewList:'切换为卡片',
     all:'全部', featured:'精选', books:'书籍', tools:'工具', notes:'个人笔记', hidden:'已隐藏',
     desc_all:'所有收藏', desc_featured:'值得反复看的', desc_books:'读书笔记与书摘', desc_tools:'常用工具与小应用', desc_notes:'自己的思考与记录', desc_other:'自定义分类',
@@ -699,6 +761,12 @@ const I18N = {
     fontSize:'字号', lineHeight:'行距', pageWidth:'版面宽度', readerColor:'颜色', lhS:'紧', lhM:'中', lhL:'松', wN:'窄', wM:'中', wW:'宽',
     thFollow:'跟随系统', thLight:'浅色', thDark:'深色', thSepia:'米黄', thGreen:'护眼绿', origNote:'这一篇按原样显示，只能换颜色；字号请用浏览器的缩放。',
     installApp:'安装到主屏幕', installHint:'安装方法：点“分享”→“添加到主屏幕”。',
+    colDelete:'删除', colLabel:'合集', colManage:'管理', colManageTitle:'管理合集', colHint:'合集只存在这个浏览器里：一次导入的一批文件放在一起，随时切换。想在手机上读，就导入到一个合集里。',
+    colAll:'全部', colSite:'站点的书', colFolder:'本机文件夹', colLoose:'未分组', colNew:'＋ 新建合集', colNewOpt:'＋ 新建合集…', colNone:'不放进合集', colDefaultName:'我的合集', colNamePh:'合集名称',
+    colDeleteAsk:(n,name)=>`删除合集「${name}」和里面的 ${n} 个文件？这些文件只存在这个浏览器里，删除后无法恢复。`, colDeleted:'已删除合集。', colExists:'已经有同名的合集了。',
+    colStorage:(used,quota,p)=>`这个浏览器里已用约 ${used}（可用约 ${quota}）${p?'；已设为持久存储，不会被自动清理':'；浏览器可能在空间紧张或长期不用时清掉这些文件'}`, colStorageNone:'无法读取浏览器的存储用量。',
+    colMoveTo:'放进合集', colMoveNone:'移出合集（未分组）', colMovedToast:(t,c)=>`已把《${t}》放进「${c}」`,
+    shareGot:n=>`收到 ${n} 个分享的文件：选好合集，点保存。`, shareLink:t=>`已存为链接：${t}`,
     badgeAsked:'已提交，等待审核',
     kind_reader: s=>`这是你书架里《${s}》在阅读器里的地址，别人打不开，不是公开网址。点“检查”会改为直接申请这一本。`, kind_readerGone:'这是阅读器里的地址，别人打不开，不是公开网址；而且这一项已经不在你的书架里了。请用书架里卡片上的地球图标申请。',
     kindListed: s=>`公共目录里已经有这个网址了（${s}），不需要再提交`, checkSlow:'这个网站响应太慢，检查没有完成。稍后再点“检查”试一次。', checkBtn:'检查', checking:'正在检查…', chkOk:'检查结果如下。确认无误后勾选下面的声明并提交，站长审核通过后才会出现在目录里。',
@@ -715,7 +783,7 @@ const I18N = {
     emptyCat:c=>`<h2>这里还没有内容</h2><p>把文件放进 <code>library/${c}/</code>，或点击右上角 <b>添加</b>。</p>`,
     emptyHidden:'<h2>没有隐藏的内容</h2><p>在卡片上点“隐藏”后，内容会出现在这里，可随时恢复。</p>',
     emptySearch:q=>`<h2>没有找到与 “${q}” 匹配的卡片</h2><p>试试更短的关键词，或者<button class="btn" type="button" data-clear style="margin-left:6px">清除筛选</button></p>`,
-    staticNote:'当前是静态模式，精选和隐藏只保存在这个浏览器里。',
+    staticNote:'当前是静态模式，精选、置顶和隐藏只保存在这个浏览器里。',
     featuredFolder:'这篇放在 featured 文件夹里，移出文件夹即可取消精选。',
     fsUnsupported:'当前浏览器不支持连接文件夹，请使用 Chrome 或 Edge，或运行 serve.py。',
     needServe:'直接双击打开时读不了 Markdown / TXT。请用 serve.py 打开，或点左下角“连接文件夹”。',
@@ -725,10 +793,13 @@ const I18N = {
   en: {
     brand:'Knowledge Tree', brandSub:'Personal digital library', siteTitle:'Knowledge Tree - Personal Digital Library', dir:'Card index', search:'Search titles, summaries, keywords, types', lfAll:'All',
     sortRecent:'Recently added', sortRead:'Recently read', sortTitle:'Title', add:'Add', back:'Back', prev:'Previous', next:'Next',
+    pinTip:'Pin to top', unpinTip:'Unpin', pinned:'Pinned', pinnedToast:t=>`Pinned “${t}” to the top`, unpinnedToast:t=>`Unpinned “${t}”`,
     star:'Feature', unstar:'Featured', starTip:'Mark as featured', unstarTip:'Remove from featured', newTab:'Open in new tab', shuffle:'Shuffle cover',
     hide:'Hide', restore:'Restore', remove:'Remove', delForever:'Delete forever', close:'Close', menu:'Index',
     move:'Move to another category', moveTitle:t=>`Move “${t}” to…`, movedToast:(t,c)=>`Moved “${t}” to “${c}”`, movedLocal:'The move is kept in this browser only; the site is not changed.', movedMeta:'The category is recorded in this folder\'s _meta.json; the file stays where it is.', moveFail:'Move failed: ',
-    confirmPurge:t=>`Delete “${t}” for good?\nThe file is removed from library/ and cannot be recovered.`, purged:'Deleted',
+    confirmPurge:t=>`Delete “${t}” for good?\nThe file is removed from library/ on your computer and cannot be recovered; the copy on the website stays until you publish again.`, purged:'Deleted',
+    delTip:'Delete…', delShort:'Delete', hideSiteTip:'Hide (in this browser only; only the site owner can delete what is on the website)', delFail:'Delete failed: ',
+    confirmPurgeFolder:t=>`Delete “${t}” for good?\nThe file is removed from the folder you connected and cannot be recovered.`,
     viewGrid:'Switch to list', viewList:'Switch to cards',
     all:'All', featured:'Featured', books:'Books', tools:'Tools', notes:'Notes', hidden:'Hidden',
     desc_all:'Everything in the archive', desc_featured:'Worth rereading', desc_books:'Reading notes and excerpts', desc_tools:'Handy tools and small apps', desc_notes:'My own thinking and records', desc_other:'Custom category',
@@ -798,11 +869,17 @@ const I18N = {
     emptyCat:c=>`<h2>Nothing here yet</h2><p>Drop files into <code>library/${c}/</code>, or click <b>Add</b>.</p>`,
     emptyHidden:'<h2>Nothing hidden</h2><p>Items you hide appear here, ready to be restored.</p>',
     emptySearch:q=>`<h2>No cards match “${q}”</h2><p>Try a shorter keyword, or <button class="btn" type="button" data-clear style="margin-left:6px">clear filters</button></p>`,
-    staticNote:'Static mode: featured and hidden marks are saved in this browser only.',
+    staticNote:'Static mode: featured, pinned and hidden marks are saved in this browser only.',
     tocTab:'Contents', marksTab:'Bookmarks', readerSet:'Reading settings', readerMark:'Bookmark', tocEmpty:'This one has no contents to show.', marksEmpty:'No bookmarks yet.', markAddHere:'+ Bookmark this place', markAdded:'Bookmark added.', markGone:'Bookmark removed.', markNone:'Bookmarks are not available for this file.',
     fontSize:'Text size', lineHeight:'Line spacing', pageWidth:'Page width', readerColor:'Colour', lhS:'Tight', lhM:'Normal', lhL:'Loose', wN:'Narrow', wM:'Normal', wW:'Wide',
     thFollow:'Follow system', thLight:'Light', thDark:'Dark', thSepia:'Sepia', thGreen:'Green (easy on the eyes)', origNote:'This one is shown as it is, so only the colour can change; use the browser zoom for the size.',
     installApp:'Install the app', installHint:'To install: Share → Add to Home Screen.',
+    colDelete:'Delete', colLabel:'Collection', colManage:'Manage', colManageTitle:'Manage collections', colHint:'Collections live in this browser only: the files of one import kept together, switchable at any time. To read on a phone, import into a collection.',
+    colAll:'All', colSite:'The site\'s books', colFolder:'Local folder', colLoose:'Ungrouped', colNew:'+ New collection', colNewOpt:'+ New collection…', colNone:'Not in a collection', colDefaultName:'My collection', colNamePh:'Collection name',
+    colDeleteAsk:(n,name)=>`Delete the collection “${name}” and its ${n} file(s)? They exist in this browser only and cannot be restored.`, colDeleted:'Collection deleted.', colExists:'A collection with this name exists already.',
+    colStorage:(used,quota,p)=>`This browser holds about ${used} (about ${quota} available)${p?'; persistent storage is on, so it is not cleared automatically':'; the browser may clear these files when space is short or after a long time unused'}`, colStorageNone:'The storage use of this browser cannot be read.',
+    colMoveTo:'Put in a collection', colMoveNone:'Take out of the collection (ungrouped)', colMovedToast:(t,c)=>`Put “${t}” in “${c}”`,
+    shareGot:n=>`Received ${n} shared file(s): choose a collection and save.`, shareLink:t=>`Saved as a link: ${t}`,
     featuredFolder:'This file lives in the featured folder; move it out to unfeature it.',
     fsUnsupported:'This browser cannot connect folders. Use Chrome or Edge, or run serve.py.',
     needServe:'Markdown / TXT cannot be read when the page is opened straight from disk. Use serve.py, or click “Connect folder” at the bottom left.',
@@ -859,6 +936,7 @@ const state = {
   theme: LS.get('theme','auto'), view: LS.get('view','grid'), sort: LS.get('sort','recent'),
   rs: Object.assign({fs:100, lh:'m', w:'m', th:'follow'}, LS.get('reader',{})),        // reader settings: font scale %, line height s/m/l, width n/m/w, colours follow|light|dark|sepia|green
   marks: LS.get('marks',{}),                                                           // bookmarks (a place in a document): {id:[{pct,label,at}]}
+  cols: LS.get('cols',[]), col: LS.get('col','all'),                                   // collections of the files added in this browser: [{id,name,at}]; which part of the shelf is shown: all | site | folder | loose | <collection id>
   cat:'all', q:'', lf:'all', loaded:false,
   items:[], mode:'none', generated:'', dir:null, dirPending:null,
   flags: LS.get('flags',{}),               // static mode: {id:{featured,hidden}}
@@ -1008,7 +1086,7 @@ async function scanFolder(dir){
     const category = cat || normCat(info.metaCategory || 'notes'); delete info.metaCategory;
     // 'folder:' keeps these ids apart from the server's own items, which can have the same path
     const it = {...info, id:'folder:'+rel, rel, path:'library/'+rel, category, size:f.size, added:Math.floor(f.lastModified/1000), date:info.date||today(f.lastModified), source:'folder', handle};
-    const o=overrides[rel]||{}; ['title','summary','featured','hidden','keywords'].forEach(k=>{ if(o[k]!==undefined && o[k]!=='') it[k]=o[k]; });
+    const o=overrides[rel]||{}; ['title','summary','featured','hidden','keywords','pinned'].forEach(k=>{ if(o[k]!==undefined && o[k]!=='') it[k]=o[k]; });
     if(o.category) it.category=normCat(o.category);                                   // a move made in this page: recorded in _meta.json, the file stays where it is
     out.push(it);
   }
@@ -1033,6 +1111,80 @@ async function loadAll(){
 }
 /* Where "Add" writes: the site's own library when running serve.py; otherwise the visitor's connected folder, or else this browser. Never a deployed server. */
 const addMode = () => state.mode==='server' ? 'server' : state.dir ? 'folder' : 'local';
+
+/* ================= collections: the files added in this browser, kept in named groups (one import = one group), and switched between ================= */
+const colById = id => state.cols.find(c=>c.id===id);
+const saveCols = () => LS.set('cols', state.cols);
+function inScope(it){
+  const c=state.col;
+  if(c==='all') return true;
+  if(c==='site') return it.source==='static' || it.source==='server';
+  if(c==='folder') return it.source==='folder';
+  if(c==='loose') return it.source==='local' && !it.collection;
+  return it.source==='local' && it.collection===c;
+}
+const scoped = () => state.items.filter(inScope);                                  // what the shelf shows: the part chosen in the collection switcher
+function addCollection(name){
+  const id='c'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+  state.cols.push({id, name:String(name||'').trim().slice(0,40)||t('colDefaultName'), at:Date.now()}); saveCols(); return id;
+}
+const nameTaken = (name, except) => state.cols.some(c=>c.id!==except && c.name.trim().toLowerCase()===String(name).trim().toLowerCase());
+function renderCols(){
+  const hasLocal=state.items.some(x=>x.source==='local'), hasFolder=state.items.some(x=>x.source==='folder'), hasSite=state.items.some(x=>x.source==='static'||x.source==='server');
+  const loose=state.items.filter(x=>x.source==='local' && !x.collection).length;
+  const show = state.cols.length>0 || hasLocal || hasFolder;                                // nobody who only reads the site's books needs a switcher
+  $('#colRow').hidden=!show; $('#colNav').hidden=!show;
+  if(!show){ state.col='all'; $('#colNav').innerHTML=''; return; }
+  const n = fn => state.items.filter(fn).length, opts=[['all',t('colAll'),state.items.length]];
+  if(hasSite) opts.push(['site',t('colSite'),n(x=>x.source==='static'||x.source==='server')]);
+  if(hasFolder) opts.push(['folder',t('colFolder'),n(x=>x.source==='folder')]);
+  state.cols.forEach(c=>opts.push([c.id,c.name,n(x=>x.source==='local' && x.collection===c.id)]));
+  if(loose && (state.cols.length || hasSite)) opts.push(['loose',t('colLoose'),loose]);
+  if(!opts.some(o=>o[0]===state.col)){ state.col='all'; LS.set('col','all'); }
+  $('#colSelect').innerHTML=opts.map(([v,name,c])=>`<option value="${esc(v)}"${v===state.col?' selected':''}>${esc(name)} (${c})</option>`).join('');
+  $('#colNav').innerHTML=`<p class="dir-label"><span>${esc(t('colLabel'))}</span><button class="link-btn" type="button" data-colmanage>${esc(t('colManage'))}</button></p>`
+    + opts.map(([v,name,c])=>`<button class="cat-btn" type="button" data-colnav="${esc(v)}" aria-current="${v===state.col}"><span class="dot"></span><span>${esc(name)}</span><span class="n">${c}</span></button>`).join('');
+}
+function pickCollection(v){ state.col=v; LS.set('col',state.col); render(); window.scrollTo({top:0}); }
+$('#colSelect').addEventListener('change',e=>pickCollection(e.target.value));
+$('#colNav').addEventListener('click',e=>{                                           // the same switcher, as a list in the side drawer
+  if(e.target.closest('[data-colmanage]')){ renderColDlg(); colDlg.showModal(); return; }
+  const b=e.target.closest('[data-colnav]'); if(!b) return;
+  pickCollection(b.dataset.colnav); document.body.classList.remove('drawer');
+});
+const colDlg=$('#colDlg');
+const fmtMB = b => b>=1073741824 ? (b/1073741824).toFixed(1)+' GB' : Math.max(1,Math.round(b/1048576))+' MB';
+async function renderColDlg(){
+  $('#colList').innerHTML = state.cols.map(c=>{
+    const n=state.items.filter(x=>x.source==='local' && x.collection===c.id).length;
+    return `<div class="col-item" data-id="${esc(c.id)}"><input type="text" value="${esc(c.name)}" maxlength="40" aria-label="${esc(t('colLabel'))}"><span class="n">${n}</span><button class="btn danger" type="button" data-del="${esc(c.id)}">${esc(t('colDelete'))}</button></div>`;
+  }).join('');
+  let line=t('colStorageNone');
+  try{ const e=await navigator.storage.estimate(), p=navigator.storage.persisted ? await navigator.storage.persisted() : false; line=t('colStorage',fmtMB(e.usage||0),fmtMB(e.quota||0),p); }catch(err){}
+  $('#colStorage').textContent=line;
+}
+$('#colManage').addEventListener('click',()=>{ renderColDlg(); colDlg.showModal(); });
+$('#colClose').addEventListener('click',()=>colDlg.close());
+$('#colNewBtn').addEventListener('click',()=>{
+  const name=$('#colNewName').value.trim(); if(!name) return $('#colNewName').focus();
+  if(nameTaken(name)){ toast(t('colExists')); return; }
+  addCollection(name); $('#colNewName').value=''; renderColDlg(); renderCols();
+});
+$('#colList').addEventListener('change',e=>{                                          // rename
+  const row=e.target.closest('.col-item'), c=row && colById(row.dataset.id); if(!c) return;
+  const name=e.target.value.trim().slice(0,40);
+  if(!name || nameTaken(name,c.id)){ if(name) toast(t('colExists')); e.target.value=c.name; return; }
+  c.name=name; saveCols(); renderCols();
+});
+$('#colList').addEventListener('click',async e=>{                                     // delete the collection and the files in it (they exist nowhere else)
+  const b=e.target.closest('[data-del]'); if(!b) return;
+  const c=colById(b.dataset.del), mine=state.items.filter(x=>x.source==='local' && x.collection===b.dataset.del); if(!c) return;
+  if(!confirm(t('colDeleteAsk',mine.length,c.name))) return;
+  try{ for(const it of mine) await idb.del(it.id); }catch(err){ toast(t('saveFail')+err.message); return; }
+  state.items=state.items.filter(x=>!mine.includes(x)); state.cols=state.cols.filter(x=>x.id!==c.id); saveCols();
+  if(state.col===c.id){ state.col='all'; LS.set('col','all'); }
+  toast(t('colDeleted')); renderColDlg(); render();
+});
 
 /* ================= flags: featured / hidden ================= */
 function flag(it, k){
@@ -1061,6 +1213,11 @@ async function toggleStar(id){
   const it=state.items.find(x=>x.id===id); if(!it) return;
   if(it.category==='featured'){ toast(t('featuredFolder')); return; }
   if(await setFlag(id,'featured',!isFeatured(it))){ render(); syncReader(); }
+}
+async function togglePin(id){
+  const it=state.items.find(x=>x.id===id); if(!it) return;
+  const on=pinRank(it)>0;
+  if(await setFlag(id,'pinned',on?false:Date.now())){ render(); window.scrollTo({top:0}); toast(t(on?'unpinnedToast':'pinnedToast',cut(it.title,24))); }
 }
 async function hideItem(id){
   const it=state.items.find(x=>x.id===id); if(!it) return;
@@ -1120,12 +1277,18 @@ function inCat(it, cat){
   if(isHidden(it)) return false;
   return cat==='all' || (cat==='featured' ? isFeatured(it) : it.category===cat);
 }
+/* Pinned to the top: the owner pins in the page (serve.py writes it to library/_meta.json, so a deployed site shows it to everybody), a visitor's pin is kept in
+   their browser like a star. The value is the time it was pinned (a hand-written `true` counts as 1): the latest pin comes first, whatever the sort order is. */
+function pinRank(it){
+  const o = it.source==='static' ? state.flags[it.id] : null, v = o && o.pinned!==undefined ? o.pinned : it.pinned;
+  return v ? (typeof v==='number' && isFinite(v) ? v : 1) : 0;
+}
 function sorted(list){
   const a=list.slice(), loc=state.lang==='zh'?'zh-Hans-CN':'en';
   if(state.sort==='title') a.sort((x,y)=>x.title.localeCompare(y.title,loc));
   else if(state.sort==='read') a.sort((x,y)=>(state.lastRead[y.id]||0)-(state.lastRead[x.id]||0) || (y.added||0)-(x.added||0));
   else a.sort((x,y)=>(y.added||0)-(x.added||0));
-  return a;
+  return a.sort((x,y)=>pinRank(y)-pinRank(x));                       // a stable second pass: the pinned first, the rest in the order above
 }
 function hl(text, tk){
   let s=esc(text); if(!tk.length) return s;
@@ -1133,10 +1296,11 @@ function hl(text, tk){
   return parts.length ? s.replace(new RegExp('('+parts.join('|')+')','gi'),'<mark>$1</mark>') : s;
 }
 function allCats(){
-  const extra=[]; state.items.forEach(it=>{ if(!BASE_CATS.includes(it.category) && !extra.includes(it.category)) extra.push(it.category); });
+  const extra=[]; scoped().forEach(it=>{ if(!BASE_CATS.includes(it.category) && !extra.includes(it.category)) extra.push(it.category); });
   return ['all','featured'].concat(CAT_ORDER, extra.sort());
 }
 const ICON = {
+  pin:'<svg class="icon" viewBox="0 0 24 24"><path d="M9 3.5h6l-.9 5.2 3.4 3.3v1.5H6.5V12l3.4-3.3zM12 13.5V21"/></svg>',
   star:'<svg class="icon" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg>',
   hide:'<svg class="icon" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.2A9.7 9.7 0 0 1 12 6c5 0 8.5 4.5 9.5 6-.5.8-1.6 2.3-3.2 3.6M6.3 7.6C4.4 8.9 3.1 10.8 2.5 12c1 1.5 4.5 6 9.5 6 1.6 0 3-.4 4.3-1.1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>',
   restore:'<svg class="icon" viewBox="0 0 24 24"><path d="M2.5 12c1-1.5 4.5-6 9.5-6s8.5 4.5 9.5 6c-1 1.5-4.5 6-9.5 6s-8.5-4.5-9.5-6z"/><circle cx="12" cy="12" r="3"/></svg>',
@@ -1154,15 +1318,17 @@ const ICON = {
    its own file, or for Markdown / TXT the full-text page the build wrote (it.page, only on a deployed site). */
 const directHref = it => it.type==='link' ? httpUrl(it.url) : !(it.source==='server'||it.source==='static') ? '' : (it.type==='md'||it.type==='txt') ? (it.page ? encPath(it.page) : '') : encPath(it.path);
 const kwChips = (list, n) => (list||[]).slice(0,n).map(k=>`<button class="kw" type="button" data-tag="${esc(k)}">#${esc(k)}</button>`).join('');
+const canDelete = it => it.source==='server' || it.source==='local' || it.source==='folder';
 function cardHTML(it, tk, hiddenView){
-  const star=isFeatured(it), prog=Math.round((state.progress[it.id]||{}).pct||0), href=directHref(it), isLink=it.type==='link';
+  const star=isFeatured(it), pinned=pinRank(it)>0, prog=Math.round((state.progress[it.id]||{}).pct||0), href=directHref(it), isLink=it.type==='link';
   const lang = it.lang==='en'?t('langEn'):(it.lang==='mixed'?t('langMixed'):t('langZh'));
   const ib = (act,icon,label,pressed) => `<button class="ibtn" type="button" data-act="${act}"${pressed!==undefined?` aria-pressed="${pressed}"`:''} title="${esc(label)}" aria-label="${esc(label)}">${icon}</button>`;
   const sizeInfo = isLink ? hostOf(it.url) : it.project ? t('projInfo',it.files||1,fmtSize(it.size||0))
     : it.type==='pdf' ? [it.pages?t('pages',it.pages):'', it.size?fmtSize(it.size):''].filter(Boolean).join('，') : t('minutes',it.minutes||1);
-  // moving / deleting only for what the visitor owns: the library served by serve.py, or files added in this browser
-  const manage = it.source==='server' || it.source==='local';
-  const canMove = manage || it.source==='static' || it.source==='folder';          // on a deployed site or in a connected folder a move is kept in this browser / in the folder's _meta.json
+  // deleting only for what is the visitor's own: the library served by serve.py (that is the owner's computer), a connected folder, or files added in this browser.
+  // The deployed site's own books are not: nobody can delete them from a page, only the owner, in library/ on their own computer (serve.py), and then deploy again.
+  const manage = canDelete(it);
+  const canMove = manage || it.source==='static';                                  // on a deployed site a move is kept in this browser only; in a connected folder, in the folder's _meta.json
   const where = isLink ? t('badgeLink') : it.source==='local' ? t('badgeLocal') : it.source==='folder' ? t('badgeFolder') : '';
   const ext = isLink ? ' target="_blank" rel="noopener noreferrer"' : '';
   // the public directory: is this one in it (a deployed page whose address the directory lists), does the owner keep it out, is it a copy of another file
@@ -1177,11 +1343,11 @@ function cardHTML(it, tk, hiddenView){
   const badges = (listed?`<span class="where good">${esc(t('badgeInDir'))}</span>`:'') + (asked?`<span class="where">${esc(t('badgeAsked'))}</span>`:'') + (same?`<span class="where warn" title="${esc(same.title)}">${esc(t('badgeSame',cut(same.title,16)))}</span>`:'');
   const acts = hiddenView
     ? `<button class="btn restore-btn" type="button" data-act="restore">${ICON.restore}${esc(t('restore'))}</button>${manage?`<button class="btn danger" type="button" data-act="purge">${ICON.trash}${esc(t('delForever'))}</button>`:''}`
-    : `<span class="acts">${ib('star',ICON.star,star?t('unstarTip'):t('starTip'),star)}${ib('hide',ICON.hide,t('hide'))}${canMove?ib('move',ICON.move,t('move')):''}${canPublish?ib('publish',ICON.globe,t(asked?'publishAgain':'publishTip')):listed&&pubKind?`<button class="ibtn is-done" type="button" data-act="published" title="${esc(t('publishDone'))}" aria-label="${esc(t('publishDone'))}">${ICON.globe}</button>`:''}${ib('shuffle',ICON.shuffle,t('shuffle'))}${href?`<a class="ibtn" href="${esc(href)}" target="_blank" rel="noopener" title="${esc(t('newTab'))}" aria-label="${esc(t('newTab'))}">${ICON.ext}</a>`:''}</span>`;
-  return `<article class="card${hiddenView?' is-hidden':''}" data-id="${esc(it.id)}">
+    : `<span class="acts">${ib('star',ICON.star,star?t('unstarTip'):t('starTip'),star)}${ib('pin',ICON.pin,pinned?t('unpinTip'):t('pinTip'),pinned)}${ib('hide',ICON.hide,it.source==='static'?t('hideSiteTip'):t('hide'))}${canMove?ib('move',ICON.move,t('move')):''}${canPublish?ib('publish',ICON.globe,t(asked?'publishAgain':'publishTip')):listed&&pubKind?`<button class="ibtn is-done" type="button" data-act="published" title="${esc(t('publishDone'))}" aria-label="${esc(t('publishDone'))}">${ICON.globe}</button>`:''}${ib('shuffle',ICON.shuffle,t('shuffle'))}${href?`<a class="ibtn" href="${esc(href)}" target="_blank" rel="noopener" title="${esc(t('newTab'))}" aria-label="${esc(t('newTab'))}">${ICON.ext}</a>`:''}${manage?ib('purge',ICON.trash,t('delTip')).replace('class="ibtn"','class="ibtn is-del"'):''}</span>`;
+  return `<article class="card${hiddenView?' is-hidden':''}${pinned&&!hiddenView?' is-pinned':''}" data-id="${esc(it.id)}">
     <button class="cover" type="button" data-act="open" aria-label="${esc(it.title)}">${coverHTML(it)}${prog>1?`<span class="prog" style="width:${Math.min(prog,100)}%"></span>`:''}</button>
     <div class="card-body">
-      <p class="meta"><span class="tag ${catClass(it.category)}">${esc(catName(it.category))}</span>${where?`<span class="where">${esc(where)}</span>`:''}${badges}${star&&it.category!=='featured'?`<span class="star-badge">★ ${esc(t('featured'))}</span>`:''}<span>${esc(lang)}</span><span>${esc(it.date||'')}</span></p>
+      <p class="meta">${pinned&&!hiddenView?`<span class="pin-badge">${ICON.pin}${esc(t('pinned'))}</span>`:''}<span class="tag ${catClass(it.category)}">${esc(catName(it.category))}</span>${where?`<span class="where">${esc(where)}</span>`:''}${badges}${star&&it.category!=='featured'?`<span class="star-badge">★ ${esc(t('featured'))}</span>`:''}<span>${esc(lang)}</span><span>${esc(it.date||'')}</span></p>
       <h3 class="card-title"><a href="${esc(href||'#')}"${ext} data-act="open">${hl(it.title,tk)}</a></h3>
       ${it.summary?`<p class="sum">${hl(it.summary,tk)}</p>`:''}
       ${(it.keywords||[]).length?`<div class="chips">${kwChips(it.keywords,4)}</div>`:''}
@@ -1206,11 +1372,12 @@ function render(){
   document.querySelectorAll('[data-space]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.space===(dirMode?'dir':'mine'))));
   const addTxt=t(dirMode?'submit':'add'); $('#addLbl').textContent=addTxt; $('#addBtn').title=addTxt; $('#addBtn').setAttribute('aria-label',addTxt);
   syncSubscribe();
-  if(dirMode){ renderDir(); syncReader(); return; }
+  if(dirMode){ $('#colRow').hidden=true; $('#colNav').hidden=true; renderDir(); syncReader(); return; }
   $('#moreRow').hidden=true; $('#dirLabel').textContent=t('dir');
 
+  renderCols();                                                            // also settles which part of the shelf is shown, before anything below counts it
   const tags=ownTags(); if(state.tag && !tags.some(g=>g.name.toLowerCase()===state.tag.toLowerCase())) state.tag='';
-  const tk=tokens(), filtered=state.items.filter(it=>matches(it,tk)), cats=allCats();
+  const tk=tokens(), filtered=scoped().filter(it=>matches(it,tk)), cats=allCats();
   if(!cats.includes(state.cat) && state.cat!=='hidden') state.cat='all';
   const hiddenN = filtered.filter(isHidden).length;
   $('#cats').innerHTML = cats.map(c=>{
@@ -1229,18 +1396,23 @@ function render(){
   $('#viewSub').innerHTML = esc(subTxt) + (state.tag ? `<br><button class="chip" type="button" data-clear="tag" title="${esc(t('clearTag'))}"><b>#${esc(state.tag)}</b><em>✕</em></button>` : '');
 
   const groups = state.cat==='all' ? CAT_ORDER.concat(['featured'], cats.filter(c=>!['all','featured',...CAT_ORDER].includes(c))) : [state.cat];
-  $('#dir').innerHTML = groups.map(g=>{
-    const its=list.filter(it=>state.cat==='all'?it.category===g:true); if(!its.length) return '';
+  const dirRow = it => {
+    const act = canDelete(it) ? ['purge',t('delShort'),''] : hv ? ['restore',t('restore'),' soft'] : ['hide',t('hide'),' soft'];       // what a swipe to the left shows
+    return `<div class="dir-row" data-id="${esc(it.id)}"><button class="dir-swipe${act[2]}" type="button" data-swipe="${act[0]}" tabindex="-1">${esc(act[1])}</button><button class="dir-item" type="button" data-goto="${esc(it.id)}" title="${esc(it.title)}">${esc(it.title)}</button></div>`;
+  };
+  const pins = state.cat==='all' ? list.filter(it=>pinRank(it)>0) : [], pinSet = new Set(pins);              // the pinned ones get a block of their own at the top of the list
+  $('#dir').innerHTML = (pins.length ? `<div class="dir-group" style="--gc:var(--accent)"><div class="dir-head is-plain"><span class="dot"></span><span>${esc(t('pinned'))}</span><span class="n">${pins.length}</span></div>${pins.map(dirRow).join('')}</div>` : '') + groups.map(g=>{
+    const its=list.filter(it=>!pinSet.has(it) && (state.cat==='all'?it.category===g:true)); if(!its.length) return '';
     const key=state.cat==='all'?g:'only:'+g, open=state.dirOpen.has(key), shown=open?its:its.slice(0,DIR_FOLD), more=its.length-DIR_FOLD;
     return `<div class="dir-group" style="--gc:var(--c-${catClass(g)})">
       <button class="dir-head" type="button" data-cat="${esc(g)}"><span class="dot"></span><span>${esc(catName(g))}</span><span class="n">${its.length}</span></button>
-      ${shown.map(it=>`<button class="dir-item" type="button" data-goto="${esc(it.id)}" title="${esc(it.title)}">${esc(it.title)}</button>`).join('')}
+      ${shown.map(dirRow).join('')}
       ${more>0?`<button class="dir-more" type="button" data-fold="${esc(key)}" aria-expanded="${open}">${esc(open?t('dirLess'):t('dirMore',more))}</button>`:''}
     </div>`;
   }).join('');
   $('#dirCount').textContent=list.length;
 
-  const cont=state.items.filter(it=>{ const p=(state.progress[it.id]||{}).pct||0; return !isHidden(it) && p>3 && p<95; }).sort((a,b)=>(state.lastRead[b.id]||0)-(state.lastRead[a.id]||0)).slice(0,3);
+  const cont=scoped().filter(it=>{ const p=(state.progress[it.id]||{}).pct||0; return !isHidden(it) && p>3 && p<95; }).sort((a,b)=>(state.lastRead[b.id]||0)-(state.lastRead[a.id]||0)).slice(0,3);
   const ce=$('#continue');
   if(cont.length && !tk.length && state.cat==='all'){ ce.hidden=false; ce.innerHTML=`<span>${esc(t('continueRead'))}</span>`+cont.map(it=>`<button class="chip" type="button" data-open="${esc(it.id)}"><b>${esc(it.title)}</b><em>${Math.round(state.progress[it.id].pct)}%</em></button>`).join(''); }
   else ce.hidden=true;
@@ -1588,8 +1760,21 @@ async function takeDropped(g){
     }
   }catch(err){ note(t('saveFail')+err.message); }
 }
+/* the collection a file added in this browser goes into: the one being shown, else the last one used, else a new one (the first import makes the first collection) */
+function fillColPick(){
+  const show=addMode()==='local'; $('#colPick').hidden=!show; if(!show) return;
+  const last=LS.get('addCol','');
+  const def = colById(state.col) ? state.col : !state.cols.length ? '__new' : colById(last) ? last : '';
+  $('#addCol').innerHTML=[['',t('colNone')]].concat(state.cols.map(c=>[c.id,c.name]),[['__new',t('colNewOpt')]]).map(([v,n])=>`<option value="${esc(v)}"${v===def?' selected':''}>${esc(n)}</option>`).join('');
+  updateColName();
+}
+function updateColName(){
+  const isNew=$('#addCol').value==='__new', box=$('#addColName'); box.hidden=!isNew;
+  if(isNew && !box.value.trim()) box.value=t('colDefaultName');
+}
+$('#addCol').addEventListener('change',updateColName);
 function openAdd(dropped){
-  state.pending=[]; $('#addMsg').hidden=true; addCategories(); $('#addFeat').checked=state.cat==='featured'; updateTarget(); renderPending();
+  state.pending=[]; $('#addMsg').hidden=true; addCategories(); $('#addFeat').checked=state.cat==='featured'; updateTarget(); fillColPick(); renderPending();
   if(!dlg.open) dlg.showModal(); if(dropped) takeDropped(dropped);
 }
 $('#addBtn').addEventListener('click',()=>dirOn()?openSubmit():openAdd());
@@ -1626,9 +1811,14 @@ async function fileHash(file){                                           // SHA-
   try{ const h=await crypto.subtle.digest('SHA-1',await file.arrayBuffer()); return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join(''); }catch(e){ return ''; }
 }
 $('#addSave').addEventListener('click',async ()=>{
-  const cat=$('#addCat').value||'notes', feat=$('#addFeat').checked; let ok=0, skipped=0;
+  const cat=$('#addCat').value||'notes', feat=$('#addFeat').checked; let ok=0, skipped=0, colId='';
   $('#addSave').disabled=true;
   try{
+    if(addMode()==='local' && !state.pending.every(p=>p.kind==='project')){          // the collection of this import (made now, if it is a new one)
+      const v=$('#addCol').value;
+      if(v==='__new'){ const name=$('#addColName').value.trim()||t('colDefaultName'), same=state.cols.find(c=>c.name.trim().toLowerCase()===name.toLowerCase()); colId=same?same.id:addCollection(name); }
+      else colId=v;
+    }
     for(const p of state.pending){
       const mode=addMode();
       if(p.kind==='project'){
@@ -1660,10 +1850,11 @@ $('#addSave').addEventListener('click',async ()=>{
         if(other && !confirm(t('dupAsk',other.title))){ skipped++; continue; }
         await idb.put({id:'local:'+now.toString(36)+Math.random().toString(36).slice(2,7), path:'', type:p.type, category:cat, filename:p.file.name, data, hash,
           title:p.title, summary:p.summary, keywords:p.keywords, lang:p.lang, minutes:p.minutes, pages:p.pages||null, size:p.file.size,
-          date:p.date||today(now), added:Math.floor(now/1000), featured:feat, hidden:false, cover:''});
+          date:p.date||today(now), added:Math.floor(now/1000), featured:feat, hidden:false, cover:'', ...(colId?{collection:colId}:{})});
       }
       ok++;
     }
+    if(ok && colId){ state.col=colId; LS.set('col',colId); LS.set('addCol',colId); }                // after an import the new collection is what is shown
     dlg.close(); toast(ok ? t('added',ok) : t('skippedDup')); await loadAll();
   }catch(e){ note(t('saveFail')+e.message); $('#addSave').disabled=false; if(ok) loadAll(); }
 });
@@ -1697,8 +1888,17 @@ const moveDlg=$('#moveDlg');
 function openMove(id){
   const it=state.items.find(x=>x.id===id); if(!it) return;
   $('#moveTitle').textContent=t('moveTitle',cut(it.title,24));
-  $('#moveList').innerHTML=allCats().filter(c=>c!=='all'&&c!=='featured').map(c=>`<button class="btn" type="button" data-to="${esc(c)}"${c===it.category?' disabled':''}><span class="dot" style="background:var(--c-${catClass(c)})"></span>${esc(catName(c))}</button>`).join('');
+  $('#moveList').innerHTML=allCats().filter(c=>c!=='all'&&c!=='featured').map(c=>`<button class="btn" type="button" data-to="${esc(c)}"${c===it.category?' disabled':''}><span class="dot" style="background:var(--c-${catClass(c)})"></span>${esc(catName(c))}</button>`).join('')
+    + (it.source==='local' && state.cols.length ? `<p class="sub-hint" style="margin:10px 0 2px">${esc(t('colMoveTo'))}</p>` + state.cols.map(c=>`<button class="btn" type="button" data-col="${esc(c.id)}"${c.id===it.collection?' disabled':''}>${esc(c.name)}</button>`).join('') + `<button class="btn" type="button" data-col=""${it.collection?'':' disabled'}>${esc(t('colMoveNone'))}</button>` : '');
   moveDlg.dataset.id=id; moveDlg.showModal();
+}
+async function moveToCollection(id, colId){                                        // a file added in this browser: another group (or none)
+  const it=state.items.find(x=>x.id===id); moveDlg.close();
+  try{
+    const rec={...it}; delete rec.source; if(colId) rec.collection=colId; else delete rec.collection;
+    await idb.put(rec); if(colId) it.collection=colId; else delete it.collection;
+    toast(t('colMovedToast',cut(it.title,24),colId?colById(colId).name:t('colLoose'))); render();
+  }catch(e){ toast(t('moveFail')+e.message); }
 }
 async function moveItem(id, category){
   const it=state.items.find(x=>x.id===id); moveDlg.close();       // close first: the toast sits below an open dialog
@@ -1717,15 +1917,33 @@ async function moveItem(id, category){
     await loadAll();
   }catch(e){ toast(t('moveFail')+e.message); }
 }
+/* Delete for good, from the card (or from the hidden list). Only what is the visitor's own (canDelete): files added in this browser, a connected folder, and the library that
+   serve.py serves on the owner's own computer. What the deployed site serves is never deleted from a page: there is no such request on the site, and serve.py answers on this computer only. */
+async function removeFolderItem(it){
+  const parts=it.rel.split('/'), name=parts.pop();
+  let dir=state.dir; for(const d of parts) dir=await dir.getDirectoryHandle(d);
+  await dir.removeEntry(name);
+  const m=await readFolderMeta(state.dir); if(m[it.rel]!==undefined){ delete m[it.rel]; await writeFolderMeta(state.dir,m); }       // its title / star / category notes go with it
+}
+function forgetItem(id){                                                                          // what this browser remembers about a card that is gone
+  for(const k of ['progress','lastRead','marks','seeds','pubReq','flags']) if(state[k] && state[k][id]!==undefined){ delete state[k][id]; LS.set(k,state[k]); }
+}
 async function purgeItem(id){
-  const it=state.items.find(x=>x.id===id); if(!it || !confirm(t(it.source==='local'?'confirmPurgeLocal':'confirmPurge',it.title))) return;
-  try{ if(it.source==='local') await idb.del(id); else await api('api/delete',{id}); toast(t('purged')); await loadAll(); }catch(e){ toast(t('saveFail')+e.message); }
+  const it=state.items.find(x=>x.id===id); if(!it) return;
+  if(!canDelete(it)){ toast(t('hideSiteTip')); return; }
+  if(!confirm(t(it.source==='local'?'confirmPurgeLocal':it.source==='folder'?'confirmPurgeFolder':'confirmPurge',it.title))) return;
+  try{
+    if(it.source==='local') await idb.del(id);
+    else if(it.source==='folder') await removeFolderItem(it);
+    else await api('api/delete',{id,confirm:true});
+    forgetItem(id); toast(t('purged')); await loadAll();
+  }catch(e){ toast(t('delFail')+e.message); }
 }
 /* ================= tags (my own shelf: the keywords of the items) ================= */
 const TAG_FOLD = 14;
 function ownTags(){
   const m=new Map();
-  state.items.forEach(it=>{ if(isHidden(it)) return; (it.keywords||[]).forEach(k=>{ k=String(k).trim(); if(!k) return; const key=k.toLowerCase(), g=m.get(key); if(g) g.n++; else m.set(key,{name:k,n:1}); }); });
+  scoped().forEach(it=>{ if(isHidden(it)) return; (it.keywords||[]).forEach(k=>{ k=String(k).trim(); if(!k) return; const key=k.toLowerCase(), g=m.get(key); if(g) g.n++; else m.set(key,{name:k,n:1}); }); });
   return [...m.values()].sort((a,b)=>b.n-a.n||a.name.localeCompare(b.name));
 }
 function renderTagbox(tags, active){
@@ -2131,7 +2349,10 @@ $('#subList').addEventListener('click',async e=>{
   else window.prompt(label, b.dataset.copy);                 // the browser refused the clipboard: show the address, already selected
 });
 
-$('#moveList').addEventListener('click',e=>{ const b=e.target.closest('[data-to]'); if(b && !b.disabled) moveItem(moveDlg.dataset.id, b.dataset.to); });
+$('#moveList').addEventListener('click',e=>{
+  const b=e.target.closest('[data-to]'); if(b && !b.disabled){ moveItem(moveDlg.dataset.id, b.dataset.to); return; }
+  const c=e.target.closest('[data-col]'); if(c && !c.disabled) moveToCollection(moveDlg.dataset.id, c.dataset.col);
+});
 $('#moveCancel').addEventListener('click',()=>moveDlg.close());
 
 /* ================= events ================= */
@@ -2155,6 +2376,7 @@ $('#grid').addEventListener('click',async e=>{
     if(el.tagName==='A' && el.getAttribute('href')!=='#' && (e.metaKey||e.ctrlKey||e.shiftKey)) return; e.preventDefault(); openReader(id);
   }
   else if(act==='star') toggleStar(id);
+  else if(act==='pin') togglePin(id);
   else if(act==='publish') publishItem(id);
   else if(act==='published') toast(t('publishDone'));
   else if(act==='hide') hideItem(id);
@@ -2180,6 +2402,52 @@ $('.view-head').addEventListener('click',e=>{                        // the acti
   state.dLimit=DIR_PAGE; render();
 });
 $('#moreBtn').addEventListener('click',()=>{ state.dLimit+=DIR_PAGE; render(); });
+/* Swipe an entry of the directory to the left (touch or pen; a mouse has the buttons on the cards): the action under it shows, a tap on it does it.
+   A mostly vertical move is left to the list's own scrolling (the entries say touch-action:pan-y), so the drawer still scrolls. */
+const SWIPE_W=84;
+let swipeOpen=null, swipeAt=0;
+function swipeTo(row, x, animate){
+  const it=row.querySelector('.dir-item'); it.style.transition=animate?'transform .16s ease':'none'; it.style.transform=x?`translateX(${x}px)`:'';
+  row.classList.toggle('is-open',x<=-SWIPE_W+1); row.classList.toggle('is-swiping',x<0);
+}
+function swipeClose(animate){ if(swipeOpen && swipeOpen.isConnected) swipeTo(swipeOpen,0,animate); swipeOpen=null; }
+const swipeLive = () => { if(swipeOpen && !swipeOpen.isConnected) swipeOpen=null; return swipeOpen; };           // the list is drawn again after every change
+(function(){
+  const dir=$('#dir'); let g=null;
+  dir.addEventListener('pointerdown',e=>{
+    if(e.pointerType==='mouse' || e.button>0) return;
+    const row=e.target.closest('.dir-row'); if(!row || e.target.closest('.dir-swipe')){ g=null; return; }
+    if(swipeLive() && swipeOpen!==row) swipeClose(true);
+    g={row, id:e.pointerId, x0:e.clientX, y0:e.clientY, base:row===swipeOpen?-SWIPE_W:0, mode:'', x:row===swipeOpen?-SWIPE_W:0};
+  });
+  dir.addEventListener('pointermove',e=>{
+    if(!g || e.pointerId!==g.id) return;
+    const dx=e.clientX-g.x0, dy=e.clientY-g.y0;
+    if(!g.mode){
+      if(Math.abs(dx)<8 && Math.abs(dy)<8) return;
+      if(Math.abs(dx)>Math.abs(dy)*1.3){ g.mode='x'; try{ g.row.setPointerCapture(e.pointerId); }catch(err){} } else { g=null; return; }
+    }
+    g.x=Math.max(-SWIPE_W-16,Math.min(0,g.base+dx)); swipeTo(g.row,g.x,false);
+  });
+  const end=e=>{
+    if(!g || e.pointerId!==g.id) return;
+    const was=g; g=null; if(was.mode!=='x') return;
+    swipeAt=Date.now();                                                    // the tap that ends a swipe must not open the entry
+    const open = was.x<=-SWIPE_W/2; swipeTo(was.row, open?-SWIPE_W:0, true); swipeOpen=open?was.row:null;
+  };
+  dir.addEventListener('pointerup',end); dir.addEventListener('pointercancel',end);
+  dir.addEventListener('click',e=>{                                        // capture: runs before the handlers below
+    if(Date.now()-swipeAt<350){ e.preventDefault(); e.stopPropagation(); return; }
+    const sw=e.target.closest('[data-swipe]');
+    if(sw){
+      e.stopPropagation(); const id=sw.closest('.dir-row').dataset.id, a=sw.dataset.swipe;
+      if(a==='purge') purgeItem(id); else if(a==='restore') restoreItem(id); else hideItem(id);
+      swipeClose(true); return;
+    }
+    if(swipeLive()){ e.preventDefault(); e.stopPropagation(); swipeClose(true); }                   // a tap on an entry while one is open only closes it
+  },true);
+  document.addEventListener('pointerdown',e=>{ if(swipeLive() && !e.target.closest('.dir-row')) swipeClose(true); });
+})();
 $('#dir').addEventListener('click',e=>{
   const sh=e.target.closest('[data-dshelf]');                       // public directory: one shelf
   if(sh){ state.dShelf=state.dShelf===sh.dataset.dshelf?'':sh.dataset.dshelf; state.dLimit=DIR_PAGE; render(); window.scrollTo({top:0}); document.body.classList.remove('drawer'); return; }
@@ -2236,12 +2504,41 @@ $('#installBtn').addEventListener('click',async()=>{
 });
 syncInstall();
 
+/* ================= shared to this app (Android, installed): the files and the address another app sent ================= */
+/* sw.js puts them in the "inbox" cache and sends the browser here; the files go to the add dialog (to choose the collection), an address is kept as a link. */
+async function saveSharedLink({url, title}){
+  const u=httpUrl(url); if(!u) return;
+  const host=hostOf(u), name=String(title||'').trim()||host, other=state.items.find(x=>x.type==='link' && x.url===u);
+  if(!other){
+    const now=Date.now(), rec={id:'local:link:s'+now.toString(36)+Math.random().toString(36).slice(2,5), type:'link', url:u, title:cut(name,120), summary:'', keywords:[], lang:/[一-鿿]/.test(name)?'zh':'en',
+                               date:today(now), category:'notes', image:'', from:host, added:Math.floor(now/1000), ...(colById(state.col)?{collection:state.col}:{})};
+    await idb.put(rec); state.items.push({...rec, source:'local'}); render();
+  }
+  toast(t('shareLink',cut(name,24)));
+}
+async function takeInbox(){
+  if(!('caches' in window)) return;
+  let cache; try{ cache=await caches.open('inbox'); }catch(e){ return; }
+  const keys=await cache.keys(); if(!keys.length) return;
+  const files=[], links=[];
+  for(const k of keys){
+    const r=await cache.match(k); if(!r) continue;
+    if(r.headers.get('x-kind')==='link'){ try{ links.push(await r.json()); }catch(e){} }
+    else{ const b=await r.blob(); let name='file'; try{ name=decodeURIComponent(r.headers.get('x-name')||'file'); }catch(e){} files.push(new File([b],name,{type:r.headers.get('content-type')||b.type})); }
+    await cache.delete(k);
+  }
+  if(location.search) history.replaceState(null,'',location.pathname+location.hash);
+  for(const l of links){ try{ await saveSharedLink(l); }catch(e){ toast(t('saveFail')+e.message); } }
+  if(files.length){ openAdd(); await takeFiles(files); note(t('shareGot',files.length)); }
+}
+
 /* ================= boot ================= */
 (async function boot(){
   if(location.hash==='#directory') state.space='dir';                   // a shareable address for the public directory
   applyTheme(); render(); syncSubscribe();
   try{ const h=await idb.get('dir'); if(h && h.queryPermission){ const p=await h.queryPermission({mode:'readwrite'}); if(p==='granted') state.dir=h; else state.dirPending=h; } }catch(e){}
   await loadAll();
+  takeInbox().catch(()=>{});                                          // something shared to this app from another app, if there is
   if(state.dirCfg) loadDirectory();                                   // also in my own shelf: it tells which of my pages are in the directory, and where posts are sent
   const m=location.hash.match(/^#read\/(.+)$/);
   if(m){ const id=decodeURIComponent(m[1]); history.replaceState(null,'',location.pathname+location.search); openReader(id); }

@@ -1,0 +1,14 @@
+{
+  "name": "image-to-svg-fidelity-demo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local PNG/JPEG to native SVG vectorization demo with measurable fidelity checks.",
+  "scripts": {
+    "start": "node server.js",
+    "fixtures": "python scripts/generate_fixtures.py",
+    "verify": "node scripts/verify-export.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

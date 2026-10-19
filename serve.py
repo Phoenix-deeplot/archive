@@ -9,9 +9,11 @@ serve.py — run the archive locally with live folder scanning.
 * A web tool made of several files goes in as a folder: library/tools/<name>/index.html (+ css, js,
   images...). The folder is ONE card. The "Add" button can upload such a folder too.
 * The "+" button in the page uploads files straight into library/<category>/.
-* Featured stars, hidden items and title/summary edits are saved to library/_meta.json.
-* A card can be moved to another category (its file or folder moves with it), and a hidden card can
-  be deleted for good.
+* Featured stars, pinned items (kept at the top of the shelf), hidden items and title/summary edits
+  are saved to library/_meta.json.
+* A card can be moved to another category (its file or folder moves with it), or deleted for good (the
+  page asks first). This is the owner's own computer: the deployed site has no such request, so nobody
+  else can delete anything on the server. To remove a book from the website: delete it here, deploy again.
 * manifest.json / manifest.js are kept up to date automatically (on start, on every page load, after
   every change in library/), so the same folder can be deployed as a static site at any time.
 
@@ -305,7 +307,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return self._json({'ok': True, 'id': item_id})
 
         # Move a card to another category (the file, or a whole tool folder, really moves) or delete it for good.
-        # Only cards the scan knows about can be touched, and only hidden ones can be deleted.
+        # Only cards the scan knows about can be touched; a delete has to say it was confirmed (the page asks the owner first).
         if route in ('/api/move', '/api/delete'):
             try:
                 body = json.loads((self.rfile.read(length) if length else b'{}').decode('utf-8') or '{}')
@@ -324,8 +326,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             meta = load_meta()
             try:
                 if route == '/api/delete':
-                    if not (meta.get(item_id) or {}).get('hidden'):
-                        return self._json({'error': 'only hidden items can be deleted'}, 400)
+                    if body.get('confirm') is not True:
+                        return self._json({'error': 'a delete has to be confirmed'}, 400)
                     shutil.rmtree(unit) if is_project else os.remove(unit)
                     meta.pop(item_id, None)
                     new_id = None
@@ -364,8 +366,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 return self._json({'error': 'bad id'}, 400)
             meta = load_meta()
             entry = meta.get(item_id, {})
-            for k in ('featured', 'hidden', 'title', 'summary', 'nodirectory'):
+            for k in ('featured', 'hidden', 'title', 'summary', 'nodirectory', 'pinned'):
                 if k in body:
+                    if k == 'pinned' and not isinstance(body[k], (bool, int, float)):      # the time it was pinned, or false
+                        continue
                     entry[k] = body[k]
             meta[item_id] = entry
             save_meta(meta)
