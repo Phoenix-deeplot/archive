@@ -699,6 +699,8 @@ const I18N = {
     brand:'知识树', brandSub:'个人数字图书馆', siteTitle:'知识树 - 个人数字图书馆', dir:'卡片目录', search:'搜索标题、摘要、关键词、类型', lfAll:'全部',
     sortRecent:'最近添加', sortRead:'最近阅读', sortTitle:'标题', add:'添加', back:'返回', prev:'上一篇', next:'下一篇',
     pinTip:'置顶', unpinTip:'取消置顶', pinned:'置顶', pinnedToast:t=>`已把《${t}》置顶`, unpinnedToast:t=>`已取消《${t}》的置顶`,
+    pinLocalNote:'只在这个浏览器里生效，别的访客看不到。要让所有人看到，站长需在自己电脑上置顶后重新部署。',
+    serveOld:'serve.py 还是旧版本，没有保存置顶。请关掉它，重新运行 python serve.py。',
     star:'设为精选', unstar:'已精选', starTip:'设为精选', unstarTip:'取消精选', newTab:'新标签打开', shuffle:'换一张封面',
     hide:'隐藏', restore:'恢复', remove:'移除', delForever:'彻底删除', close:'关闭', menu:'目录',
     move:'移动到其他分类', moveTitle:t=>`把《${t}》移到…`, movedToast:(t,c)=>`已把《${t}》移到「${c}」`, movedLocal:'分类调整只保存在这个浏览器里，不会改动网站。', movedMeta:'分类记在这个文件夹的 _meta.json 里，文件没有挪动。', moveFail:'移动失败：',
@@ -795,6 +797,8 @@ const I18N = {
     brand:'Knowledge Tree', brandSub:'Personal digital library', siteTitle:'Knowledge Tree - Personal Digital Library', dir:'Card index', search:'Search titles, summaries, keywords, types', lfAll:'All',
     sortRecent:'Recently added', sortRead:'Recently read', sortTitle:'Title', add:'Add', back:'Back', prev:'Previous', next:'Next',
     pinTip:'Pin to top', unpinTip:'Unpin', pinned:'Pinned', pinnedToast:t=>`Pinned “${t}” to the top`, unpinnedToast:t=>`Unpinned “${t}”`,
+    pinLocalNote:'This works in this browser only; other visitors do not see it. For everybody, the site owner pins it on their own computer and deploys again.',
+    serveOld:'serve.py is an old version and did not save the pin. Stop it and run python serve.py again.',
     star:'Feature', unstar:'Featured', starTip:'Mark as featured', unstarTip:'Remove from featured', newTab:'Open in new tab', shuffle:'Shuffle cover',
     hide:'Hide', restore:'Restore', remove:'Remove', delForever:'Delete forever', close:'Close', menu:'Index',
     move:'Move to another category', moveTitle:t=>`Move “${t}” to…`, movedToast:(t,c)=>`Moved “${t}” to “${c}”`, movedLocal:'The move is kept in this browser only; the site is not changed.', movedMeta:'The category is recorded in this folder\'s _meta.json; the file stays where it is.', moveFail:'Move failed: ',
@@ -1199,6 +1203,8 @@ async function setFlag(id, k, v){
   try{
     if(it.source==='server'){
       const r=await fetch('api/meta',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,[k]:v})}); if(!r.ok) throw new Error(r.status);
+      const d=await r.json().catch(()=>({}));
+      if(k==='pinned' && !(d.entry && 'pinned' in d.entry)) throw new Error(t('serveOld'));        // a serve.py started before pinning existed answers "ok" and stores nothing
     } else if(it.source==='folder' && state.dir){
       const m=await readFolderMeta(state.dir); m[it.rel]={...(m[it.rel]||{}),[k]:v}; await writeFolderMeta(state.dir,m);
     } else if(it.source==='local'){
@@ -1218,7 +1224,10 @@ async function toggleStar(id){
 async function togglePin(id){
   const it=state.items.find(x=>x.id===id); if(!it) return;
   const on=pinRank(it)>0;
-  if(await setFlag(id,'pinned',on?false:Date.now())){ render(); window.scrollTo({top:0}); toast(t(on?'unpinnedToast':'pinnedToast',cut(it.title,24))); }
+  if(await setFlag(id,'pinned',on?false:Date.now())){
+    render(); window.scrollTo({top:0});
+    toast(t(on?'unpinnedToast':'pinnedToast',cut(it.title,24))+(it.source==='static'?' '+t('pinLocalNote'):''));        // on the deployed site a pin is the visitor's own
+  }
 }
 async function hideItem(id){
   const it=state.items.find(x=>x.id===id); if(!it) return;

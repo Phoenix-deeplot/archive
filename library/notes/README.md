@@ -1,3 +1,9 @@
+---
+title: 收藏库使用说明
+description: 怎么往收藏库里加内容、怎么隐藏和恢复，以及 HTML、Markdown、TXT、PDF 各自的显示方式。
+tags: [使用说明, archive, markdown]
+pinned: true
+---
 # 个人数字图书馆 · My Archive
 
 一个放笔记与收藏的个人网页：自动读取 `library/` 里的 HTML、Markdown、TXT 和 PDF，生成带封面的卡片，左侧是分类和卡片目录，支持中英文界面、关键词筛选、隐藏与恢复，以及站内阅读。

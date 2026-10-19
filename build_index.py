@@ -20,11 +20,12 @@ Title and summary are read from the page itself; optional meta tags override the
     <meta name="keywords" content="supply chain, 采购">
     <meta name="archive:category" content="books">
     <meta name="archive:featured" content="true">
+    <meta name="archive:pinned" content="true">      (kept at the top of the shelf for every visitor)
     <meta name="archive:cover" content="cover.jpg">
     <meta name="archive:date" content="2026-10-13">
 
 Markdown files may use front matter (title, description, tags, date, category,
-featured, cover). PDF titles come from the document metadata, else the file name.
+featured, pinned, cover). PDF titles come from the document metadata, else the file name.
 
 Edits made in the web page (featured star, pinned to the top, hidden, title, summary) are stored in
 library/_meta.json and merged here.
@@ -159,6 +160,18 @@ def _front_matter(text):
     return meta, text[m.end():]
 
 
+def _pin_value(v):
+    """`pinned: true` (or a number: the bigger, the nearer the top) written in a document itself -> 1 / the number, 0 when it is not pinned."""
+    v = str(v if v is not None else '').strip().lower()
+    if v in ('true', 'yes', 'on'):
+        return 1
+    try:
+        n = float(v)
+    except ValueError:
+        return 0
+    return (int(n) if n == int(n) else n) if n > 0 else 0
+
+
 def _strip_md(s):
     s = re.sub(r'!\[[^\]]*\]\([^)]*\)', '', s)
     s = re.sub(r'\[([^\]]*)\]\([^)]*\)', r'\1', s)
@@ -214,6 +227,8 @@ def _extract_md(path, st, is_txt=False):
         out['slug'] = str(fm['slug']).strip()
     if str(fm.get('directory', '')).strip().lower() in ('false', 'no', '0', 'off'):      # keep it out of every public directory (see seo.py `_shelf.listed`)
         out['nodirectory'] = True
+    if _pin_value(fm.get('pinned')):                 # kept at the top of the shelf for every visitor (a pin made in the page, in _meta.json, goes before it)
+        out['pinned'] = _pin_value(fm.get('pinned'))
     return out
 
 
@@ -326,6 +341,8 @@ def _extract_html(path, st, name=None):
         out['slug'] = m['archive:slug'].strip()
     if m.get('archive:directory', '').strip().lower() in ('no', 'false', '0', 'off'):   # <meta name="archive:directory" content="no">: out of every public directory
         out['nodirectory'] = True
+    if _pin_value(m.get('archive:pinned')):          # <meta name="archive:pinned" content="true">: kept at the top of the shelf for every visitor
+        out['pinned'] = _pin_value(m.get('archive:pinned'))
     return out
 
 

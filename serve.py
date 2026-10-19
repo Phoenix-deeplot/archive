@@ -374,7 +374,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             meta[item_id] = entry
             save_meta(meta)
             refresh()
-            return self._json({'ok': True})
+            return self._json({'ok': True, 'entry': entry})        # what was stored: the page checks it (an old serve.py still running ignores keys it does not know)
 
         return self._json({'error': 'not found'}, 404)
 
