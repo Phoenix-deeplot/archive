@@ -1,5 +1,9 @@
 {
   "owner": "phoenix",
+  "name": "知树阅读",
+  "name_en": "ZhiTree Books",
+  "alternate_names": ["zhitreebooks"],
+  "keywords_en": ["zhitreebooks"],
   "contact": "",
   "license": "",
   "directory": "https://adminbook.zhitree.cn/",

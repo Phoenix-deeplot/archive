@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZhiTree Books User Guide: an illustrated tutorial</title>
+<meta name="description" content="How to use ZhiTree Books: read PDF, Markdown and ebooks online, add your own files, follow blogs by RSS, use it on your phone and submit to the public directory; plus the steps to install and deploy your own copy.">
+<meta name="keywords" content="ZhiTree Books, zhitreebooks, user guide, tutorial, read PDF online, RSS reader, install, deploy">
+<link rel="stylesheet" href="../guide.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M9 3.5h6l-.9 5.2 3.4 3.3v1.5H6.5V12l3.4-3.3zM12 13.5V21"/></symbol>
+  <symbol id="i-hide" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.2A9.7 9.7 0 0 1 12 6c5 0 8.5 4.5 9.5 6-.5.8-1.6 2.3-3.2 3.6M6.3 7.6C4.4 8.9 3.1 10.8 2.5 12c1 1.5 4.5 6 9.5 6 1.6 0 3-.4 4.3-1.1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+  <symbol id="i-move" viewBox="0 0 24 24"><path d="M3 7a1 1 0 0 1 1-1h5l2 2h8a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M8.5 14h7M13 11.5l2.5 2.5-2.5 2.5"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 3.8 5.2 3.8 8.5s-1.2 6.1-3.8 8.5c-2.6-2.4-3.8-5.2-3.8-8.5S9.4 5.9 12 3.5z"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M4 7h3c4 0 6 10 10 10h3M17 14l3 3-3 3M4 17h3c1.4 0 2.6-1.2 3.6-2.8M14 9.8C15 8.2 16 7 17.5 7H20M17 4l3 3-3 3"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+</svg>
+
+<div class="langbar" id="langbar" lang="zh-CN" hidden><span>这份指南也有中文版。</span> <a href="../" hreflang="zh-CN">中文版 &rarr;</a> <button type="button" aria-label="Close">&times;</button></div>
+<div class="wrap">
+<header class="top">
+  <div class="langsw"><a href="../" hreflang="zh-CN" lang="zh-CN">中文</a></div>
+  <p class="eyebrow">ZhiTree Books · a personal digital library</p>
+  <h1>User Guide</h1>
+  <p class="lead">A web bookshelf for notes, books, PDFs and small tools. This guide explains how to use it with pictures and steps; to set up your own copy, switch to “Install &amp; deploy”.</p>
+</header>
+
+<div class="tabbar">
+  <div class="tabs" role="tablist" aria-label="Guide">
+    <button type="button" role="tab" id="tab-usage" aria-controls="usage" aria-selected="true" data-tab="usage">Using it</button>
+    <button type="button" role="tab" id="tab-deploy" aria-controls="deploy" aria-selected="false" data-tab="deploy">Install &amp; deploy</button>
+  </div>
+  <span class="tabnote" id="tabnote" data-usage="For readers: how to read, save and use it on a phone" data-deploy="For site owners: run it on your own computer and put it online">For readers: how to read, save and use it on a phone</span>
+</div>
+
+<!-- ============================ Using it ============================ -->
+<section class="panel" id="usage" role="tabpanel" aria-labelledby="tab-usage">
+
+<ul class="toc">
+  <li><a href="#u-start">What it is</a></li><li><a href="#u-ui">The home page</a></li><li><a href="#u-read">Reading</a></li><li><a href="#u-card">Card buttons</a></li>
+  <li><a href="#u-add">Your own files</a></li><li><a href="#u-follow">Follow other blogs</a></li><li><a href="#u-mobile">On a phone</a></li><li><a href="#u-dir">Public directory</a></li><li><a href="#u-feed">Follow this site</a></li><li><a href="#u-faq">FAQ</a></li>
+</ul>
+
+<div class="tip"><b class="h">About the language</b><p>The interface speaks English: use the <b>中文 | EN</b> switch at the bottom left of the page. The books and notes on this particular site are mostly in Chinese, and the <b>All / 中 / EN</b> filter next to the search box narrows the cards to one language. The screenshots below show an English demo library with made-up content.</p></div>
+
+<h2 id="u-start"><span class="n">0</span>What it is</h2>
+<p>ZhiTree Books is a personal digital library: the site owner puts notes, books, PDFs and small web tools into a folder, and they become cards on a web page. <b>No sign-up, no login</b>: open it and read. You can do three things:</p>
+<div class="cards3">
+  <div><h3>Read</h3><p>Click a card to read it right in the page: HTML, Markdown, TXT and PDF all work. It remembers where you stopped, lets you bookmark places and change the reading colour.</p></div>
+  <div><h3>Keep</h3><p>Bring in <b>your own files</b>, many at a time, and sort them into “collections”. They stay in your own browser: nothing is uploaded and nobody else sees them.</p></div>
+  <div><h3>Browse &amp; submit</h3><p>The “public directory” gathers many people’s blogs, articles and reading lists in one place; you can also send your own address or article in, without an account.</p></div>
+</div>
+
+<h2 id="u-ui"><span class="n">1</span>The home page</h2>
+<figure class="shot"><img width="1600" height="1000" src="../img-en/home.webp" alt="Home page: on the left the space switch, categories and tags; on the right the search box and the cards" loading="lazy"><figcaption>The home page (desktop). The numbers match the list below.</figcaption></figure>
+<ol class="legend">
+  <li><b>My shelf / Public directory</b>: two spaces, one click to switch. “My shelf” is the site’s own books plus the files you add; the “Public directory” is covered in section 6.</li>
+  <li><b>Categories and tags</b>: click a category to see only that kind, click a tag to filter by topic. The “Card index” below lists the titles in each category; click one to jump to its card.</li>
+  <li><b>Search</b>: titles, summaries and keywords together. Press <kbd>/</kbd> to jump straight to the search box.</li>
+  <li><b>Cards</b>: cover, title, summary, reading time. Click one to start reading. The small tag at the top right is the file type (MD / PDF / TXT / APP…); “APP” is a small web tool.</li>
+  <li><b>Add</b>: bring in your own files, see section 4.</li>
+</ol>
+<p>To the right of the search box you also find: <b>All / 中 / EN</b> (show one language of content only), <b>sort</b> (recently added / publication date / recently read / title; the public directory is newest first), the <b>list / card</b> view and <b>Subscribe</b>. At the bottom left you can switch the interface language (中文 / EN) and the theme (system / light / dark).</p>
+
+<h2 id="u-read"><span class="n">2</span>Reading</h2>
+<p>Click any card to open the reader. Every format shares the same row of buttons:</p>
+<figure class="shot"><img width="1600" height="1000" src="../img-en/reader.webp" alt="The reader: the top bar has back, previous and next, contents, reading settings, bookmark, featured and open in new tab; the contents panel is open on the right" loading="lazy"><figcaption>The reader (desktop) with the “Contents” panel open on the right.</figcaption></figure>
+<ol class="legend">
+  <li><b>Back</b>: return to the shelf (or press <kbd>Esc</kbd>).</li>
+  <li><b>Previous / Next</b>: page through the current list in order (or press <kbd>←</kbd> <kbd>→</kbd>).</li>
+  <li><b>Contents</b>: takes the headings from the text; click one to jump there, and it marks where you are. The “Bookmarks” tab sits beside it.</li>
+  <li><b>Reading settings (Aa)</b>: change the colour and the text size, see the next picture.</li>
+  <li><b>Bookmark</b>: remembers the place you are at now; click it in “Bookmarks” later to come back.</li>
+  <li><b>Featured / Open in new tab</b>: mark the whole piece as a favourite, or open just this page in a tab of its own.</li>
+</ol>
+<p>While you scroll, <b>your progress is saved automatically</b> and you come back to the same place next time; “Continue reading” at the top of the home page lists the pieces you left half-read.</p>
+
+<figure class="shot"><img width="1600" height="1000" src="../img-en/reader-settings.webp" alt="Reading settings: text size, line spacing, page width and five reading colours" loading="lazy"><figcaption>Reading settings: the colour can be “Follow system / Light / Dark / Sepia / Green (easy on the eyes)”; your choice is remembered.</figcaption></figure>
+<table>
+  <tr><th>Format</th><th>How it is shown</th><th>Size / spacing / width</th><th>Contents and bookmarks</th></tr>
+  <tr><td>Markdown, TXT</td><td>One consistent reading layout</td><td>All adjustable</td><td>Yes; in TXT, lines like “Chapter 4” are treated as chapters</td></tr>
+  <tr><td>HTML</td><td>Kept as the original page</td><td>Colour only</td><td>Yes, for pages with proper headings</td></tr>
+  <tr><td>PDF</td><td>The browser’s own PDF viewer</td><td>Colour only</td><td>No (a phone shows “Open / Download”)</td></tr>
+</table>
+<div class="tip"><b class="h">About “easy on the eyes”</b><p>What changes here is the colour tone (sepia, green, dark); a web page cannot truly filter blue light.</p></div>
+
+<h2 id="u-card"><span class="n">3</span>Card buttons</h2>
+<figure class="shot narrow"><img width="489" height="767" src="../img-en/card.webp" alt="A card you added yourself, with a row of buttons at the bottom" loading="lazy"><figcaption>The row of buttons at the bottom of a card. This is a card you added yourself, so it has a trash can at the far right; cards that belong to the site have no trash can but do have “Open in new tab”.</figcaption></figure>
+<table class="icons">
+  <tr><td><svg class="ic"><use href="#i-star"/></svg></td><td><b>Mark as featured</b>: puts it in the “Featured” category, handy for your few favourites.</td></tr>
+  <tr><td><svg class="ic"><use href="#i-pin"/></svg></td><td><b>Pin to top</b>: whatever the sort order and whichever category you are in, it stays first and carries a “Pinned” mark. With several pinned, the last one pinned comes first. <b>A pin you click on the web page counts for you only</b>; other visitors are not affected.</td></tr>
+  <tr><td><svg class="ic"><use href="#i-hide"/></svg></td><td><b>Hide</b>: takes it out of the categories and search without deleting the file. “Hidden” at the bottom of the left column brings it back.</td></tr>
+  <tr><td><svg class="ic"><use href="#i-move"/></svg></td><td><b>Move to another category</b>: file it elsewhere; your own files can also go into another collection.</td></tr>
+  <tr><td><svg class="ic"><use href="#i-globe"/></svg></td><td><b>Publish to the public directory</b>: sends this item to be reviewed, see section 6. It appears only when the site has a public directory.</td></tr>
+  <tr><td><svg class="ic"><use href="#i-shuffle"/></svg></td><td><b>Shuffle cover</b>: the cover is generated from the title; shuffle it if you do not like it.</td></tr>
+  <tr><td><svg class="ic"><use href="#i-ext"/></svg></td><td><b>Open in new tab</b>: leave the reader and open this page on its own.</td></tr>
+  <tr><td><svg class="ic"><use href="#i-trash"/></svg></td><td><b>Delete</b>: only <b>your own files</b> have this button (those added in the browser, or those in a folder on your computer that you connected). It asks first, and a deleted file cannot be brought back.</td></tr>
+</table>
+<div class="tip"><b class="h">Why don’t the site’s books have a trash can?</b><p>The site’s books were put there by the owner, and only the owner can delete one on their own computer and publish again; a visitor cannot do it from the page, and there is no request they could send to do it. What you can do on the page is “Hide”, which takes effect only in your own browser. Stars, pins and moving to another category work the same way.</p></div>
+
+<h2 id="u-add"><span class="n">4</span>Your own files</h2>
+<figure class="shot"><img width="1500" height="1348" src="../img-en/add.webp" alt="The Add window: the list of chosen files, the collection choice and the category choice" loading="lazy"><figcaption>The “Add” window: choose the files, decide which collection and which category they go to, then Save.</figcaption></figure>
+<ol class="steps">
+  <li>Click <b>Add</b> at the top right (or just drag files onto the page).</li>
+  <li>Click the dashed box to choose files; <b>you can choose many at once</b>. HTML, Markdown, TXT and PDF are supported, up to 30 MB each.</li>
+  <li>Each file can get its own title and summary; pick a <b>collection</b> and a <b>category</b>.</li>
+  <li>Click <b>Save</b>. The page switches to that collection by itself.</li>
+</ol>
+<div class="warn"><b class="h">Where are they kept?</b><p>In <b>this browser</b>. They are not uploaded to any server and nobody else sees them. So if you switch browser or device, or clear the site’s data, they are gone, and your phone and your computer are <b>not in sync</b>. To keep files on your own computer for the long term, use “Connect folder” at the bottom left (Chrome / Edge): choose a folder, the files inside show up directly, and what you add is written into that folder.</p></div>
+
+<h3 id="u-backup">Back up and restore: moving devices, not losing things</h3>
+<p>Your files, collections, subscriptions, reading places and bookmarks live only in this browser, so make a backup before you switch device or clear the site’s data. Click <b>Back up &amp; restore</b> at the bottom left:</p>
+<ul>
+  <li><b>Export a full backup</b>: one .zip with every file you added and all your settings.</li>
+  <li><b>Export the list and settings only</b>: a tiny .json without file contents, a way to take your saved links, subscriptions, collections and reading places to another device first.</li>
+  <li><b>Restore</b>: choose a backup file; the page first tells you what is in it and what is already here, and only “Merge into my shelf” imports it. <b>It only merges; nothing you have now is deleted</b>, and files with the same content are not added twice.</li>
+</ul>
+<p>The backup file is made by your browser and saved on your own device; it never passes through a server. The site’s own books and the files of a folder you connected are not in it. The “What is this?” note shown on the first visit can be brought back with “What is this?” at the bottom left.</p>
+
+<h3 id="u-sync">Sync (optional): one shelf on several devices</h3>
+<p>When the site has a sync service, there is a <b>Sync</b> button at the bottom left (if not, the site has none). It is optional: everything works without it; no sign-up, no password.</p>
+<ol class="steps">
+  <li>On the first device click <b>Sync → Turn sync on and make a sync code</b> and <b>save the code at once</b> (a password manager is a good place).</li>
+  <li>On another device click <b>Sync</b>, type the code under “Already turned sync on on another device?” and click <b>Connect</b>.</li>
+  <li>After that, changes sync by themselves a few seconds later, and once more when you come back to the page; “Sync now” works any time.</li>
+</ol>
+<ul>
+  <li><b>What syncs</b>: your list, saved links, subscriptions, collections, reading places, bookmarks, stars and pins; small text files (Markdown, TXT, HTML, up to about 1 MB each) with their content, fetched on another device when opened (the latest few ahead of time).</li>
+  <li><b>What does not</b>: large files such as PDFs sync only as a list entry (the card says “List only”) and their content does not go over; to take them to another device use “Back up &amp; restore” on the original. The articles of a subscription do not sync: each device reads them from the feed.</li>
+  <li><b>How private</b>: the encryption happens in your browser; the sync service sees only scrambled data and can read no title and no text; the code is kept only as a hash. <b>The sync code is the key: lose it and nothing can bring it back; whoever has it can read your shelf.</b></li>
+  <li><b>Limits</b>: the free space is about 9 MB; when it is full, new files sync only as a list entry; after half a year (180 days) without use the space is cleared. When two devices changed the same thing at once, the later reading place wins, bookmarks are combined, and otherwise the device you are using now wins; a change beats a deletion on the other side.</li>
+  <li><b>Turning it off</b>: “Turn sync off on this device” deletes nothing here; “Delete the cloud data” empties the sync space and leaves what is on every device alone.</li>
+</ul>
+<p>After a good while of use the page asks you once: if “large-file sync” (PDFs and more, with more room) were added later, would you pay for it? Your answer goes to the sync service only as an anonymous count, with nothing that could identify you.</p>
+
+<h3>Collections: a batch of files kept together</h3>
+<p>The files of one import can go into one <b>collection</b>. Once a collection is selected, the cards, categories, tags, search and “Continue reading” show only that collection, which keeps the shelf tidy.</p>
+<figure class="shot"><img width="1040" height="770" src="../img-en/collections.webp" alt="The Manage collections window: create, rename, delete, and the storage used" loading="lazy"><figcaption>“Manage” lets you create, rename and delete collections, and shows how much space this browser already uses.</figcaption></figure>
+<ul>
+  <li><b>Switch</b>: on a computer use the “Collection” drop-down above the cards; on a phone tap the index button at the top left, and the collections are at the top of the left list.</li>
+  <li><b>Manage</b>: create, rename, delete. <b>Deleting a collection deletes the files in it</b>; it asks first.</li>
+  <li><b>Change collection</b>: “Move to another category” on a card can put a file into a different collection.</li>
+</ul>
+
+<h3 id="u-follow">Following: subscribe to other people’s blogs and feeds</h3>
+<p>For a blog you like to read, you need not visit its site to see whether there is something new: in the “Add” window switch to <b>Subscribe</b> and subscribe to it into your own shelf.</p>
+<figure class="shot"><img width="1080" height="1000" src="../img-en/subscribe.webp" alt="The Subscribe tab of the Add window: paste an address, look it up, see its name and latest articles, choose a collection name, click Subscribe" loading="lazy"><figcaption>“Add → Subscribe”: paste an address, look it up, choose a collection name, subscribe.</figcaption></figure>
+<ol class="steps">
+  <li>Click <b>Add</b> and switch to the <b>Subscribe</b> tab. <b>“Try these”</b> under it lists a few sources the site owner picked: <b>one click subscribes</b>, you can subscribe to several in a row and click “Done” to go back to the shelf.</li>
+  <li>Paste an address: a blog’s home page or a feed (RSS / Atom / JSON Feed) both work; click <b>Look up</b>. The page tells you what it is called and which articles came last.</li>
+  <li>Give the subscription a collection name and click <b>Subscribe</b>.</li>
+</ol>
+<figure class="shot"><img width="1500" height="859" src="../img-en/subscribed.webp" alt="The shelf after subscribing: the subscription is a collection, new articles carry a “New” mark, and the collection shows how many are new" loading="lazy"><figcaption>A subscription is a collection. New articles carry a “New” mark and the collection shows how many are new; click one to read it on the original site.</figcaption></figure>
+<ul>
+  <li><b>Articles are read here, not on another site</b>: when a feed carries the full text, the text of the latest articles is kept (the card says “Full text”). When a feed carries only excerpts, the “update service” reads the original page when you open it, extracts the article and shows it in the reader (some pages take ten seconds or more); the text is kept in your browser, so next time it opens at once, and the newest few are read ahead while the page is idle. “Read the original” is in the top bar and at the end. Like a link you saved, it can be searched, starred, pinned and hidden. In the reading settings you can also <b>download the article as a web page (HTML)</b> or <b>print / save it as PDF</b>.</li>
+  <li><b>Pages that cannot be read</b>: pages behind a login or a paywall, with a bot check, drawn by scripts only, PDFs, and pages whose robots.txt keeps programs out cannot be read here. The reader says why and offers an “Open the original” button; the card is marked “Original only”, and later a click opens the original in a new tab at once (it is tried again after a week).</li>
+  <li><b>When it updates</b>: when you open the page (if the last update is over 3 hours old), and any time you click “Refresh”. A web page cannot update in the background, so <b>nothing is pushed to you</b>; with no network you see what was stored last time. Each subscription keeps its latest 60 articles (those you starred or pinned are never cleared).</li>
+  <li><b>If you paste a single article</b> (not a blog): it has no feed to follow, so it is saved as one link and is not updated; when it can be read, its text is kept too and read in the reader.</li>
+  <li><b>Manage</b>: in the collection’s “Manage” you can refresh, “Mark all read” and unsubscribe (the stored articles are removed with it). An article you delete does not come back at the next update.</li>
+  <li><b>Another device</b>: in “Manage” (or “Import / export your subscriptions” in the Add window) <b>export an OPML file</b> or <b>copy a link to the list</b>, and import it or open the link on the other device. <b>Only the list of subscriptions</b> (a series of addresses) is synced; articles and read marks are kept by each device itself. The OPML file also works with readers such as Feedly.</li>
+  <li><b>Privacy</b>: other people’s sites do not let a web page read them directly, so the site’s “update service” reads them for you: the address you subscribe to is sent to it, it reads the titles and summaries and hands them to your browser, and <b>it stores nothing itself</b>. The list of subscriptions lives only in your browser.</li>
+</ul>
+<div class="phones">
+  <figure><img width="600" height="1298" src="../img-en/m-subscribed.webp" alt="The left index on a phone: the subscribed collection shows its number of new articles" loading="lazy"><figcaption>On a phone: the collection list shows the number of new articles beside a subscription</figcaption></figure>
+</div>
+<div class="tip"><b class="h">No “Subscribe” tab?</b><p>This feature needs the site owner to set up the public directory’s service (see “Install &amp; deploy”). Without it the “Add” window offers files only.</p></div>
+
+<h2 id="u-mobile"><span class="n">5</span>On a phone</h2>
+<h3>Install it to the home screen and use it like an app</h3>
+<ul>
+  <li><b>Android (Chrome)</b>: open the site and tap “Install the app” at the bottom of the left column, or “Install app / Add to Home screen” in the browser menu.</li>
+  <li><b>iPhone (Safari)</b>: tap the “Share” button at the bottom → “Add to Home Screen”.</li>
+</ul>
+<p>Once installed it opens full screen, and the pages and files you have opened (up to 120) are kept, so <b>you can read them again without a network</b>.</p>
+<div class="warn"><b class="h">On an iPhone, install it to the home screen first</b><p>If you do not, Safari clears this site’s data after about 7 days without use (reading progress, bookmarks and the files you added are all lost). A site installed to the home screen is not subject to that limit.</p></div>
+
+<h3>Cards and gestures on a phone</h3>
+<ul>
+  <li><b>The card view is two columns</b>: a card keeps its cover, title and one line of facts; the buttons besides the star (pin, hide, move, publish, new cover, delete …) are behind the “<b>…</b>” on the card: tap to open, tap elsewhere to close. The list button at the top right switches to one row per item.</li>
+  <li><b>Swipe left or right while reading</b>: left is the next article, right the previous one (in the order of the shelf’s current sort); at the ends it tells you. The top bar has no “Previous / Next” buttons any more; the contents panel keeps a pair for what cannot be swiped, such as a PDF. A code block or table that scrolls sideways does not turn the page by mistake; nor does a swipe with text selected, while zoomed in, or from the very edge of the screen (that is the system’s back gesture).</li>
+  <li><b>Swipe on the shelf</b>: right opens the left list, left closes it (on one row of the list, a swipe to the left shows that row’s buttons instead, see below).</li>
+</ul>
+<h3>The left index: collections, categories, swipe left to delete</h3>
+<p>Tap <b>≡</b> at the top left (or swipe right on the shelf) to open the left list: <b>collections</b> are at the top, then categories and tags, and the “Card index” at the bottom. <b>Swipe one row of the index to the left</b> and buttons appear underneath:</p>
+<div class="phones">
+  <figure><img width="600" height="1298" src="../img-en/m-drawer.webp" alt="The left index on a phone: collections, categories, tags" loading="lazy"><figcaption>The left index: collections at the top</figcaption></figure>
+  <figure><img width="600" height="1298" src="../img-en/m-swipe.webp" alt="On a phone a row of the index is swiped left to show a red Delete button" loading="lazy"><figcaption>Swipe left to show “Delete”</figcaption></figure>
+  <figure><img width="600" height="1298" src="../img-en/m-reader.webp" alt="The reader on a phone" loading="lazy"><figcaption>The reader on a phone</figcaption></figure>
+</div>
+<ul>
+  <li><b>Red “Delete”</b>: for your own files; it asks first.</li>
+  <li><b>Grey “Hide”</b>: for the site’s books (which you cannot delete); it hides them in your browser only. Inside “Hidden” the button reads “Restore”.</li>
+  <li>Swiping vertically still scrolls the list; once a row is open, tap elsewhere to close it again.</li>
+</ul>
+<h3>“Share to ZhiTree Books” from other apps (Android)</h3>
+<p>After installing it to the home screen, tap “Share” in a file manager, a chat app or the browser and pick “ZhiTree Books”: a shared PDF / Markdown / TXT / HTML opens the “Add” window, where you choose a collection and save; a shared <b>web address</b> is saved straight away as a “Saved link”. Right after the first install it takes the browser a while to refresh the app’s details (usually within a day; adding the icon again makes it immediate) before it shows in the share list. Safari on iPhone has no such feature: use “Add” and choose several files instead.</p>
+
+<h2 id="u-dir"><span class="n">6</span>Public directory and submitting</h2>
+<p>Click “Public directory” on the left to see one list made of many people’s blogs, articles, GitHub repositories and videos. <b>It does not keep anyone’s full text</b>: only the title, summary, the address of a cover image and a link back to the original. Click an article and it is read right in the reader (as in a subscription, the “update service” reads the original; pages that cannot be read, videos and repositories go to the original site); when you save it, the text you read is saved with it.</p>
+<figure class="shot"><img width="1600" height="1000" src="../img-en/directory.webp" alt="The public directory: on the left filters by type, tag and shelf, on the right the entry cards" loading="lazy"><figcaption>The public directory. You can filter by type, tag and shelf (one blog or one repository), and search.</figcaption></figure>
+<ul>
+  <li><b>Save</b>: the bookmark button on a card saves the link to your own shelf (kept in your browser only), marked “Saved link”.</li>
+  <li><b>Subscribe</b>: “Subscribe” inside the public directory follows the whole directory, one type, one tag or one shelf.</li>
+  <li><b>Recommend a blog</b>: paste its address (the blog’s home page or its RSS) in “Submit”. <b>A feed can be submitted too</b>; once the site owner approves it, its new articles enter the directory every day.</li>
+</ul>
+<h3>Sending your own content in: three ways, none needs an account</h3>
+<figure class="shot"><img width="1040" height="860" src="../img-en/submit.webp" alt="The Submit window: paste an address, click Check, then submit" loading="lazy"><figcaption>Click “Submit” at the top right: paste an address, check it, tick the declaration, submit.</figcaption></figure>
+<ol class="steps">
+  <li><b>Paste an address</b>: a blog, an article, a video, a GitHub repository or a PDF will do. Click “Check” first: the page tells you what it is, how many pieces it found and what the latest ones are, and it stops duplicates that “the directory already has”. When it looks right, tick “I have the right to publish this content” and click “Submit”.</li>
+  <li><b>Write a post</b>: switch to “Write a post” in the window, write or paste a Markdown article, and it carries the author name you give. Once approved the directory hosts it as a page (<b>public, pictures not shown</b>), and you can ask for it to be taken down at any time.</li>
+  <li><b>Click the globe icon on a card</b>: every card in “My shelf” has one. If it has an address, that address is sent; for a Markdown / TXT file in your computer or browser, the text is sent; for things with no address, such as books, PDFs and web tools, only a <b>catalogue card</b> (title, author, summary, tags) is made public, never the file.</li>
+</ol>
+<p>After you submit, it goes to the owner’s review queue and the card shows “Sent, waiting for review”; once approved it appears in the public directory. Different spellings of an address (http / https, www, a trailing slash, tracking parameters) count as the same one; things whose title, author and summary are nearly the same are also stopped, and you are told which one they look like.</p>
+<div class="tip"><b class="h">Pasting a “reader address” does not work</b><p>An address like <code>…/#read/local%3A…</code> is the reading address inside your own browser; nobody else can open it. Use the real address when you submit, or click the globe icon on the card.</p></div>
+
+<h2 id="u-feed"><span class="n">7</span>Following this site (RSS)</h2>
+<p>This section is the other way round: <b>following this website</b> in your own RSS reader. (To follow other people’s writing, see section 4.) Click the green “Subscribe” button in the top bar: it has one-click “Subscribe in Feedly / Inoreader” links and a copy button. You can follow just a part: <b>everything, one category or one tag</b>, with the one you are looking at preselected. Once you follow it, your RSS reader (Feedly, Inoreader and so on) lets you know when there is something new.</p>
+
+<h2 id="u-faq"><span class="n">8</span>FAQ</h2>
+<details><summary>Where did the files I added go? Why can’t my phone see what I added on my computer?</summary><p>They are kept in the browser you used when adding them; different devices and different browsers are not in sync. To read on your phone, import there (you can choose several and put them into one collection), or use “Share to ZhiTree Books”. To take things from your computer along, export a backup there with “Back up &amp; restore” and restore it on the phone.</p></details>
+<details><summary>I pinned / hid / moved something. Why can’t anyone else see it?</summary><p>Doing these on the website is saved only in your own browser: it is your own way of organising and does not change the site. To show them to everybody, only the site owner can change them on their own computer and publish again.</p></details>
+<details><summary>I want to delete a book that belongs to the site. What do I do?</summary><p>Visitors cannot delete. You can “Hide” it (for you only). If you are the site owner, delete it from <code>library/</code> on your computer and deploy again.</p></details>
+<details><summary>I subscribed to a blog but no new articles appear, or it says “Update failed”.</summary><p>First click “Refresh” in the collection’s “Manage” and read the reason on that line. Common causes: the other site is down for now, the other site does not allow programs to read it, or the address is not actually a feed. A web page cannot update by itself in the background; it reads only when you open the page, and if the other side published nothing new, there is nothing new.</p></details>
+<details><summary>Why does a PDF have no contents or bookmarks?</summary><p>A PDF is shown by the browser’s own viewer, and the page cannot read its structure (a scanned one has no text at all). HTML, Markdown and TXT have contents and bookmarks.</p></details>
+<details><summary>Is my data safe?</summary><p>Your files, reading progress, bookmarks and collections are kept only in your own browser and are not sent to a server. The site itself has no accounts. For details see the <a href="/privacy.html">privacy policy</a>.</p></details>
+<details><summary>Which keyboard shortcuts are there?</summary><p><kbd>/</kbd> focuses the search; <kbd>Esc</kbd> closes the reader; while reading, <kbd>←</kbd> <kbd>→</kbd> go to the previous / next piece.</p></details>
+
+<p>Want to set up a site like this yourself? <a href="#deploy" data-open="deploy">Switch to “Install &amp; deploy”</a>.</p>
+</section>
+
+<!-- ============================ Install & deploy ============================ -->
+<section class="panel" id="deploy" role="tabpanel" aria-labelledby="tab-deploy" hidden>
+
+<ul class="toc">
+  <li><a href="#d-need">What you need</a></li><li><a href="#d-local">Run it locally</a></li><li><a href="#d-content">Add content</a></li><li><a href="#d-pin">Pin this guide</a></li>
+  <li><a href="#d-deploy">Deploy to Vercel</a></li><li><a href="#d-seo">Be found by search engines</a></li><li><a href="#d-dir">Public directory</a></li><li><a href="#d-admin">Review page</a></li><li><a href="#d-trouble">Troubleshooting</a></li>
+</ul>
+
+<h2 id="d-need"><span class="n">0</span>What you need</h2>
+<table>
+  <tr><th>To do this</th><th>You need</th><th>Required?</th></tr>
+  <tr><td>Use it on your own computer</td><td>Python 3 (nothing else to install)</td><td>Yes</td></tr>
+  <tr><td>Publish it online</td><td>Node.js and a Vercel account (a free one is enough)</td><td>If you want others to visit it</td></tr>
+  <tr><td>Your own web address</td><td>A domain name, attached in Vercel</td><td>Optional; without one you still get <code>*.vercel.app</code></td></tr>
+  <tr><td>The public directory and submissions</td><td>A GitHub account</td><td>Optional</td></tr>
+</table>
+<p>The project is one folder: <code>index.html</code> (the web page), <code>serve.py</code> (the local server), <code>build_index.py</code> and <code>seo.py</code> (run at deploy time), <code>vercel.json</code> (deploy settings), and <code>library/</code> where your content lives.</p>
+
+<h2 id="d-local"><span class="n">1</span>Run it on your own computer</h2>
+<p>Open a terminal in the project folder and run:</p>
+<pre><code>python serve.py</code></pre>
+<p>On Mac / Linux use <code>python3 serve.py</code>. The browser opens <code>http://127.0.0.1:8000</code> by itself; use <code>--port 9000</code> for another port. That is the one command; nothing else to install.</p>
+<ul>
+  <li>Put files into <code>library/</code> and <b>they appear when you refresh the page</b>; you can also click “Add” or drag files onto the page, which writes straight into <code>library/</code>.</li>
+  <li>The page is now in “owner mode”: moving, deleting, pinning, starring and hiding on a card <b>really change the files</b> (stars, pins, hides and renamed titles are saved in <code>library/_meta.json</code>).</li>
+  <li>The server accepts requests from this machine only; it can write files, so <b>do not expose it to the internet</b>. Restart it after you change <code>serve.py</code>.</li>
+</ul>
+
+<h2 id="d-content"><span class="n">2</span>Adding content to the shelf</h2>
+<pre><code>library/
+├── books/      books
+├── tools/      tools (small web apps)
+├── notes/      personal notes
+├── featured/   featured
+└── _meta.json  stars, pins, hides, title edits (generated)</code></pre>
+<ul>
+  <li><b>A first-level folder is a category</b>; a new folder becomes a new category by itself.</li>
+  <li><b>A tool = a folder</b>: a web tool made of <code>index.html</code> + css + js + images goes into <code>library/tools/tool-name/</code>, and <b>the whole folder is one card</b>; inside it use relative paths (<code>style.css</code>), not paths starting with <code>/</code>. <b>This guide itself is kept that way</b>: <code>library/notes/guide/</code>.</li>
+  <li>HTML, Markdown, TXT and PDF are supported, up to 80 MB per file. For Word (.docx), save as PDF or Markdown first.</li>
+</ul>
+<p>A Markdown file can start with front matter that sets the title, summary and keywords; in HTML use meta tags:</p>
+<pre><code>---
+title: My title
+description: A one-sentence summary
+tags: [supply chain, reading]
+featured: true     # mark as featured
+pinned: true       # pin to top, seen by every visitor
+---</code></pre>
+<pre><code>&lt;meta name="description" content="A one-sentence summary"&gt;
+&lt;meta name="keywords" content="supply chain, procurement"&gt;
+&lt;meta name="archive:pinned" content="true"&gt;</code></pre>
+
+<h3>A second language for the same item</h3>
+<p>If a page exists in two languages, give each its own file and tell the site about the English one. A visitor who switches the interface to English then sees the English title and summary and opens the English page; a search engine gets both addresses and is told they are translations of each other.</p>
+<pre><code>---
+title: 我的标题
+title_en: My title
+description_en: A one-sentence summary in English
+tags_en: [supply chain, reading]
+alt_en: en/index.html     # the English page, relative to this one, inside library/
+---</code></pre>
+<pre><code>&lt;meta name="archive:title_en" content="My title"&gt;
+&lt;meta name="archive:description_en" content="A one-sentence summary in English"&gt;
+&lt;meta name="archive:keywords_en" content="supply chain, reading"&gt;
+&lt;meta name="archive:alt_en" content="en/index.html"&gt;</code></pre>
+<p>This guide is built this way: <code>library/notes/guide/index.html</code> is the Chinese page and <code>library/notes/guide/en/index.html</code> the English one.</p>
+
+<h2 id="d-pin"><span class="n">3</span>Putting this guide first</h2>
+<p>To make every visitor see this guide first, <b>you</b> pin it on your own computer and deploy again. Two ways, pick one:</p>
+<ol class="steps">
+  <li><b>Write it into the document</b> (the easiest): add <code>pinned: true</code> to a Markdown file’s front matter, or <code>&lt;meta name="archive:pinned" content="true"&gt;</code> to an HTML file. A number such as <code>pinned: 2</code> also works; the bigger the number, the nearer the front. This guide uses this way.</li>
+  <li><b>Click the pin on the page</b>: open the page with <code>python serve.py</code> and click the pin on a card (it is written to <code>library/_meta.json</code>).</li>
+</ol>
+<p>Then deploy again (next section). With several pinned, the last one pinned comes first.</p>
+<div class="warn"><b class="h">A pin clicked on the live site is only your own pin</b><p>The live site has no back end and cannot change anything on the server, so the pins, hides and stars that visitors (the owner included) click online are kept only in each person’s own browser.</p></div>
+
+<h2 id="d-deploy"><span class="n">4</span>Deploy to Vercel</h2>
+<p>Vercel is a static / serverless platform and <b>cannot run <code>serve.py</code></b>. When you deploy, it first runs the build scripts named in <code>vercel.json</code>, builds the site into <code>dist/</code>, and <b>what goes online is <code>dist/</code>, not your original folder</b>.</p>
+<ol class="steps">
+  <li>Install <a href="https://nodejs.org" rel="noopener">Node.js</a>, then install the Vercel command line and log in:
+<pre><code>npm i -g vercel
+vercel login</code></pre></li>
+  <li>Run <code>vercel</code> in the project folder and follow the prompts to create the project (answer a few questions the first time; pressing Enter all the way is fine).</li>
+  <li>Open <code>vercel.json</code> and change the address <code>--site-url https://books.zhitree.cn</code> in the build command to your own (the sitemap and the feeds use it).</li>
+  <li>Publish for real:
+<pre><code>vercel --prod</code></pre></li>
+  <li>For your own domain: add it under Settings → Domains in the Vercel project and set up the DNS as it tells you.</li>
+</ol>
+<ul>
+  <li><b>Every update after that</b>: put things into <code>library/</code> → take a look locally with <code>serve.py</code> → <code>vercel --prod</code>. New files appear only after you deploy again.</li>
+  <li><b>Hidden items do not go online</b>: <code>dist/</code> has no hidden files and the list does not mention them; unhide one to publish it.</li>
+  <li>The live shelf is <b>read-only for every visitor</b>: a visitor cannot add, move or delete anything on the server.</li>
+  <li>If new content does not show, open <code>https://your-domain/manifest.json</code> and look at <code>generated</code> and <code>items</code>: if it is not in the list, what you deployed is not the latest files.</li>
+  <li>For a local preview use <code>serve.py</code>, not <code>vercel dev</code> (it remembers the files that existed when it started, and files added or moved later give a 404).</li>
+</ul>
+
+<h3>Your name, contact, privacy and terms</h3>
+<p><code>about.html</code>, <code>privacy.html</code> and <code>terms.html</code> are ordinary HTML; edit the text directly. Your name and contact go in <code>site.json</code> (it is not published):</p>
+<pre><code>{ "owner": "Your name or nickname", "contact": "you@example.com", "license": "CC BY-NC 4.0" }</code></pre>
+<div class="warn"><b class="h">If you add analytics, comments or ads later, update the privacy policy before going live</b><p>The privacy policy describes what the site <b>actually does today</b>; keep it in line with what you really use.</p></div>
+
+<h2 id="d-seo"><span class="n">5</span>Be found by search engines</h2>
+<p>These are done for you at deploy time, and your original files are not changed by a single byte: missing tags are added to every page, pages with the full text are generated for Markdown / TXT, <code>sitemap.xml</code> and <code>robots.txt</code> are made, long Chinese file names become short, stable addresses, and the feeds are generated. Pages that have an English version get <code>hreflang</code> links in both directions and appear in the sitemap together, so that search engines show each reader the right language. You only need two steps:</p>
+<ol class="steps">
+  <li><b>Google Search Console</b>: add your address and verify it, then submit <code>sitemap.xml</code> under “Sitemaps”. “Couldn’t fetch” right after you submit is common; it turns to “Success” a few hours to two days later.</li>
+  <li><b>Bing Webmaster Tools</b>: you can simply “Import from Google Search Console”, or submit the same <code>sitemap.xml</code>.</li>
+</ol>
+<p>To tell Bing and others about new addresses yourself (IndexNow):</p>
+<pre><code>python indexnow.py --init          # the first time only: makes a key and writes it to site.json
+vercel --prod
+python indexnow.py                 # after every deploy: sends only new and changed addresses</code></pre>
+
+<h2 id="d-dir"><span class="n">6</span>Setting up the public directory and submissions (optional)</h2>
+<p>The data and the program of the public directory live in <b>another project</b>, <code>shelf-directory</code> (a folder next to this project); GitHub updates it every day and this site only displays it. Three steps:</p>
+<ol class="steps">
+  <li><b>Put it on GitHub</b>: create a <b>public</b> repository and push <code>shelf-directory</code> to it; under Settings → Actions → General → Workflow permissions choose “Read and write”; then go to Actions → Daily → Run workflow once by hand.</li>
+  <li><b>Make this site show it</b>: add <code>"directory": "the address of the directory"</code> (ending in <code>/</code>) to <code>site.json</code> and deploy again. “My shelf | Public directory” then appears on the left of the page.</li>
+  <li><b>Let visitors submit without a GitHub account</b>: also deploy <code>shelf-directory</code> as a Vercel project (its <code>api/submit.py</code> is the submission service) and set these environment variables:
+<table>
+  <tr><th>Name</th><th>Value</th></tr>
+  <tr><td><code>SHELF_REPO</code></td><td><code>user/repository</code></td></tr>
+  <tr><td><code>SUBMIT_GITHUB_TOKEN</code></td><td>A token with read and write on this repository’s Issues only (plus read-only Contents)</td></tr>
+  <tr><td><code>ALLOWED_ORIGINS</code></td><td>The web origins allowed to submit; by default your main site’s address</td></tr>
+  <tr><td><code>IP_SALT</code></td><td>A long random string, used to make a short irreversible hash of each visitor’s address so each person’s submissions per day can be limited</td></tr>
+</table>
+Write the address of the submission service (<code>https://…/api/submit</code>) into <code>"submit_api"</code> in <code>shelf-directory/registry/config.json</code> and push. After you change an environment variable, deploy once more for it to take effect.</li>
+  <li><b>Subscriptions switch on by themselves</b>: <code>api/feed.py</code> in the same directory project is the “update service” used when a reader follows other people’s blogs (a web page cannot read other sites itself, so this reads for it, returns only titles, summaries and links, <b>stores nothing</b>, and needs no environment variables). The page finds it by replacing the <code>/submit</code> at the end of the submission service’s address with <code>/feed</code>, so as long as <code>submit_api</code> is right and your main site’s address is in <code>ALLOWED_ORIGINS</code>, the “Add” window shows the “Subscribe” tab. Each visitor has a soft limit on lookups per 10 minutes to prevent abuse.</li>
+  <li><b>Sync (optional, needs a Redis)</b>: <code>api/sync.py</code> in the same directory project is the “sync code” service; a reader’s list and small texts are kept in a Redis, encrypted (the server cannot read them). In the Vercel project’s Storage / Marketplace add an <b>Upstash Redis</b> and connect it to this project; it writes the environment variables by itself (<code>KV_REST_API_URL</code> + <code>KV_REST_API_TOKEN</code>, or <code>UPSTASH_REDIS_REST_URL</code> + <code>UPSTASH_REDIS_REST_TOKEN</code>: both are accepted), then deploy once more. Open <code>https://your-directory-site/api/sync</code>: <code>"configured": true</code> means it is on and the page shows a “Sync” button. Optional variables: <code>SYNC_QUOTA</code> (characters per sync code, default 12 million), <code>SYNC_TTL_DAYS</code> (days of no use before it is cleared, default 180), <code>SYNC_MAX_KEYS</code> (no new sync code once the database holds more keys than this, default 6000, about 1000 codes). Each visitor can make at most 3 sync spaces a day. <code>GET /api/sync</code> also shows the anonymous counts of the “would you pay” question.</li>
+</ol>
+
+<h2 id="d-admin"><span class="n">7</span>The review page: manage with a password</h2>
+<p>Every request (the GitHub form, addresses submitted on the page, articles from a shelf) goes to <b>one review page</b>: <code>https://your-directory-site/admin/</code>.</p>
+<div class="tip"><b class="h">The review page is in Chinese</b><p>The review page is for the site owner only and its text is in Chinese. The two screenshots below are therefore the Chinese ones; the buttons are “通过” (approve) and “拒绝” (reject).</p></div>
+<figure class="shot"><img width="1300" height="504" src="../img/admin-login.webp" alt="The review page login: enter the admin password" loading="lazy"><figcaption>Login: enter the admin password. The GitHub token is kept in the server’s environment variables and never appears in the browser.</figcaption></figure>
+<p>Add two more in the directory project’s Vercel environment variables, and deploy again:</p>
+<table>
+  <tr><th>Name</th><th>Value</th></tr>
+  <tr><td><code>ADMIN_PASSWORD</code></td><td>The admin password, <b>at least 12 characters</b> (a long sentence is best). With fewer than 12 characters the password login is not switched on.</td></tr>
+  <tr><td><code>ADMIN_GITHUB_TOKEN</code></td><td>A token: this repository only, Issues read and write, Actions read and write, Contents read-only. <b>Do not</b> share it with the <code>SUBMIT_GITHUB_TOKEN</code> above.</td></tr>
+</table>
+<figure class="shot"><img width="1300" height="898" src="../img/admin-review.webp" alt="The review page: pending requests, each marked with its source and the result of the checks, with approve and reject buttons" loading="lazy"><figcaption>The review page: each request shows where it came from (page submission / GitHub form) and the bot’s check result; click approve or reject.</figcaption></figure>
+<ul>
+  <li>Approving or rejecting changes only the data in the repository, <b>no site needs to be deployed again</b>. Entries already listed and hosted articles can also be taken down here.</li>
+  <li>After login the browser holds a <b>pass that expires</b> (8 hours by default, 14 days if you tick “remember”), not a token. Changing the password or the token signs out every device that is logged in, at once.</li>
+  <li>Without a password configured, the page falls back to “Log in with a GitHub token” and tells you what is missing on the server.</li>
+</ul>
+
+<h2 id="d-trouble"><span class="n">8</span>Troubleshooting</h2>
+<details><summary>On Windows, <code>python3</code> says it cannot open / sends me to the Store</summary><p>That is a placeholder from the Microsoft Store. Use <code>python serve.py</code> directly; if <code>python</code> does not work either, install Python 3 first and tick “Add Python to PATH”.</p></details>
+<details><summary>Port 8000 is in use</summary><p>Use another port: <code>python serve.py --port 9000</code>.</p></details>
+<details><summary>A file I just added does not show online</summary><p>A static site has no back end, so new files must be deployed again. After deploying, open <code>/manifest.json</code> and look at <code>generated</code>; a file marked hidden in <code>library/_meta.json</code> does not go online either.</p></details>
+<details><summary>The build fails and the log says BUILD STOPPED</summary><p>That is the build’s own safety check: if the home page, the pages in the list or the private files are wrong in any way, publishing stops and the previous site stays as it is. Fix the problems the log lists one by one.</p></details>
+<details><summary>Clicking the pin says “serve.py is an old version”</summary><p>The <code>serve.py</code> you have running was started before the update. Stop it and run <code>python serve.py</code> again.</p></details>
+<details><summary>There is no “Sync” button at the bottom left</summary><p>The site has no sync yet. The directory project needs a Redis (see the last step of “Setting up the public directory and submissions” above); after deploying, <code>https://your-directory-site/api/sync</code> should show <code>"configured": true</code>, and the directory project’s <code>ALLOWED_ORIGINS</code> must include your main site’s address.</p></details>
+<details><summary>The “Add” window has no “Subscribe” tab, or subscribing says the service cannot be reached</summary><p>Subscriptions rely on the directory project’s <code>/api/feed</code>. Check three things: the directory project is deployed (opening <code>https://your-directory-site/api/feed</code> should show <code>"service": "shelf-feed"</code>); the directory’s <code>directory.json</code> has <code>submit_api</code> (the page uses it to find the service); and the directory project’s <code>ALLOWED_ORIGINS</code> includes your main site’s address.</p></details>
+<details><summary>Submitting an address on the page says “the submission feature is not set up yet”</summary><p>The directory project’s Vercel environment variables are missing <code>SHELF_REPO</code> or <code>SUBMIT_GITHUB_TOKEN</code>; add them and deploy again.</p></details>
+
+<p>Just want to use it? <a href="#usage" data-open="usage">Back to “Using it”</a>.</p>
+</section>
+
+<footer>This guide is a page of the site itself (<code>library/notes/guide/</code>): to change the text edit <code>index.html</code> (Chinese) or <code>en/index.html</code> (English), the pictures are in <code>img/</code> and <code>img-en/</code>, and a change goes live after you deploy again.</footer>
+</div>
+
+<script src="../guide.js"></script>
+</body>
+</html>

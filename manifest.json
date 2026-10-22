@@ -1,24 +1,48 @@
 {
- "generated": "2026-10-19 11:32",
+ "generated": "2026-10-22 12:39",
  "directory": "https://adminbook.zhitree.cn/",
  "items": [
   {
-   "id": "tools/image-to-svg/index.html",
-   "path": "library/tools/image-to-svg/index.html",
-   "category": "tools",
-   "title": "图片转高保真 SVG · 本地 Demo",
-   "summary": "本地运行的 PNG/JPG 到原生 SVG 矢量化与可复现相似度验收 Demo。",
-   "keywords": [],
+   "id": "notes/guide/index.html",
+   "path": "library/notes/guide/index.html",
+   "category": "notes",
+   "title": "知树阅读使用指南：图文教程",
+   "summary": "知树阅读怎么用：在线阅读 PDF、Markdown 和电子书，导入自己的文件，订阅博客（RSS），在手机上安装使用，投稿到公共目录；想自己搭一个，也有安装部署的完整步骤。",
+   "keywords": [
+    "知树阅读",
+    "zhitreebooks",
+    "使用说明",
+    "在线阅读",
+    "电子书阅读",
+    "订阅 RSS",
+    "手机安装",
+    "安装部署",
+    "教程"
+   ],
    "lang": "zh",
-   "minutes": 2,
-   "date": "2026-10-19",
+   "minutes": 22,
+   "date": "2026-10-22",
    "cover": "",
    "featured": false,
+   "pinned": 1,
+   "title_en": "ZhiTree Books User Guide: an illustrated tutorial",
+   "summary_en": "How to use ZhiTree Books: read PDF, Markdown and ebooks online, add your own files, follow blogs by RSS, use it on your phone and submit to the public directory; plus the steps to install and deploy your own copy.",
+   "keywords_en": [
+    "ZhiTree Books",
+    "zhitreebooks",
+    "user guide",
+    "tutorial",
+    "read PDF online",
+    "RSS reader",
+    "install",
+    "deploy"
+   ],
    "type": "html",
-   "size": 258890,
-   "added": 1792380741,
+   "size": 1664652,
+   "added": 1792643679,
    "project": true,
-   "files": 18
+   "files": 34,
+   "alt_en": "library/notes/guide/en/index.html"
   },
   {
    "id": "books/政治的人生 (王沪宁) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
@@ -35,7 +59,8 @@
    "featured": false,
    "type": "pdf",
    "size": 1781687,
-   "added": 1792136606
+   "added": 1792136606,
+   "noindex": true
   },
   {
    "id": "notes/重资产到轻资产-读书笔记.html",
@@ -86,22 +111,6 @@
    "added": 1792129590
   },
   {
-   "id": "notes/README.md",
-   "path": "library/notes/README.md",
-   "category": "notes",
-   "title": "个人数字图书馆 · My Archive",
-   "summary": "一个放笔记与收藏的个人网页：自动读取 library/ 里的 HTML、Markdown、TXT 和 PDF，生成带封面的卡片，左侧是分类和卡片目录，支持中英文界面、关键词筛选、隐藏与恢复，以及站内阅读。",
-   "keywords": [],
-   "lang": "zh",
-   "minutes": 4,
-   "date": "2026-10-16",
-   "cover": "",
-   "featured": false,
-   "type": "md",
-   "size": 6377,
-   "added": 1792129587
-  },
-  {
    "id": "notes/index.html",
    "path": "library/notes/index.html",
    "category": "notes",
@@ -117,42 +126,6 @@
    "size": 80216,
    "added": 1792129587,
    "hidden": true
-  },
-  {
-   "id": "notes/marked.LICENSE.md",
-   "path": "library/notes/marked.LICENSE.md",
-   "category": "notes",
-   "title": "License information",
-   "summary": "If you contribute code to this project, you are implicitly allowing your code to be distributed under the MIT license. You are also implicitly verifying that all code is your original work.",
-   "keywords": [],
-   "lang": "en",
-   "minutes": 2,
-   "date": "2026-10-16",
-   "cover": "",
-   "featured": false,
-   "type": "md",
-   "size": 2942,
-   "added": 1792129587
-  },
-  {
-   "id": "notes/收藏库使用说明.md",
-   "path": "library/notes/收藏库使用说明.md",
-   "category": "notes",
-   "title": "收藏库使用说明",
-   "summary": "怎么往收藏库里加内容、怎么隐藏和恢复，以及 HTML、Markdown、TXT、PDF 各自的显示方式。",
-   "keywords": [
-    "使用说明",
-    "archive",
-    "markdown"
-   ],
-   "lang": "zh",
-   "minutes": 1,
-   "date": "2026-10-16",
-   "cover": "",
-   "featured": false,
-   "type": "md",
-   "size": 1765,
-   "added": 1792129587
   },
   {
    "id": "notes/AI_劳动力市场招聘情报报告.pdf",
@@ -171,25 +144,6 @@
    "size": 924487,
    "added": 1791876291,
    "hidden": true
-  },
-  {
-   "id": "tools/20220119-国金证券-餐饮行业供应链专题分析报告：餐饮供应链专题一，如何看待预制菜在餐饮标准化供应中的应用？ ( etc.) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
-   "path": "library/tools/20220119-国金证券-餐饮行业供应链专题分析报告：餐饮供应链专题一，如何看待预制菜在餐饮标准化供应中的应用？ ( etc.) (z-library.sk, 1lib.sk, z-lib.sk).pdf",
-   "category": "tools",
-   "title": "20220119-国金证券-餐饮行业供应链专题分析报告",
-   "summary": "20220119-国金证券-餐饮行业供应链专题分析报告：餐饮供应链专题一，如何看待预制菜在餐饮标准化供应中的应用？ ( etc.) (z-library.sk, 1lib.sk, z-lib.sk)",
-   "keywords": [],
-   "lang": "en",
-   "minutes": null,
-   "pages": 23,
-   "date": "2026-10-13",
-   "cover": "",
-   "featured": false,
-   "type": "pdf",
-   "size": 2366599,
-   "added": 1791875833,
-   "hidden": true,
-   "nodirectory": true
   },
   {
    "id": "tools/supplychain/index.html",

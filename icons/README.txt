@@ -1,4 +1,4 @@
-知识树透明底资源
+知树阅读透明底资源
 
 - zhishishu-logo.png / .svg：横版 Logo，透明画布
 - zhishishu-icon.png / .svg：树与书图形标志，透明画布

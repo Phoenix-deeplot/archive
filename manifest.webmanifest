@@ -1,6 +1,6 @@
 {
-  "name": "知识树 - 个人数字图书馆",
-  "short_name": "知识树",
+  "name": "知树阅读 · ZhiTree Books",
+  "short_name": "知树阅读",
   "description": "收藏、搜索和在线阅读读书笔记、PDF、Markdown 与网页小工具。",
   "lang": "zh-CN",
   "start_url": "./",

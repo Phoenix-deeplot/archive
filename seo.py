@@ -387,37 +387,99 @@ def _all_page(entries, public, base, site_title, brand, site_desc, newest=''):
     return '<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n%s\n</head>\n<body>\n%s\n</body>\n</html>\n' % ('\n'.join(head), '\n'.join(body))
 
 
-def _ld(kind, title, desc, url, lang, base, site_title, date='', owner=''):
-    typ = {'article': 'Article', 'about': 'AboutPage'}.get(kind, 'WebPage')
-    d = {'@context': 'https://schema.org', '@type': typ, ('headline' if kind == 'article' else 'name'): title, 'description': desc,
+# Words people look for, added to what a page says itself (a page that has its own keywords keeps them untouched). Few search engines read <meta name="keywords">,
+# so the same words also go into the structured data and the article:tag tags, which more of them do.
+CATEGORY_KEYWORDS = {'zh': {'books': ['书籍', '电子书', '读书笔记', '在线阅读'], 'notes': ['笔记', '文章', '在线阅读'], 'tools': ['网页工具', '在线工具'], 'featured': ['精选', '推荐阅读']},
+                     'en': {'books': ['books', 'ebook', 'reading notes', 'read online'], 'notes': ['notes', 'articles', 'read online'], 'tools': ['web tools', 'online tools'], 'featured': ['featured', 'recommended reading']}}
+SECTION_LABEL = {'zh': {'books': '书籍', 'notes': '笔记', 'tools': '工具', 'featured': '精选'}, 'en': {'books': 'Books', 'notes': 'Notes', 'tools': 'Tools', 'featured': 'Featured'}}
+
+
+def _dedupe(words, limit):
+    seen, out = set(), []
+    for w in words:
+        w = re.sub(r'\s+', ' ', str(w)).strip()
+        if w and w.lower() not in seen:
+            seen.add(w.lower())
+            out.append(w)
+    return out[:limit]
+
+
+def _words(v):
+    """site.json keywords: a list, or one string with commas -> list of strings."""
+    if isinstance(v, str):
+        v = re.split(r'[,，、;；]', v)
+    return [str(x).strip() for x in (v or []) if str(x).strip()]
+
+
+def page_extras(it, lang, brand='', site_kw=None):
+    """{'keywords': [...], 'section': str, 'book': {'author', 'isbn'} | None} for a page: its own keywords first, then the usual words of its category, the words
+    the owner gave for the whole site (site.json "keywords" / "keywords_en") and the site's name. `book` only when the page says `kind: book`."""
+    key = 'en' if lang == 'en' else 'zh'
+    cat = it.get('category') or ''
+    words = list(it.get('keywords') or []) + CATEGORY_KEYWORDS[key].get(cat, []) + list((site_kw or {}).get(key) or []) + ([brand] if brand else [])
+    book = {'author': str(it.get('author') or '').strip(), 'isbn': str(it.get('isbn') or '').strip()} if it.get('kind') == 'book' else None
+    return {'keywords': _dedupe(words, 12), 'section': SECTION_LABEL[key].get(cat, ''), 'book': book}
+
+
+def _extra_tags(ex, head=''):
+    """The <meta> tags that go with page_extras (only those the head does not have yet)."""
+    add = []
+    if ex['keywords'] and not _meta_has(head, r'<meta[^>]+name=["\']keywords["\']'):
+        add.append('<meta name="keywords" content="%s">' % esc(', '.join(ex['keywords'])))
+    tag = 'book:tag' if ex['book'] else 'article:tag'
+    if ex['book'] and ex['book']['isbn'] and not _meta_has(head, r'property=["\']book:isbn["\']'):
+        add.append('<meta property="book:isbn" content="%s">' % esc(ex['book']['isbn']))
+    if ex['section'] and not ex['book'] and not _meta_has(head, r'property=["\']article:section["\']'):
+        add.append('<meta property="article:section" content="%s">' % esc(ex['section']))
+    if ex['keywords'] and not _meta_has(head, r'property=["\']%s["\']' % tag):
+        add += ['<meta property="%s" content="%s">' % (tag, esc(k)) for k in ex['keywords'][:6]]
+    return add
+
+
+def _ld(kind, title, desc, url, lang, base, site_title, date='', owner='', ex=None):
+    book = bool(ex and ex.get('book'))
+    typ = 'Book' if book else {'article': 'Article', 'about': 'AboutPage'}.get(kind, 'WebPage')
+    d = {'@context': 'https://schema.org', '@type': typ, ('headline' if kind == 'article' and not book else 'name'): title, 'description': desc,
          'inLanguage': lang, 'url': url, 'isPartOf': {'@type': 'WebSite', 'name': site_title, 'url': base + '/'}}
-    if kind == 'article':
+    if kind == 'article' and not book:
         d['mainEntityOfPage'] = url
-    if DAY.match(date or ''):
+    if DAY.match(date or '') and not book:                  # the day a page was published is not the day a book was
         d['datePublished' if kind == 'article' else 'dateModified'] = date
-    if owner:
+    if ex:
+        if ex['keywords']:
+            d['keywords'] = ', '.join(ex['keywords'])
+        if ex['section'] and not book and kind == 'article':
+            d['articleSection'] = ex['section']
+        if book:
+            if ex['book']['author']:
+                d['author'] = {'@type': 'Person', 'name': ex['book']['author']}
+            if ex['book']['isbn']:
+                d['isbn'] = ex['book']['isbn']
+    if owner and not book:
         d['author'] = {'@type': 'Person', 'name': owner}
     return '<script type="application/ld+json">%s</script>' % json.dumps(d, ensure_ascii=False).replace('</', '<\\/')
 
 
-def _page(it, body, base, site_title, rel, owner='', feeds=False):
+def _page(it, body, base, site_title, rel, owner='', feeds=False, site_kw=None):
     title = it['title']
     desc = it.get('summary') or re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', body)).strip()[:160]
     url = (base + '/' + _quote(rel)) if base else ''
     lang = 'en' if it.get('lang') == 'en' else 'zh-CN'
+    ex = page_extras(it, 'en' if lang == 'en' else 'zh', site_title, site_kw)
     head = ['<meta charset="utf-8">', '<meta name="viewport" content="width=device-width, initial-scale=1">',
             '<title>%s · %s</title>' % (esc(title, quote=False), esc(site_title, quote=False)),
             '<meta name="description" content="%s">' % esc(desc),
             '<meta name="robots" content="index, follow, max-image-preview:large">',
-            '<meta property="og:type" content="article">', '<meta property="og:title" content="%s">' % esc(title),
+            '<meta property="og:type" content="%s">' % ('book' if ex['book'] else 'article'), '<meta property="og:title" content="%s">' % esc(title),
             '<meta property="og:description" content="%s">' % esc(desc), '<meta property="og:site_name" content="%s">' % esc(site_title)]
     if owner:
         head.append('<meta name="author" content="%s">' % esc(owner))
     if DAY.match(it.get('date') or ''):
         head.append('<meta property="article:published_time" content="%s">' % it['date'])
+    head += _extra_tags(ex)
     if url:
         head += ['<link rel="canonical" href="%s">' % esc(url), '<meta property="og:url" content="%s">' % esc(url),
-                 _ld('article', title, desc, url, lang, base, site_title, it.get('date') or '', owner)]
+                 _ld('article', title, desc, url, lang, base, site_title, it.get('date') or '', owner, ex)]
     if feeds and base:
         head += _feed_links(base, site_title)
     head.append('<style>%s</style>' % CSS)
@@ -700,7 +762,7 @@ def _fill_site(text, cfg):
 
 
 # ======================================================================= the published copy
-SKIP_ROOT_FILES = {'serve.py', 'build_index.py', 'seo.py', 'indexnow.py', 'README.md', 'PROMO.md', 'vercel.json', 'manifest.json', 'manifest.js', 'site.json'}
+SKIP_ROOT_FILES = {'serve.py', 'build_index.py', 'seo.py', 'indexnow.py', 'export_guide.py', 'README.md', 'PROMO.md', 'vercel.json', 'manifest.json', 'manifest.js', 'site.json'}
 SKIP_DIRS = {'__pycache__', 'node_modules'}
 
 
@@ -708,7 +770,7 @@ def _meta_has(head, pattern):
     return re.search(pattern, head, re.I) is not None
 
 
-def patch_page(text, it, base, site_title, path, kind='article', owner=''):
+def patch_page(text, it, base, site_title, path, kind='article', owner='', site_kw=None):
     """Add the search-engine tags a page lacks (never changes or duplicates what it already has).
 
     `path` is the page's public address (no leading slash). Returns (new text, problems worth telling the owner about).
@@ -722,24 +784,27 @@ def patch_page(text, it, base, site_title, path, kind='article', owner=''):
     url = base + '/' + _quote(path) if base else ''
     lang = 'en' if it.get('lang') == 'en' else 'zh-CN'
     add, problems = [], []
+    ex = page_extras(it, 'en' if lang == 'en' else 'zh', site_title, site_kw) if kind == 'article' else None       # keywords, section, book data (see page_extras)
     if not _meta_has(head, r'<title[^>]*>\s*\S'):
         add.append('<title>%s</title>' % esc(title, quote=False))
     if desc and not _meta_has(head, r'<meta[^>]+name=["\']description["\']'):
         add.append('<meta name="description" content="%s">' % esc(desc))
     if url and not _meta_has(head, r'<link[^>]+rel=["\']canonical["\']'):
         add.append('<link rel="canonical" href="%s">' % esc(url))
-    for prop, val in (('og:type', 'article' if kind == 'article' else 'website'), ('og:title', title), ('og:description', desc), ('og:url', url),
+    for prop, val in (('og:type', 'book' if ex and ex['book'] else 'article' if kind == 'article' else 'website'), ('og:title', title), ('og:description', desc), ('og:url', url),
                       ('og:site_name', site_title), ('og:locale', 'en_US' if lang == 'en' else 'zh_CN')):
         if val and not _meta_has(head, r'<meta[^>]+property=["\']%s["\']' % re.escape(prop)):
             add.append('<meta property="%s" content="%s">' % (prop, esc(val)))
     if kind == 'article' and DAY.match(it.get('date') or '') and not _meta_has(head, r'article:published_time'):
         add.append('<meta property="article:published_time" content="%s">' % it['date'])
+    if ex:
+        add += _extra_tags(ex, head)
     if owner and not _meta_has(head, r'<meta[^>]+name=["\']author["\']'):
         add.append('<meta name="author" content="%s">' % esc(owner))
     if not _meta_has(head, r'<meta[^>]+name=["\']twitter:card["\']'):
         add.append('<meta name="twitter:card" content="summary">')
     if url and not _meta_has(head, r'application/ld\+json'):
-        add.append(_ld(kind, title, desc, url, lang, base, site_title, it.get('date') or '', owner))
+        add.append(_ld(kind, title, desc, url, lang, base, site_title, it.get('date') or '', owner, ex))
     if not _meta_has(head, r'<meta[^>]+name=["\']viewport["\']'):
         problems.append('no <meta name="viewport"> (Google ranks pages that are not mobile friendly lower)')
     if add:
@@ -791,7 +856,7 @@ def _copy_site(root, library, out, out_name, hidden_files, hidden_dirs, file_map
     return dest_rel
 
 
-PRIVATE_FILES = ('site.json', 'PROMO.md', 'indexnow.py', '.indexnow-state.json', 'serve.py', 'build_index.py', 'seo.py', 'README.md', 'vercel.json')
+PRIVATE_FILES = ('site.json', 'PROMO.md', 'indexnow.py', 'export_guide.py', '.indexnow-state.json', 'serve.py', 'build_index.py', 'seo.py', 'README.md', 'vercel.json')
 
 
 def verify_site(out):
@@ -874,14 +939,16 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
     index = _read(index_path) if os.path.exists(index_path) else ''
     m = re.search(r'<title>(.*?)</title>', index, re.S)
     site_title, site_desc = (m.group(1).strip() if m else 'My Archive'), _meta_of(index, 'description')
-    brand = str(cfg.get('name') or '').strip() or re.split(r'\s+[-–—|·]\s+', site_title)[0]       # the short name: 知识树 - 个人数字图书馆 -> 知识树 (page titles end with it)
+    brand = str(cfg.get('name') or '').strip() or re.split(r'\s*[｜|]\s*|\s+[-–—·]\s+', site_title)[0]       # the short name: 知树阅读｜个人数字图书馆 -> 知树阅读 (page titles end with it)
+    brand_en = str(cfg.get('name_en') or '').strip() or brand                                       # the name an English page carries (og:site_name, structured data)
+    site_kw = {'zh': _words(cfg.get('keywords')), 'en': _words(cfg.get('keywords_en'))}             # words for every page, on top of its own and its category's
 
     # --- a page with the full text for every Markdown / TXT article
     pages = {}
     for it in [x for x in listed if x.get('type') in ('md', 'txt')]:
         try:
             rel = page_map[it['id']]
-            _write_if_changed(os.path.join(out, *rel.split('/')), _page(it, _article_body(it, library, front_matter, resolve), base, brand, rel, owner, make_feeds))
+            _write_if_changed(os.path.join(out, *rel.split('/')), _page(it, _article_body(it, library, front_matter, resolve), base, brand, rel, owner, make_feeds, site_kw))
             pages[it['id']] = rel
         except OSError:
             continue
@@ -904,13 +971,64 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
             problems.setdefault('not UTF-8, tags not added', []).append(it['id'])
             continue
         main = next((x for x in visible if x['id'] == dupes[it['id']]), None) if it['id'] in dupes else None      # a copy names the original as its canonical address
-        new, probs = patch_page(text, it, base, brand, url_path(main or it, file_map, proj_map), 'article', owner)
+        new, probs = patch_page(text, it, base, brand, url_path(main or it, file_map, proj_map), 'article', owner, site_kw)
         for p in probs:
             problems.setdefault(p, []).append(it['id'])
         if new != text:
             with open(target, 'wb') as f:
                 f.write((b'\xef\xbb\xbf' if bom else b'') + new.encode('utf-8'))
             patched += 1
+
+    # --- English alternates: an item that says `alt_en` (another HTML page of library/, shown when the visitor reads English) is one page in two languages.
+    #     Both pages say so (hreflang, written with absolute addresses, so only with a site address); the English one gets its own canonical / Open Graph tags; both are in the sitemap.
+    alt_rows, alt_links = [], {}
+    for it in visible:
+        a = it.get('alt_en')
+        if not a or not base or it.get('type') != 'html' or it['id'] in dupes:
+            continue
+        en_file = resolve(a[len('library/'):] if a.startswith('library/') else a)
+        if not os.path.isfile(os.path.join(out, *en_file.split('/'))):         # hidden, so not published: nothing to point to
+            continue
+        en_rel = en_file[:-len('index.html')] if en_file.endswith('/index.html') else en_file       # a page that is a folder's index is addressed by the folder
+        zh_url, en_url = base + '/' + _quote(url_path(it, file_map, proj_map)), base + '/' + _quote(en_rel)
+        links = [('zh-CN', zh_url), ('en', en_url), ('x-default', en_url)]
+        block = '<!-- seo:alternates -->\n' + '\n'.join('<link rel="alternate" hreflang="%s" href="%s">' % (h, esc(u)) for h, u in links) + '\n<!-- /seo:alternates -->\n'
+        for target, pseudo, public_path in ((os.path.join(out, *new_path(it, file_map, proj_map).split('/')), None, ''),
+                                            (os.path.join(out, *en_file.split('/')), {'title': it.get('title_en') or it['title'], 'summary': it.get('summary_en') or '', 'date': it.get('date') or '', 'lang': 'en', 'category': it.get('category'),
+                                                                                                    'keywords': it.get('keywords_en') or [], 'kind': it.get('kind'), 'author': it.get('author'), 'isbn': it.get('isbn')}, en_rel)):
+            try:
+                text = _read(target)
+            except OSError:
+                continue
+            if pseudo:
+                text, _probs = patch_page(text, pseudo, base, brand_en, public_path, 'article', owner, site_kw)
+            end = re.search(r'</head\s*>', text, re.I)
+            if end and 'seo:alternates' not in text:
+                text = text[:end.start()] + block + text[end.start():]
+            _write_if_changed(target, text)
+        alt_rows.append((en_url, it.get('date') or ''))
+        alt_links[zh_url] = alt_links[en_url] = links
+
+    # --- the English introduction of the whole site: en/index.html in the project root (written by hand, published as it is) is the other language of the home page
+    home_alt = ''
+    home_en = os.path.join(out, 'en', 'index.html')
+    if base and os.path.isfile(home_en):
+        try:
+            text = _read(home_en)
+        except OSError:
+            text = ''
+        if text:
+            en_url = base + '/en/'
+            links = [('zh-CN', base + '/'), ('en', en_url), ('x-default', en_url)]
+            home_alt = '<!-- seo:alternates -->\n' + '\n'.join('<link rel="alternate" hreflang="%s" href="%s">' % (h, esc(u)) for h, u in links) + '\n<!-- /seo:alternates -->'
+            t_en = re.search(r'<title>(.*?)</title>', text, re.S)
+            text, _probs = patch_page(text, {'title': t_en.group(1).strip() if t_en else brand_en, 'summary': _meta_of(text, 'description'), 'date': '', 'lang': 'en'}, base, brand_en, 'en/', 'page', owner)
+            end = re.search(r'</head\s*>', text, re.I)
+            if end and 'seo:alternates' not in text:
+                text = text[:end.start()] + home_alt + '\n' + text[end.start():]
+            _write_if_changed(home_en, text)
+            alt_rows.append((en_url, ''))
+            alt_links[base + '/'] = alt_links[en_url] = links
 
     # --- about / privacy / terms: fill owner + contact from site.json, add the tags
     legal = []
@@ -933,17 +1051,23 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
         d['path'] = new_path(it, file_map, proj_map)
         if it['id'] in pages:
             d['page'] = pages[it['id']]
+        if it.get('alt_en'):                                                  # where the English page of this item is published
+            d['alt_en'] = resolve(it['alt_en'][len('library/'):] if it['alt_en'].startswith('library/') else it['alt_en'])
         published.append(d)
     write_manifest(published, out)
 
     # --- the way to everything: all.html (every page linked from one page, for crawlers and for people), urls.txt (every address, one per line)
     notice, sitemap_problems = '', []
     entries = [it for it in listed if it.get('type') in ('html', 'pdf') or it['id'] in pages]
-    dates = [i['date'] for i in entries if DAY.match(i.get('date') or '')]
+    n_alt = len(alt_rows)
+    if base:                                                              # an English page that is a card of its own is listed already: once is enough
+        listed_urls = {base + '/' + _quote(public(i)) for i in entries}
+        alt_rows = [r for r in alt_rows if r[0] not in listed_urls]
+    dates =[i['date'] for i in entries if DAY.match(i.get('date') or '')]
     newest = max(dates) if dates else ''
     _write_if_changed(os.path.join(out, 'all.html'), _all_page(entries, public, base, site_title, brand, site_desc, newest))
     if base:
-        _write_if_changed(os.path.join(out, 'urls.txt'), '\n'.join([base + '/', base + '/all.html'] + [base + '/' + _quote(public(i)) for i in entries] + [base + '/' + n for n, d in legal]) + '\n')
+        _write_if_changed(os.path.join(out, 'urls.txt'), '\n'.join([base + '/', base + '/all.html'] + [base + '/' + _quote(public(i)) for i in entries] + [u for u, d in alt_rows] + [base + '/' + n for n, d in legal]) + '\n')
     key = str(cfg.get('indexnow_key') or '').strip()                   # IndexNow (Bing, Yandex ...): the key file that proves the site is yours; indexnow.py sends the addresses
     if re.fullmatch(r'[A-Za-z0-9-]{8,128}', key):
         _write_if_changed(os.path.join(out, key + '.txt'), key)
@@ -975,10 +1099,13 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
     # --- sitemap.xml + robots.txt (a hand-written one at the project root is kept as it is)
     if base:
         rows = [(base + '/', newest), (base + '/all.html', newest)] + [(base + '/' + _quote(public(i)), i.get('date') or '') for i in entries]
+        rows += alt_rows
         rows += [(base + '/' + n, d) for n, d in legal]
-        xml = ['<?xml version="1.0" encoding="UTF-8"?>', '<!-- %s -->' % GENERATED, '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+        xml = ['<?xml version="1.0" encoding="UTF-8"?>', '<!-- %s -->' % GENERATED,
+               '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"%s>' % (' xmlns:xhtml="http://www.w3.org/1999/xhtml"' if alt_links else '')]
         for loc, d in rows:
-            xml.append('  <url><loc>%s</loc>%s</url>' % (xml_escape(loc), '<lastmod>%s</lastmod>' % d if DAY.match(d) else ''))
+            alts = ''.join('<xhtml:link rel="alternate" hreflang="%s" href="%s"/>' % (h, xml_escape(u)) for h, u in alt_links.get(loc, []))
+            xml.append('  <url><loc>%s</loc>%s%s</url>' % (xml_escape(loc), '<lastmod>%s</lastmod>' % d if DAY.match(d) else '', alts))
         xml.append('</urlset>')
         robots = ['# ' + GENERATED, 'User-agent: *', 'Allow: /', 'Disallow: /manifest.json', 'Disallow: /manifest.js']
         robots += ['Disallow: /' + _quote(new_path(i, file_map, proj_map)) for i in visible if i.get('noindex')]
@@ -1005,6 +1132,11 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
         head = []
         if base:
             head += ['<link rel="canonical" href="%s/">' % esc(base), '<meta property="og:url" content="%s/">' % esc(base)]
+            if home_alt:                                                  # the English introduction is this page in another language
+                head.append(home_alt)
+            if os.path.isfile(os.path.join(out, 'icons', 'icon-512.png')) and not _meta_has(index, r'property=["\']og:image["\']'):
+                img = base + '/icons/icon-512.png'                        # a picture for the cards that Facebook, X, Telegram ... build when the address is shared
+                head += ['<meta property="og:image" content="%s">' % esc(img), '<meta property="og:image:alt" content="%s">' % esc(brand), '<meta name="twitter:image" content="%s">' % esc(img)]
         if make_feeds:
             head += _feed_links(base, site_title)
         if owner:
@@ -1015,17 +1147,22 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
         if base:
             listing = [{'@type': 'ListItem', 'position': n, 'url': base + '/' + _quote(public(i)), 'name': i['title']} for n, i in enumerate(entries[:100], 1)]
             site = {'@type': 'WebSite', 'name': brand, 'url': base + '/', 'description': site_desc}
-            if site_title != brand:
-                site['alternateName'] = site_title
+            names = _dedupe([site_title if site_title != brand else '', brand_en if brand_en != brand else ''] + _words(cfg.get('alternate_names')), 8)
+            if names:                                                     # other names the site is known by: the full title, the English name, spellings people type (site.json "alternate_names")
+                site['alternateName'] = names
+            site['inLanguage'] = ['zh-CN', 'en'] if home_alt else 'zh-CN'
             if owner:
                 site['publisher'] = {'@type': 'Person', 'name': owner}
             head.append('<script type="application/ld+json">%s</script>' % json.dumps({'@context': 'https://schema.org', '@graph': [site, {'@type': 'ItemList', 'itemListElement': listing}]}, ensure_ascii=False).replace('</', '<\\/'))
-        body = ['<noscript>', '<h1>%s</h1>' % esc(site_title, quote=False), '<p>%s</p>' % esc(site_desc, quote=False), '<ul>']
+        body = ['<noscript>', '<h1>%s</h1>' % esc(site_title, quote=False), '<p>%s</p>' % esc(site_desc, quote=False)]
+        if home_alt:
+            body.append('<p lang="en"><a href="en/" hreflang="en">%s</a>: English introduction</p>' % esc(brand_en, quote=False))
+        body.append('<ul>')
         for it in listed:
             body.append('<li><a href="%s">%s</a>%s</li>' % (esc(_quote(public(it))), esc(it['title'], quote=False),
                                                            ' — ' + esc(it['summary'], quote=False) if it.get('summary') else ''))
         body += ['</ul>', '<p>%s</p>' % LEGAL_LINKS.replace('href="/', 'href="'), '</noscript>']
         _write_if_changed(index_path, _inject(_inject(index, 'head', '\n'.join(head)), 'body', '\n'.join(body)))
 
-    return {'urls': len(entries) + 2 + len(legal) if base else 0, 'moved': moved, 'pages': len(pages), 'patched': patched, 'skipped': skipped,
+    return {'urls': len(entries) + 2 + len(legal) + len(alt_rows) if base else 0, 'alternates': n_alt, 'moved': moved, 'pages': len(pages), 'patched': patched, 'skipped': skipped,
             'problems': problems, 'sitemap_problems': sitemap_problems, 'verify': verify_site(out), 'notice': notice, 'out': out_name, 'legal': len(legal), 'feeds': make_feeds, 'owner': bool(owner), 'contact': bool(str(cfg.get('contact') or '').strip())}

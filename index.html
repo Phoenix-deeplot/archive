@@ -4,21 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="JqEA6scVOjONIV_9sFf99oApnsBHqrfp7jU4paGmhkk" />
-<title>知识树 - 个人数字图书馆</title>
-<meta name="description" content="知识树 · 个人数字图书馆：收藏、搜索和在线阅读读书笔记、PDF、Markdown 与网页小工具，支持 RSS 订阅；还有公共目录，聚合博客与文章，投稿无需注册。">
-<meta name="keywords" content="知识树,个人数字图书馆,读书笔记,电子书,PDF,Markdown,网页工具,RSS订阅,公共目录">
+<title>知树阅读｜个人数字图书馆：在线阅读书籍、PDF 与读书笔记</title>
+<meta name="description" content="知树阅读是个人数字图书馆：在线阅读书籍、电子书、PDF 与 Markdown，整理读书笔记，订阅喜欢的博客（RSS），还有公共目录，免注册投稿。">
+<meta name="keywords" content="知树阅读,zhitreebooks,在线阅读,电子书,书籍,PDF阅读,读书笔记,Markdown,个人书架,数字图书馆,RSS订阅,公共目录">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:type" content="website">
-<meta property="og:title" content="知识树 - 个人数字图书馆">
-<meta property="og:site_name" content="知识树">
-<meta property="og:description" content="知识树 · 个人数字图书馆：收藏、搜索和在线阅读读书笔记、PDF、Markdown 与网页小工具，支持 RSS 订阅；还有公共目录，聚合博客与文章，投稿无需注册。">
+<meta property="og:title" content="知树阅读｜个人数字图书馆">
+<meta property="og:site_name" content="知树阅读">
+<meta property="og:description" content="知树阅读是个人数字图书馆：在线阅读书籍、电子书、PDF 与 Markdown，整理读书笔记，订阅喜欢的博客（RSS），还有公共目录，免注册投稿。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:locale:alternate" content="en_US">
 <meta name="twitter:card" content="summary">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0B4F3B">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="知识树">
+<meta name="apple-mobile-web-app-title" content="知树阅读">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
 <link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png">
@@ -65,6 +66,8 @@ mark{background:var(--mark);color:inherit;border-radius:2px;padding:0 1px}
 .btn:hover{border-color:var(--muted)}
 .btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .btn.primary:hover{opacity:.9}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary:disabled:hover{opacity:.45}
 .btn.sub{color:var(--accent);border-color:var(--accent);font-weight:600}
 .btn.sub:hover{background:var(--accent);color:var(--surface);border-color:var(--accent)}
 /* ---------- tags, the "my shelf | public directory" switch, directory cards ---------- */
@@ -168,6 +171,19 @@ details.how ol{margin:6px 0 0;padding-left:1.3em}
 .source b{color:var(--ink);font-weight:600}
 .legal-links{font-size:12.5px;color:var(--muted);line-height:1.5;margin:0}
 .legal-links a{color:inherit}
+.legal-links .link-btn{border:0;background:none;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer}
+.intro-list,.news-list ul{margin:0 0 .9em;padding-left:1.15em;display:grid;gap:.4em;font-size:14.5px;line-height:1.7;color:var(--muted)}
+.intro-list li b{color:var(--ink)}
+#introDlg h3{margin:16px 0 4px;font-size:1rem}
+#introDlg h4{margin:10px 0 4px;font-size:.92rem;color:var(--ink)}
+.bk-actions{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 10px}
+.sync-code{margin:12px 0;padding:14px 16px;border:1.5px dashed var(--accent);border-radius:10px;text-align:center;font:700 1.2rem/1.5 var(--mono);letter-spacing:.06em;word-break:break-all;user-select:all}
+.sync-stat{margin:0;font-size:12.5px;color:var(--muted);line-height:1.5}
+.sync-stat button{border:0;background:none;padding:0;font:inherit;color:var(--accent);text-decoration:underline;cursor:pointer}
+#syncDlg h3{margin:18px 0 6px;font-size:1rem}
+.sync-list{margin:0 0 12px;padding-left:1.2em;font-size:14px;line-height:1.7;color:var(--muted)}
+.bk-box{margin:10px 0;padding:10px 14px;border:1px solid var(--rule);border-radius:8px;font-size:14px;line-height:1.7}
+#bkDlg h3{margin:18px 0 6px;font-size:1rem}
 .foot-row{display:flex;gap:8px;flex-wrap:wrap}
 .seg{display:inline-flex;border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--surface)}
 .seg button{border:0;background:none;padding:5px 10px;font-size:13px;cursor:pointer;color:var(--muted)}
@@ -208,6 +224,38 @@ details.how ol{margin:6px 0 0;padding-left:1.3em}
 .tag::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
 .tag.books{color:var(--c-books)} .tag.tools{color:var(--c-tools)} .tag.notes{color:var(--c-notes)} .tag.featured{color:var(--c-featured)} .tag.other{color:var(--c-other)}
 .star-badge{color:var(--c-featured);font-weight:600}
+/* subscribing to somebody's feed (the add dialog's second tab) and the subscription rows of the collections dialog */
+.add-tabs{margin:2px 0 14px}
+.fs-row{display:flex;gap:8px;margin:4px 0 8px}
+.fs-row input{flex:1;min-width:0;font:inherit;font-size:14.5px;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:9px 11px}
+.fs-card{margin:10px 0 6px;padding:12px 14px;background:var(--surface);border:1px solid var(--rule);border-radius:10px}
+.fs-card h3{margin:0 0 4px;font-family:var(--serif);font-size:18px;line-height:1.35}
+.fs-card .fs-meta{margin:0 0 8px;font-size:13px;color:var(--muted)}
+.fs-card ul{margin:6px 0 10px;padding-left:1.2em;font-size:14px;color:var(--muted)}
+.fs-card li{margin:2px 0}
+.fs-card .fs-note{margin:6px 0;font-size:13.5px;color:var(--c-tools)}
+.fs-card label{display:block;margin:8px 0 4px;font-size:13px;font-weight:700;color:var(--muted)}
+.fs-card input[type=text]{width:100%;font:inherit;font-size:14.5px;color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:8px 10px}
+.st-box{margin:16px 0 4px}
+.st-box h3{margin:0 0 2px;font-family:var(--serif);font-size:17px}
+.st-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin:8px 0}
+.st-row{display:flex;align-items:center;gap:10px;min-width:0;padding:9px 10px 9px 12px;background:var(--surface);border:1px solid var(--rule);border-radius:10px}
+.st-info{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
+.st-name{font-weight:700;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st-sub{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st-desc{font-size:12.5px;line-height:1.5;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.st-go{flex:none;min-width:64px;justify-content:center}
+.st-go:disabled{opacity:.6;cursor:default}
+.st-added{color:var(--accent);font-weight:600}
+.fs-more{margin:14px 0 4px;font-size:14px;color:var(--muted)}
+.fs-more summary{cursor:pointer;color:var(--ink)}
+.fs-tools{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.col-tools{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.col-item.is-feed{flex-wrap:wrap}
+.col-item .col-sub{flex-basis:100%;margin:-2px 0 2px;font-size:12.5px;color:var(--muted)}
+.col-item .col-sub.bad{color:var(--danger)}
+.col-nav .new{margin-left:6px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--surface);font-size:11.5px;font-style:normal;font-weight:700;line-height:1.55}
+#source .link-btn{border:0;background:none;padding:0;font:inherit;font-weight:600;color:var(--accent);text-decoration:underline;cursor:pointer}
 .pin-badge{display:inline-flex;align-items:center;gap:3px;color:var(--accent);font-weight:600}
 .pin-badge .icon{width:13px;height:13px;fill:currentColor}
 .card-foot .ibtn[data-act="pin"][aria-pressed="true"]{color:var(--accent)}
@@ -231,6 +279,27 @@ details.how ol{margin:6px 0 0;padding-left:1.3em}
 .grid.list .cover{width:184px;flex:none;aspect-ratio:16/10;align-self:flex-start;margin:14px 0 14px 14px;border-radius:6px}
 .grid.list .sum{-webkit-line-clamp:2}
 @media (max-width:640px){.grid.list .cover{width:96px;margin:12px 0 12px 12px}.grid.list .sum{display:none}}
+.card{position:relative}
+html{overscroll-behavior-x:none}
+.ibtn.more{display:none}
+/* a phone: the card view is two columns; a card keeps its cover, title and one line of facts, and its buttons are behind the three dots (the list view stays one column) */
+@media (max-width:620px){
+  .grid:not(.list){grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .grid:not(.list) .cover{aspect-ratio:4/3}
+  .grid:not(.list) .cover .ftype{top:6px;right:6px;font-size:10px;padding:4px 5px}
+  .grid:not(.list) .card-body{padding:9px 10px 4px}
+  .grid:not(.list) .meta{gap:3px 7px;margin-bottom:4px;font-size:11.5px}
+  .grid:not(.list) .meta > span:nth-last-child(2){display:none}
+  .grid:not(.list) .card-title{font-size:15px;line-height:1.35;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .grid:not(.list) .sum,.grid:not(.list) .chips{display:none}
+  .grid:not(.list) .card-foot{gap:2px;min-height:40px;font-size:11.5px}
+  .grid:not(.list) .card-foot > span:first-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .grid:not(.list) .card-foot .ibtn{width:34px;height:34px}
+  .grid:not(.list) .acts.collapsible .ibtn:not([data-act="star"]):not(.more){display:none}
+  .grid:not(.list) .acts.collapsible .ibtn.more{display:inline-flex}
+  .grid:not(.list) .card.acts-open .acts.collapsible{position:absolute;left:0;right:0;bottom:0;z-index:3;margin:0;padding:6px 4px;background:var(--surface);border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;justify-content:center;gap:2px;box-shadow:0 -8px 16px rgba(0,0,0,.1)}
+  .grid:not(.list) .card.acts-open .acts.collapsible .ibtn{display:inline-flex}
+}
 
 .empty{max-width:760px;padding:28px 0}
 .empty h2{font-family:var(--serif);font-size:24px;margin:0 0 8px}
@@ -316,7 +385,8 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
 @media (max-width:980px){
   .app{display:block}
   .side{display:none;position:fixed;top:0;left:0;bottom:0;z-index:20;width:min(320px,86vw);height:auto;padding-top:env(safe-area-inset-top,0px);box-shadow:0 0 0 100vmax rgba(10,14,18,.4)}
-  body.drawer .side{display:flex}
+  body.drawer .side{display:flex;animation:drawerIn .18s ease-out}
+  @keyframes drawerIn{from{transform:translateX(-28px);opacity:.5}to{transform:none;opacity:1}}
   .side-close{display:inline-flex}
   .menu-btn{display:inline-flex}
   .toolbar .lbl{display:none}
@@ -360,7 +430,7 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
 .move-list .btn{width:100%;justify-content:flex-start;padding:9px 12px}
 .move-list .btn[disabled]{opacity:.5;cursor:default}
 .move-list .dot{width:9px;height:9px;border-radius:50%;flex:none}
-.reader-bar{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:12px;padding:9px 16px;border-bottom:1px solid var(--rule);background:var(--bg)}
+.reader-bar{display:grid;grid-template-columns:minmax(110px,1fr) auto minmax(max-content,1fr);align-items:center;gap:12px;padding:9px 16px;border-bottom:1px solid var(--rule);background:var(--bg)}       /* the right group never shrinks under the centre one; the title gives way */
 .rb-left{display:flex;align-items:center;gap:12px;min-width:0}
 .reader-title{min-width:0;font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rb-center{display:flex;align-items:center;gap:8px;justify-self:center}
@@ -374,6 +444,7 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
 .rbtn.on{background:var(--c-featured);border-color:var(--c-featured);color:#fff}
 .rbtn.on .icon{fill:currentColor}
 .pos{font-variant-numeric:tabular-nums;font-size:14px;font-weight:600;color:var(--muted);min-width:58px;text-align:center}
+@media (min-width:861px) and (max-width:1240px){ .rb-right .rbtn .lbl{display:none} .rb-right .rbtn{padding:0 12px} }       /* not enough room for words on every button: icons only, the previous / next ones keep theirs */
 @media (max-width:860px){
   .reader-bar{grid-template-columns:auto 1fr auto;grid-template-areas:"back center right" "title title title";row-gap:6px;padding:8px 10px}
   .rb-left{display:contents}
@@ -442,7 +513,7 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
       <div class="brand-row">
         <img class="logo" src="icons/zhishishu-icon.svg" alt="" aria-hidden="true">
         <div class="brand-copy">
-          <p class="brand" data-i="brand">知识树</p>
+          <p class="brand" data-i="brand">知树阅读</p>
           <p class="brand-sub" data-i="brandSub">个人数字图书馆</p>
         </div>
       </div>
@@ -463,6 +534,8 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
       <p class="source" id="source"></p>
       <div class="foot-row"><button class="btn" type="button" id="connectBtn" hidden></button><button class="btn" type="button" id="disconnectBtn" hidden data-i="disconnect">断开</button></div>
       <div class="foot-row"><button class="btn" type="button" id="installBtn" hidden data-i="installApp">安装到主屏幕</button></div>
+      <div class="foot-row"><button class="btn" type="button" id="bkBtn" data-i="bkBtn">备份与恢复</button><button class="btn" type="button" id="syncBtn" hidden data-i="syncBtn">同步</button></div>
+      <p class="sync-stat" id="syncStat" hidden></p>
       <div class="foot-row">
         <div class="seg" role="group" aria-label="Language">
           <button type="button" data-lang="zh" aria-pressed="true">中文</button>
@@ -470,7 +543,7 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
         </div>
         <button class="btn" type="button" id="themeBtn"></button>
       </div>
-      <p class="legal-links"><a href="about.html" data-i="legalAbout">关于本站</a> · <a href="privacy.html" data-i="legalPrivacy">隐私政策</a> · <a href="terms.html" data-i="legalTerms">使用条款</a></p>
+      <p class="legal-links"><a href="about.html" data-i="legalAbout">关于本站</a> · <a href="privacy.html" data-i="legalPrivacy">隐私政策</a> · <a href="terms.html" data-i="legalTerms">使用条款</a> · <button class="link-btn" type="button" id="introLink" data-i="introLink">这是什么</button></p>
     </div>
   </aside>
 
@@ -490,6 +563,7 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
         </div>
         <select id="sort" aria-label="Sort">
           <option value="recent" data-i="sortRecent">最近添加</option>
+          <option value="date" data-i="sortDate">发布日期</option>
           <option value="read" data-i="sortRead">最近阅读</option>
           <option value="title" data-i="sortTitle">标题</option>
         </select>
@@ -502,6 +576,7 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
     <div class="col-row" id="colRow" hidden>
       <label for="colSelect" data-i="colLabel">合集</label>
       <select id="colSelect"></select>
+      <button class="btn" type="button" id="colRefresh" hidden data-i="feedRefresh">刷新</button>
       <button class="btn" type="button" id="colManage" data-i="colManage">管理</button>
     </div>
     <section class="view-head">
@@ -544,6 +619,7 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
       <div class="rrow" id="rowW"><span data-i="pageWidth">版面宽度</span><div class="seg2" data-key="w"><button type="button" data-v="n" data-i="wN">窄</button><button type="button" data-v="m" data-i="wM">中</button><button type="button" data-v="w" data-i="wW">宽</button></div></div>
       <div class="rrow col"><span data-i="readerColor">颜色</span><div class="themes" id="rThemes">
         <button type="button" data-th="follow" data-i="thFollow">跟随系统</button><button type="button" data-th="light" data-i="thLight">浅色</button><button type="button" data-th="dark" data-i="thDark">深色</button><button type="button" data-th="sepia" data-i="thSepia">米黄</button><button type="button" data-th="green" data-i="thGreen">护眼绿</button></div></div>
+      <div class="rrow col" id="rowSave"><span data-i="saveThis">保存这一篇</span><div class="themes"><button type="button" id="rSaveHtml" data-i="saveHtml">下载网页（HTML）</button><button type="button" id="rPrint" data-i="savePdf">打印 / 存为 PDF</button></div></div>
       <p class="rnote" id="rOrigNote" data-i="origNote" hidden></p>
     </div>
     <div class="rpanel rside" id="rTocPanel" hidden role="complementary" aria-label="目录">
@@ -559,11 +635,88 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
     <div class="dlg-head"><h2 id="colTitle" data-i="colManageTitle">管理合集</h2></div>
     <div class="dlg-body">
       <p class="sub-hint" data-i="colHint">合集只存在这个浏览器里：一次导入的一批文件放在一起，随时切换。</p>
+      <div class="col-tools" id="colTools" hidden></div>
       <div id="colList"></div>
       <div class="col-new"><input type="text" id="colNewName" maxlength="40" autocomplete="off" data-i-ph="colNamePh" placeholder="合集名称"><button class="btn" type="button" id="colNewBtn" data-i="colNew">＋ 新建合集</button></div>
       <p class="sub-hint" id="colStorage"></p>
     </div>
     <div class="dlg-foot"><button class="btn" type="button" id="colClose" data-i="close">关闭</button></div>
+  </div>
+</dialog>
+
+<dialog id="introDlg" aria-labelledby="introTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h2 id="introTitle"></h2></div>
+    <div class="dlg-body">
+      <div id="introIntro">
+        <ul class="intro-list">
+          <li><b data-i="introQ1"></b> <span data-i="introA1"></span></li>
+          <li><b data-i="introQ2"></b> <span data-i="introA2"></span></li>
+          <li><b data-i="introQ3"></b> <span data-i="introA3"></span></li>
+          <li><b data-i="introQ4"></b> <span data-i="introA4"></span></li>
+        </ul>
+      </div>
+      <div id="introNews" class="news-list"><h3 data-i="newsTitle"></h3><div id="newsList"></div></div>
+    </div>
+    <div class="dlg-foot"><button class="btn primary" type="button" id="introMore" data-i="introMore">看图文教程</button><button class="btn" type="button" id="introClose" data-i="introClose">知道了</button></div>
+  </div>
+</dialog>
+
+<dialog id="bkDlg" aria-labelledby="bkTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h2 id="bkTitle" data-i="bkTitle">备份与恢复</h2></div>
+    <div class="dlg-body">
+      <p class="sub-hint" data-i="bkHint"></p>
+      <p class="sub-hint" id="bkSize"></p>
+      <div class="bk-actions"><button class="btn primary" type="button" id="bkFull" data-i="bkFull">导出完整备份（含文件）</button><button class="btn" type="button" id="bkList" data-i="bkList">只导出书单和设置</button></div>
+      <p class="sub-hint" data-i="bkListHint"></p>
+      <h3 data-i="bkRestore">从备份恢复</h3>
+      <p class="sub-hint" data-i="bkRestoreHint"></p>
+      <div class="bk-actions"><button class="btn" type="button" id="bkPick" data-i="bkPick">选择备份文件…</button><input type="file" id="bkFile" accept=".zip,.json,application/zip,application/json" hidden></div>
+      <div class="bk-box" id="bkPlan" hidden></div>
+      <p class="sub-hint" id="bkStatus" role="status" aria-live="polite"></p>
+    </div>
+    <div class="dlg-foot"><button class="btn primary" type="button" id="bkGo" hidden data-i="bkGo">合并到我的书架</button><button class="btn" type="button" id="bkClose" data-i="close">关闭</button></div>
+  </div>
+</dialog>
+
+<dialog id="syncDlg" aria-labelledby="syncTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h2 id="syncTitle" data-i="syncTitle">同步（可选）</h2></div>
+    <div class="dlg-body">
+      <div id="syncOff">
+        <p class="sub-hint" data-i="syncHint"></p>
+        <ul class="sync-list"><li data-i="syncL1"></li><li data-i="syncL2"></li><li data-i="syncL3"></li><li data-i="syncL4"></li></ul>
+        <div class="bk-actions"><button class="btn primary" type="button" id="syncStart" data-i="syncStart">开启同步，生成同步码</button></div>
+        <h3 data-i="syncHave">已经在别的设备上开过同步？</h3>
+        <div class="fs-row"><input type="text" id="syncCodeIn" autocomplete="off" spellcheck="false" autocapitalize="characters" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX"><button class="btn" type="button" id="syncJoin" data-i="syncJoin">连接</button></div>
+      </div>
+      <div id="syncNew" hidden>
+        <p class="sub-hint" data-i="syncNewHint"></p>
+        <div class="sync-code" id="syncCodeShow"></div>
+        <div class="bk-actions"><button class="btn" type="button" id="syncCopy" data-i="syncCopy">复制</button><button class="btn primary" type="button" id="syncSaved" data-i="syncSaved">我已保存好</button></div>
+      </div>
+      <div id="syncOn" hidden>
+        <p class="sub-hint" id="syncState"></p>
+        <p class="sub-hint" id="syncQuota"></p>
+        <div class="bk-actions"><button class="btn primary" type="button" id="syncNowBtn" data-i="syncNow">立即同步</button><button class="btn" type="button" id="syncShow" data-i="syncShow">显示同步码</button></div>
+        <div class="bk-actions"><button class="btn" type="button" id="syncOffBtn" data-i="syncOffBtn">在这台设备上关闭同步</button><button class="btn danger" type="button" id="syncWipe" data-i="syncWipe">删除云端数据</button></div>
+      </div>
+      <p class="sub-hint" id="syncMsg" role="status" aria-live="polite"></p>
+    </div>
+    <div class="dlg-foot"><button class="btn" type="button" id="syncClose" data-i="close">关闭</button></div>
+  </div>
+</dialog>
+
+<dialog id="payDlg" aria-labelledby="payTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h2 id="payTitle" data-i="payTitle">你觉得这个功能值得付费吗？</h2></div>
+    <div class="dlg-body">
+      <p class="sub-hint" data-i="payText"></p>
+      <p class="sub-hint" data-i="payNote"></p>
+      <p class="sub-hint" id="payMsg" role="status" aria-live="polite"></p>
+    </div>
+    <div class="dlg-foot"><button class="btn primary" type="button" id="payYes" data-i="payYes">愿意</button><button class="btn" type="button" id="payNo" data-i="payNo">不愿意</button><button class="btn" type="button" id="payLater" data-i="payLater">以后再问我</button></div>
   </div>
 </dialog>
 
@@ -650,6 +803,11 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
   <div class="dlg">
     <div class="dlg-head"><h2 id="addTitle" data-i="addTitle">添加文件</h2></div>
     <div class="dlg-body">
+      <div class="seg add-tabs" id="addTabs" role="group" aria-label="Add" hidden>
+        <button type="button" data-atab="files" aria-pressed="true" data-i="addTabFiles">文件</button>
+        <button type="button" data-atab="sub" aria-pressed="false" data-i="addTabSub">订阅</button>
+      </div>
+      <div id="addFilesPane">
       <div class="dropzone" id="dropzone" role="button" tabindex="0">
         <svg class="icon" viewBox="0 0 24 24" style="width:26px;height:26px"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg>
         <span data-i="dropHint">拖入或点击选择文件</span>
@@ -675,10 +833,34 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
         <label class="check"><input type="checkbox" id="addFeat"><span data-i="markFeatured">同时设为精选</span></label>
       </div>
       <p class="target" id="addTarget"></p>
+      </div>
+      <div id="addSubPane" hidden>
+        <p class="sub-hint" data-i="fsHint">订阅你想读的博客或文章源（RSS / Atom / JSON Feed）：新文章会出现在你自己的书架里，每个订阅一个合集。文章点开就在这里读，读过的正文存在这个浏览器里；订阅清单也只保存在这里。</p>
+        <label for="fsUrl" data-i="fsUrlLabel">网址</label>
+        <div class="fs-row"><input type="url" id="fsUrl" autocomplete="off" spellcheck="false" data-i-ph="fsUrlPh" placeholder="博客首页、订阅源，或一篇文章的网址"><button class="btn" type="button" id="fsFind">查找</button></div>
+        <p class="warn" id="fsMsg" role="status" hidden></p>
+        <div id="fsResult" hidden></div>
+        <section class="st-box" id="fsStarter" hidden>
+          <h3 data-i="stTitle">试试这些</h3>
+          <p class="sub-hint" data-i="stHint">站长挑的几个值得订阅的源，点一下就订阅，随时可以在“管理”里取消。</p>
+          <div class="st-list" id="fsStarterList"></div>
+          <p class="sub-hint st-added" id="fsStarterAdded" role="status" hidden></p>
+        </section>
+        <details class="fs-more" id="fsMore"><summary data-i="fsMoreSum">导入 / 导出订阅清单</summary>
+          <div class="fs-tools">
+            <button class="btn" type="button" id="fsImport" data-i="feedImport">导入订阅清单…</button>
+            <button class="btn" type="button" id="fsExport" data-i="feedExport">导出订阅清单（OPML）</button>
+            <button class="btn" type="button" id="fsCopy" data-i="feedCopy">复制清单链接</button>
+          </div>
+          <input type="file" id="fsOpml" accept=".opml,.xml,text/xml,application/xml,text/x-opml" hidden>
+          <p class="sub-hint" data-i="feedSyncHint">订阅清单只是一串网址，可以用它在另一台设备上订阅同样的源。文章和已读状态不会同步，每台设备各自更新。</p>
+        </details>
+      </div>
     </div>
     <div class="dlg-foot">
       <button class="btn" type="button" id="addCancel" data-i="cancel">取消</button>
       <button class="btn primary" type="button" id="addSave" data-i="save" disabled>保存</button>
+      <button class="btn primary" type="button" id="fsGo" hidden disabled>订阅</button>
     </div>
   </div>
 </dialog>
@@ -696,8 +878,9 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
 /* ================= i18n ================= */
 const I18N = {
   zh: {
-    brand:'知识树', brandSub:'个人数字图书馆', siteTitle:'知识树 - 个人数字图书馆', dir:'卡片目录', search:'搜索标题、摘要、关键词、类型', lfAll:'全部',
-    sortRecent:'最近添加', sortRead:'最近阅读', sortTitle:'标题', add:'添加', back:'返回', prev:'上一篇', next:'下一篇',
+    brand:'知树阅读', brandSub:'个人数字图书馆', siteTitle:'知树阅读｜个人数字图书馆：在线阅读书籍、PDF 与读书笔记', dir:'卡片目录', search:'搜索标题、摘要、关键词、类型', lfAll:'全部',
+    cardMore:'更多操作', swipeHint:'左右滑动可以切换上一篇 / 下一篇', swipeFirst:'已经是第一篇了', swipeLast:'已经是最后一篇了',
+    sortRecent:'最近添加', sortDate:'发布日期', sortRead:'最近阅读', sortTitle:'标题', add:'添加', back:'返回', prev:'上一篇', next:'下一篇',
     pinTip:'置顶', unpinTip:'取消置顶', pinned:'置顶', pinnedToast:t=>`已把《${t}》置顶`, unpinnedToast:t=>`已取消《${t}》的置顶`,
     pinLocalNote:'只在这个浏览器里生效，别的访客看不到。要让所有人看到，站长需在自己电脑上置顶后重新部署。',
     serveOld:'serve.py 还是旧版本，没有保存置顶。请关掉它，重新运行 python serve.py。',
@@ -729,8 +912,62 @@ const I18N = {
     srcServer:'数据来源：<b>本地服务</b>，实时扫描 library/',
     srcFolderAlso:f=>`；另外显示你连接的本机文件夹 <b>${f}</b>`,
     localCount:n=>`；另有 ${n} 篇只保存在你的浏览器里`,
+    flagsNote:n=>`你在这个浏览器里调整过 ${n} 项（星标、置顶、隐藏、分类）。`, flagsReset:'恢复站点默认', flagsDone:'已恢复站点默认',
+    flagsAsk:'清除你在这个浏览器里对站点内容做的星标、置顶、隐藏和分类调整？\n清除后回到站点本来的样子（站长置顶的会重新置顶）。你添加的文件不受影响。',
+    // subscriptions: somebody's feed followed in this browser, one collection per feed
+    fsTitle:'订阅文章源', addTabFiles:'文件', addTabSub:'订阅', fsUrlLabel:'网址', fsUrlPh:'博客首页、订阅源，或一篇文章的网址', fsFind:'查找', fsFinding:'正在查找…', fsMoreSum:'导入 / 导出订阅清单',
+    fsHint:'订阅你想读的博客或文章源（RSS / Atom / JSON Feed）：新文章会出现在你自己的书架里，每个订阅一个合集。文章点开就在这里读：订阅源自带全文的直接显示，只带摘要的会读取原文页面后显示（需要登录或不让程序读取的页面除外，会打开原站）。订阅清单和读过的正文都只存在这个浏览器里。',
+    stTitle:'试试这些', stHint:'站长挑的几个值得订阅的源，点一下就订阅，随时可以在“管理”里取消。', stGo:'订阅', stDone:'已订阅', stFinish:'完成', stAdded:n=>`这次已订阅 ${n} 个，点“完成”就能在书架里看到它们。`,
+    fsKindFeed:'订阅源', fsKindLink:'单个页面', fsFound:n=>`共 ${n} 篇`, fsLatest:'最近的几篇', fsName:'合集名称', fsGo:'订阅', fsSaveLink:'存成链接',
+    fsLinkNote:'这个地址是一个页面，没有订阅源可以跟着更新，会存成一条链接（和“收藏的链接”一样）。', fsDup:'已经订阅过这个源了。', fsMax:n=>`最多订阅 ${n} 个源，请先取消一些。`,
+    fsNoApi:'这个站点没有开通订阅更新服务。', fsFail:'查找失败：', fsOffline:'现在没有网络。', fsRate:'查得太频繁了，请稍等几分钟再试。', fsSlow:'服务没有及时回答，请稍后再试。',
+    fsSubscribed:name=>`已订阅「${name}」`, fsLinkSaved:name=>`已存成链接：「${name}」`, fsSaveSelf:'读不到这个地址，也可以直接把它存成一条链接。', fsSaveSelfBtn:'直接存成链接',
+    feedBadge:'订阅', feedNew:'新', feedNewN:n=>`${n} 篇新`, feedRefreshAll:'刷新全部订阅', feedRefresh:'刷新', feedUnsub:'取消订阅', feedMarkRead:'全部标为已读',
+    feedAsk:(name,n)=>`取消订阅「${name}」？\n已存的 ${n} 条也会清除（只存在这个浏览器里）。`, feedUnsubbed:'已取消订阅。',
+    feedChecked:ago=>`上次更新 ${ago}`, feedNever:'还没有更新过', feedErr:m=>`更新失败：${m}`, feedRefreshing:'正在更新订阅…',
+    feedDone:(subs,n)=>n?`订阅已更新：${subs} 个源，${n} 篇新文章。`:`订阅已更新：${subs} 个源，没有新文章。`,
+    feedExport:'导出订阅清单（OPML）', feedImport:'导入订阅清单…', feedCopy:'复制清单链接', feedCopied:'已复制。在另一台设备上打开这个链接，就能导入同样的订阅。',
+    feedImported:n=>`导入了 ${n} 个订阅，正在读取…`, feedImportAsk:(n,names)=>`导入 ${n} 个订阅？\n${names}`, feedNoneToImport:'清单里没有新的订阅可以导入。', feedBadList:'这个清单读不出来。',
+    feedSyncHint:'订阅清单只是一串网址，可以用它在另一台设备上订阅同样的源。文章和已读状态不会同步，每台设备各自更新。',
     changeFolder:'更换本机文件夹', disconnect:'断开', badgeLocal:'仅此浏览器', badgeFolder:'本机文件夹',
     legalAbout:'关于本站', legalPrivacy:'隐私政策', legalTerms:'使用条款',
+    newsTitle:'更新说明', readLoading:'正在读取原文…（有的页面要十几秒）', readOpenOrig:'不想等？打开原文', readFail:m=>`这篇在这里读不了：${m}`, readNoreadToast:r=>`这篇在这里读不了（${r}）：已在新标签页打开原文。`,
+    origOnly:'仅原站', fsReadable:'这个页面可以在这里阅读，全文会和链接一起存下来。', fsUnreadable:r=>`这个页面在这里读不了（${r}）。仍然可以存成链接，点开去原站。`,
+    syncBtn:'同步', syncTitle:'同步（可选）',
+    syncHint:'在几台设备上用同一个书架：开启后，你的书单、收藏的链接、订阅、合集、阅读进度和书签，以及体积小的文本文件（Markdown、TXT、HTML），会加密后保存在同步服务里；换设备时输入同步码就能取回。不用注册，不用密码。',
+    syncL1:'加密在你的浏览器里完成，同步服务只看到打乱的数据，读不了任何内容。',
+    syncL2:'同步码就是钥匙：丢了就找不回来，别人拿到它就能读你的书架，请自己保管好。',
+    syncL3:'免费空间很小（约 9 MB）。PDF 等大文件只同步书单，内容不同步：换到另一台设备后，这些文件要在原设备上用“备份与恢复”带过去。',
+    syncL4:'半年（180 天）不用，同步空间会被清掉。',
+    syncStart:'开启同步，生成同步码', syncHave:'已经在别的设备上开过同步？', syncJoin:'连接',
+    syncNewHint:'这是你的同步码。请现在就复制或抄下来，保存好（比如存进密码管理器）：丢了就无法找回。',
+    syncCopy:'复制', syncCopied:'已复制', syncSaved:'我已保存好',
+    syncState:(on,last)=>last?`同步已开启，上次同步：${last}。`:'同步已开启，还没有同步过。', syncQuota:(used,limit,exp)=>`同步空间已用 ${used} / ${limit}${exp?`；不使用的话，会在 ${exp} 清掉`:''}。`,
+    syncNow:'立即同步', syncShow:'显示同步码', syncOffBtn:'在这台设备上关闭同步', syncWipe:'删除云端数据',
+    syncOffAsk:'在这台设备上关闭同步？这里的内容不会被删除，同步空间里的数据也还在。', syncWipeAsk:'删除同步空间里的全部数据？这台设备和其它设备上的内容都不会被删除，但会停止同步。', syncWiped:'云端数据已删除。',
+    syncBusyMsg:'正在同步…', syncDoneMsg:'同步完成。', syncBadCode:'同步码的格式不对：应该是 6 组、每组 4 个字母或数字。', syncNoVault:'没有找到这个同步码对应的同步空间，或者它已经过期。',
+    syncErr:m=>`同步没有成功：${m}`, syncNoApi:'这个站点没有开通同步。', syncOffNow:'同步已关闭。', syncFullMsg:'同步空间已满：新加的文件只同步书单。',
+    syncNoFile:'这份文件只有书单记录，内容没有同步到这台设备（PDF 等大文件不在免费同步里）。请在原来的设备上打开，或用“备份与恢复”带过来。',
+    syncCloud:'在同步空间', syncListOnly:'仅书单', syncStatBusy:'同步中…', syncStatOk:a=>`已同步 · ${a}`, syncStatErr:'同步出错', syncStatDetail:'详情',
+    payTitle:'你觉得这个功能值得付费吗？', payText:'你已经用了一会儿了。目前同步是免费的，同步书单、链接、订阅和少量文本。我们在考虑：如果以后加上“大文件同步”（PDF 等，空间更大），你愿意付费使用吗？',
+    payNote:'你的回答只会作为一个匿名计数发给同步服务，不含任何能认出你的信息，也不会再用来打扰你。', payYes:'愿意', payNo:'不愿意', payLater:'以后再问我', payThanks:'谢谢，已记下。',
+    fullText:'全文', readOriginal:'阅读原文', contentCut:'这篇较长，这里只保存了前面一部分，全文请打开原文。',
+    saveThis:'保存这一篇', saveHtml:'下载网页（HTML）', savePdf:'打印 / 存为 PDF', printFail:'这一页现在不能打印',
+    introTitle:'这是什么？', introLink:'这是什么', introMore:'看图文教程', introClose:'知道了',
+    introQ1:'它是什么：', introA1:'一个放在浏览器里的阅读书架：读 PDF、Markdown、HTML，收藏你自己的文件，订阅喜欢的博客。不用注册。',
+    introQ2:'东西存在哪：', introA2:'站点自带的书由站长发布在网站上；你添加的文件、订阅和阅读进度只存在你自己的浏览器里，不会上传。',
+    introQ3:'公开还是私有：', introA3:'站长发布的书架是公开的，谁都能读；你自己的书架只有你看得到；公共目录只收标题和链接。',
+    introQ4:'它不是什么：', introA4:'不是笔记软件，也不是文献管理工具。想在几台设备上用同一个书架：站点开通后可以在左下角打开可选的“同步”（加密），或者用“备份与恢复”带过去。',
+    bkBtn:'备份与恢复', bkTitle:'备份与恢复',
+    bkHint:'你添加的文件、合集、订阅、阅读进度和书签只存在这个浏览器里：清除网站数据，或者换浏览器、换设备，它们就没有了。可以导出一份备份，之后（或在另一台设备上）再恢复。站点自带的书和你连接的本机文件夹里的文件不在备份里。备份文件由浏览器生成，保存在你自己的设备上，不经过任何服务器。',
+    bkSummary:(n,size)=>`这个浏览器里现在有 ${n} 项（文件约 ${size}）。`,
+    bkFull:'导出完整备份（含文件）', bkList:'只导出书单和设置', bkListHint:'“书单和设置”不含文件内容，文件很小：适合在另一台设备上先带走收藏的链接、订阅、合集、阅读进度和书签。',
+    bkBusy:'正在生成…', bkDone:n=>`已导出 ${n} 项。`, bkFail:'导出失败：',
+    bkRestore:'从备份恢复', bkRestoreHint:'备份会合并到现在的内容里：内容相同的文件不会重复添加，也不会删除你现在的任何东西。请只导入你自己导出的备份。',
+    bkPick:'选择备份文件…', bkReading:'正在读取…',
+    bkPlan:p=>`备份里有 ${p.items} 项（其中带文件的 ${p.files} 项）、${p.cols} 个合集（订阅 ${p.subs} 个）。其中 ${p.dup} 项已经在这个浏览器里，会跳过；将新增 ${p.add} 项${p.omitted?`；另有 ${p.omitted} 个文件只有书单、没有内容，无法恢复`:''}。`,
+    bkGo:'合并到我的书架', bkDoing:(i,n)=>`正在导入… ${i} / ${n}`, bkImported:(a,s)=>`已导入 ${a} 项，跳过 ${s} 项。`, bkDoneBtn:'完成',
+    bkBad:'这个文件不是知树阅读的备份，或者已经损坏。', bkTooNew:'这份备份来自更新的版本，请刷新页面后再试。', bkNoZip:'这个浏览器不能读取压缩过的备份。', bkImportFail:'导入失败：',
     subscribe:'订阅', subTitle:'订阅本站', subHint:'把本站的更新放进你的阅读器。可以订阅全部，也可以只订阅某个分类或标签。没有阅读器的话，直接把本站网址粘贴到 Feedly 或 Inoreader 里，它们会自己找到订阅地址。',
     subOpen:x=>`在 ${x} 中订阅`, subCopy:'复制订阅地址（Atom）', subCopyJson:'复制订阅地址（JSON Feed）', subCopied:'已复制',
     subScope:'订阅哪一部分', subAll:'全部', subCatGroup:'分类', subTagGroup:'标签', subTypeGroup:'类型', subShelfGroup:'书架',
@@ -740,10 +977,10 @@ const I18N = {
     dirError:'读取公共目录失败', dirRetry:'重试', dirSub:(n,s,d)=>`共 ${n} 条，来自 ${s} 个书架${d?`，更新于 ${d}`:''}`,
     dirEmpty:'<h2>目录里还没有内容</h2><p>还没有收录任何书架。点右上角“收录”提交第一个。</p>',
     ty_article:'文章', ty_note:'笔记', ty_video:'视频', ty_audio:'音频', ty_pdf:'PDF', ty_tool:'工具', ty_book:'书籍资料卡',
-    srcDir:(h,d)=>`公共目录数据来自 <b>${h}</b>${d?`，更新于 ${d}`:''}。只记标题、摘要和链接，点击都会去原站`,
+    srcDir:(h,d)=>`公共目录数据来自 <b>${h}</b>${d?`，更新于 ${d}`:''}。只记标题、摘要和链接；点开文章在这里读，读不了的页面、视频和仓库去原站`,
     saveToShelf:'收藏到我的书架', savedTip:'已收藏，点击取消', savedToast:t=>`已把《${t}》收藏到“我的书架”（只保存在这个浏览器里）`, unsavedToast:t=>`已取消收藏《${t}》`,
     badgeLink:'收藏的链接', openOriginal:'打开原文', showMore:'显示更多', clearTag:'取消筛选', moreTags:n=>`展开其余 ${n} 个`, visitSite:'访问原站',
-    submit:'收录', submitTitle:'收录一个网址', submitHint:'贴一个网址就够了：博客或网站首页、文章、视频、GitHub 仓库、Gist 都行。提交后机器人会自动检查并回复，维护者审核后收录。只记标题、摘要和链接，不复制正文。',
+    submit:'收录', submitTitle:'收录一个网址', submitHint:'贴一个网址就够了：博客或网站首页、RSS / Atom 订阅源、文章、视频、GitHub 仓库、Gist 都行。提交后机器人会自动检查并回复，维护者审核通过才会收录（订阅源收录后，它的新文章会每天自动进目录）。目录只记标题、摘要和链接，不保存正文；读者点开文章时，页面会临时去读原文来显示，读不了的才跳到原站。',
     submitUrl:'网址', submitRights:'我有权发布这些内容（我是作者或所有者，或已获授权）', submitGo:'在 GitHub 上提交', submitNoRepo:'这个目录还没有设置收录入口，暂时不能在线提交。',
     submitNeedGh:'提交会在 GitHub 上新建一个申请，需要有 GitHub 账号。',
     kind_repo:'识别为：GitHub 仓库。会收录其中的 .md / .html / .pdf，之后每天自动更新', kind_folder:'识别为：GitHub 仓库里的一个文件夹，每天自动更新', kind_file:'识别为：GitHub 上的单个文件',
@@ -794,8 +1031,9 @@ const I18N = {
     noRenderer:'没有找到 vendor/marked.min.js，Markdown 以纯文本显示。', toc:'目录', openPdf:'打开 PDF', pdfMobile:'手机浏览器通常无法在页面内显示 PDF，点下面的按钮用系统阅读器打开。'
   },
   en: {
-    brand:'Knowledge Tree', brandSub:'Personal digital library', siteTitle:'Knowledge Tree - Personal Digital Library', dir:'Card index', search:'Search titles, summaries, keywords, types', lfAll:'All',
-    sortRecent:'Recently added', sortRead:'Recently read', sortTitle:'Title', add:'Add', back:'Back', prev:'Previous', next:'Next',
+    brand:'ZhiTree Books', brandSub:'Personal digital library', siteTitle:'ZhiTree Books — Read and Organize Your Books, Articles & Notes', dir:'Card index', search:'Search titles, summaries, keywords, types', lfAll:'All',
+    cardMore:'More actions', swipeHint:'Swipe left or right for the next / previous article', swipeFirst:'This is the first one', swipeLast:'This is the last one',
+    sortRecent:'Recently added', sortDate:'Publication date', sortRead:'Recently read', sortTitle:'Title', add:'Add', back:'Back', prev:'Previous', next:'Next',
     pinTip:'Pin to top', unpinTip:'Unpin', pinned:'Pinned', pinnedToast:t=>`Pinned “${t}” to the top`, unpinnedToast:t=>`Unpinned “${t}”`,
     pinLocalNote:'This works in this browser only; other visitors do not see it. For everybody, the site owner pins it on their own computer and deploys again.',
     serveOld:'serve.py is an old version and did not save the pin. Stop it and run python serve.py again.',
@@ -827,8 +1065,61 @@ const I18N = {
     srcServer:'Source: <b>local server</b>, live scan of library/',
     srcFolderAlso:f=>`; plus the local folder you connected, <b>${f}</b>`,
     localCount:n=>`; plus ${n} saved only in your browser`,
+    flagsNote:n=>`You changed ${n} item(s) in this browser (stars, pins, hides, categories).`, flagsReset:'Back to the site\'s own', flagsDone:'Back to the site\'s own state',
+    flagsAsk:'Clear the stars, pins, hides and category changes you made to the site\'s items in this browser?\nThey go back to how the site has them (what the owner pinned is pinned again). Files you added are not touched.',
+    fsTitle:'Subscribe to a feed', addTabFiles:'Files', addTabSub:'Subscribe', fsUrlLabel:'Address', fsUrlPh:'A blog\'s home page, its feed, or an article', fsFind:'Look up', fsFinding:'Looking…', fsMoreSum:'Import / export your subscriptions',
+    fsHint:'Follow the blogs and article feeds (RSS / Atom / JSON Feed) you want to read: new articles appear in your own shelf, one collection per subscription. Articles open right here: when a feed carries the full text it is shown at once; with only excerpts, the original page is read and shown (pages that need a login or keep programs out open on their own site). The list and the text you read stay in this browser.',
+    stTitle:'Try these', stHint:'A few sources the site owner picked. One click subscribes; you can unsubscribe any time in “Manage”.', stGo:'Subscribe', stDone:'Subscribed', stFinish:'Done', stAdded:n=>`Subscribed to ${n} this time; click “Done” to see them on your shelf.`,
+    fsKindFeed:'Feed', fsKindLink:'A single page', fsFound:n=>`${n} articles`, fsLatest:'Latest', fsName:'Collection name', fsGo:'Subscribe', fsSaveLink:'Save as a link',
+    fsLinkNote:'This address is a page without a feed to follow. It is saved as a link (like a “saved link”).', fsDup:'You follow this feed already.', fsMax:n=>`At most ${n} subscriptions: remove some first.`,
+    fsNoApi:'This site has no update service for subscriptions.', fsFail:'Could not look it up: ', fsOffline:'You are offline.', fsRate:'Too many requests; wait a few minutes.', fsSlow:'The service did not answer in time; try again later.',
+    fsSubscribed:name=>`Subscribed to “${name}”`, fsLinkSaved:name=>`Saved as a link: “${name}”`, fsSaveSelf:'This address could not be read; you can still save it as a link.', fsSaveSelfBtn:'Save as a link anyway',
+    feedBadge:'Feed', feedNew:'New', feedNewN:n=>`${n} new`, feedRefreshAll:'Refresh all', feedRefresh:'Refresh', feedUnsub:'Unsubscribe', feedMarkRead:'Mark all read',
+    feedAsk:(name,n)=>`Unsubscribe from “${name}”?\nThe ${n} saved item(s) are removed too (they live in this browser only).`, feedUnsubbed:'Unsubscribed.',
+    feedChecked:ago=>`Updated ${ago}`, feedNever:'Not updated yet', feedErr:m=>`Update failed: ${m}`, feedRefreshing:'Updating subscriptions…',
+    feedDone:(subs,n)=>n?`Subscriptions updated: ${subs} feed(s), ${n} new article(s).`:`Subscriptions updated: ${subs} feed(s), nothing new.`,
+    feedExport:'Export subscriptions (OPML)', feedImport:'Import a list…', feedCopy:'Copy a link to the list', feedCopied:'Copied. Open this link on another device to import the same subscriptions.',
+    feedImported:n=>`Imported ${n} subscription(s); reading them…`, feedImportAsk:(n,names)=>`Import ${n} subscription(s)?\n${names}`, feedNoneToImport:'Nothing new to import in this list.', feedBadList:'This list could not be read.',
+    feedSyncHint:'The list is only a series of addresses: use it to follow the same feeds on another device. Articles and read marks are not synced; each device updates by itself.',
     changeFolder:'Change local folder', disconnect:'Disconnect', badgeLocal:'This browser only', badgeFolder:'Local folder',
     legalAbout:'About', legalPrivacy:'Privacy', legalTerms:'Terms',
+    newsTitle:'What’s new', readLoading:'Reading the original… (some pages take ten seconds or more)', readOpenOrig:'Not waiting? Open the original', readFail:m=>`This one cannot be read here: ${m}`, readNoreadToast:r=>`This one cannot be read here (${r}): the original is open in a new tab.`,
+    origOnly:'Original only', fsReadable:'This page can be read here: its text is kept with the link.', fsUnreadable:r=>`This page cannot be read here (${r}). It can still be saved as a link that opens the original site.`,
+    syncBtn:'Sync', syncTitle:'Sync (optional)',
+    syncHint:'Use the same shelf on several devices: when it is on, your list, saved links, subscriptions, collections, reading places and bookmarks, and small text files (Markdown, TXT, HTML), are kept in the sync service, encrypted; on another device you type the sync code to get them back. No sign-up, no password.',
+    syncL1:'The encryption happens in your browser: the sync service sees only scrambled data and cannot read any of it.',
+    syncL2:'The sync code is the key: lose it and nothing can bring it back; whoever has it can read your shelf. Keep it safe yourself.',
+    syncL3:'The free space is small (about 9 MB). Large files such as PDFs sync only as a list entry, not their content: to have them on another device, take them over from the original with “Back up & restore”.',
+    syncL4:'The sync space is cleared after half a year (180 days) without use.',
+    syncStart:'Turn sync on and make a sync code', syncHave:'Already turned sync on on another device?', syncJoin:'Connect',
+    syncNewHint:'This is your sync code. Copy it or write it down now and keep it safe (a password manager is a good place): if it is lost, it cannot be recovered.',
+    syncCopy:'Copy', syncCopied:'Copied', syncSaved:'I have saved it',
+    syncState:(on,last)=>last?`Sync is on. Last synced: ${last}.`:'Sync is on. Not synced yet.', syncQuota:(used,limit,exp)=>`Sync space used: ${used} / ${limit}${exp?`; cleared on ${exp} if not used`:''}.`,
+    syncNow:'Sync now', syncShow:'Show the sync code', syncOffBtn:'Turn sync off on this device', syncWipe:'Delete the cloud data',
+    syncOffAsk:'Turn sync off on this device? Nothing here is deleted, and what is in the sync space stays.', syncWipeAsk:'Delete everything in the sync space? Nothing on this or other devices is deleted, but syncing stops.', syncWiped:'The cloud data is deleted.',
+    syncBusyMsg:'Syncing…', syncDoneMsg:'Synced.', syncBadCode:'That is not a sync code: it should be 6 groups of 4 letters or digits.', syncNoVault:'No sync space was found for this code, or it has expired.',
+    syncErr:m=>`Sync did not work: ${m}`, syncNoApi:'This site has no sync.', syncOffNow:'Sync is off.', syncFullMsg:'The sync space is full: files added from now on sync only as a list entry.',
+    syncNoFile:'This file is only a list entry here: its content was not synced to this device (large files such as PDFs are not part of the free sync). Open it on the device it came from, or bring it over with “Back up & restore”.',
+    syncCloud:'In the sync space', syncListOnly:'List only', syncStatBusy:'Syncing…', syncStatOk:a=>`Synced · ${a}`, syncStatErr:'Sync problem', syncStatDetail:'details',
+    payTitle:'Is this worth paying for?', payText:'You have been here a while. Sync is free for now: your list, links, subscriptions and a little text. We are wondering: if “large-file sync” (PDFs and more, with more room) were added later, would you pay for it?',
+    payNote:'Your answer goes to the sync service only as an anonymous count, with nothing that could identify you, and it is not used to pester you.', payYes:'Yes, I would', payNo:'No', payLater:'Ask me later', payThanks:'Thank you, noted.',
+    fullText:'Full text', readOriginal:'Read the original', contentCut:'This one is long: only the first part is kept here. Open the original for all of it.',
+    saveThis:'Save this one', saveHtml:'Download as a web page (HTML)', savePdf:'Print / save as PDF', printFail:'This page cannot be printed right now',
+    introTitle:'What is this?', introLink:'What is this?', introMore:'Read the guide', introClose:'Got it',
+    introQ1:'What it is:', introA1:'A reading shelf in your browser: read PDF, Markdown and HTML, keep your own files, follow the blogs you like. No sign-up.',
+    introQ2:'Where things are kept:', introA2:'The site’s own books are published by the site owner. The files you add, your subscriptions and your reading places stay in your own browser and are never uploaded.',
+    introQ3:'Public or private:', introA3:'The owner’s shelf is public: anyone can read it. Your own shelf is visible only to you. The public directory keeps only titles and links.',
+    introQ4:'What it is not:', introA4:'It is not a note-taking or reference-manager app. To use one shelf on several devices: when the site has it, turn on the optional, encrypted “Sync” at the bottom left, or take things over with “Back up & restore”.',
+    bkBtn:'Back up & restore', bkTitle:'Back up & restore',
+    bkHint:'The files, collections, subscriptions, reading places and bookmarks you add live only in this browser: clear the site’s data, or switch browser or device, and they are gone. Export a backup now, and restore it later (or on another device). The site’s own books and the files of a folder you connected are not in the backup. The backup file is made by your browser and saved on your own device; it never passes through a server.',
+    bkSummary:(n,size)=>`This browser holds ${n} item(s) (files about ${size}).`,
+    bkFull:'Export a full backup (with files)', bkList:'Export the list and settings only', bkListHint:'“List and settings” has no file contents and is tiny: a way to take your saved links, subscriptions, collections, reading places and bookmarks to another device first.',
+    bkBusy:'Building…', bkDone:n=>`Exported ${n} item(s).`, bkFail:'Export failed: ',
+    bkRestore:'Restore from a backup', bkRestoreHint:'A backup is merged into what you have: files with the same content are not added twice, and nothing you have now is deleted. Only restore a backup you exported yourself.',
+    bkPick:'Choose a backup file…', bkReading:'Reading…',
+    bkPlan:p=>`The backup holds ${p.items} item(s) (${p.files} with files) and ${p.cols} collection(s) (${p.subs} subscription(s)). ${p.dup} of them are already in this browser and will be skipped; ${p.add} will be added${p.omitted?`. ${p.omitted} more file(s) are in the list only, without content, and cannot be restored`:''}.`,
+    bkGo:'Merge into my shelf', bkDoing:(i,n)=>`Importing… ${i} / ${n}`, bkImported:(a,s)=>`Imported ${a} item(s), skipped ${s}.`, bkDoneBtn:'Done',
+    bkBad:'This is not a ZhiTree Books backup, or it is damaged.', bkTooNew:'This backup comes from a newer version. Reload the page and try again.', bkNoZip:'This browser cannot read a compressed backup.', bkImportFail:'Import failed: ',
     subscribe:'Subscribe', subTitle:'Subscribe to this site', subHint:'Get this site’s updates in your feed reader: everything, or just one category or tag. No reader yet? Paste the site address into Feedly or Inoreader and it will find the feed by itself.',
     subOpen:x=>`Subscribe in ${x}`, subCopy:'Copy feed address (Atom)', subCopyJson:'Copy feed address (JSON Feed)', subCopied:'Copied',
     subScope:'What to subscribe to', subAll:'Everything', subCatGroup:'Categories', subTagGroup:'Tags', subTypeGroup:'Types', subShelfGroup:'Shelves',
@@ -838,10 +1129,10 @@ const I18N = {
     dirError:'Could not load the public directory', dirRetry:'Retry', dirSub:(n,s,d)=>`${n} ${n===1?'entry':'entries'} from ${s} ${s===1?'shelf':'shelves'}${d?`, updated ${d}`:''}`,
     dirEmpty:'<h2>The directory is empty</h2><p>No shelf has been listed yet. Use “Submit” at the top right to add the first one.</p>',
     ty_article:'Articles', ty_note:'Notes', ty_video:'Videos', ty_audio:'Audio', ty_pdf:'PDF', ty_tool:'Tools', ty_book:'Book cards',
-    srcDir:(h,d)=>`Directory data from <b>${h}</b>${d?`, updated ${d}`:''}. Only titles, summaries and links are kept; clicking goes to the original site`,
+    srcDir:(h,d)=>`Directory data from <b>${h}</b>${d?`, updated ${d}`:''}. Only titles, summaries and links are kept; an article opens here to read, and pages that cannot be read, videos and repositories go to the original site`,
     saveToShelf:'Save to my shelf', savedTip:'Saved; click to remove', savedToast:t=>`Saved “${t}” to My shelf (kept in this browser only)`, unsavedToast:t=>`Removed “${t}” from your saved links`,
     badgeLink:'Saved link', openOriginal:'Open the original', showMore:'Show more', clearTag:'Clear this filter', moreTags:n=>`Show ${n} more`, visitSite:'Visit the site',
-    submit:'Submit', submitTitle:'Submit an address', submitHint:'One address is enough: a blog or site home page, an article, a video, a GitHub repository or a gist. A bot checks it and replies; a maintainer then reviews it. Only the title, a short summary and the link are kept, never the text.',
+    submit:'Submit', submitTitle:'Submit an address', submitHint:'One address is enough: a blog or site home page, an RSS / Atom feed, an article, a video, a GitHub repository or a gist. A bot checks it and replies; it is listed only after a maintainer approves it (for a feed, its new articles then join the directory every day). The directory keeps only titles, summaries and links, never the text; when a reader opens an article the page reads the original for the moment to show it, and only what cannot be read opens the original site.',
     submitUrl:'Address', submitRights:'I have the right to publish this content (I am the author or owner, or I have permission)', submitGo:'Submit on GitHub', submitNoRepo:'This directory has no submission address set up yet.',
     submitNeedGh:'Submitting opens a new request on GitHub and needs a GitHub account.',
     kind_repo:'Recognised: a GitHub repository. Its .md / .html / .pdf files are listed and refreshed every day', kind_folder:'Recognised: a folder of a GitHub repository, refreshed every day', kind_file:'Recognised: a single file on GitHub',
@@ -936,8 +1227,17 @@ const idb = (function(){
 })();
 
 /* ================= state ================= */
+/* A link such as /?lang=en (the English introduction page uses it) opens the page in that language; it is remembered like a click on the switch, and the address is tidied. */
+const LINK_LANG = (function(){
+  try{
+    const u=new URL(location.href), v=u.searchParams.get('lang');
+    if(v!=='en' && v!=='zh') return '';
+    LS.set('lang',v); u.searchParams.delete('lang'); history.replaceState(history.state,'',u.pathname+u.search+u.hash);
+    return v;
+  }catch(e){ return ''; }
+})();
 const state = {
-  lang: LS.get('lang', (navigator.language||'zh').toLowerCase().startsWith('zh')?'zh':'en'),
+  lang: LINK_LANG || LS.get('lang', (navigator.language||'zh').toLowerCase().startsWith('zh')?'zh':'en'),
   theme: LS.get('theme','auto'), view: LS.get('view','grid'), sort: LS.get('sort','recent'),
   rs: Object.assign({fs:100, lh:'m', w:'m', th:'follow'}, LS.get('reader',{})),        // reader settings: font scale %, line height s/m/l, width n/m/w, colours follow|light|dark|sepia|green
   marks: LS.get('marks',{}),                                                           // bookmarks (a place in a document): {id:[{pct,label,at}]}
@@ -1107,12 +1407,29 @@ async function scanFolder(dir){
    1. the site's own list: serve.py live (mode 'server'), or the deployed manifest (mode 'static')
    2. the visitor's own local folder, if they connected one
    3. files the visitor added in this browser */
+/* An item of the site can carry an English title, summary and page (title_en, summary_en, alt_en: front matter / meta tags / _meta.json). Whoever reads the page in English sees those
+   (and the card opens the English page); everything else about the item is the same. The originals are kept in title0 / summary0 / path0. */
+function applyItemLang(){
+  const en=state.lang==='en';
+  for(const it of state.items){
+    if(it.source==='local' || it.source==='folder') continue;
+    if(it.title0===undefined){
+      if(!(it.title_en || it.summary_en || it.alt_en || it.keywords_en)) continue;
+      it.title0=it.title; it.summary0=it.summary; it.path0=it.path; it.keywords0=it.keywords; it.lang0=it.lang;
+    }
+    it.title = en && it.title_en ? it.title_en : it.title0;
+    it.summary = en && it.summary_en ? it.summary_en : it.summary0;
+    it.path = en && it.alt_en ? it.alt_en : it.path0;
+    it.keywords = en && it.keywords_en ? it.keywords_en : it.keywords0;
+    it.lang = en && it.alt_en ? 'en' : it.lang0;                                  // the page that opens is the English one
+  }
+}
 async function loadAll(){
   let primary = await loadServer(); state.mode = primary ? 'server' : 'none';
   if(!primary){ primary=await loadStatic(); if(primary) state.mode='static'; }
   let folder=[]; if(state.dir && state.mode!=='server'){ try{ folder=await scanFolder(state.dir); }catch(e){ state.dir=null; } }
   const local = (await idb.all()).map(x=>({type:'html',...x, source:'local'}));
-  state.items = (primary||[]).concat(folder, local); state.loaded=true; render();
+  state.items = (primary||[]).concat(folder, local); applyItemLang(); state.loaded=true; render();
 }
 /* Where "Add" writes: the site's own library when running serve.py; otherwise the visitor's connected folder, or else this browser. Never a deployed server. */
 const addMode = () => state.mode==='server' ? 'server' : state.dir ? 'folder' : 'local';
@@ -1143,26 +1460,37 @@ function renderCols(){
   const n = fn => state.items.filter(fn).length, opts=[['all',t('colAll'),state.items.length]];
   if(hasSite) opts.push(['site',t('colSite'),n(x=>x.source==='static'||x.source==='server')]);
   if(hasFolder) opts.push(['folder',t('colFolder'),n(x=>x.source==='folder')]);
-  state.cols.forEach(c=>opts.push([c.id,c.name,n(x=>x.source==='local' && x.collection===c.id)]));
-  if(loose && (state.cols.length || hasSite)) opts.push(['loose',t('colLoose'),loose]);
+  state.cols.forEach(c=>opts.push([c.id,c.name,n(x=>x.source==='local' && x.collection===c.id),c.feed?n(x=>x.source==='local' && x.collection===c.id && x.unread):0]));      // [value, name, how many, how many of them unread (a subscription's new articles)]
+  if(loose && (state.cols.length || hasSite)) opts.push(['loose',t('colLoose'),loose,0]);
   if(!opts.some(o=>o[0]===state.col)){ state.col='all'; LS.set('col','all'); }
-  $('#colSelect').innerHTML=opts.map(([v,name,c])=>`<option value="${esc(v)}"${v===state.col?' selected':''}>${esc(name)} (${c})</option>`).join('');
-  $('#colNav').innerHTML=`<p class="dir-label"><span>${esc(t('colLabel'))}</span><button class="link-btn" type="button" data-colmanage>${esc(t('colManage'))}</button></p>`
-    + opts.map(([v,name,c])=>`<button class="cat-btn" type="button" data-colnav="${esc(v)}" aria-current="${v===state.col}"><span class="dot"></span><span>${esc(name)}</span><span class="n">${c}</span></button>`).join('');
+  const subs=subCols().length; $('#colRefresh').hidden=!subs;
+  $('#colSelect').innerHTML=opts.map(([v,name,c,u])=>`<option value="${esc(v)}"${v===state.col?' selected':''}>${esc(name)} (${c}${u?' · '+esc(t('feedNewN',u)):''})</option>`).join('');
+  $('#colNav').innerHTML=`<p class="dir-label"><span>${esc(t('colLabel'))}</span><span>${subs?`<button class="link-btn" type="button" data-colrefresh>${esc(t('feedRefresh'))}</button>`:''}<button class="link-btn" type="button" data-colmanage>${esc(t('colManage'))}</button></span></p>`
+    + opts.map(([v,name,c,u])=>`<button class="cat-btn" type="button" data-colnav="${esc(v)}" aria-current="${v===state.col}"><span class="dot"></span><span>${esc(name)}</span><span class="n">${c}</span>${u?`<em class="new" title="${esc(t('feedNewN',u))}">${u}</em>`:''}</button>`).join('');
 }
 function pickCollection(v){ state.col=v; LS.set('col',state.col); render(); window.scrollTo({top:0}); }
 $('#colSelect').addEventListener('change',e=>pickCollection(e.target.value));
 $('#colNav').addEventListener('click',e=>{                                           // the same switcher, as a list in the side drawer
+  if(e.target.closest('[data-colrefresh]')){ refreshSubs({force:true,manual:true}); return; }
   if(e.target.closest('[data-colmanage]')){ renderColDlg(); colDlg.showModal(); return; }
   const b=e.target.closest('[data-colnav]'); if(!b) return;
   pickCollection(b.dataset.colnav); document.body.classList.remove('drawer');
 });
 const colDlg=$('#colDlg');
 const fmtMB = b => b>=1073741824 ? (b/1073741824).toFixed(1)+' GB' : Math.max(1,Math.round(b/1048576))+' MB';
+const ago = ts => { const s=Math.max(0,(Date.now()-ts)/1000), f=new Intl.RelativeTimeFormat(state.lang==='zh'?'zh-CN':'en',{numeric:'auto'});
+  return s<90 ? f.format(0,'minute') : s<5400 ? f.format(-Math.round(s/60),'minute') : s<129600 ? f.format(-Math.round(s/3600),'hour') : f.format(-Math.round(s/86400),'day'); };
 async function renderColDlg(){
+  const subs=subCols();
+  $('#colTools').hidden=!subs.length;
+  $('#colTools').innerHTML = subs.length ? `<button class="btn" type="button" data-fs="refresh"${subBusy?' disabled':''}>${esc(t('feedRefreshAll'))}</button><button class="btn" type="button" data-fs="export">${esc(t('feedExport'))}</button><button class="btn" type="button" data-fs="copy">${esc(t('feedCopy'))}</button>` : '';
   $('#colList').innerHTML = state.cols.map(c=>{
-    const n=state.items.filter(x=>x.source==='local' && x.collection===c.id).length;
-    return `<div class="col-item" data-id="${esc(c.id)}"><input type="text" value="${esc(c.name)}" maxlength="40" aria-label="${esc(t('colLabel'))}"><span class="n">${n}</span><button class="btn danger" type="button" data-del="${esc(c.id)}">${esc(t('colDelete'))}</button></div>`;
+    const mine=state.items.filter(x=>x.source==='local' && x.collection===c.id), n=mine.length;
+    if(!c.feed) return `<div class="col-item" data-id="${esc(c.id)}"><input type="text" value="${esc(c.name)}" maxlength="40" aria-label="${esc(t('colLabel'))}"><span class="n">${n}</span><button class="btn danger" type="button" data-del="${esc(c.id)}">${esc(t('colDelete'))}</button></div>`;
+    const u=mine.filter(x=>x.unread).length, st = c.feed.error ? t('feedErr',c.feed.error) : c.feed.checked ? t('feedChecked',ago(c.feed.checked)) : t('feedNever');
+    return `<div class="col-item is-feed" data-id="${esc(c.id)}"><input type="text" value="${esc(c.name)}" maxlength="40" aria-label="${esc(t('colLabel'))}"><span class="n">${n}</span>`
+      + `<button class="btn" type="button" data-refresh="${esc(c.id)}"${subBusy?' disabled':''}>${esc(t('feedRefresh'))}</button>${u?`<button class="btn" type="button" data-readall="${esc(c.id)}">${esc(t('feedMarkRead'))}</button>`:''}<button class="btn danger" type="button" data-del="${esc(c.id)}">${esc(t('feedUnsub'))}</button>`
+      + `<div class="col-sub${c.feed.error?' bad':''}">${esc(hostOf(c.feed.home||c.feed.url))} · ${esc(subBusy?t('feedRefreshing'):st)}${u?` · ${esc(t('feedNewN',u))}`:''}</div></div>`;
   }).join('');
   let line=t('colStorageNone');
   try{ const e=await navigator.storage.estimate(), p=navigator.storage.persisted ? await navigator.storage.persisted() : false; line=t('colStorage',fmtMB(e.usage||0),fmtMB(e.quota||0),p); }catch(err){}
@@ -1181,15 +1509,160 @@ $('#colList').addEventListener('change',e=>{                                    
   if(!name || nameTaken(name,c.id)){ if(name) toast(t('colExists')); e.target.value=c.name; return; }
   c.name=name; saveCols(); renderCols();
 });
-$('#colList').addEventListener('click',async e=>{                                     // delete the collection and the files in it (they exist nowhere else)
+$('#colList').addEventListener('click',async e=>{                                     // delete the collection and the files in it (they exist nowhere else); for a subscription: unsubscribe
+  const rf=e.target.closest('[data-refresh]'); if(rf){ refreshSubs({ids:[rf.dataset.refresh],force:true,manual:true}); return; }
+  const ra=e.target.closest('[data-readall]'); if(ra){ markAllRead(ra.dataset.readall); return; }
   const b=e.target.closest('[data-del]'); if(!b) return;
   const c=colById(b.dataset.del), mine=state.items.filter(x=>x.source==='local' && x.collection===b.dataset.del); if(!c) return;
-  if(!confirm(t('colDeleteAsk',mine.length,c.name))) return;
+  if(!confirm(c.feed ? t('feedAsk',c.name,mine.length) : t('colDeleteAsk',mine.length,c.name))) return;
   try{ for(const it of mine) await idb.del(it.id); }catch(err){ toast(t('saveFail')+err.message); return; }
   state.items=state.items.filter(x=>!mine.includes(x)); state.cols=state.cols.filter(x=>x.id!==c.id); saveCols();
   if(state.col===c.id){ state.col='all'; LS.set('col','all'); }
-  toast(t('colDeleted')); renderColDlg(); render();
+  toast(t(c.feed?'feedUnsubbed':'colDeleted')); renderColDlg(); render();
 });
+$('#colTools').addEventListener('click',e=>{
+  const b=e.target.closest('[data-fs]'); if(!b) return;
+  if(b.dataset.fs==='refresh') refreshSubs({force:true,manual:true}); else if(b.dataset.fs==='export') exportSubs(); else if(b.dataset.fs==='copy') copySubsLink();
+});
+
+/* ================= subscriptions: somebody's feed, followed in this browser =================
+   One feed = one collection (c.feed: {url, home, etag, modified, checked, error, fails, gone}). What arrives is kept as saved links (title, summary, address, date), so search, stars, pins,
+   hiding and deleting work as they do for any link; a click goes to the original site. The list lives in this browser. The site only *reads* the feeds for the reader (a page cannot read
+   somebody else's feed itself: the directory's /api/feed does, and keeps nothing). A web page cannot update in the background: the update happens while the page is open. */
+const MAX_SUBS=30, FEED_KEEP_LOCAL=60, REFRESH_MS=3*3600*1000, REFRESH_CHUNK=10;
+let subBusy=false;
+function feedApi(){
+  const d=state.dirData, own=String((d&&d.feed_api)||''), s=String((d&&d.submit_api)||''), a=own || (/\/submit\/?$/.test(s) ? s.replace(/\/submit\/?$/,'/feed') : '');
+  return /^https:\/\//.test(a) || /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//.test(a) ? a : '';
+}
+const subCols = () => state.cols.filter(c=>c.feed);
+const feedItems = c => state.items.filter(x=>x.source==='local' && x.collection===c.id);
+async function callFeed(body, ms){
+  const api=feedApi(); if(!api) throw new Error(t('fsNoApi'));
+  const ctl=new AbortController(), timer=setTimeout(()=>ctl.abort(), ms||28000);
+  try{
+    const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:ctl.signal});
+    const d=await r.json().catch(()=>null);
+    if(r.status===429) throw new Error(t('fsRate'));
+    if(!d) throw new Error('HTTP '+r.status);
+    return d;                                                                         // {ok:false, message, message_en} is the service's own explanation: the caller shows it
+  }catch(e){
+    if(e.name==='AbortError') throw new Error(t('fsSlow'));
+    if(e instanceof TypeError) throw new Error(navigator.onLine===false ? t('fsOffline') : t('fsSlow'));
+    throw e;
+  }finally{ clearTimeout(timer); }
+}
+function feedRecord(c, i, unread){
+  const url=httpUrl(i.url); if(!url) return null;
+  const title=cut(i.title,140)||hostOf(url);
+  return {id:'local:feed:'+c.id+':'+hashStr(urlKey(url)).toString(36), type:'link', url, title, summary:cut(i.summary,220), keywords:(Array.isArray(i.tags)?i.tags:[]).slice(0,8).map(String),
+          lang:(i.lang==='zh'||i.lang==='en')?i.lang:(/[一-鿿]/.test(title)?'zh':'en'), date:/^\d{4}-\d{2}-\d{2}/.test(i.date||'')?String(i.date).slice(0,10):today(), category:'notes', image:'',
+          from:hostOf(c.feed.home||url), added:Math.floor(Date.now()/1000), collection:c.id, feed:c.feed.url, ...(unread?{unread:true}:{}),
+          ...(typeof i.content==='string' && i.content ? {content:i.content.slice(0,FEED_CONTENT_MAX), ...(i.content_cut?{contentCut:true}:{})} : {})};
+}
+/* what the service sent for one feed -> the collection: new articles added (unread, except the very first reading), the oldest dropped (never what was starred or pinned) */
+async function applyFeed(c, r){
+  const mine=feedItems(c), byKey=new Map(mine.map(x=>[urlKey(x.url),x])), gone=new Set(c.feed.gone||[]), first=!mine.length;
+  let added=0;
+  const keep=it=>{ const rec={...it}; delete rec.source; return idb.put(rec); };
+  for(const i of (r.items||[])){
+    const url=httpUrl(i.url); if(!url) continue;
+    const k=urlKey(url); if(gone.has(k)) continue;
+    const have=byKey.get(k);
+    if(have){                                                                           // already kept: the text may arrive now (an older subscription, or the feed was excerpts before)
+      if(typeof i.content==='string' && i.content && !have.content){ have.content=i.content.slice(0,FEED_CONTENT_MAX); if(i.content_cut) have.contentCut=true; await keep(have); }
+      continue;
+    }
+    const rec=feedRecord(c,i,!first); if(!rec) continue;
+    const it={...rec,source:'local'}; byKey.set(k,it); await idb.put(rec); state.items.push(it); added++;
+  }
+  const all=feedItems(c).sort((a,b)=>String(b.date).localeCompare(String(a.date)) || (b.added||0)-(a.added||0));
+  for(const it of all.slice(FEED_CONTENT_KEEP)){ if(it.content && !isFeatured(it) && !pinRank(it)){ delete it.content; delete it.contentCut; await keep(it); } }       // the text of the newest ones only: the oldest keep their link
+  for(const it of all.slice(FEED_KEEP_LOCAL)){ if(isFeatured(it) || pinRank(it)) continue; await idb.del(it.id); state.items=state.items.filter(x=>x!==it); }
+  Object.assign(c.feed,{etag:r.etag||'',modified:r.modified||'',checked:Date.now(),tried:Date.now(),error:'',fails:0}); if(httpUrl(r.home)) c.feed.home=r.home;
+  if(r.content_mode) c.feed.cv=CONTENT_V;                                              // the service looked for the text: no need to ask for it again from scratch
+  return added;
+}
+/* ids: only these; force: not only those due (a feed is due 3 hours after its last reading); manual: say what happened */
+async function refreshSubs(opts){
+  opts=opts||{};
+  if(!feedApi() || subBusy) return;
+  const now=Date.now(); let list=subCols().filter(c=>!opts.ids || opts.ids.includes(c.id));
+  if(!opts.force) list=list.filter(c=>now-Math.max(c.feed.checked||0,c.feed.tried||0)>REFRESH_MS);
+  if(!list.length) return;
+  if(navigator.onLine===false){ if(opts.manual) toast(t('fsOffline')); return; }
+  subBusy=true; if(opts.manual) toast(t('feedRefreshing')); if(colDlg.open) renderColDlg();
+  let ok=0, fresh=0, stopped='';
+  try{
+    for(let i=0;i<list.length;i+=REFRESH_CHUNK){
+      const chunk=list.slice(i,i+REFRESH_CHUNK);
+      let d; try{ d=await callFeed({action:'update',feeds:chunk.map(c=>{ const same=c.feed.cv===CONTENT_V; return {url:c.feed.url, etag:same?(c.feed.etag||''):'', modified:same?(c.feed.modified||''):'', content:true}; })}); }          // a feed not yet read for its text is read in full
+      catch(e){ chunk.forEach(c=>{ c.feed.error=e.message; c.feed.tried=Date.now(); }); stopped=e.message; break; }
+      if(!d.ok){ const m=(state.lang==='zh'?d.message:d.message_en)||'?'; chunk.forEach(c=>{ c.feed.error=m; c.feed.tried=Date.now(); }); stopped=m; continue; }
+      for(const r of d.results||[]){
+        const c=chunk.find(x=>x.feed.url===r.url); if(!c) continue;
+        if(r.status==='ok'){ fresh+=await applyFeed(c,r); ok++; }
+        else if(r.status==='unchanged'){ c.feed.checked=c.feed.tried=Date.now(); c.feed.error=''; ok++; }
+        else { c.feed.error=(state.lang==='zh'?r.message:r.message_en)||r.message||'?'; c.feed.tried=Date.now(); c.feed.fails=(c.feed.fails||0)+1; }
+      }
+    }
+  }catch(e){ stopped=e.message||String(e); }
+  finally{ subBusy=false; saveCols(); render(); if(colDlg.open) renderColDlg(); }
+  if(opts.manual) toast(stopped && !ok ? stopped : t('feedDone',ok,fresh)); else if(fresh) toast(t('feedDone',ok,fresh));
+  if(ok) prefetchTexts();
+}
+function markRead(id, card){
+  const it=state.items.find(x=>x.id===id); if(!it || !it.unread) return;
+  it.unread=false; const rec={...it}; delete rec.source; idb.put(rec).catch(()=>{});
+  if(card) card.querySelectorAll('.new-badge').forEach(b=>b.remove());
+  renderCols();
+}
+async function markAllRead(colId){
+  for(const it of state.items.filter(x=>x.source==='local' && x.collection===colId && x.unread)){ it.unread=false; const rec={...it}; delete rec.source; await idb.put(rec); }
+  render(); if(colDlg.open) renderColDlg();
+}
+function uniqueColName(base){
+  base=String(base||t('colDefaultName')).trim().slice(0,36)||t('colDefaultName'); let name=base, n=2;
+  while(nameTaken(name)){ name=base+' '+n; n++; }
+  return name;
+}
+/* the list of what I follow, to move to another device: OPML (any reader understands it) or a link that carries the addresses after "#" (so they never reach a server) */
+const b64u = {enc:s=>btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''), dec:s=>decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/'))))};
+function opmlText(){
+  const x=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  return '<?xml version="1.0" encoding="UTF-8"?>\n<opml version="2.0"><head><title>'+x(t('siteTitle'))+'</title></head><body>\n'
+    + subCols().map(c=>`<outline type="rss" text="${x(c.name)}" title="${x(c.name)}" xmlUrl="${x(c.feed.url)}"${c.feed.home?` htmlUrl="${x(c.feed.home)}"`:''}/>`).join('\n') + '\n</body></opml>\n';
+}
+function exportSubs(){
+  const u=URL.createObjectURL(new Blob([opmlText()],{type:'text/x-opml'})), a=document.createElement('a');
+  a.href=u; a.download='subscriptions.opml'; document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),2000);
+}
+async function copySubsLink(){
+  const link=location.origin+location.pathname+'#subscribe='+b64u.enc(JSON.stringify(subCols().map(c=>[c.feed.url,c.name])));
+  try{ await navigator.clipboard.writeText(link); toast(t('feedCopied')); }catch(e){ prompt(t('feedCopy'),link); }
+}
+function parseOpml(text){
+  const doc=new DOMParser().parseFromString(text,'text/xml'); if(doc.querySelector('parsererror')) return null;
+  return [...doc.querySelectorAll('outline')].map(o=>[o.getAttribute('xmlUrl')||o.getAttribute('xmlurl')||'', o.getAttribute('title')||o.getAttribute('text')||'']).filter(([u])=>httpUrl(u));
+}
+async function importSubs(list){
+  const have=new Set(subCols().map(c=>urlKey(c.feed.url))), ids=[];
+  for(const [u,name] of list){
+    const url=httpUrl(u); if(!url || have.has(urlKey(url)) || subCols().length>=MAX_SUBS) continue;
+    have.add(urlKey(url));
+    const id=addCollection(uniqueColName(name||hostOf(url))); colById(id).feed={url,home:'',etag:'',modified:'',checked:0,error:'',fails:0}; ids.push(id);
+  }
+  saveCols(); render(); if(colDlg.open) renderColDlg();
+  if(!ids.length){ toast(t('feedNoneToImport')); return; }
+  toast(t('feedImported',ids.length)); await refreshSubs({ids,force:true});
+}
+function takeSubscribeLink(){                                                          // #subscribe=… : the list another device made
+  const m=location.hash.match(/^#subscribe=([\w-]+)$/); if(!m) return;
+  history.replaceState(null,'',location.pathname+location.search);
+  let list=[]; try{ const raw=JSON.parse(b64u.dec(m[1])); list=(Array.isArray(raw)?raw:[]).slice(0,MAX_SUBS).filter(x=>Array.isArray(x) && httpUrl(x[0])).map(x=>[String(x[0]),String(x[1]||'').slice(0,40)]); }catch(e){}
+  if(!list.length){ toast(t('feedBadList')); return; }
+  if(confirm(t('feedImportAsk',list.length,list.slice(0,6).map(x=>'· '+(x[1]||hostOf(x[0]))).join('\n')+(list.length>6?'\n…':'')))) importSubs(list);
+}
 
 /* ================= flags: featured / hidden ================= */
 function flag(it, k){
@@ -1297,6 +1770,7 @@ function sorted(list){
   const a=list.slice(), loc=state.lang==='zh'?'zh-Hans-CN':'en';
   if(state.sort==='title') a.sort((x,y)=>x.title.localeCompare(y.title,loc));
   else if(state.sort==='read') a.sort((x,y)=>(state.lastRead[y.id]||0)-(state.lastRead[x.id]||0) || (y.added||0)-(x.added||0));
+  else if(state.sort==='date') a.sort((x,y)=>String(y.date||'').localeCompare(String(x.date||'')) || (y.added||0)-(x.added||0));      // when it was published, not when it came to this shelf
   else a.sort((x,y)=>(y.added||0)-(x.added||0));
   return a.sort((x,y)=>pinRank(y)-pinRank(x));                       // a stable second pass: the pinned first, the rest in the order above
 }
@@ -1322,6 +1796,7 @@ const ICON = {
   list:'<svg class="icon" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="5" cy="6" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="18" r="1"/></svg>',
   bookmark:'<svg class="icon" viewBox="0 0 24 24"><path d="M6.5 4h11a1 1 0 0 1 1 1v15l-6.5-4-6.5 4V5a1 1 0 0 1 1-1z"/></svg>',
   share:'<svg class="icon" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5M5 14v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5"/></svg>',
+  more:'<svg class="icon" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18.5" cy="12" r="1.5"/></svg>',
   globe:'<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 3.8 5.2 3.8 8.5s-1.2 6.1-3.8 8.5c-2.6-2.4-3.8-5.2-3.8-8.5S9.4 5.9 12 3.5z"/></svg>'
 };
 /* The real, shareable address of an item (search engines ignore everything after "#", so "#read/…" is never it):
@@ -1339,7 +1814,7 @@ function cardHTML(it, tk, hiddenView){
   // The deployed site's own books are not: nobody can delete them from a page, only the owner, in library/ on their own computer (serve.py), and then deploy again.
   const manage = canDelete(it);
   const canMove = manage || it.source==='static';                                  // on a deployed site a move is kept in this browser only; in a connected folder, in the folder's _meta.json
-  const where = isLink ? t('badgeLink') : it.source==='local' ? t('badgeLocal') : it.source==='folder' ? t('badgeFolder') : '';
+  const where = isLink ? t(it.feed?'feedBadge':'badgeLink') : it.source==='local' ? t('badgeLocal') : it.source==='folder' ? t('badgeFolder') : '';
   const ext = isLink ? ' target="_blank" rel="noopener noreferrer"' : '';
   // the public directory: is this one in it (a deployed page whose address the directory lists), does the owner keep it out, is it a copy of another file
   const inDir = !!(state.dirKeys && ((it.source==='static' && href && state.dirKeys.has(urlKey(new URL(href,location.href).href))) || (isLink && state.dirKeys.has(urlKey(it.url)))));
@@ -1350,10 +1825,10 @@ function cardHTML(it, tk, hiddenView){
   const listed = inDir || listedPost;
   const canPublish = !!pubKind && !listed;
   const asked = canPublish && !!state.pubReq[it.id];
-  const badges = (listed?`<span class="where good">${esc(t('badgeInDir'))}</span>`:'') + (asked?`<span class="where">${esc(t('badgeAsked'))}</span>`:'') + (same?`<span class="where warn" title="${esc(same.title)}">${esc(t('badgeSame',cut(same.title,16)))}</span>`:'');
+  const badges = (it.unread?`<span class="where good new-badge">${esc(t('feedNew'))}</span>`:'') + (hasText(it)?`<span class="where">${esc(t('fullText'))}</span>`:'') + (isLink && isNoread(it)?`<span class="where" title="${esc(it.noread.msg||'')}">${esc(t('origOnly'))}</span>`:'') + (it.source==='local' && !isLink && it.data===undefined && it.html===undefined?`<span class="where">${esc(t(it.bk?'syncCloud':'syncListOnly'))}</span>`:'') + (listed?`<span class="where good">${esc(t('badgeInDir'))}</span>`:'') + (asked?`<span class="where">${esc(t('badgeAsked'))}</span>`:'') + (same?`<span class="where warn" title="${esc(same.title)}">${esc(t('badgeSame',cut(same.title,16)))}</span>`:'');
   const acts = hiddenView
     ? `<button class="btn restore-btn" type="button" data-act="restore">${ICON.restore}${esc(t('restore'))}</button>${manage?`<button class="btn danger" type="button" data-act="purge">${ICON.trash}${esc(t('delForever'))}</button>`:''}`
-    : `<span class="acts">${ib('star',ICON.star,star?t('unstarTip'):t('starTip'),star)}${ib('pin',ICON.pin,pinned?t('unpinTip'):t('pinTip'),pinned)}${ib('hide',ICON.hide,it.source==='static'?t('hideSiteTip'):t('hide'))}${canMove?ib('move',ICON.move,t('move')):''}${canPublish?ib('publish',ICON.globe,t(asked?'publishAgain':'publishTip')):listed&&pubKind?`<button class="ibtn is-done" type="button" data-act="published" title="${esc(t('publishDone'))}" aria-label="${esc(t('publishDone'))}">${ICON.globe}</button>`:''}${ib('shuffle',ICON.shuffle,t('shuffle'))}${href?`<a class="ibtn" href="${esc(href)}" target="_blank" rel="noopener" title="${esc(t('newTab'))}" aria-label="${esc(t('newTab'))}">${ICON.ext}</a>`:''}${manage?ib('purge',ICON.trash,t('delTip')).replace('class="ibtn"','class="ibtn is-del"'):''}</span>`;
+    : `<span class="acts collapsible">${ib('star',ICON.star,star?t('unstarTip'):t('starTip'),star)}${ib('pin',ICON.pin,pinned?t('unpinTip'):t('pinTip'),pinned)}${ib('hide',ICON.hide,it.source==='static'?t('hideSiteTip'):t('hide'))}${canMove?ib('move',ICON.move,t('move')):''}${canPublish?ib('publish',ICON.globe,t(asked?'publishAgain':'publishTip')):listed&&pubKind?`<button class="ibtn is-done" type="button" data-act="published" title="${esc(t('publishDone'))}" aria-label="${esc(t('publishDone'))}">${ICON.globe}</button>`:''}${ib('shuffle',ICON.shuffle,t('shuffle'))}${href?`<a class="ibtn" href="${esc(href)}" target="_blank" rel="noopener" title="${esc(t('newTab'))}" aria-label="${esc(t('newTab'))}">${ICON.ext}</a>`:''}${manage?ib('purge',ICON.trash,t('delTip')).replace('class="ibtn"','class="ibtn is-del"'):''}${ib('more',ICON.more,t('cardMore')).replace('class="ibtn"','class="ibtn more"')}</span>`;
   return `<article class="card${hiddenView?' is-hidden':''}${pinned&&!hiddenView?' is-pinned':''}" data-id="${esc(it.id)}">
     <button class="cover" type="button" data-act="open" aria-label="${esc(it.title)}">${coverHTML(it)}${prog>1?`<span class="prog" style="width:${Math.min(prog,100)}%"></span>`:''}</button>
     <div class="card-body">
@@ -1372,7 +1847,8 @@ function render(){
   document.querySelectorAll('[data-i-ph]').forEach(el=>{ el.placeholder=t(el.dataset.iPh); });
   document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===state.lang)));
   document.querySelectorAll('[data-lf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lf===state.lf)));
-  $('#sort').value=state.sort;
+  const dm=dirOn(); [...$('#sort').options].forEach(o=>{ o.hidden=o.disabled=dm && (o.value==='read'||o.value==='date'); });          // the directory is in date order already, and nobody has read it
+  $('#sort').value = dm && (state.sort==='read'||state.sort==='date') ? 'recent' : state.sort;
   const vl=state.view==='grid'?t('viewGrid'):t('viewList'); $('#viewBtn').innerHTML=state.view==='grid'?ICON.list:ICON.grid; $('#viewBtn').title=vl; $('#viewBtn').setAttribute('aria-label',vl);
   $('#themeBtn').textContent=t(state.theme==='light'?'themeLight':state.theme==='dark'?'themeDark':'themeAuto');
   document.title=t('siteTitle');
@@ -1398,7 +1874,7 @@ function render(){
 
   renderTagbox(tags, state.tag);
   const list=sorted(filtered.filter(it=>inCat(it,state.cat)));
-  state.visible=list.filter(it=>it.type!=='link').map(it=>it.id);        // saved links open the other site; they are not read in the reader
+  state.visible=list.filter(it=>it.type!=='link' || canReadHere(it)).map(it=>it.id);        // a link is read in the page unless the service said it cannot be (a login, a bot check ...)
   const hv = state.cat==='hidden';
   $('#viewTitle').textContent=catName(state.cat);
   const dkey = ['all','featured','books','tools','notes','hidden'].includes(state.cat)?state.cat:'other';
@@ -1443,6 +1919,8 @@ function render(){
   let src = state.mode==='server'?t('srcServer'):state.mode==='static'?t('srcStatic',esc(state.generated)):t('srcNone');
   if(state.dir && state.mode!=='server') src += t('srcFolderAlso',esc(state.dir.name));
   if(localN) src += t('localCount',localN);
+  const nFlags = state.mode==='static' ? Object.keys(state.flags).filter(id=>state.items.some(x=>x.id===id)).length : 0;
+  if(nFlags) src += `<br>${esc(t('flagsNote',nFlags))} <button class="link-btn" type="button" data-reset-flags>${esc(t('flagsReset'))}</button>`;       // a visitor's own stars / pins / hides win over the site's: say so, and offer the way back
   $('#source').innerHTML = src;
   const canConnect = state.mode!=='server' && 'showDirectoryPicker' in window;      // with serve.py the library is already your own folder
   const cb=$('#connectBtn'); cb.hidden=!canConnect; cb.textContent = state.dir ? t('changeFolder') : state.dirPending ? t('reconnect') : t('connect');
@@ -1464,6 +1942,9 @@ html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:var(--fs,17px);line-height:var(--lh,1.85)}
 .doc{max-width:var(--w,44em);margin:0 auto;padding:48px 24px 120px}
 @media (max-width:620px){.doc{padding:28px 18px 96px}}
+@media print{body{background:#fff;color:#000}.doc{max-width:none;padding:0}a{color:#000}img,pre,table,blockquote{break-inside:avoid}.doc-src{display:none}}
+.doc-src{margin:2.4em 0 0;padding-top:1em;border-top:1px solid var(--rule);font-size:14px;color:var(--muted)}
+.doc figure{margin:0 0 1.1em}.doc figcaption{font-size:.88em;color:var(--muted)}
 .doc-meta{font-size:13.5px;color:var(--muted);margin:0 0 6px}
 h1,h2,h3,h4{font-family:var(--serif);line-height:1.35;margin:1.8em 0 .6em}
 h1{font-size:2.05em;font-weight:900;margin-top:0}
@@ -1495,9 +1976,10 @@ details.toc a{text-decoration:none;color:var(--ink)}
 const LH={s:1.65, m:1.85, l:2.1}, WD={n:'36em', m:'44em', w:'60em'};
 const docVars = () => `--fs:${(17*state.rs.fs/100).toFixed(1)}px;--lh:${LH[state.rs.lh]||1.85};--w:${WD[state.rs.w]||'44em'}`;
 const docTheme = () => state.rs.th!=='follow' ? state.rs.th : state.theme!=='auto' ? state.theme : '';
-function docShell(title, bodyHTML, meta){
+const STRICT = `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https: data:; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com"><meta name="referrer" content="no-referrer">`;
+function docShell(title, bodyHTML, meta, strict){                                  // strict: somebody else's text; the document itself allows no script and sends no referrer
   const th = docTheme() ? ` data-theme="${docTheme()}"` : '';
-  return `<!DOCTYPE html><html lang="${state.lang==='zh'?'zh-CN':'en'}"${th} style="${docVars()}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>${esc(title)}</title><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet"><style>${DOC_CSS}</style></head><body><article class="doc">${meta?`<p class="doc-meta">${esc(meta)}</p>`:''}${bodyHTML}</article></body></html>`;
+  return `<!DOCTYPE html><html lang="${state.lang==='zh'?'zh-CN':'en'}"${th} style="${docVars()}"><head><meta charset="utf-8">${strict?STRICT:''}<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>${esc(title)}</title><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet"><style>${DOC_CSS}</style></head><body><article class="doc">${meta?`<p class="doc-meta">${esc(meta)}</p>`:''}${bodyHTML}</article></body></html>`;
 }
 function renderMarkdown(md, it, base){
   const {body} = frontMatter(md);
@@ -1520,9 +2002,29 @@ function renderMarkdown(md, it, base){
   }
   return root.innerHTML;
 }
+/* the text of a subscribed article (kept by the page from what the feed carried): cleaned again here, links open elsewhere, the original is one click away */
+const FEED_CONTENT_MAX=150000, FEED_CONTENT_KEEP=30, CONTENT_V=1, NOREAD_MS=7*86400000, READ_CODES=new Set(['login','paywall','blocked','needs_js','empty','pdf','gone','unsupported','robots']), PREFETCH_N=5;
+state.tmp=new Map();                                                                         // articles of the public directory that are being read but are not on my shelf
+const itemById = id => state.items.find(x=>x.id===id) || state.tmp.get(id);
+const hasText = it => it.type==='link' && typeof it.content==='string' && it.content.length>0;
+const isNoread = it => !!(it.noread && Date.now()-(it.noread.at||0) < NOREAD_MS);                // the service said recently that this page is not an article to read
+const canReadHere = it => it.type==='link' && (hasText(it) || (!!feedApi() && !isNoread(it) && !!httpUrl(it.url)));
+function feedBody(it){
+  let html=String(it.content||'');
+  if(window.DOMPurify) html=window.DOMPurify.sanitize(html,{FORBID_TAGS:['style','form','input','button','iframe','svg','math'],FORBID_ATTR:['style']});
+  const doc=new DOMParser().parseFromString(`<div id="r">${html}</div>`,'text/html'), root=doc.getElementById('r');
+  root.querySelectorAll('a[href]').forEach(a=>{ if(httpUrl(a.getAttribute('href'))){ a.setAttribute('target','_blank'); a.setAttribute('rel','noopener noreferrer nofollow'); } else a.removeAttribute('href'); });
+  root.querySelectorAll('img').forEach(im=>{ if(!/^https:\/\//i.test(im.getAttribute('src')||'')) im.remove(); else { im.setAttribute('loading','lazy'); im.setAttribute('referrerpolicy','no-referrer'); } });
+  root.querySelectorAll('table').forEach(tb=>{ const w=doc.createElement('div'); w.className='tbl'; tb.replaceWith(w); w.appendChild(tb); });
+  const u=httpUrl(it.url);
+  return `<h1>${esc(it.title)}</h1>${root.innerHTML}${it.contentCut?`<p class="note">${esc(t('contentCut'))}</p>`:''}<p class="doc-src">${u?`<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t('readOriginal'))} · ${esc(hostOf(u))}</a>`:''}</p>`;
+}
 async function rawData(it){
   if(it.source==='folder'){ const f=await it.handle.getFile(); return it.type==='pdf' ? f : await f.text(); }
-  if(it.source==='local'){ const d = it.data!==undefined ? it.data : it.html; return d; }
+  if(it.source==='local'){
+    if(it.data===undefined && it.html===undefined){ if(it.bk) return await syncFetchBody(it); throw new Error(t('syncNoFile')); }       // listed here by the sync, its text is in the sync space (or never was)
+    return it.data!==undefined ? it.data : it.html;
+  }
   if(location.protocol==='file:') throw new Error(t('needServe'));      // browsers refuse fetch() on local files
   const r=await fetch(encPath(it.path),{cache:'no-store'}); if(!r.ok) throw new Error(r.status);
   return it.type==='pdf' ? await r.blob() : await r.text();
@@ -1544,6 +2046,7 @@ function txtBody(text){
 /* ================= reader ================= */
 async function urlFor(it){
   if(state.blobUrl){ URL.revokeObjectURL(state.blobUrl); state.blobUrl=null; }
+  if(hasText(it)) return setBlob(docShell(it.title, feedBody(it), [it.from, it.date].filter(Boolean).join(' · '), true), 'text/html;charset=utf-8');
   const direct = it.source==='server'||it.source==='static';
   if((it.type==='html'||it.type==='pdf') && direct) return encPath(it.path);
   const data = await rawData(it);
@@ -1555,7 +2058,8 @@ async function urlFor(it){
   return setBlob(docShell(it.title, body, meta), 'text/html;charset=utf-8');
 }
 function syncReader(){
-  if(!state.readingId) return; const it=state.items.find(x=>x.id===state.readingId); if(!it) return;
+  if(!state.readingId) return; const it=itemById(state.readingId); if(!it) return;
+  const real=state.items.includes(it); $('#readerStar').hidden=!real;                            // a directory article that is not saved has no star, bookmark or place of its own
   const on=isFeatured(it), b=$('#readerStar');
   b.classList.toggle('on',on); b.setAttribute('aria-pressed',String(on));
   $('#readerStarLbl').textContent = on?t('unstar'):t('star'); b.title = on?t('unstarTip'):t('starTip'); b.setAttribute('aria-label',b.title);
@@ -1563,14 +2067,78 @@ function syncReader(){
   $('#readerPrev').disabled = idx<=0; $('#readerNext').disabled = idx<0 || idx>=n-1;
   $('#readerPos').textContent = idx>=0 ? `${idx+1} / ${n}` : '';
 }
+/* A link is read in the page: its text if it was kept, else the service reads the original page (once; the text is then kept in this browser). A page that cannot be read (a login,
+   a bot check, scripts only ...) opens the original site, and the card says so for a week. */
+let readSeq=0;
+async function fetchLinkText(it){
+  const d=await callFeed({action:'read',url:it.url},28000);
+  if(!d.ok){ const e=new Error((state.lang==='zh'?d.message:d.message_en)||d.message||'?'); e.reason=d.reason||''; throw e; }
+  return d;
+}
+async function storeText(it,d){
+  it.content=String(d.content||'').slice(0,FEED_CONTENT_MAX); if(d.content_cut) it.contentCut=true; else delete it.contentCut;
+  if(d.title && (!it.title || it.title===hostOf(it.url) || it.title===it.url)) it.title=cut(d.title,140);
+  if(!it.summary && d.excerpt) it.summary=cut(d.excerpt,220);
+  delete it.noread;
+  if(it.source==='local'){ const rec={...it}; delete rec.source; await idb.put(rec); }
+}
+function markNoread(it,e){
+  if(!e || !READ_CODES.has(e.reason)) return;                                                 // a slow network or a limit is not a verdict on the page
+  it.noread={code:e.reason,at:Date.now(),msg:e.message};
+  if(it.source==='local'){ const rec={...it}; delete rec.source; idb.put(rec).catch(()=>{}); }
+  render();
+}
+async function openLinkReading(it, push){
+  const seq=++readSeq, id=it.id, u=httpUrl(it.url);
+  state.readingId=id; state.rkind='doc'; state.rpdf=false; state.toc=[]; state.tocCur='';
+  $('#readerTitle').textContent=it.title; $('#readerProg').style.width='0%'; $('#readerNew').href=u;
+  closePanels(); $('#readerToc').disabled=$('#readerMark').disabled=true;
+  syncReader(); $('#reader').hidden=false; document.body.classList.add('reading');
+  const fr=$('#frame'); fr.removeAttribute('src');
+  fr.srcdoc=docShell(it.title,`<h1>${esc(it.title)}</h1><p>${esc(t('readLoading'))}</p><p><a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t('readOpenOrig'))}</a></p>`,hostOf(u),true);
+  if(push!==false) history.pushState({read:id},'','#read/'+encodeURIComponent(id));
+  try{
+    const d=await fetchLinkText(it); await storeText(it,d);
+    if(readSeq===seq && state.readingId===id) await openReader(id,false);                     // the same page again, now with its text
+  }catch(e){
+    markNoread(it,e);
+    if(readSeq===seq && state.readingId===id) fr.srcdoc=docShell(it.title,`<h1>${esc(it.title)}</h1><p class="note">${esc(t('readFail',e.message))}</p><p><a class="open-pdf" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t('openOriginal'))}</a></p>`,hostOf(u),true);
+  }
+}
+async function prefetchTexts(){                                                              // the newest few articles of the subscriptions whose feed carries no text: read ahead, quietly
+  if(prefetching || !feedApi() || navigator.onLine===false) return; prefetching=true;
+  let changed=false;
+  try{
+    const todo=state.items.filter(x=>x.source==='local' && x.id.startsWith('local:feed:') && !hasText(x) && !isNoread(x)).sort((a,b)=>String(b.date).localeCompare(String(a.date)) || (b.added||0)-(a.added||0)).slice(0,PREFETCH_N);
+    for(const it of todo){
+      if(document.visibilityState!=='visible') break;
+      try{ const d=await fetchLinkText(it); await storeText(it,d); changed=true; }catch(e){ markNoread(it,e); if(!e.reason) break; }          // a slow network or a limit stops it for now
+    }
+  } finally{ prefetching=false; if(changed) render(); }
+}
+let prefetching=false;
+function openDirReader(did){                                                                   // an article of the public directory: read in the page too (nothing is kept unless it is saved)
+  const d=state.dirData && state.dirData.items.find(x=>x.id===did); if(!d) return;
+  const saved=state.items.find(x=>x.id==='local:link:'+did);
+  if(saved){ openReader(saved.id); return; }
+  if(!['article','note'].includes(d.type) || !feedApi()){ window.open(d.url,'_blank','noopener,noreferrer'); return; }
+  const id='tmp:'+did; let it=state.tmp.get(id);
+  if(!it){ it={id, source:'tmp', type:'link', url:d.url, title:d.title, summary:d.summary, keywords:(d.tags||[]).slice(0,8), lang:d.lang, date:d.date, category:'notes', from:(state.shelfMap.get(d.shelf)||{}).name||hostOf(d.url)}; state.tmp.set(id,it); }
+  openReader(id);
+}
 async function openReader(id, push){
-  const it=state.items.find(x=>x.id===id); if(!it) return;
-  if(it.type==='link'){ if(httpUrl(it.url)) window.open(it.url,'_blank','noopener,noreferrer'); return; }       // a saved link: the original site, not the reader
+  const it=itemById(id); if(!it) return;
+  if(it.type==='link' && !hasText(it)){
+    if(!httpUrl(it.url)) return;
+    if(!feedApi() || isNoread(it)){ window.open(it.url,'_blank','noopener,noreferrer'); if(isNoread(it)) toast(t('readNoreadToast',it.noread.msg||it.noread.code)); return; }       // (still inside the click: the new tab is allowed)
+    return openLinkReading(it,push);
+  }
   let url; try{ url=await urlFor(it); }catch(e){ toast(t('openFail')+(e.message==='404'?t('notFound'):e.message)); return; }
-  state.readingId=id; state.rkind = (it.type==='md'||it.type==='txt') ? 'doc' : 'orig'; state.rpdf = it.type==='pdf'; state.toc=[]; state.tocCur='';
+  state.readingId=id; state.rkind = (it.type==='md'||it.type==='txt'||it.type==='link') ? 'doc' : 'orig'; state.rpdf = it.type==='pdf'; state.toc=[]; state.tocCur='';
+  if(it.unread) markRead(id);
   $('#readerTitle').textContent=it.title; $('#readerProg').style.width='0%';
   $('#readerNew').href = directHref(it) || url;
-  closePanels(); $('#readerToc').disabled = $('#readerMark').disabled = state.rpdf;               // a PDF is shown by the browser itself: no contents to read, no place to remember
+  closePanels(); $('#readerToc').disabled = state.rpdf; $('#readerMark').disabled = state.rpdf || !state.items.includes(it);       // a PDF is shown by the browser itself: no contents to read; a directory article that is not saved has no place to remember
   syncReader();
   $('#reader').hidden=false; document.body.classList.add('reading');
   const fr=$('#frame');
@@ -1581,7 +2149,7 @@ async function openReader(id, push){
     fr.removeAttribute('src');
     fr.srcdoc=docShell(it.title, `<h1>${esc(it.title)}</h1><p>${esc(t(touch?'pdfMobile':'pdfNoViewer'))}</p><p><a class="open-pdf" href="${esc(abs)}" target="_blank" rel="noopener">${esc(t('openPdf'))}</a><a class="open-pdf alt" href="${esc(abs)}" download>${esc(t('download'))}</a></p>`, info);
   } else { fr.removeAttribute('srcdoc'); fr.src=url; }
-  state.lastRead[id]=Date.now(); LS.set('lastRead',state.lastRead);
+  if(state.items.includes(it)){ state.lastRead[id]=Date.now(); LS.set('lastRead',state.lastRead); }
   if(push!==false) history.pushState({read:id},'','#read/'+encodeURIComponent(id));
 }
 function closeReader(fromPop){
@@ -1611,11 +2179,15 @@ function applyReader(){
 function syncSettings(){
   const rs=state.rs, doc=state.rkind==='doc';
   ['#rowFs','#rowLh','#rowW'].forEach(s=>{ $(s).hidden=!doc; }); $('#rOrigNote').hidden=doc;
+  $('#rowSave').hidden=state.rpdf; $('#rSaveHtml').hidden=!doc;                                       // a PDF is the browser's own; a page shown as it is can only be printed
   $('#fsVal').textContent=rs.fs+'%';
   document.querySelectorAll('#rSetPanel .seg2[data-key] button').forEach(b=>b.setAttribute('aria-pressed',String(rs[b.parentElement.dataset.key]===b.dataset.v)));
   document.querySelectorAll('#rThemes button').forEach(b=>b.setAttribute('aria-pressed',String(rs.th===b.dataset.th)));
 }
 function saveReader(){ LS.set('reader',state.rs); applyReader(); syncSettings(); }
+const saveName = () => { const it=state.items.find(x=>x.id===state.readingId); return String((it&&it.title)||'article').replace(/[\\/:*?"<>|\u0000-\u001f]+/g,' ').replace(/\s+/g,' ').trim().slice(0,80)||'article'; };
+$('#rSaveHtml').addEventListener('click',()=>{ const fd=frameDoc(); if(!fd) return toast(t('printFail')); bkDownload(new Blob(['<!DOCTYPE html>\n'+fd.d.documentElement.outerHTML],{type:'text/html;charset=utf-8'}), saveName()+'.html'); });
+$('#rPrint').addEventListener('click',()=>{ const fd=frameDoc(); if(!fd) return toast(t('printFail')); try{ fd.w.focus(); fd.w.print(); }catch(e){ toast(t('printFail')); } });
 function closePanels(){ ['#rSetPanel','#rTocPanel'].forEach(s=>{ $(s).hidden=true; }); $('#readerSet').setAttribute('aria-expanded','false'); $('#readerToc').setAttribute('aria-expanded','false'); }
 function togglePanel(which){
   const set=which==='set', panel=$(set?'#rSetPanel':'#rTocPanel'), open=panel.hidden;
@@ -1673,6 +2245,42 @@ $('#rTocPanel').addEventListener('click',e=>{
   const del=e.target.closest('[data-del]'); if(del){ (state.marks[state.readingId]||[]).splice(+del.dataset.del,1); LS.set('marks',state.marks); toast(t('markGone')); renderTocPanel(); return; }
   if(e.target.closest('[data-add]')){ addMark(); renderTocPanel(); }
 });
+/* ================= touch gestures: a swipe to the left / right ================= */
+const SW_MIN=64, SW_RATIO=1.8, SW_MS=700, SW_EDGE=20;
+function hScrollable(el, win){                                                                   // something that scrolls sideways (a wide table, a code block) keeps its swipes
+  for(let n=el; n && n.nodeType===1; n=n.parentElement){ const ox=win.getComputedStyle(n).overflowX; if((ox==='auto'||ox==='scroll') && n.scrollWidth>n.clientWidth+2) return true; }
+  return false;
+}
+function watchSwipe(doc, onSwipe){                                                               // one finger, mostly sideways, quick, not from the screen's edge (the system's back gesture), not while zoomed or selecting text
+  const win=doc.defaultView; let s=null;
+  doc.addEventListener('touchstart',e=>{
+    s=null; if(e.touches.length!==1) return;
+    const p=e.touches[0], tg=e.target; if(p.clientX<SW_EDGE || p.clientX>win.innerWidth-SW_EDGE) return;
+    if(window.visualViewport && window.visualViewport.scale>1.02) return;
+    const sel=win.getSelection && win.getSelection(); if(sel && String(sel).length) return;
+    if(tg.closest && tg.closest('input,textarea,select,[contenteditable="true"]')) return;
+    s={x:p.clientX,y:p.clientY,t:Date.now(),tg};
+  },{passive:true});
+  doc.addEventListener('touchmove',e=>{ if(s && e.touches.length>1) s=null; },{passive:true});
+  doc.addEventListener('touchcancel',()=>{ s=null; },{passive:true});
+  doc.addEventListener('touchend',e=>{
+    if(!s) return; const p=e.changedTouches[0], dx=p.clientX-s.x, dy=p.clientY-s.y, st=s; s=null;
+    if(Math.abs(dx)<SW_MIN || Math.abs(dx)<Math.abs(dy)*SW_RATIO || Date.now()-st.t>SW_MS || hScrollable(st.tg,win)) return;
+    onSwipe(dx<0?'left':'right', st);
+  },{passive:true});
+}
+function readerSwipe(dir){                                                                       // in the reader: left = the next article, right = the previous one
+  if(!$('#rSetPanel').hidden || !$('#rTocPanel').hidden) return;
+  const d=dir==='left'?1:-1, i=state.visible.indexOf(state.readingId), n=state.visible[i+d]; if(i<0) return;
+  if(!n){ toast(t(d>0?'swipeLast':'swipeFirst')); return; }
+  step(d); const it=itemById(n); toast(`${i+d+1} / ${state.visible.length}${it?' · '+cut(it.title,40):''}`);
+}
+watchSwipe(document,(dir,st)=>{                                                                  // on the shelf: right opens the left list, left closes it
+  if(!matchMedia('(max-width:980px)').matches || !$('#reader').hidden || document.querySelector('dialog[open]')) return;
+  const open=document.body.classList.contains('drawer');
+  if(dir==='right' && !open) document.body.classList.add('drawer');
+  else if(dir==='left' && open && !(st.tg.closest && st.tg.closest('.dir-row'))) document.body.classList.remove('drawer');          // (on an entry, a swipe to the left shows its action instead)
+});
 $('#rtPrev').addEventListener('click',()=>{ closePanels(); step(-1); });
 $('#rtNext').addEventListener('click',()=>{ closePanels(); step(1); });
 $('#frame').addEventListener('load',()=>{
@@ -1680,12 +2288,14 @@ $('#frame').addEventListener('load',()=>{
   try{
     const fd=frameDoc(); if(!fd) return; const {w,d}=fd;
     applyReader(); buildToc(); if(!$('#rTocPanel').hidden) renderTocPanel();
+    watchSwipe(d,readerSwipe); d.documentElement.style.overscrollBehaviorX='none'; d.documentElement.style.touchAction='pan-y pinch-zoom';
+    if(matchMedia('(pointer:coarse)').matches && state.visible.length>1 && !LS.get('swipeHint',0)){ LS.set('swipeHint',1); toast(t('swipeHint')); }
     const saved=(state.progress[id]||{}).pct||0;
     if(saved>3 && saved<95) setTimeout(()=>{ const max=d.documentElement.scrollHeight-w.innerHeight; w.scrollTo(0,max*saved/100); },120);
     let tick=false;
     w.addEventListener('scroll',()=>{ if(tick) return; tick=true; requestAnimationFrame(()=>{ tick=false;
       const pct=scrollPct(fd);
-      $('#readerProg').style.width=pct+'%'; state.progress[id]={pct,at:Date.now()}; LS.set('progress',state.progress);
+      $('#readerProg').style.width=pct+'%'; if(!id.startsWith('tmp:')){ state.progress[id]={pct,at:Date.now()}; LS.set('progress',state.progress); }
       const cur=currentHeading(fd); if((cur?cur.id:'')!==state.tocCur){ state.tocCur=cur?cur.id:''; if(!$('#rTocPanel').hidden && tocTab==='toc') renderTocPanel(); }
       if(!$('#rSetPanel').hidden) $('#rSetPanel').hidden=true, $('#readerSet').setAttribute('aria-expanded','false'); }); },{passive:true});
     w.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if(!$('#rSetPanel').hidden || !$('#rTocPanel').hidden) closePanels(); else closeReader(); } });
@@ -1696,6 +2306,559 @@ $('#readerPrev').addEventListener('click',()=>step(-1));
 $('#readerNext').addEventListener('click',()=>step(1));
 $('#readerStar').addEventListener('click',()=>state.readingId && toggleStar(state.readingId));
 window.addEventListener('popstate',e=>{ if(e.state && e.state.read) openReader(e.state.read,false); else closeReader(true); });
+
+/* ================= the "what is this" window (once, on the first visit) and the news of an update (once); the link in the footer brings the window back ================= */
+const APP_VERSION='2026-10-22';
+const CHANGELOG=[{v:'2026-10-22',
+  zh:['新增“备份与恢复”：把你添加的文件、合集、订阅和阅读进度导出成一个文件，换设备或怕丢的时候再恢复。',
+      '订阅和收藏的链接现在都能在站内阅读：订阅源自带全文的直接显示；没有全文的，以及你贴的任意文章链接、公共目录里的文章，会读取原文页面后在这里显示，并保存在你的浏览器里。需要登录、不让程序读取的页面，仍然只能去原站（卡片上会标“仅原站”）。',
+      '阅读设置里新增“下载网页（HTML）”和“打印 / 存为 PDF”。',
+      '新增可选的“同步”（站点开通后才有）：书单、链接、订阅、进度和小文本加密后在几台设备之间同步。',
+      '第一次打开时的“这是什么”改成了弹窗；以后有更新，会在这里显示一次“更新说明”。',
+      '“添加 → 订阅”里新增“试试这些”：站长挑的几个值得订阅的源，点一下就订阅。',
+      '新增排序“发布日期”（按文章自己的发布时间）。',
+      '手机上：卡片视图改为两列（卡片上的按钮收在“…”里）；读文章时向左 / 向右滑动切换下一篇 / 上一篇；在书架页向右滑动打开左侧目录，向左滑动收起。'],
+  en:['New: “Back up & restore”: export the files, collections, subscriptions and reading places you added into one file, and restore it when you change device or fear a loss.',
+      'Subscribed and saved links can now be read in the page: when a feed carries the full text it is shown at once; otherwise, and for any article link you paste and for the articles of the public directory, the original page is read and shown here and kept in your browser. Pages that need a login or do not let programs read them still open the original site (the card says “Original only”).',
+      'New in the reading settings: “Download as a web page (HTML)” and “Print / save as PDF”.',
+      'New, optional: “Sync” (only when the site has it): your list, links, subscriptions, reading places and small texts are synced, encrypted, between several devices.',
+      'The “What is this?” note of the first visit is now a window; when there is an update, its news is shown here once.',
+      'New in “Add → Subscribe”: “Try these”, a few sources the site owner picked, one click each.',
+      'New sort order: “Publication date” (when the article was published).',
+      'On a phone: the card view is two columns (a card’s buttons are behind the “…”); swipe left / right while reading for the next / previous article; on the shelf swipe right to open the list on the left and left to close it.']}];
+const guideItem = () => state.items.find(x=>(x.source==='static'||x.source==='server') && /(^|\/)notes\/guide\/index\.html$/.test(x.id));
+function introOpen(mode){
+  const news=mode==='news', seen=String(LS.get('ver','')||'');
+  const entries=(news ? CHANGELOG.filter(c=>c.v>seen) : CHANGELOG).slice(0,news?3:2);
+  $('#introTitle').textContent=t(news?'newsTitle':'introTitle');
+  $('#introIntro').hidden=news; $('#introNews').hidden=!entries.length; $('#introNews h3').hidden=news;
+  $('#newsList').innerHTML=entries.map(c=>`<h4>${esc(c.v)}</h4><ul>${(state.lang==='zh'?c.zh:c.en).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`).join('');
+  $('#introMore').hidden=news || !guideItem();
+  $('#introDlg').showModal();
+}
+function introBoot(){                                                                       // after the page is up: the first visit gets the window; a visit after an update gets its news
+  if(document.querySelector('dialog[open]') || !$('#reader').hidden || dirOn()) return;
+  const own=state.items.some(x=>x.source==='local') || state.cols.length>0, seenIntro=LS.get('intro',0), ver=String(LS.get('ver','')||'');
+  if(!seenIntro && !own && !ver){ LS.set('intro',1); LS.set('ver',APP_VERSION); introOpen('intro'); return; }
+  if(!seenIntro) LS.set('intro',1);                                                           // somebody who has things here already does not need the introduction
+  if(ver!==APP_VERSION){ introOpen('news'); LS.set('ver',APP_VERSION); }
+}
+$('#introClose').addEventListener('click',()=>$('#introDlg').close());
+$('#introMore').addEventListener('click',()=>{ const g=guideItem(); $('#introDlg').close(); if(g) openReader(g.id); });
+$('#introLink').addEventListener('click',()=>{ document.body.classList.remove('drawer'); introOpen('intro'); });
+
+/* ================= backup and restore: what this browser keeps (files added here, collections, subscriptions, reading places) in one file ================= */
+/* A .zip (stored, not compressed: PDFs do not shrink, text is small) with shelf.json and files/NNNN.ext; or just the shelf.json when the files are left out. Nothing leaves the device. */
+const BK_STATE=['cols','marks','flags','seeds','progress','lastRead'], BK_PREFS=['reader','lang','theme','view','sort'];
+const BK_KEYS=['id','path','type','category','filename','hash','title','summary','keywords','lang','minutes','pages','size','date','added','featured','hidden','cover','collection','url','image','from','feed','unread'];
+const BK_MAX_ITEMS=5000, BK_MAX_JSON=40*1048576, BK_MAX_FILE=80*1048576;
+const CRC_TABLE=(()=>{ const tb=new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c=c&1?0xEDB88320^(c>>>1):c>>>1; tb[n]=c>>>0; } return tb; })();
+async function crc32Of(blob){
+  let c=0xFFFFFFFF; const rd=blob.stream().getReader();
+  for(;;){ const {done,value}=await rd.read(); if(done) break; for(let i=0;i<value.length;i++) c=CRC_TABLE[(c^value[i])&0xFF]^(c>>>8); }
+  return (c^0xFFFFFFFF)>>>0;
+}
+async function zipBuild(entries){                                                  // [{name, blob}] -> a Blob that is a .zip
+  const enc=new TextEncoder(), parts=[], central=[], d=new Date();
+  const dosTime=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1), dosDate=((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate();
+  let offset=0;
+  if(entries.length>65000) throw new Error('too many files');
+  for(const e of entries){
+    const name=enc.encode(e.name), size=e.blob.size, crc=await crc32Of(e.blob);
+    if(size>0xFFFFFFF0 || offset>0xFFFFFFF0) throw new Error('too big for one zip: export by collection');
+    const h=new DataView(new ArrayBuffer(30));
+    h.setUint32(0,0x04034b50,true); h.setUint16(4,20,true); h.setUint16(6,0x0800,true); h.setUint16(8,0,true); h.setUint16(10,dosTime,true); h.setUint16(12,dosDate,true);
+    h.setUint32(14,crc,true); h.setUint32(18,size,true); h.setUint32(22,size,true); h.setUint16(26,name.length,true); h.setUint16(28,0,true);
+    parts.push(h.buffer,name,e.blob); central.push({name,size,crc,offset}); offset+=30+name.length+size;
+  }
+  let cdSize=0;
+  for(const c of central){
+    const h=new DataView(new ArrayBuffer(46));
+    h.setUint32(0,0x02014b50,true); h.setUint16(4,20,true); h.setUint16(6,20,true); h.setUint16(8,0x0800,true); h.setUint16(10,0,true); h.setUint16(12,dosTime,true); h.setUint16(14,dosDate,true);
+    h.setUint32(16,c.crc,true); h.setUint32(20,c.size,true); h.setUint32(24,c.size,true); h.setUint16(28,c.name.length,true); h.setUint32(42,c.offset,true);
+    parts.push(h.buffer,c.name); cdSize+=46+c.name.length;
+  }
+  const end=new DataView(new ArrayBuffer(22));
+  end.setUint32(0,0x06054b50,true); end.setUint16(8,central.length,true); end.setUint16(10,central.length,true); end.setUint32(12,cdSize,true); end.setUint32(16,offset,true);
+  parts.push(end.buffer);
+  return new Blob(parts,{type:'application/zip'});
+}
+async function zipOpen(file){                                                      // a .zip (stored or deflated) -> {read(name) -> Blob|null}
+  if(file.size<22) throw new Error('bad');
+  const tail=new DataView(await file.slice(Math.max(0,file.size-65557)).arrayBuffer());
+  let p=tail.byteLength-22; while(p>=0 && tail.getUint32(p,true)!==0x06054b50) p--;
+  if(p<0) throw new Error('bad');
+  const n=tail.getUint16(p+10,true), cdSize=tail.getUint32(p+12,true), cdOff=tail.getUint32(p+16,true);
+  if(n===0xFFFF || cdOff===0xFFFFFFFF || n>BK_MAX_ITEMS+10) throw new Error('bad');
+  const cd=new DataView(await file.slice(cdOff,cdOff+cdSize).arrayBuffer()), dec=new TextDecoder(), entries=new Map();
+  let o=0;
+  for(let i=0;i<n;i++){
+    if(o+46>cd.byteLength || cd.getUint32(o,true)!==0x02014b50) throw new Error('bad');
+    const method=cd.getUint16(o+10,true), csize=cd.getUint32(o+20,true), usize=cd.getUint32(o+24,true), nl=cd.getUint16(o+28,true), el=cd.getUint16(o+30,true), cl=cd.getUint16(o+32,true), lho=cd.getUint32(o+42,true);
+    entries.set(dec.decode(new Uint8Array(cd.buffer,o+46,nl)),{method,csize,usize,lho}); o+=46+nl+el+cl;
+  }
+  return { async read(name){
+    const e=entries.get(name); if(!e) return null;
+    if(e.usize>BK_MAX_FILE) throw new Error('bad');
+    const lh=new DataView(await file.slice(e.lho,e.lho+30).arrayBuffer());
+    if(lh.getUint32(0,true)!==0x04034b50) throw new Error('bad');
+    const start=e.lho+30+lh.getUint16(26,true)+lh.getUint16(28,true), raw=file.slice(start,start+e.csize);
+    if(e.method===0) return raw;
+    if(e.method===8){ if(!('DecompressionStream' in window)) throw new Error('nozip'); return new Response(raw.stream().pipeThrough(new DecompressionStream('deflate-raw'))).blob(); }
+    throw new Error('bad');
+  } };
+}
+async function bkBuild(withFiles){
+  const recs=await idb.all(), items=[], entries=[]; let n=0;
+  for(const r of recs){
+    const it={}; Object.keys(r).forEach(k=>{ if(k!=='data' && k!=='source') it[k]=r[k]; });
+    if(r.data!=null && r.data!==''){
+      if(withFiles){
+        const name='files/'+String(++n).padStart(4,'0')+'.'+(r.type==='pdf'?'pdf':r.type==='md'?'md':r.type==='txt'?'txt':'html');
+        it.file=name; entries.push({name, blob: r.data instanceof Blob ? r.data : r.data instanceof ArrayBuffer ? new Blob([r.data]) : new Blob([String(r.data)],{type:'text/plain;charset=utf-8'})});
+      } else it.fileOmitted=true;
+    }
+    items.push(it);
+  }
+  const st={}; BK_STATE.concat(BK_PREFS).forEach(k=>{ const v=LS.get(k,undefined); if(v!==undefined) st[k]=v; });
+  const json=new Blob([JSON.stringify({format:'zhitree-shelf',version:1,exported:new Date().toISOString(),withFiles:!!withFiles,items,state:st})],{type:'application/json'});
+  return withFiles ? {blob:await zipBuild([{name:'shelf.json',blob:json}].concat(entries)), name:'zhitree-shelf-'+today()+'.zip', n:items.length}
+                   : {blob:json, name:'zhitree-shelf-'+today()+'.json', n:items.length};
+}
+async function bkOpen(file){                                                       // -> {manifest, read(name)}; throws 'bad' / 'new' / 'nozip'
+  const head=new Uint8Array(await file.slice(0,4).arrayBuffer()); let manifest, read;
+  if(head[0]===0x50 && head[1]===0x4b){
+    const z=await zipOpen(file), m=await z.read('shelf.json'); if(!m || m.size>BK_MAX_JSON) throw new Error('bad');
+    manifest=JSON.parse(await m.text()); read=n=>z.read(n);
+  } else {
+    if(file.size>BK_MAX_JSON) throw new Error('bad');
+    manifest=JSON.parse(await file.text()); read=async()=>null;
+  }
+  if(!manifest || typeof manifest!=='object' || manifest.format!=='zhitree-shelf' || !Array.isArray(manifest.items) || manifest.items.length>BK_MAX_ITEMS) throw new Error('bad');
+  if((manifest.version|0)>1) throw new Error('new');
+  return {manifest, read};
+}
+async function bkPlan(b){
+  const have=await idb.all(), ids=new Set(have.map(x=>x.id)), hashes=new Set(have.filter(x=>x.hash).map(x=>x.hash));
+  const cols=Array.isArray(b.manifest.state && b.manifest.state.cols) ? b.manifest.state.cols.filter(c=>c && typeof c==='object') : [];
+  const p={items:0, files:0, cols:cols.length, subs:cols.filter(c=>c.feed).length, add:0, dup:0, omitted:0};
+  for(const it of b.manifest.items){
+    if(!it || typeof it!=='object') continue; p.items++; if(it.file) p.files++;
+    if(ids.has(it.id) || (it.hash && hashes.has(it.hash))) p.dup++; else if(it.fileOmitted) p.omitted++; else p.add++;
+  }
+  return p;
+}
+const BK_SAFE_ID=/^[\w.:%\/-]{1,200}$/, BK_BAD_KEY=new Set(['__proto__','constructor','prototype']);
+const bkNum=(v,max)=>Math.max(0,Math.min(max||1e15,+v||0));
+function bkRecord(it, data){                                                       // only known fields, each of the right kind: a backup is data from outside
+  const r={id:it.id, path:'', type:it.type, category:cut(it.category,40)||'notes', filename:cut(it.filename,200), hash:/^[0-9a-f]{8,64}$/i.test(it.hash||'')?it.hash:'',
+           title:cut(it.title,200)||cut(it.filename,200)||it.id, summary:cut(it.summary,400), keywords:(Array.isArray(it.keywords)?it.keywords:[]).slice(0,8).map(x=>cut(x,40)).filter(Boolean),
+           lang:['zh','en','mixed'].includes(it.lang)?it.lang:'en', minutes:bkNum(it.minutes,100000), pages:it.pages?bkNum(it.pages,100000):null, size:bkNum(it.size,BK_MAX_FILE*2),
+           date:/^\d{4}-\d{2}-\d{2}$/.test(it.date||'')?it.date:today(), added:bkNum(it.added,4e9)||Math.floor(Date.now()/1000), featured:!!it.featured, hidden:!!it.hidden, cover:cut(it.cover,200)};
+  if(it.type==='link'){ const u=httpUrl(it.url); if(!u) return null; r.url=u; r.image=/^https:\/\//.test(it.image||'')?String(it.image).slice(0,500):''; r.from=cut(it.from,80); if(it.feed && httpUrl(it.feed)) r.feed=httpUrl(it.feed); if(it.unread) r.unread=true;
+    if(typeof it.content==='string' && it.content){ r.content=it.content.slice(0,FEED_CONTENT_MAX); if(it.contentCut) r.contentCut=true; } }
+  else r.data=data;
+  if(it.collection) r.collection=it.collection;
+  return r;
+}
+async function bkApply(b, progress){
+  const m=b.manifest, st=(m.state && typeof m.state==='object' && !Array.isArray(m.state)) ? m.state : {};
+  const have=await idb.all(), ids=new Set(have.map(x=>x.id)), hashes=new Set(have.filter(x=>x.hash).map(x=>x.hash));
+  /* collections first: a backup collection is the same one here when it has the same id, the same feed address, or (not a subscription) the same name */
+  const cols=LS.get('cols',[]), remap=new Map();
+  const free=name=>{ let n=name, i=2; while(cols.some(c=>c.name.trim().toLowerCase()===n.toLowerCase())) n=name.slice(0,34)+' ('+(i++)+')'; return n; };
+  for(const c of (Array.isArray(st.cols)?st.cols:[])){
+    if(!c || typeof c!=='object' || !/^[\w-]{1,40}$/.test(String(c.id||''))) continue;
+    const name=cut(c.name,40)||t('colDefaultName'), furl=c.feed && httpUrl(c.feed.url);
+    const e=cols.find(x=>x.id===c.id) || (furl ? cols.find(x=>x.feed && urlKey(x.feed.url)===urlKey(furl)) : cols.find(x=>!x.feed && !c.feed && x.name.trim().toLowerCase()===name.toLowerCase()));
+    const gone=c.feed && Array.isArray(c.feed.gone) ? c.feed.gone.map(String).slice(-400) : [];
+    if(e){ remap.set(c.id,e.id); if(e.feed && gone.length) e.feed.gone=[...new Set((e.feed.gone||[]).concat(gone))].slice(-400); continue; }
+    if(c.feed && (!furl || cols.filter(x=>x.feed).length>=MAX_SUBS)) continue;
+    const ne={id:c.id, name:free(name), at:bkNum(c.at,4e12)||Date.now()};
+    if(furl) ne.feed={url:furl, home:httpUrl(c.feed.home)||'', etag:'', modified:'', checked:0, tried:0, error:'', fails:0, gone};          // read again on the next visit
+    cols.push(ne); remap.set(c.id,c.id);
+  }
+  let added=0, skipped=0, i=0;
+  for(const it of m.items){
+    progress && progress(++i, m.items.length);
+    if(!it || typeof it!=='object' || typeof it.id!=='string' || !/^local:[\w.:-]{1,120}$/.test(it.id) || !['html','md','txt','pdf','link'].includes(it.type)){ skipped++; continue; }
+    const rec0={...it};
+    if(rec0.collection){ const to=remap.get(rec0.collection); if(!to) delete rec0.collection; else if(to!==rec0.collection){ rec0.id=rec0.id.replace('local:feed:'+rec0.collection+':','local:feed:'+to+':'); rec0.collection=to; } }
+    if(ids.has(rec0.id) || (rec0.hash && hashes.has(rec0.hash)) || rec0.fileOmitted){ skipped++; continue; }
+    let data;
+    if(rec0.type!=='link'){
+      const blob=rec0.file ? await b.read(String(rec0.file)) : null; if(!blob){ skipped++; continue; }
+      data = rec0.type==='pdf' ? new Blob([blob],{type:'application/pdf'}) : await blob.text();
+    }
+    const rec=bkRecord(rec0,data); if(!rec){ skipped++; continue; }
+    await idb.put(rec); ids.add(rec.id); if(rec.hash) hashes.add(rec.hash); added++;
+  }
+  /* reading places, bookmarks, stars: merged, never replaced */
+  const merge=(key,fn)=>{ const inc=st[key]; if(!inc || typeof inc!=='object' || Array.isArray(inc)) return; const cur=LS.get(key,{}); for(const [id,v] of Object.entries(inc)){ if(BK_BAD_KEY.has(id) || !BK_SAFE_ID.test(id)) continue; fn(cur,id,v); } LS.set(key,cur); };
+  merge('progress',(cur,id,v)=>{ if(!v||typeof v!=='object') return; const p={pct:bkNum(v.pct,100), at:bkNum(v.at,4e12)}; if(!cur[id] || (cur[id].at||0)<p.at) cur[id]=p; });
+  merge('marks',(cur,id,arr)=>{ if(!Array.isArray(arr)) return; const list=Array.isArray(cur[id])?cur[id]:[], seen=new Set(list.map(x=>x.at+'|'+x.pct));
+    for(const x of arr.slice(0,200)){ if(!x||typeof x!=='object') continue; const k=bkNum(x.at,4e12)+'|'+bkNum(x.pct,100); if(seen.has(k)) continue; seen.add(k); list.push({pct:bkNum(x.pct,100),label:cut(x.label,80),at:bkNum(x.at,4e12)}); } cur[id]=list; });
+  merge('flags',(cur,id,v)=>{ if(id in cur || !v || typeof v!=='object' || Array.isArray(v)) return; const o={}; for(const [k,x] of Object.entries(v)){ if(!BK_BAD_KEY.has(k) && ['string','number','boolean'].includes(typeof x)) o[k]=typeof x==='string'?x.slice(0,200):x; } cur[id]=o; });
+  merge('seeds',(cur,id,v)=>{ if(!(id in cur) && (typeof v==='number' || typeof v==='string')) cur[id]=typeof v==='string'?v.slice(0,60):v; });
+  merge('lastRead',(cur,id,v)=>{ const n=bkNum(v,4e12); if(n>(cur[id]||0)) cur[id]=n; });
+  const pref={reader:v=>v&&typeof v==='object'&&!Array.isArray(v), lang:v=>v==='zh'||v==='en', theme:v=>['auto','light','dark'].includes(v), view:v=>v==='grid'||v==='list', sort:v=>['recent','date','read','title'].includes(v)};
+  for(const k of BK_PREFS){ if(LS.get(k,undefined)===undefined && st[k]!==undefined && pref[k](st[k])) LS.set(k,k==='reader'?Object.fromEntries(Object.entries(st[k]).filter(([a,x])=>!BK_BAD_KEY.has(a)&&['string','number','boolean'].includes(typeof x))):st[k]); }
+  LS.set('cols',cols);
+  Object.assign(state,{cols:LS.get('cols',[]), marks:LS.get('marks',{}), flags:LS.get('flags',{}), seeds:LS.get('seeds',{}), progress:LS.get('progress',{}), lastRead:LS.get('lastRead',{})});
+  return {added, skipped};
+}
+const bkDlg=$('#bkDlg'); let bkPending=null, bkDirty=false;
+async function bkSummary(){ const recs=await idb.all(); let bytes=0; recs.forEach(r=>{ bytes+=r.size||0; }); $('#bkSize').textContent=t('bkSummary',recs.length,bytes?fmtSize(bytes):'0 KB'); }
+function bkDownload(blob,name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),60000); }
+function bkBusy(on){ ['#bkFull','#bkList','#bkPick','#bkGo'].forEach(s=>{ $(s).disabled=on; }); }
+$('#bkBtn').addEventListener('click',()=>{ document.body.classList.remove('drawer'); bkPending=null; $('#bkStatus').textContent=''; $('#bkPlan').hidden=true; $('#bkGo').hidden=true; $('#bkGo').textContent=t('bkGo'); bkSummary(); bkDlg.showModal(); });
+$('#bkClose').addEventListener('click',()=>bkDlg.close());
+bkDlg.addEventListener('close',()=>{ if(bkDirty){ bkDirty=false; location.reload(); } });                  // what was restored shows after a fresh start: settings, language, theme
+async function bkExport(withFiles){
+  $('#bkStatus').textContent=t('bkBusy'); bkBusy(true);
+  try{ const r=await bkBuild(withFiles); bkDownload(r.blob,r.name); $('#bkStatus').textContent=t('bkDone',r.n); }
+  catch(e){ $('#bkStatus').textContent=t('bkFail')+e.message; }
+  finally{ bkBusy(false); }
+}
+$('#bkFull').addEventListener('click',()=>bkExport(true));
+$('#bkList').addEventListener('click',()=>bkExport(false));
+$('#bkPick').addEventListener('click',()=>$('#bkFile').click());
+$('#bkFile').addEventListener('change',async e=>{
+  const f=e.target.files[0]; e.target.value=''; if(!f) return;
+  bkPending=null; $('#bkGo').hidden=true; $('#bkPlan').hidden=true; $('#bkStatus').textContent=t('bkReading'); bkBusy(true);
+  try{ const b=await bkOpen(f), p=await bkPlan(b); bkPending=b; $('#bkPlan').textContent=t('bkPlan',p); $('#bkPlan').hidden=false; $('#bkGo').hidden=!(p.add||p.cols||b.manifest.state); $('#bkStatus').textContent=''; }
+  catch(err){ $('#bkStatus').textContent = err.message==='new' ? t('bkTooNew') : err.message==='nozip' ? t('bkNoZip') : t('bkBad'); }
+  finally{ bkBusy(false); }
+});
+$('#bkGo').addEventListener('click',async()=>{
+  if(bkDirty){ bkDlg.close(); return; }
+  if(!bkPending) return; bkBusy(true);
+  try{ const r=await bkApply(bkPending,(i,n)=>{ $('#bkStatus').textContent=t('bkDoing',i,n); }); bkPending=null; bkDirty=true; $('#bkStatus').textContent=t('bkImported',r.added,r.skipped); await loadAll(); $('#bkGo').textContent=t('bkDoneBtn'); }
+  catch(err){ $('#bkStatus').textContent=t('bkImportFail')+(err.message==='nozip'?t('bkNoZip'):err.message); }
+  finally{ bkBusy(false); }
+});
+
+/* ================= sync (optional): the same shelf on several devices, without an account =================
+   A random sync code is made in this browser; an id, a secret and an AES-GCM key are derived from it (HKDF), and only encrypted things leave the device: the list of the shelf
+   (everything but the files) and the small texts, compressed first. The service (shelf-directory's /api/sync) keeps them under the id and cannot read them. Each device keeps the
+   list as it was at its last sync (the "base"); a sync merges base / here / there three ways, entry by entry, so that a change on one side wins over no change on the other,
+   a deletion on one side is a deletion unless the other side changed that entry, and two changes at once are settled by a rule per kind (newer progress, union of bookmarks, here wins).
+   Texts come to a device when they are opened (or a few at a time after a sync); a PDF is a list entry only. */
+const SYNC_LS=new Set(['cols','marks','flags','seeds','progress','lastRead']), SYNC_TEXT_MAX=1048576, SYNC_BLOB_MAX=700000, SYNC_DEBOUNCE=10000;
+const syncSt={ready:null, busy:false, applying:false, keys:null, timer:0, msg:''};
+const syncCfg=()=>LS.get('sync',null), syncOn=()=>{ const c=syncCfg(); return !!(c && c.code); };
+function syncApi(){
+  const d=state.dirData, own=String((d&&d.sync_api)||''), s=String((d&&d.submit_api)||''), a=own || (/\/submit\/?$/.test(s) ? s.replace(/\/submit\/?$/,'/sync') : '');
+  return /^https:\/\//.test(a) || /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//.test(a) ? a : '';
+}
+async function syncProbe(){
+  syncSt.ready=false; const a=syncApi();
+  if(a && window.crypto && crypto.subtle){ try{ const r=await fetch(a,{cache:'no-store'}); const d=await r.json(); syncSt.ready=!!(d && d.configured); }catch(e){} }
+  syncUI();
+}
+const SYNC_ALPHA='ABCDEFGHJKLMNPQRSTUVWXYZ23456789', enc8=new TextEncoder(), dec8=new TextDecoder();
+const syncNewCode=()=>{ const b=crypto.getRandomValues(new Uint8Array(24)); let s=''; for(const x of b) s+=SYNC_ALPHA[x&31]; return s.match(/.{4}/g).join('-'); };
+const syncNorm=code=>{ const s=String(code||'').toUpperCase().replace(/[\s-]+/g,''); return s.length===24 && [...s].every(ch=>SYNC_ALPHA.includes(ch)) ? s : ''; };
+const b64e=u=>{ let s=''; for(let i=0;i<u.length;i+=0x8000) s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000)); return btoa(s); };
+const b64d=s=>{ const bin=atob(s), u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return u; };
+const hexOf=u=>[...u].map(x=>x.toString(16).padStart(2,'0')).join('');
+async function syncKeys(code){
+  const norm=syncNorm(code); if(!norm) throw new Error('code');
+  const ikm=await crypto.subtle.importKey('raw',enc8.encode('zhitree-sync-v1|'+norm),'HKDF',false,['deriveBits']), salt=enc8.encode('zhitree.cn/sync');
+  const bits=async info=>new Uint8Array(await crypto.subtle.deriveBits({name:'HKDF',hash:'SHA-256',salt,info:enc8.encode(info)},ikm,256));
+  const [i,a,e,m]=await Promise.all([bits('id'),bits('auth'),bits('enc'),bits('mac')]);
+  return {id:hexOf(i.subarray(0,16)), auth:b64e(a).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''),
+          enc:await crypto.subtle.importKey('raw',e,'AES-GCM',false,['encrypt','decrypt']), mac:await crypto.subtle.importKey('raw',m,{name:'HMAC',hash:'SHA-256'},false,['sign'])};
+}
+const streamed=async(u,Stream,fmt)=>new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(new Stream(fmt))).arrayBuffer());
+async function syncSeal(bytes){                                                   // -> base64 of [flag, iv, ciphertext]; flag 1 = gzip
+  let flag=0, data=bytes;
+  if('CompressionStream' in window){ data=await streamed(bytes,CompressionStream,'gzip'); flag=1; }
+  const iv=crypto.getRandomValues(new Uint8Array(12)), ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv,additionalData:new Uint8Array([flag])},syncSt.keys.enc,data));
+  const out=new Uint8Array(13+ct.length); out[0]=flag; out.set(iv,1); out.set(ct,13); return b64e(out);
+}
+async function syncOpen(b64){
+  const u=b64d(b64), flag=u[0], pt=new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM',iv:u.subarray(1,13),additionalData:new Uint8Array([flag])},syncSt.keys.enc,u.subarray(13)));
+  if(flag===1){ if(!('DecompressionStream' in window)) throw new Error(t('bkNoZip')); return streamed(pt,DecompressionStream,'gzip'); }
+  return pt;
+}
+async function syncCall(body){
+  const a=syncApi(); if(!a) throw new Error(t('syncNoApi'));
+  const ctl=new AbortController(), timer=setTimeout(()=>ctl.abort(),30000);
+  try{
+    const r=await fetch(a,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:syncSt.keys.id,auth:syncSt.keys.auth,...body}),signal:ctl.signal});
+    const d=await r.json().catch(()=>null);
+    if(!d) throw Object.assign(new Error('HTTP '+r.status),{status:r.status});
+    if(!d.ok){ const e=new Error((state.lang==='zh'?d.message:d.message_en)||d.error||'?'); e.status=r.status; e.code=d.error; throw e; }
+    return d;
+  }catch(e){
+    if(e.name==='AbortError') throw new Error(t('fsSlow'));
+    if(e instanceof TypeError) throw new Error(navigator.onLine===false ? t('fsOffline') : t('fsSlow'));
+    throw e;
+  }finally{ clearTimeout(timer); }
+}
+async function syncEnsureKeys(){ if(!syncSt.keys){ const c=syncCfg(); if(!c||!c.code) throw new Error(t('syncOffNow')); syncSt.keys=await syncKeys(c.code); } return syncSt.keys; }
+
+/* ---- what is synced, as a flat map: "i:<item id>", "c:<collection id>", "p:/m:/f:/s:/r:<id>" -> canonical JSON text */
+const canon = v => JSON.stringify(v,(k,x)=>x && typeof x==='object' && !Array.isArray(x) ? Object.fromEntries(Object.keys(x).sort().map(y=>[y,x[y]])) : x);
+const SYNC_SKIP_ITEM = id => String(id).startsWith('local:feed:');                // the articles of a subscription come back from the feed itself
+function syncItemMeta(r){
+  const m={}; for(const k of BK_KEYS){ if(r[k]!==undefined && k!=='unread' && k!=='path') m[k]=r[k]; }
+  if(r.bk) m.bk=r.bk; if(r.nd) m.nd=1; return m;
+}
+async function syncSnapshot(){
+  const map={};
+  for(const r of await idb.all()){ if(!SYNC_SKIP_ITEM(r.id)) map['i:'+r.id]=canon(syncItemMeta(r)); }
+  for(const c of LS.get('cols',[])){ const o={id:c.id,name:c.name,at:c.at}; if(c.feed) o.feed={url:c.feed.url,home:c.feed.home||'',gone:(c.feed.gone||[]).slice(-400)}; map['c:'+c.id]=canon(o); }
+  const put=(p,obj)=>{ for(const [id,v] of Object.entries(obj||{})) map[p+id]=canon(v); };
+  put('p:',LS.get('progress',{})); put('m:',LS.get('marks',{})); put('f:',LS.get('flags',{})); put('s:',LS.get('seeds',{})); put('r:',LS.get('lastRead',{}));
+  return map;
+}
+function syncResolve(k,l,r){                                                      // both sides changed the same entry
+  if(l===undefined) return r; if(r===undefined) return l;                         // changed on one side, deleted on the other: the change stays
+  try{
+    const a=JSON.parse(l), b=JSON.parse(r), kind=k[0];
+    if(kind==='p') return (b.at||0)>(a.at||0) ? r : l;                            // the later reading place
+    if(kind==='r') return +b>+a ? r : l;
+    if(kind==='m'){ const seen=new Set(), out=[]; for(const x of [].concat(a,b)){ const q=(x.at||0)+'|'+(x.pct||0); if(!seen.has(q)){ seen.add(q); out.push(x); } } return canon(out.sort((x,y)=>(x.at||0)-(y.at||0))); }
+    if(kind==='c' && a.feed && b.feed){ a.feed.gone=[...new Set([].concat(a.feed.gone||[],b.feed.gone||[]))].slice(-400); return canon(a); }
+  }catch(e){}
+  return l;                                                                        // otherwise this device (the one the reader is using now) wins
+}
+function merge3(base,loc,rem){
+  const out={}, keys=new Set([...Object.keys(base),...Object.keys(loc),...Object.keys(rem)]);
+  for(const k of keys){
+    const b=base[k], l=loc[k], r=rem[k];
+    const v = l===r ? l : l===b ? r : r===b ? l : syncResolve(k,l,r);
+    if(v!==undefined) out[k]=v;
+  }
+  return out;
+}
+const sameMap=(a,b)=>{ const ka=Object.keys(a); return ka.length===Object.keys(b).length && ka.every(k=>a[k]===b[k]); };
+function syncRecord(m, ex){                                                        // an entry of the list -> a record here (the text stays what it is here, or is not here yet)
+  if(!m || typeof m!=='object' || typeof m.id!=='string' || !/^local:[\w.:-]{1,120}$/.test(m.id) || !['html','md','txt','pdf','link'].includes(m.type)) return null;
+  const r=bkRecord({...m, hash:m.hash}, ex ? ex.data : undefined); if(!r) return null;
+  if(r.data===undefined) delete r.data;
+  if(ex && ex.html!==undefined && r.data===undefined) r.html=ex.html;
+  if(m.bk) r.bk=String(m.bk).replace(/[^0-9a-f]/g,'').slice(0,32); if(m.nd) r.nd=true;
+  if(ex && r.type==='link'){ if(ex.content){ r.content=ex.content; if(ex.contentCut) r.contentCut=true; } if(ex.noread) r.noread=ex.noread; }        // the text of a link is not synced (it is read again): what is here stays
+  return r;
+}
+async function syncApply(merged, loc){
+  const cols=LS.get('cols',[]), byId=new Map(cols.map(c=>[c.id,c])), next=[];
+  for(const [k,v] of Object.entries(merged)){
+    if(k.slice(0,2)!=='c:') continue; let o; try{ o=JSON.parse(v); }catch(e){ continue; }
+    if(!o || !/^[\w-]{1,40}$/.test(String(o.id||''))) continue;
+    const ex=byId.get(o.id), col=ex ? {...ex} : {id:o.id};
+    col.name=cut(o.name,40)||t('colDefaultName'); col.at=bkNum(o.at,4e12)||Date.now();
+    if(o.feed && httpUrl(o.feed.url)){
+      col.feed = ex && ex.feed ? {...ex.feed} : {url:httpUrl(o.feed.url), home:'', etag:'', modified:'', checked:0, tried:0, error:'', fails:0};
+      col.feed.home=httpUrl(o.feed.home)||col.feed.home||''; col.feed.gone=Array.isArray(o.feed.gone)?o.feed.gone.map(String).slice(-400):[];
+    } else if(o.feed) continue; else delete col.feed;
+    next.push(col);
+  }
+  const order=new Map(cols.map((c,i)=>[c.id,i]));
+  next.sort((a,b)=>(order.has(a.id)?order.get(a.id):1e9)-(order.has(b.id)?order.get(b.id):1e9) || a.at-b.at);
+  const goneCols=new Set(cols.filter(c=>!next.some(n=>n.id===c.id)).map(c=>c.id));
+  LS.set('cols',next);
+  const have=new Map((await idb.all()).map(r=>[r.id,r]));
+  for(const [k,v] of Object.entries(merged)){
+    if(k.slice(0,2)!=='i:' || loc[k]===v) continue;
+    let m; try{ m=JSON.parse(v); }catch(e){ continue; }
+    const rec=syncRecord(m, have.get(m && m.id)); if(rec) await idb.put(rec);
+  }
+  for(const [id,r] of have){
+    if(SYNC_SKIP_ITEM(id)){ if(r.collection && goneCols.has(r.collection)) await idb.del(id); continue; }       // a subscription that went away takes its articles along
+    if(loc['i:'+id]!==undefined && merged['i:'+id]===undefined) await idb.del(id);                           // (only what was in the list that was merged: a file added while the sync ran stays)
+  }
+  const rebuild=(name,p,fn)=>{ const cur=LS.get(name,{}), nw={}; for(const [k,v] of Object.entries(merged)){ if(k.slice(0,2)!==p) continue; const id=k.slice(2); if(BK_BAD_KEY.has(id)||!BK_SAFE_ID.test(id)) continue; try{ nw[id]=fn(JSON.parse(v)); }catch(e){} } if(canon(cur)!==canon(nw)) LS.set(name,nw); };
+  const id=x=>x;
+  rebuild('progress','p:',x=>({pct:bkNum(x.pct,100),at:bkNum(x.at,4e12)}));
+  rebuild('marks','m:',x=>(Array.isArray(x)?x:[]).slice(0,200).map(y=>({pct:bkNum(y.pct,100),label:cut(y.label,80),at:bkNum(y.at,4e12)})));
+  rebuild('flags','f:',x=>Object.fromEntries(Object.entries(x||{}).filter(([a,b])=>!BK_BAD_KEY.has(a)&&['string','number','boolean'].includes(typeof b))));
+  rebuild('seeds','s:',id); rebuild('lastRead','r:',x=>bkNum(x,4e12));
+  Object.assign(state,{cols:LS.get('cols',[]), marks:LS.get('marks',{}), flags:LS.get('flags',{}), seeds:LS.get('seeds',{}), progress:LS.get('progress',{}), lastRead:LS.get('lastRead',{})});
+  await loadAll();
+}
+/* ---- the texts */
+async function syncMark(r){                                                           // the record (here, and in the list on screen) now says where its text is
+  await idb.put(r);
+  const it=state.items.find(x=>x.id===r.id);
+  if(it){ if(r.bk) it.bk=r.bk; else delete it.bk; if(r.nd) it.nd=true; else delete it.nd; syncSt.redraw=true; }
+}
+async function syncUploadBodies(serverKeys){
+  const have=new Set(serverKeys||[]); let full=false, n=0;
+  for(const r of await idb.all()){
+    if(SYNC_SKIP_ITEM(r.id) || r.type==='link' || r.data===undefined || r.data===null) continue;                   // nothing here to give
+    const text = ['md','txt','html'].includes(r.type) && typeof r.data==='string' ? r.data : null;
+    if(text===null || text.length>SYNC_TEXT_MAX){ if(!r.nd || r.bk){ r.nd=true; delete r.bk; await syncMark(r); } continue; }       // a PDF, or a text too long: a list entry only
+    const bytes=enc8.encode(text), key=hexOf(new Uint8Array(await crypto.subtle.sign('HMAC',syncSt.keys.mac,bytes))).slice(0,32);
+    if(!have.has(key)){
+      const blob = full ? '' : await syncSeal(bytes);
+      if(full || blob.length>SYNC_BLOB_MAX){ if(!r.nd || r.bk){ r.nd=true; delete r.bk; await syncMark(r); } continue; }
+      try{ await syncCall({action:'body_put',key,blob}); have.add(key); n++; }
+      catch(e){ if(e.code==='quota'){ full=true; syncSt.msg=t('syncFullMsg'); if(!r.nd || r.bk){ r.nd=true; delete r.bk; await syncMark(r); } continue; } throw e; }
+    }
+    if(r.bk!==key || r.nd){ r.bk=key; delete r.nd; await syncMark(r); }
+  }
+  return {uploaded:n, full};
+}
+async function syncFetchBody(it){
+  if(!syncOn()) throw new Error(t('syncOffNow'));
+  await syncEnsureKeys();
+  const d=await syncCall({action:'body_get',key:it.bk}), text=dec8.decode(await syncOpen(d.blob));
+  const rec={...it}; delete rec.source; rec.data=text; delete rec.nd;
+  const was=syncSt.applying; syncSt.applying=true; try{ await idb.put(rec); } finally{ syncSt.applying=was; }
+  it.data=text; delete it.nd; return text;
+}
+/* ---- one sync */
+async function syncRun(opts){
+  opts=opts||{}; if(!syncOn() || syncSt.busy || !syncSt.ready) return;
+  if(navigator.onLine===false){ if(opts.manual) syncMsg(t('fsOffline')); return; }
+  clearTimeout(syncSt.timer); syncSt.busy=true; syncSt.applying=true; syncSt.msg=''; syncUI(); if(opts.manual) syncMsg(t('syncBusyMsg'));
+  const cfg=syncCfg();
+  try{
+    await syncEnsureKeys();
+    const base=(await idb.get('syncBase')) || {rev:0,map:{}};
+    let fin=null;
+    for(let attempt=0; attempt<4 && !fin; attempt++){
+      let pr=await syncCall({action:'pull',rev:base.rev||0});
+      if(!pr.exists){                                                              // new, or expired: made again from what is here
+        const mk=await syncCall({action:'push',base_rev:0,blob:await syncSeal(enc8.encode(JSON.stringify({v:1,map:{}})))});
+        base.rev=mk.rev; base.map={}; pr=await syncCall({action:'pull',rev:-1});
+      }
+      await syncUploadBodies(pr.bodies);
+      const loc=await syncSnapshot();
+      const rem = pr.unchanged ? base.map : (JSON.parse(dec8.decode(await syncOpen(pr.blob))).map || {});
+      const merged=merge3(base.map,loc,rem);
+      if(!sameMap(merged,loc)) await syncApply(merged,loc);
+      let rev=pr.rev;
+      if(!sameMap(merged,rem)){
+        try{ rev=(await syncCall({action:'push',base_rev:pr.rev,blob:await syncSeal(enc8.encode(JSON.stringify({v:1,map:merged})))})).rev; }
+        catch(e){ if(e.code==='conflict') continue; throw e; }                      // another device synced meanwhile: again, from the pull
+      }
+      base.rev=rev; base.map=merged; await idb.set('syncBase',base);
+      fin=await syncCall({action:'pull',rev:rev});
+      const used=new Set(Object.entries(merged).filter(([k])=>k.slice(0,2)==='i:').map(([k,v])=>{ try{ return JSON.parse(v).bk; }catch(e){ return ''; } }).filter(Boolean));
+      const orphans=(fin.bodies||[]).filter(k=>!used.has(k));
+      for(let i=0;i<orphans.length;i+=100) await syncCall({action:'body_del',keys:orphans.slice(i,i+100)});
+    }
+    if(!fin) throw new Error(t('fsSlow'));
+    Object.assign(cfg,{last:Date.now(), rev:fin.rev, quota:fin.quota, expires:fin.expires, err:''}); LS.set('sync',cfg);
+    if(opts.manual) syncMsg(syncSt.msg||t('syncDoneMsg'));
+    if(syncSt.redraw){ syncSt.redraw=false; render(); }
+    syncPrefetch();
+  }catch(e){
+    const c=syncCfg(); if(c){ c.err=e.code==='auth' ? t('syncNoVault') : e.message; LS.set('sync',c); }
+    if(opts.manual || e.code==='auth') syncMsg(t('syncErr',e.code==='auth'?t('syncNoVault'):e.message));
+  }finally{ syncSt.busy=false; syncSt.applying=false; syncUI(); }
+}
+async function syncPrefetch(){                                                      // a few of the newest texts that are only in the sync space: ready when wanted
+  let n=0;
+  for(const it of state.items.filter(x=>x.source==='local' && x.bk && x.data===undefined && x.type!=='link').sort((a,b)=>(b.added||0)-(a.added||0)).slice(0,8)){
+    try{ await syncFetchBody(it); n++; }catch(e){ break; }
+  }
+  if(n) render();
+}
+function syncSoon(){
+  if(!syncOn() || syncSt.applying || !syncSt.ready) return;
+  clearTimeout(syncSt.timer); syncSt.timer=setTimeout(()=>syncRun(),SYNC_DEBOUNCE);
+}
+/* any change of what is synced schedules a sync a few seconds later (a sync's own writes do not) */
+{ const set=LS.set; LS.set=function(k,v){ set.call(LS,k,v); if(SYNC_LS.has(k)) syncSoon(); };
+  const put=idb.put, del=idb.del;
+  idb.put=function(v){ if(v && !SYNC_SKIP_ITEM(v.id)) syncSoon(); return put.call(idb,v); };
+  idb.del=function(k){ if(!SYNC_SKIP_ITEM(k)) syncSoon(); return del.call(idb,k); }; }
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'){ const c=syncCfg(); if(c && c.code && Date.now()-(c.last||0)>5*60000) syncRun(); } });
+window.addEventListener('online',()=>{ if(syncOn()) syncSoon(); });
+
+/* ---- the dialog and the line under the button */
+const syncDlg=$('#syncDlg');
+function syncMsg(m){ $('#syncMsg').textContent=m||''; }
+function syncUI(){
+  const c=syncCfg(), on=!!(c && c.code), show=syncSt.ready===true || on;
+  $('#syncBtn').hidden=!show;
+  const st=$('#syncStat'); st.hidden=!(on && show);
+  if(on){
+    st.innerHTML = syncSt.busy ? esc(t('syncStatBusy')) : c.err ? `${esc(t('syncStatErr'))} · <button type="button" data-syncopen>${esc(t('syncStatDetail'))}</button>` : c.last ? esc(t('syncStatOk',ago(c.last))) : '';
+  }
+  if(syncDlg.open) syncPanels();
+}
+function syncPanels(){
+  const c=syncCfg(), on=!!(c && c.code), showNew=!$('#syncNew').hidden;
+  $('#syncOff').hidden=on||showNew; $('#syncOn').hidden=!on||showNew;
+  if(on){
+    $('#syncState').textContent=t('syncState',true,c.last?ago(c.last):'');
+    $('#syncQuota').textContent=c.quota?t('syncQuota',fmtSize(c.quota.used*0.75),fmtSize(c.quota.limit*0.75),c.expires?new Date(c.expires*1000).toLocaleDateString(state.lang==='zh'?'zh-CN':'en'):''):'';
+    $('#syncNowBtn').disabled=syncSt.busy;
+  }
+}
+$('#syncBtn').addEventListener('click',()=>{ document.body.classList.remove('drawer'); $('#syncNew').hidden=true; syncMsg(syncSt.msg); syncPanels(); syncDlg.showModal(); });
+$('#syncStat').addEventListener('click',e=>{ if(e.target.closest('[data-syncopen]')){ $('#syncNew').hidden=true; const c=syncCfg(); syncMsg(c&&c.err?t('syncErr',c.err):''); syncPanels(); syncDlg.showModal(); } });
+$('#syncClose').addEventListener('click',()=>syncDlg.close());
+async function syncEnable(code, joining){
+  const norm=syncNorm(code); if(!norm){ syncMsg(t('syncBadCode')); return false; }
+  const shown=norm.match(/.{4}/g).join('-');
+  syncSt.keys=await syncKeys(shown);
+  if(joining){
+    syncMsg(t('syncBusyMsg'));
+    try{ const pr=await syncCall({action:'pull',rev:-1}); if(!pr.exists){ syncSt.keys=null; syncMsg(t('syncNoVault')); return false; } }
+    catch(e){ syncSt.keys=null; syncMsg(e.code==='auth'?t('syncNoVault'):t('syncErr',e.message)); return false; }
+  }
+  await idb.set('syncBase',{rev:0,map:{}});
+  LS.set('sync',{code:shown,last:0,rev:0});
+  return true;
+}
+$('#syncStart').addEventListener('click',async()=>{
+  const code=syncNewCode(); if(!(await syncEnable(code,false))) return;
+  $('#syncCodeShow').textContent=code; $('#syncNew').hidden=false; syncMsg(''); syncPanels(); syncUI();
+});
+$('#syncCopy').addEventListener('click',async()=>{ try{ await navigator.clipboard.writeText($('#syncCodeShow').textContent); syncMsg(t('syncCopied')); }catch(e){ const r=document.createRange(); r.selectNodeContents($('#syncCodeShow')); const s=getSelection(); s.removeAllRanges(); s.addRange(r); } });
+$('#syncSaved').addEventListener('click',()=>{ $('#syncNew').hidden=true; syncPanels(); syncRun({manual:true}); });
+$('#syncJoin').addEventListener('click',async()=>{ if(await syncEnable($('#syncCodeIn').value,true)){ $('#syncCodeIn').value=''; syncPanels(); syncUI(); syncRun({manual:true}); } });
+$('#syncCodeIn').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); $('#syncJoin').click(); } });
+$('#syncNowBtn').addEventListener('click',()=>syncRun({manual:true}));
+$('#syncShow').addEventListener('click',()=>{ const c=syncCfg(); if(!c) return; $('#syncCodeShow').textContent=c.code; $('#syncNew').hidden=false; syncPanels(); });
+$('#syncOffBtn').addEventListener('click',async()=>{ if(!confirm(t('syncOffAsk'))) return; LS.set('sync',null); syncSt.keys=null; await idb.set('syncBase',undefined); syncMsg(t('syncOffNow')); syncPanels(); syncUI(); });
+$('#syncWipe').addEventListener('click',async()=>{
+  if(!confirm(t('syncWipeAsk'))) return;
+  try{ await syncEnsureKeys(); await syncCall({action:'destroy'}); }catch(e){ if(e.code!=='novault') { syncMsg(t('syncErr',e.message)); return; } }
+  LS.set('sync',null); syncSt.keys=null; await idb.set('syncBase',undefined); syncMsg(t('syncWiped')); syncPanels(); syncUI();
+});
+async function syncInit(){
+  await syncProbe();
+  if(syncOn() && syncSt.ready) syncRun();
+  payTrack();
+}
+
+/* ---- once, after a good while of using the page: would you pay for large-file sync? An anonymous count; nothing else is sent. */
+const PAY_MS=20*60*1000, PAY_AGAIN=7*86400000;
+let payActive=0, payTimer=0;
+function payTrack(){
+  if(payTimer) return;
+  ['pointerdown','keydown','scroll','touchstart'].forEach(ev=>addEventListener(ev,()=>{ payActive=Date.now()+60000; },{passive:true,capture:true}));
+  payTimer=setInterval(()=>{
+    if(document.visibilityState!=='visible' || Date.now()>payActive) return;                   // only time with the page in front of you, and doing something
+    const u=LS.get('use',{ms:0}); u.ms=(+u.ms||0)+5000; LS.set('use',u); payMaybe(u);
+  },5000);
+}
+function payMaybe(u){
+  u=u||LS.get('use',{ms:0}); const p=LS.get('pay',{});
+  if(p.done || (+u.ms||0)<PAY_MS || (p.after && Date.now()<p.after) || syncSt.ready!==true) return;
+  if(document.querySelector('dialog[open]') || !$('#reader').hidden) return;
+  $('#payMsg').textContent=''; $('#payDlg').showModal();
+}
+async function payAnswer(a){
+  const p=LS.get('pay',{});
+  if(a==='later'){ p.n=(p.n||0)+1; p.after=Date.now()+PAY_AGAIN; if(p.n>=2) p.done=1; } else { p.done=1; p.answer=a; }
+  LS.set('pay',p);
+  if(a!=='later'){ try{ const r=await fetch(syncApi(),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'poll',answer:a})}); await r.json().catch(()=>null); }catch(e){} $('#payMsg').textContent=t('payThanks'); setTimeout(()=>$('#payDlg').close(),900); }
+  else $('#payDlg').close();
+}
+$('#payYes').addEventListener('click',()=>payAnswer('yes'));
+$('#payNo').addEventListener('click',()=>payAnswer('no'));
+$('#payLater').addEventListener('click',()=>payAnswer('later'));
+$('#payDlg').addEventListener('cancel',()=>{ const p=LS.get('pay',{}); p.n=(p.n||0)+1; p.after=Date.now()+PAY_AGAIN; if(p.n>=2) p.done=1; LS.set('pay',p); });
 
 /* ================= add dialog ================= */
 const dlg=$('#addDlg');
@@ -1783,10 +2946,108 @@ function updateColName(){
   if(isNew && !box.value.trim()) box.value=t('colDefaultName');
 }
 $('#addCol').addEventListener('change',updateColName);
-function openAdd(dropped){
+function openAdd(dropped, tab){
   state.pending=[]; $('#addMsg').hidden=true; addCategories(); $('#addFeat').checked=state.cat==='featured'; updateTarget(); fillColPick(); renderPending();
+  fsReset(); setAddTab(tab==='sub'?'sub':'files');
   if(!dlg.open) dlg.showModal(); if(dropped) takeDropped(dropped);
 }
+/* the second tab: subscribe to somebody's feed (or save an article's address) */
+let fsFound=null;
+function setAddTab(tab){
+  const on=feedApi(), sub=tab==='sub' && on;
+  $('#addTabs').hidden=!on;
+  document.querySelectorAll('[data-atab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.atab===(sub?'sub':'files'))));
+  $('#addFilesPane').hidden=sub; $('#addSubPane').hidden=!sub; $('#addSave').hidden=sub; $('#fsGo').hidden=!(sub && fsFound); $('#fsGo').textContent=t(fsFound && fsFound.kind!=='feed' ? 'fsSaveLink' : 'fsGo');
+  const h=$('#addTitle'); h.dataset.i=sub?'fsTitle':'addTitle'; h.textContent=t(h.dataset.i);
+  if(sub){ renderStarter(); $('#fsUrl').focus(); }
+}
+const fsMsg = m => { const w=$('#fsMsg'); w.textContent=m||''; w.hidden=!m; };
+function fsReset(){ fsFound=null; stAdded=[]; $('#fsUrl').value=''; $('#fsResult').hidden=true; $('#fsResult').innerHTML=''; fsMsg(''); $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); setFinish(false); renderStarter(); }
+function renderFound(d){
+  const feed=d.kind==='feed', dup=feed && subCols().some(c=>urlKey(c.feed.url)===urlKey(d.feed));
+  const name=d.title||hostOf(d.feed||d.url);
+  $('#fsResult').innerHTML=`<div class="fs-card"><h3>${esc(name)}</h3><p class="fs-meta">${esc(t(feed?'fsKindFeed':'fsKindLink'))} · ${esc(hostOf(d.home||d.feed||d.url))}${feed&&d.found?' · '+esc(t('fsFound',d.found)):''}</p>`
+    + (feed ? `<ul>${(d.items||[]).slice(0,4).map(i=>`<li>${esc(cut(i.title,70))}${i.date?` <span>(${esc(String(i.date).slice(0,10))})</span>`:''}</li>`).join('')}</ul>`
+              + `<label for="fsName">${esc(t('fsName'))}</label><input type="text" id="fsName" maxlength="40" value="${esc(uniqueColName(name))}" autocomplete="off">`
+            : (d.summary?`<p class="sum">${esc(cut(d.summary,200))}</p>`:'') + `<p class="fs-note">${esc(d.manual?t('fsSaveSelf'):t('fsLinkNote'))}</p>`
+              + (d.readable===true ? `<p class="fs-note">${esc(t('fsReadable'))}</p>` : d.readable===false ? `<p class="fs-note">${esc(t('fsUnreadable',(state.lang==='zh'?d.reason_message:d.reason_message_en)||d.reason||'?'))}</p>` : ''))
+    + (dup?`<p class="fs-note">${esc(t('fsDup'))}</p>`:'') + '</div>';
+  $('#fsResult').hidden=false; $('#fsGo').hidden=false; $('#fsGo').textContent=t(feed?'fsGo':'fsSaveLink'); $('#fsGo').disabled=!!dup;
+}
+async function fsFind(){
+  const raw=$('#fsUrl').value.trim(); if(!raw){ $('#fsUrl').focus(); return; }
+  fsMsg(''); fsFound=null; $('#fsResult').hidden=true; $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsFind').disabled=true; $('#fsFind').textContent=t('fsFinding');
+  try{
+    const d=await callFeed({action:'discover',url:raw});
+    if(d.ok){ fsFound=d; renderFound(d); }
+    else{                                                                              // could not be read: say why, and let the address be kept as a plain link
+      fsMsg(t('fsFail')+((state.lang==='zh'?d.message:d.message_en)||d.message||'?'));
+      const u=httpUrl(/^[a-z][a-z0-9+.-]*:\/\//i.test(raw)?raw:'https://'+raw);
+      if(u && d.error==='unreachable' && !/^(\d|\[)/.test(hostOf(u))){ fsFound={ok:true,kind:'link',url:u,title:hostOf(u),summary:'',manual:true}; renderFound(fsFound); }
+    }
+  }catch(e){ fsMsg(t('fsFail')+e.message); }
+  finally{ $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); renderStarter(); }
+}
+document.querySelectorAll('[data-atab]').forEach(b=>b.addEventListener('click',()=>setAddTab(b.dataset.atab)));
+$('#fsFind').addEventListener('click',fsFind);
+$('#fsUrl').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); fsFind(); } });
+$('#fsUrl').addEventListener('input',()=>{ fsFound=null; $('#fsResult').hidden=true; $('#fsGo').disabled=true; $('#fsGo').hidden=true; renderStarter(); });
+$('#fsGo').addEventListener('click',async ()=>{
+  const d=fsFound; if(!d) return;
+  try{
+    if(d.kind==='feed'){
+      if(subCols().length>=MAX_SUBS){ fsMsg(t('fsMax',MAX_SUBS)); return; }
+      if(subCols().some(c=>urlKey(c.feed.url)===urlKey(d.feed))){ fsMsg(t('fsDup')); return; }
+      const name=uniqueColName(($('#fsName')&&$('#fsName').value.trim())||d.title||hostOf(d.feed)), id=addCollection(name);
+      colById(id).feed={url:d.feed,home:d.home||'',etag:'',modified:'',checked:0,error:'',fails:0}; saveCols();
+      state.col=id; LS.set('col',id); dlg.close(); render(); toast(t('fsSubscribed',name));
+      refreshSubs({ids:[id],force:true});                                              // the first reading: up to 50 articles
+    }else{
+      await saveSharedLink({url:d.url,title:d.title,summary:d.summary,content:d.content,contentCut:d.content_cut}); dlg.close(); toast(t('fsLinkSaved',cut(d.title||hostOf(d.url),24)));
+    }
+  }catch(e){ fsMsg(t('saveFail')+e.message); }
+});
+/* "try these": the shelves of the public directory that its owner marked as starters (feeds only): one click subscribes, the first reading follows at once */
+let stAdded=[];
+function setFinish(on){ const b=$('#addCancel'); b.dataset.i=on?'stFinish':'cancel'; b.textContent=t(b.dataset.i); }              // (data-i, so that a change of language keeps it)
+function starterShelves(){
+  const d=state.dirData; if(!d || !feedApi()) return [];
+  return (d.shelves||[]).filter(s=>s && s.starter===true && s.kind==='feed' && httpUrl(s.feed)).sort((a,b)=>(b.lang===state.lang)-(a.lang===state.lang)).slice(0,16);
+}
+function renderStarter(){
+  const box=$('#fsStarter'), list=starterShelves(), idle=!fsFound && !$('#fsUrl').value.trim();
+  box.hidden=!list.length || !idle; if(box.hidden) return;
+  const have=new Set(subCols().map(c=>urlKey(c.feed.url))), lang=s=>s.lang==='zh'?'中文':s.lang==='en'?'English':'';
+  $('#fsStarterList').innerHTML=list.map(s=>{ const on=have.has(urlKey(s.feed)), sub=[lang(s),(s.tags||[]).slice(0,3).join(' · ')].filter(Boolean).join(' · ');
+    return `<div class="st-row"><div class="st-info"><b class="st-name">${esc(s.name)}</b>${sub?`<span class="st-sub">${esc(sub)}</span>`:''}${s.description?`<span class="st-desc">${esc(cut(s.description,90))}</span>`:''}</div><button class="btn st-go" type="button" data-st="${esc(s.id)}"${on?' disabled':''}>${esc(t(on?'stDone':'stGo'))}</button></div>`; }).join('');
+  const n=$('#fsStarterAdded'); n.hidden=!stAdded.length; if(stAdded.length) n.textContent=t('stAdded',stAdded.length);
+}
+const firstQueue=[];
+function flushFirst(){ if(!firstQueue.length) return; if(subBusy){ setTimeout(flushFirst,1200); return; } refreshSubs({ids:firstQueue.splice(0),force:true}); }
+$('#fsStarterList').addEventListener('click',e=>{
+  const b=e.target.closest('[data-st]'); if(!b || b.disabled) return;
+  const s=starterShelves().find(x=>x.id===b.dataset.st); if(!s) return;
+  if(subCols().length>=MAX_SUBS){ fsMsg(t('fsMax',MAX_SUBS)); return; }
+  if(subCols().some(c=>urlKey(c.feed.url)===urlKey(s.feed))){ renderStarter(); return; }
+  fsMsg('');
+  const id=addCollection(uniqueColName(cut(s.name,40)));
+  colById(id).feed={url:s.feed,home:httpUrl(s.home)||'',etag:'',modified:'',checked:0,error:'',fails:0}; saveCols();
+  stAdded.push(id); setFinish(true);
+  render(); renderStarter(); firstQueue.push(id); flushFirst();
+});
+dlg.addEventListener('close',()=>{                                                      // after "try these": the last one subscribed is shown, its first articles arriving
+  if(!stAdded.length) return; const id=stAdded[stAdded.length-1]; stAdded=[];
+  if(colById(id)){ state.col=id; LS.set('col',id); render(); }
+});
+$('#fsImport').addEventListener('click',()=>$('#fsOpml').click());
+$('#fsOpml').addEventListener('change',async e=>{
+  const f=e.target.files&&e.target.files[0]; e.target.value=''; if(!f) return;
+  let list=null; try{ list=parseOpml(await f.text()); }catch(err){}
+  if(!list||!list.length){ fsMsg(t('feedBadList')); return; }
+  dlg.close(); importSubs(list.slice(0,MAX_SUBS));
+});
+$('#fsExport').addEventListener('click',()=>{ if(!subCols().length){ toast(t('feedNoneToImport')); return; } exportSubs(); });
+$('#fsCopy').addEventListener('click',()=>{ if(!subCols().length){ toast(t('feedNoneToImport')); return; } copySubsLink(); });
 $('#addBtn').addEventListener('click',()=>dirOn()?openSubmit():openAdd());
 $('#addCancel').addEventListener('click',()=>dlg.close());
 $('#addCat').addEventListener('change',updateTarget);
@@ -1906,6 +3167,7 @@ async function moveToCollection(id, colId){                                     
   const it=state.items.find(x=>x.id===id); moveDlg.close();
   try{
     const rec={...it}; delete rec.source; if(colId) rec.collection=colId; else delete rec.collection;
+    if(it.feed && it.collection!==colId){ const oc=colById(it.collection); if(oc && oc.feed){ oc.feed.gone=(oc.feed.gone||[]).concat(urlKey(it.url)).slice(-300); saveCols(); } }       // moved out of its subscription: the next update does not bring it back
     await idb.put(rec); if(colId) it.collection=colId; else delete it.collection;
     toast(t('colMovedToast',cut(it.title,24),colId?colById(colId).name:t('colLoose'))); render();
   }catch(e){ toast(t('moveFail')+e.message); }
@@ -1946,6 +3208,7 @@ async function purgeItem(id){
     if(it.source==='local') await idb.del(id);
     else if(it.source==='folder') await removeFolderItem(it);
     else await api('api/delete',{id,confirm:true});
+    if(it.feed){ const c=colById(it.collection); if(c && c.feed){ c.feed.gone=(c.feed.gone||[]).concat(urlKey(it.url)).slice(-300); saveCols(); } }     // an article of a subscription that was deleted does not come back with the next update
     forgetItem(id); toast(t('purged')); await loadAll();
   }catch(e){ toast(t('delFail')+e.message); }
 }
@@ -1993,7 +3256,7 @@ async function loadDirectory(force){
     d.tags=(Array.isArray(d.tags)?d.tags:[]).filter(g=>g && g.name).map(g=>({name:String(g.name), slug:String(g.slug||''), n:+g.n||0}));
     state.shelfMap=new Map(d.shelves.map(s=>[s.id,s])); state.dirData=d; state.dirState='ok'; state.dirKeys=new Set(d.items.map(i=>urlKey(i.url)));
   }catch(e){ state.dirState='error'; state.dirErr=e.message||String(e); }
-  render();
+  render(); if(dlg.open && !$('#addSubPane').hidden) renderStarter();
 }
 function dirList(skip){
   const tk=tokens(), tg=state.dTag.toLowerCase();
@@ -2012,10 +3275,10 @@ function dirCardHTML(it, tk, saved){
   const lang=it.lang==='en'?t('langEn'):it.lang==='zh'?t('langZh'):it.lang.toUpperCase(), tip=t(isSaved?'savedTip':'saveToShelf');
   const cover=it.image ? `<img src="${esc(it.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fb="1">` : coverSVG(it);
   return `<article class="card" data-did="${esc(it.id)}">
-    <a class="cover" href="${esc(href)}" target="_blank" rel="${rel}" aria-label="${esc(it.title)}">${cover}<span class="ftype">${esc(typeName)}</span></a>
+    <a class="cover" href="${esc(href)}" target="_blank" rel="${rel}" aria-label="${esc(it.title)}" data-dopen="${esc(it.id)}">${cover}<span class="ftype">${esc(typeName)}</span></a>
     <div class="card-body">
       <p class="meta"><span class="tag ${TYPE_COLOR[it.type]}">${esc(typeName)}</span>${sh?`<button class="shelf-link" type="button" data-dshelf="${esc(sh.id)}" title="${esc(sh.name)}">${esc(sh.name)}</button>`:''}${lang?`<span>${esc(lang)}</span>`:''}${it.date?`<span>${esc(it.date)}</span>`:''}</p>
-      <h3 class="card-title"><a href="${esc(href)}" target="_blank" rel="${rel}">${hl(it.title,tk)}</a></h3>
+      <h3 class="card-title"><a href="${esc(href)}" target="_blank" rel="${rel}" data-dopen="${esc(it.id)}">${hl(it.title,tk)}</a></h3>
       ${it.summary?`<p class="sum">${hl(it.summary,tk)}</p>`:''}
       ${it.tags.length?`<div class="chips">${kwChips(it.tags,4)}</div>`:''}
       <div class="card-foot"><span>${esc(hostOf(href))}</span><span class="acts"><button class="ibtn" type="button" data-d="save" aria-pressed="${isSaved}" title="${esc(tip)}" aria-label="${esc(tip)}">${ICON.bookmark}</button><a class="ibtn" href="${esc(href)}" target="_blank" rel="${rel}" title="${esc(t('openOriginal'))}" aria-label="${esc(t('openOriginal'))}">${ICON.ext}</a></span></div>
@@ -2071,6 +3334,7 @@ async function toggleSaveLink(did){
     else{
       const rec={id, type:'link', url:it.url, title:it.title, summary:it.summary, keywords:it.tags.slice(0,8), lang:(it.lang==='zh'||it.lang==='en')?it.lang:'en', date:it.date||today(),
                  category:it.type==='tool'?'tools':'notes', image:it.image, from:sh?sh.name:'', added:Math.floor(Date.now()/1000)};
+      const read=state.tmp.get('tmp:'+did); if(read && read.content){ rec.content=read.content; if(read.contentCut) rec.contentCut=true; }        // saved after reading: the text comes along
       await idb.put(rec); state.items.push({...rec, source:'local'}); toast(t('savedToast',cut(it.title,24)));
     }
     render();
@@ -2369,8 +3633,11 @@ $('#moveCancel').addEventListener('click',()=>moveDlg.close());
 $('#grid').addEventListener('click',e=>{                            // the parts of a card that exist in both spaces: tags, the shelf name, save
   const tg=e.target.closest('[data-tag]'); if(tg){ pickTag(tg.dataset.tag); return; }
   const sh=e.target.closest('[data-dshelf]'); if(sh){ state.dShelf=state.dShelf===sh.dataset.dshelf?'':sh.dataset.dshelf; state.dLimit=DIR_PAGE; render(); window.scrollTo({top:0}); return; }
-  const sv=e.target.closest('[data-d="save"]'); if(sv){ const c=sv.closest('.card'); if(c) toggleSaveLink(c.dataset.did); }
+  const sv=e.target.closest('[data-d="save"]'); if(sv){ const c=sv.closest('.card'); if(c) toggleSaveLink(c.dataset.did); return; }
+  const dop=e.target.closest('a[data-dopen]');                                                    // an article of the directory: read in the page (a modified click or no service: the original)
+  if(dop && feedApi() && e.button===0 && !(e.metaKey||e.ctrlKey||e.shiftKey)){ e.preventDefault(); openDirReader(dop.dataset.dopen); }
 });
+document.addEventListener('click',e=>{ if(!e.target.closest('.acts.collapsible')) document.querySelectorAll('.card.acts-open').forEach(c=>c.classList.remove('acts-open')); });          // a tap anywhere else closes the buttons of a card
 $('#grid').addEventListener('error',e=>{                            // someone else's cover picture failed to load: the generated cover instead
   const im=e.target; if(!im || im.tagName!=='IMG' || !im.dataset.fb) return;
   const card=im.closest('.card'), it=card && (state.dirData && card.dataset.did ? state.dirData.items.find(x=>x.id===card.dataset.did) : state.items.find(x=>x.id===card.dataset.id));
@@ -2380,9 +3647,14 @@ $('#grid').addEventListener('click',async e=>{
   const el=e.target.closest('[data-act]'); if(!el) return;
   const card=el.closest('.card'), id=card&&card.dataset.id; if(!id) return;
   const act=el.dataset.act;
+  if(act==='more'){ const on=!card.classList.contains('acts-open'); document.querySelectorAll('.card.acts-open').forEach(c=>c.classList.remove('acts-open')); card.classList.toggle('acts-open',on); el.setAttribute('aria-expanded',String(on)); return; }
   if(act==='open'){
     const it0=state.items.find(x=>x.id===id);
-    if(it0 && it0.type==='link'){ if(el.tagName!=='A'){ e.preventDefault(); openReader(id); } return; }          // a saved link: the anchor opens it in a new tab by itself
+    if(it0 && it0.type==='link'){
+      markRead(id,card);
+      if(canReadHere(it0)){ if(el.tagName==='A' && (e.metaKey||e.ctrlKey||e.shiftKey)) return; e.preventDefault(); openReader(id); return; }       // read it here (a modified click still opens the original)
+      if(el.tagName!=='A'){ e.preventDefault(); openReader(id); } return;                                                                   // the service said it cannot be read: the anchor opens the original, and so does the cover
+    }
     if(el.tagName==='A' && el.getAttribute('href')!=='#' && (e.metaKey||e.ctrlKey||e.shiftKey)) return; e.preventDefault(); openReader(id);
   }
   else if(act==='star') toggleStar(id);
@@ -2458,6 +3730,10 @@ const swipeLive = () => { if(swipeOpen && !swipeOpen.isConnected) swipeOpen=null
   },true);
   document.addEventListener('pointerdown',e=>{ if(swipeLive() && !e.target.closest('.dir-row')) swipeClose(true); });
 })();
+$('#source').addEventListener('click',async e=>{
+  if(!e.target.closest('[data-reset-flags]') || !confirm(t('flagsAsk'))) return;
+  state.flags={}; LS.set('flags',state.flags); await loadAll(); toast(t('flagsDone'));
+});
 $('#dir').addEventListener('click',e=>{
   const sh=e.target.closest('[data-dshelf]');                       // public directory: one shelf
   if(sh){ state.dShelf=state.dShelf===sh.dataset.dshelf?'':sh.dataset.dshelf; state.dLimit=DIR_PAGE; render(); window.scrollTo({top:0}); document.body.classList.remove('drawer'); return; }
@@ -2477,7 +3753,7 @@ let qTimer; $('#q').addEventListener('input',e=>{ clearTimeout(qTimer); qTimer=s
 $('#q').addEventListener('keydown',e=>{ if(e.key==='Escape'){ e.target.value=''; state.q=''; render(); e.target.blur(); } });
 $('#sort').addEventListener('change',e=>{ state.sort=e.target.value; LS.set('sort',state.sort); render(); });
 $('#viewBtn').addEventListener('click',()=>{ state.view=state.view==='grid'?'list':'grid'; LS.set('view',state.view); render(); });
-document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{ state.lang=b.dataset.lang; LS.set('lang',state.lang); render(); if(dlg.open){ addCategories(); updateTarget(); renderPending(); } }));
+document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{ state.lang=b.dataset.lang; LS.set('lang',state.lang); applyItemLang(); render(); if(dlg.open){ addCategories(); updateTarget(); renderPending(); } }));
 document.querySelectorAll('[data-lf]').forEach(b=>b.addEventListener('click',()=>{ state.lf=b.dataset.lf; render(); }));
 function applyTheme(){ if(state.theme==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',state.theme); }
 $('#themeBtn').addEventListener('click',()=>{ state.theme=state.theme==='auto'?'light':state.theme==='light'?'dark':'auto'; LS.set('theme',state.theme); applyTheme(); render(); });
@@ -2495,6 +3771,8 @@ document.addEventListener('keydown',e=>{
   if(e.key==='/' && !typing && !dlg.open){ e.preventDefault(); $('#q').focus(); }
   else if(e.key==='Escape') document.body.classList.remove('drawer');
 });
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') refreshSubs(); });          // back to the page after a while: the subscriptions that are due
+$('#colRefresh').addEventListener('click',()=>refreshSubs({force:true,manual:true}));
 window.addEventListener('focus',()=>{ if($('#reader').hidden && !dlg.open && (state.mode==='server'||state.dir)) loadAll(); });
 
 /* ================= app: install to the home screen, read again without a network ================= */
@@ -2516,12 +3794,13 @@ syncInstall();
 
 /* ================= shared to this app (Android, installed): the files and the address another app sent ================= */
 /* sw.js puts them in the "inbox" cache and sends the browser here; the files go to the add dialog (to choose the collection), an address is kept as a link. */
-async function saveSharedLink({url, title}){
+async function saveSharedLink({url, title, summary, content, contentCut}){
   const u=httpUrl(url); if(!u) return;
   const host=hostOf(u), name=String(title||'').trim()||host, other=state.items.find(x=>x.type==='link' && x.url===u);
   if(!other){
-    const now=Date.now(), rec={id:'local:link:s'+now.toString(36)+Math.random().toString(36).slice(2,5), type:'link', url:u, title:cut(name,120), summary:'', keywords:[], lang:/[一-鿿]/.test(name)?'zh':'en',
-                               date:today(now), category:'notes', image:'', from:host, added:Math.floor(now/1000), ...(colById(state.col)?{collection:state.col}:{})};
+    const now=Date.now(), rec={id:'local:link:s'+now.toString(36)+Math.random().toString(36).slice(2,5), type:'link', url:u, title:cut(name,120), summary:cut(summary||'',220), keywords:[], lang:/[一-鿿]/.test(name)?'zh':'en',
+                               date:today(now), category:'notes', image:'', from:host, added:Math.floor(now/1000), ...(colById(state.col)?{collection:state.col}:{}),
+                               ...(typeof content==='string' && content ? {content:content.slice(0,FEED_CONTENT_MAX), ...(contentCut?{contentCut:true}:{})} : {})};
     await idb.put(rec); state.items.push({...rec, source:'local'}); render();
   }
   toast(t('shareLink',cut(name,24)));
@@ -2549,7 +3828,7 @@ async function takeInbox(){
   try{ const h=await idb.get('dir'); if(h && h.queryPermission){ const p=await h.queryPermission({mode:'readwrite'}); if(p==='granted') state.dir=h; else state.dirPending=h; } }catch(e){}
   await loadAll();
   takeInbox().catch(()=>{});                                          // something shared to this app from another app, if there is
-  if(state.dirCfg) loadDirectory();                                   // also in my own shelf: it tells which of my pages are in the directory, and where posts are sent
+  (state.dirCfg ? loadDirectory() : Promise.resolve()).then(()=>{ takeSubscribeLink(); refreshSubs(); syncInit(); setTimeout(introBoot,500); }).catch(()=>{});      // also in my own shelf: the directory tells which of my pages are in it, where posts are sent, and where subscriptions are read
   const m=location.hash.match(/^#read\/(.+)$/);
   if(m){ const id=decodeURIComponent(m[1]); history.replaceState(null,'',location.pathname+location.search); openReader(id); }
 })();

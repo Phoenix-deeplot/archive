@@ -33,6 +33,7 @@ library/_meta.json and merged here.
 import argparse
 import json
 import os
+import posixpath
 import re
 import sys
 import time
@@ -229,6 +230,31 @@ def _extract_md(path, st, is_txt=False):
         out['nodirectory'] = True
     if _pin_value(fm.get('pinned')):                 # kept at the top of the shelf for every visitor (a pin made in the page, in _meta.json, goes before it)
         out['pinned'] = _pin_value(fm.get('pinned'))
+    for k, key in (('title_en', 'title_en'), ('summary_en', 'description_en'), ('alt_en', 'alt_en')):       # what the page shows (and where it goes) when the visitor reads English
+        v = fm.get(key) or (fm.get('summary_en') if key == 'description_en' else '')
+        if v:
+            out[k] = _truncate(str(v).strip(), 120 if k == 'title_en' else 220)
+    kw_en = fm.get('tags_en') or fm.get('keywords_en') or []
+    if isinstance(kw_en, str):
+        kw_en = [k.strip() for k in re.split(r'[,，、;；]', kw_en) if k.strip()]
+    if kw_en:
+        out['keywords_en'] = kw_en
+    out.update(_book_fields(fm.get('kind'), fm.get('author'), fm.get('isbn')))
+    return out
+
+
+def _book_fields(kind, author, isbn):
+    """`kind: book` (+ `author`, `isbn`) says the page is about one book: the published page then says so to search engines (seo.py: Book structured data, book:* tags).
+    `kind: article` is the default and needs no writing."""
+    out = {}
+    if str(kind or '').strip().lower() in ('book', 'article'):
+        out['kind'] = str(kind).strip().lower()
+    a = _truncate(re.sub(r'\s+', ' ', str(author or '')).strip(), 120)
+    if a:
+        out['author'] = a
+    digits = re.sub(r'[^0-9Xx-]', '', str(isbn or ''))
+    if 10 <= len(digits.replace('-', '')) <= 13:
+        out['isbn'] = digits
     return out
 
 
@@ -343,6 +369,14 @@ def _extract_html(path, st, name=None):
         out['nodirectory'] = True
     if _pin_value(m.get('archive:pinned')):          # <meta name="archive:pinned" content="true">: kept at the top of the shelf for every visitor
         out['pinned'] = _pin_value(m.get('archive:pinned'))
+    for k, key in (('title_en', 'archive:title_en'), ('summary_en', 'archive:description_en'), ('alt_en', 'archive:alt_en')):       # shown (and opened) when the visitor reads English
+        v = (m.get(key) or '').strip()
+        if v:
+            out[k] = _truncate(v, 120 if k == 'title_en' else 220)
+    kw_en = [k.strip() for k in re.split(r'[,，、;；]', m.get('archive:keywords_en', '')) if k.strip()]
+    if kw_en:
+        out['keywords_en'] = kw_en
+    out.update(_book_fields(m.get('archive:kind'), m.get('archive:author') or m.get('author'), m.get('archive:isbn')))
     return out
 
 
@@ -397,7 +431,7 @@ def project_stats(dirpath):
 
 def _apply_overrides(item, overrides):
     o = overrides.get(item['id']) or {}
-    for k in ('title', 'summary', 'featured', 'hidden', 'keywords', 'cover', 'noindex', 'slug', 'nodirectory', 'pinned'):
+    for k in ('title', 'summary', 'featured', 'hidden', 'keywords', 'cover', 'noindex', 'slug', 'nodirectory', 'pinned', 'title_en', 'summary_en', 'alt_en', 'keywords_en', 'kind', 'author', 'isbn'):
         if k in o and o[k] not in (None, ''):
             item[k] = o[k]
     if item.get('nodirectory') is False:             # switched back on in the page: the key only exists while it is true
@@ -406,6 +440,19 @@ def _apply_overrides(item, overrides):
         item.pop('pinned', None)
     elif isinstance(item['pinned'], bool) or not isinstance(item['pinned'], (int, float)):
         item['pinned'] = 1                           # `"pinned": true` written by hand; the page writes the time it was pinned, and the latest pin goes first
+
+
+def _resolve_alt(item, rel):
+    """`alt_en` is written relative to the item's own folder (a tool folder: the folder; a file: the folder it is in) and must be an HTML file of library/.
+    -> 'library/<path>' like `path`, or the key is dropped (a path that does not exist, leaves library/, or is not HTML)."""
+    alt = str(item.pop('alt_en', '') or '').strip()
+    if not alt:
+        return
+    joined = posixpath.normpath(posixpath.join(posixpath.dirname(rel), alt.replace('\\', '/')))
+    full = os.path.join(LIBRARY, *joined.split('/'))
+    if joined.startswith(('..', '/')) or os.path.splitext(joined)[1].lower() not in ('.html', '.htm') or not os.path.isfile(full) or joined == rel:
+        return
+    item['alt_en'] = 'library/' + joined
 
 
 def load_previous():
@@ -449,6 +496,7 @@ def scan_library(keep_dates=False, skip=()):
                 item = {'id': rel, 'path': 'library/' + rel, 'category': norm_category(rel_dir.split('/')[0]),
                         **info, 'project': True, 'files': count}
                 _apply_overrides(item, overrides)
+                _resolve_alt(item, rel)
                 items.append(item)
                 dirnames[:] = []            # its css / js / images are assets, not cards
                 continue
@@ -463,6 +511,7 @@ def scan_library(keep_dates=False, skip=()):
             info.pop('metaCategory', None)
             item = {'id': rel, 'path': 'library/' + rel, 'category': category, **info}
             _apply_overrides(item, overrides)
+            _resolve_alt(item, rel)
             items.append(item)
     if previous:
         for item in items:
@@ -587,6 +636,8 @@ if __name__ == '__main__':
             moved = r.get("moved", 0)
             print(f'SEO: all.html links every page, urls.txt lists every address ({r["urls"]}); {moved} page(s) left at their old addresses to forward to the new ones')
             # print(f'SEO: all.html links every page, urls.txt lists every address ({r["urls"]}); {r["moved"]} page(s) left at their old addresses to forward to the new ones')
+            if r.get('alternates'):
+                print(f'SEO: {r["alternates"]} page(s) have an English version: hreflang on both, the English one has its own canonical address and a sitemap entry')
             if r['skipped'].get('duplicate'):
                 print(f'SEO: {r["skipped"]["duplicate"]} file(s) in library/ are exact copies of another one: published, but not in the sitemap or the lists, and their canonical address is the original\'s')
             sitemap_problems = r.get('sitemap_problems')

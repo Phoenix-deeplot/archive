@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>知树阅读使用指南：图文教程</title>
+<meta name="description" content="知树阅读怎么用：在线阅读 PDF、Markdown 和电子书，导入自己的文件，订阅博客（RSS），在手机上安装使用，投稿到公共目录；想自己搭一个，也有安装部署的完整步骤。">
+<meta name="keywords" content="知树阅读, zhitreebooks, 使用说明, 在线阅读, 电子书阅读, 订阅 RSS, 手机安装, 安装部署, 教程">
+<meta name="archive:pinned" content="true">
+<meta name="archive:title_en" content="ZhiTree Books User Guide: an illustrated tutorial">
+<meta name="archive:description_en" content="How to use ZhiTree Books: read PDF, Markdown and ebooks online, add your own files, follow blogs by RSS, use it on your phone and submit to the public directory; plus the steps to install and deploy your own copy.">
+<meta name="archive:keywords_en" content="ZhiTree Books, zhitreebooks, user guide, tutorial, read PDF online, RSS reader, install, deploy">
+<meta name="archive:alt_en" content="en/index.html">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M9 3.5h6l-.9 5.2 3.4 3.3v1.5H6.5V12l3.4-3.3zM12 13.5V21"/></symbol>
+  <symbol id="i-hide" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.2A9.7 9.7 0 0 1 12 6c5 0 8.5 4.5 9.5 6-.5.8-1.6 2.3-3.2 3.6M6.3 7.6C4.4 8.9 3.1 10.8 2.5 12c1 1.5 4.5 6 9.5 6 1.6 0 3-.4 4.3-1.1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+  <symbol id="i-move" viewBox="0 0 24 24"><path d="M3 7a1 1 0 0 1 1-1h5l2 2h8a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M8.5 14h7M13 11.5l2.5 2.5-2.5 2.5"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 3.8 5.2 3.8 8.5s-1.2 6.1-3.8 8.5c-2.6-2.4-3.8-5.2-3.8-8.5S9.4 5.9 12 3.5z"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M4 7h3c4 0 6 10 10 10h3M17 14l3 3-3 3M4 17h3c1.4 0 2.6-1.2 3.6-2.8M14 9.8C15 8.2 16 7 17.5 7H20M17 4l3 3-3 3"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+</svg>
+
+<div class="langbar" id="langbar" lang="en" hidden><span>This guide is also available in English.</span> <a href="en/" hreflang="en">English version &rarr;</a> <button type="button" aria-label="Close">&times;</button></div>
+<div class="wrap">
+<header class="top">
+  <div class="langsw"><a href="en/" hreflang="en" lang="en">English</a></div>
+  <p class="eyebrow">知树阅读 · 个人数字图书馆</p>
+  <h1>使用指南</h1>
+  <p class="lead">一个放笔记、书、PDF 和小工具的网页书架。这里用图和步骤，把怎么用讲清楚；想自己搭一个，切到“安装部署”。</p>
+</header>
+
+<div class="tabbar">
+  <div class="tabs" role="tablist" aria-label="指南">
+    <button type="button" role="tab" id="tab-usage" aria-controls="usage" aria-selected="true" data-tab="usage">使用说明</button>
+    <button type="button" role="tab" id="tab-deploy" aria-controls="deploy" aria-selected="false" data-tab="deploy">安装部署</button>
+  </div>
+  <span class="tabnote" id="tabnote" data-usage="给读者：怎么读、怎么存、怎么在手机上用" data-deploy="给站长：怎么在自己电脑上用、怎么部署上线">给读者：怎么读、怎么存、怎么在手机上用</span>
+</div>
+
+<!-- ============================ 使用说明 ============================ -->
+<section class="panel" id="usage" role="tabpanel" aria-labelledby="tab-usage">
+
+<ul class="toc">
+  <li><a href="#u-start">这是什么</a></li><li><a href="#u-ui">认识首页</a></li><li><a href="#u-read">读一篇</a></li><li><a href="#u-card">卡片上的按钮</a></li>
+  <li><a href="#u-add">放进自己的文件</a></li><li><a href="#u-follow">订阅别人的文章</a></li><li><a href="#u-mobile">在手机上用</a></li><li><a href="#u-dir">公共目录与投稿</a></li><li><a href="#u-feed">订阅本站</a></li><li><a href="#u-faq">常见问题</a></li>
+</ul>
+
+<h2 id="u-start"><span class="n">0</span>这是什么</h2>
+<p>知树阅读是一个个人数字图书馆：站长把笔记、书、PDF 和网页小工具放进一个文件夹，它们就变成网页上一张张卡片。<b>不用注册，不用登录</b>，打开就能读。你可以做三件事：</p>
+<div class="cards3">
+  <div><h3>读</h3><p>点开卡片就在页面里阅读，HTML、Markdown、TXT、PDF 都行；会记住读到哪里，能加书签、换阅读颜色。</p></div>
+  <div><h3>存</h3><p>把<b>你自己的文件</b>放进来，一次选很多个，分成“合集”。它们只存在你自己的浏览器里，不会上传，别人也看不到。</p></div>
+  <div><h3>逛和投稿</h3><p>“公共目录”把很多人的博客、文章、书单汇在一起；你也可以把自己的网址或文章送去收录，不需要账号。</p></div>
+</div>
+
+<h2 id="u-ui"><span class="n">1</span>认识首页</h2>
+<figure class="shot"><img width="1600" height="1000" src="img/home.webp" alt="首页：左侧是空间切换、分类和标签，右侧是搜索框和卡片" loading="lazy"><figcaption>首页（电脑）。图上的数字对应下面的说明。</figcaption></figure>
+<ol class="legend">
+  <li><b>我的书架 / 公共目录</b>：两个空间，点一下切换。“我的书架”是这个站点自己的书和你放进来的文件；“公共目录”见第 6 节。</li>
+  <li><b>分类和标签</b>：点分类只看这一类，点标签按主题筛选。下面的“卡片目录”列出每一类里文章的标题，点一下就跳到那张卡片。</li>
+  <li><b>搜索</b>：标题、摘要、关键词一起搜。按 <kbd>/</kbd> 键直接跳到搜索框。</li>
+  <li><b>卡片</b>：封面、标题、摘要、阅读时间。点它开始阅读。右上角的小标记是文件类型（MD / PDF / TXT / APP……）；“APP”是一个网页小工具。</li>
+  <li><b>添加</b>：把你自己的文件放进来，见第 4 节。</li>
+</ol>
+<p>搜索框右边还有：<b>全部 / 中 / EN</b>（只看某种语言的内容）、<b>排序</b>（最近添加 / 发布日期 / 最近阅读 / 标题；公共目录按最新排列）、<b>列表 / 卡片</b>视图、<b>订阅</b>。左下角可以切换界面语言（中文 / EN）和主题（跟随系统 / 浅色 / 深色）。</p>
+
+<h2 id="u-read"><span class="n">2</span>读一篇</h2>
+<p>点任意一张卡片就进入阅读器。所有格式共用同一排按钮：</p>
+<figure class="shot"><img width="1600" height="1000" src="img/reader.webp" alt="阅读器：顶栏有返回、上一篇下一篇、目录、阅读设置、加书签、精选、新标签打开；右侧是目录面板" loading="lazy"><figcaption>阅读器（电脑），右侧打开了“目录”面板。</figcaption></figure>
+<ol class="legend">
+  <li><b>返回</b>：回到书架（也可以按 <kbd>Esc</kbd>）。</li>
+  <li><b>上一篇 / 下一篇</b>：按当前列表的顺序翻页（也可以按 <kbd>←</kbd> <kbd>→</kbd>）。</li>
+  <li><b>目录</b>：取文章里的标题，点一下跳到那一节，并标出读到哪里；“书签”页在旁边。</li>
+  <li><b>阅读设置（Aa）</b>：换颜色、调字号，见下图。</li>
+  <li><b>加书签</b>：记下现在读到的位置，之后在“书签”里点一下就回来。</li>
+  <li><b>精选 / 新标签打开</b>：收藏整篇；或者在新标签页里单独打开这一篇。</li>
+</ol>
+<p>滚动时会<b>自动记住进度</b>，下次打开回到原来的位置；首页最上面的“继续阅读”列出读到一半的几篇。</p>
+
+<figure class="shot"><img width="1600" height="1000" src="img/reader-settings.webp" alt="阅读设置面板：字号、行距、版面宽度、五种阅读颜色" loading="lazy"><figcaption>阅读设置：颜色有“跟随系统 / 浅色 / 深色 / 米黄 / 护眼绿”，设置会记住。</figcaption></figure>
+<table>
+  <tr><th>格式</th><th>怎么显示</th><th>字号 / 行距 / 宽度</th><th>目录和书签</th></tr>
+  <tr><td>Markdown、TXT</td><td>统一的阅读排版</td><td>都能调</td><td>有；TXT 里“第三章”“Chapter 4”这样的行会当成章节</td></tr>
+  <tr><td>HTML</td><td>保留原网页的样子</td><td>只能换颜色</td><td>标题规范的页面有</td></tr>
+  <tr><td>PDF</td><td>浏览器自带的 PDF 阅读器</td><td>只能换颜色</td><td>没有（手机上显示“打开 / 下载”）</td></tr>
+</table>
+<div class="tip"><b class="h">关于“护眼”</b><p>这里换的是色调（米黄、护眼绿、深色），网页做不到真正的滤蓝光。</p></div>
+
+<h2 id="u-card"><span class="n">3</span>卡片上的按钮</h2>
+<figure class="shot narrow"><img width="489" height="687" src="img/card.webp" alt="一张你自己添加的卡片，底部一排按钮" loading="lazy"><figcaption>卡片底部这一排按钮。这是一张你自己添加的卡片，所以最右边有垃圾桶；站点上的卡片没有它，但多一个“新标签打开”。</figcaption></figure>
+<table class="icons">
+  <tr><td><svg class="ic"><use href="#i-star"/></svg></td><td><b>设为精选</b>：收进“精选”分类，适合放最爱的几篇。</td></tr>
+  <tr><td><svg class="ic"><use href="#i-pin"/></svg></td><td><b>置顶</b>：不管怎么排序、在哪个分类里，都排在最前面，并带“置顶”标记。多篇置顶时，最后置顶的排最前。<b>你在网页上点的置顶只对你自己有效</b>，不会影响别的访客。</td></tr>
+  <tr><td><svg class="ic"><use href="#i-hide"/></svg></td><td><b>隐藏</b>：从分类和搜索里拿掉，不删文件。左侧最下面的“已隐藏”里可以恢复。</td></tr>
+  <tr><td><svg class="ic"><use href="#i-move"/></svg></td><td><b>移动到其他分类</b>：换个分类放；你自己的文件还可以放进别的合集。</td></tr>
+  <tr><td><svg class="ic"><use href="#i-globe"/></svg></td><td><b>公开到公共目录</b>：把这一项送去审核，见第 6 节。站点开通了公共目录才有。</td></tr>
+  <tr><td><svg class="ic"><use href="#i-shuffle"/></svg></td><td><b>换一张封面</b>：封面是按标题生成的，不喜欢就换一张。</td></tr>
+  <tr><td><svg class="ic"><use href="#i-ext"/></svg></td><td><b>新标签打开</b>：脱离阅读器，单独打开这个页面。</td></tr>
+  <tr><td><svg class="ic"><use href="#i-trash"/></svg></td><td><b>删除</b>：只有<b>你自己的文件</b>才有这个按钮（浏览器里添加的，或你连接的本机文件夹里的），点了会先确认，删了就找不回来。</td></tr>
+</table>
+<div class="tip"><b class="h">为什么站点上的书没有垃圾桶？</b><p>站点自己的书是站长放的，只有站长本人能在自己的电脑上删掉再重新发布；访客在页面上做不到，也没有这样的请求可以调用。你在页面上能做的是“隐藏”，它只在你自己的浏览器里生效。星标、置顶、移动分类也是一样。</p></div>
+
+<h2 id="u-add"><span class="n">4</span>放进你自己的文件</h2>
+<figure class="shot"><img width="1500" height="1348" src="img/add.webp" alt="添加文件窗口：选好的文件列表、合集选择、分类选择" loading="lazy"><figcaption>“添加”窗口：选好文件，决定放进哪个合集、哪个分类，点保存。</figcaption></figure>
+<ol class="steps">
+  <li>点右上角的 <b>添加</b>（或者直接把文件拖进页面）。</li>
+  <li>点虚线框选文件，<b>可以一次选很多个</b>。支持 HTML、Markdown、TXT、PDF，单个不超过 30 MB。</li>
+  <li>每个文件可以改标题和摘要；选好<b>合集</b>和<b>分类</b>。</li>
+  <li>点 <b>保存</b>。页面会自动切到这个合集。</li>
+</ol>
+<div class="warn"><b class="h">它们存在哪里？</b><p>存在<b>你这个浏览器</b>里，不会上传到任何服务器，别人也看不到。所以：换浏览器、换设备，或者清除了网站数据，这些文件就没有了；手机和电脑之间<b>不同步</b>。想长期放在自己电脑上，用左下角的“连接文件夹”（Chrome / Edge）：选一个文件夹，里面的文件会直接显示出来，添加也会写进这个文件夹。</p></div>
+
+<h3 id="u-backup">备份与恢复：换设备、防丢失</h3>
+<p>你的文件、合集、订阅、阅读进度和书签只存在这个浏览器里，所以换设备或清除网站数据之前，先做一份备份。点左下角的 <b>备份与恢复</b>：</p>
+<ul>
+  <li><b>导出完整备份</b>：一个 .zip，里面有你添加的所有文件和全部设置。</li>
+  <li><b>只导出书单和设置</b>：一个很小的 .json，不含文件内容，适合先把收藏的链接、订阅、合集和阅读进度带到另一台设备。</li>
+  <li><b>恢复</b>：选择备份文件，页面先告诉你里面有什么、哪些已经在这里了，点“合并到我的书架”才会导入。<b>只会合并，不会删除你现有的任何东西</b>；内容相同的文件不会重复添加。</li>
+</ul>
+<p>备份文件由浏览器生成，保存在你自己的设备上，不经过服务器。站点自带的书和你“连接”的本机文件夹里的文件不在备份里。首页第一次打开时的“这是什么”说明，关掉以后可以在左下角点“这是什么”再看。</p>
+
+<h3 id="u-sync">同步（可选）：几台设备用同一个书架</h3>
+<p>站点开通了同步服务时，左下角会有一个 <b>同步</b> 按钮（没有就是没开通）。它是可选的，不开也能完整使用；不用注册，不用密码。</p>
+<ol class="steps">
+  <li>在第一台设备上点 <b>同步 → 开启同步，生成同步码</b>，把显示的同步码<b>马上保存好</b>（比如存进密码管理器）。</li>
+  <li>在另一台设备上点 <b>同步</b>，在“已经在别的设备上开过同步？”里输入同步码，点 <b>连接</b>。</li>
+  <li>以后改动会在几秒后自动同步，回到页面时也会同步一次；也可以随时点“立即同步”。</li>
+</ol>
+<ul>
+  <li><b>同步什么</b>：书单、收藏的链接、订阅清单、合集、阅读进度、书签、星标和置顶；体积小的文本文件（Markdown、TXT、HTML，单个不超过约 1 MB）连内容一起同步，在别的设备上打开时才取回来，最近的几篇会提前取回。</li>
+  <li><b>不同步什么</b>：PDF 等大文件只同步书单，卡片上标着“仅书单”，内容不会过去；要带到另一台设备，请在原设备上用上面的“备份与恢复”。订阅里的文章不同步，各设备自己从订阅源读。</li>
+  <li><b>怎么保密</b>：加密在你的浏览器里完成，同步服务只看到打乱的数据，读不了任何标题和内容；同步码只以哈希的形式保存。<b>同步码就是钥匙：丢了就找不回来，别人拿到它就能读你的书架。</b></li>
+  <li><b>限制</b>：免费空间约 9 MB，满了以后新文件只同步书单；半年（180 天）不用，同步空间会被清掉。两台设备同时改了同一处时，进度取较新的，书签合在一起，其它以正在使用的这台为准；一边删除、另一边改动的，改动保留。</li>
+  <li><b>关掉</b>：“在这台设备上关闭同步”不会删除这里的任何内容；“删除云端数据”会清空同步空间，各设备上的内容都不动。</li>
+</ul>
+<p>用得久了，页面会问你一次：如果以后加上“大文件同步”（PDF 等，空间更大），你愿意付费吗？你的回答只作为一个匿名计数发给同步服务，不含任何能认出你的信息。</p>
+
+<h3>合集：一批文件放在一起</h3>
+<p>一次导入的一批文件，可以放进一个<b>合集</b>。选中一个合集以后，卡片、分类、标签、搜索、“继续阅读”都只显示这个合集，书架就干净了。</p>
+<figure class="shot"><img width="1040" height="770" src="img/collections.webp" alt="管理合集窗口：新建、改名、删除，并显示已用的存储空间" loading="lazy"><figcaption>“管理”里可以新建、改名、删除合集，并看到这个浏览器里已经用了多少空间。</figcaption></figure>
+<ul>
+  <li><b>切换</b>：电脑上用页面上方的“合集”下拉框；手机上点左上角的目录按钮，左侧列表最上面就是合集。</li>
+  <li><b>管理</b>：新建、改名、删除。<b>删除合集会连里面的文件一起删</b>，会先问你。</li>
+  <li><b>换合集</b>：卡片上的“移到其他分类”里，可以把某个文件放进别的合集。</li>
+</ul>
+
+<h3 id="u-follow">订阅：把别人的博客和文章源订阅进来</h3>
+<p>想读的博客，不用每次去它的网站看有没有新文章：在“添加”窗口切到 <b>订阅</b>，把它订阅到你自己的书架里。</p>
+<figure class="shot"><img width="1080" height="1000" src="img/subscribe.webp" alt="添加窗口的订阅标签：贴一个网址，查找后显示它的名字和最近几篇，起个合集名，点订阅" loading="lazy"><figcaption>“添加 → 订阅”：贴网址、查找、起个合集名、订阅。</figcaption></figure>
+<ol class="steps">
+  <li>点 <b>添加</b>，切到 <b>订阅</b> 标签。窗口下面的 <b>“试试这些”</b> 是站长挑的几个值得订阅的源，<b>点一下就订阅</b>，可以连着订几个，点“完成”回到书架。</li>
+  <li>贴一个网址：博客首页、订阅源（RSS / Atom / JSON Feed）都行，点 <b>查找</b>。页面会告诉你它叫什么、最近有哪几篇。</li>
+  <li>给这个订阅起个合集名，点 <b>订阅</b>。</li>
+</ol>
+<figure class="shot"><img width="1500" height="859" src="img/subscribed.webp" alt="订阅后的书架：这个订阅是一个合集，新文章带“新”标记，合集旁边显示有几篇新的" loading="lazy"><figcaption>订阅是一个合集。新文章带“新”标记，合集旁边显示有几篇新的；点开就去原站读。</figcaption></figure>
+<ul>
+  <li><b>文章都在这里读，不用跳走</b>：订阅源自带全文的，最近几篇会把正文存下来（卡片上有“全文”标记）；订阅源只带摘要的，点开时由“更新服务”去读原文页面，提取正文后显示在阅读器里（有的页面要十几秒），并存在你的浏览器里，下次秒开；最新的几篇还会在空闲时提前读好。右上角和文末都有“阅读原文”。和你收藏的链接一样，可以搜索、加星、置顶、隐藏。在阅读设置里还能<b>下载这一篇的网页（HTML）</b>，或者<b>打印 / 存为 PDF</b>。</li>
+  <li><b>读不了的页面</b>：要登录或付费的、有“人机验证”的、靠脚本才显示正文的、PDF、对方在 robots.txt 里不让程序读取的，这里读不了。阅读器会告诉你原因，并给一个“打开原文”按钮；卡片上标着“仅原站”，以后点它直接在新标签页打开原文（一周后再试一次）。</li>
+  <li><b>什么时候更新</b>：打开页面时自动更新（距上次超过 3 小时），也可以随时点“刷新”。网页没法在后台定时更新，所以<b>不会主动推送</b>；没有网络时看上次存下的。每个订阅保留最近 60 篇（你加了星或置顶的不会被清掉）。</li>
+  <li><b>贴的是一篇文章</b>（不是博客）：它没有可以跟着更新的源，只能存成一条链接，不会更新；能读的话，正文也一起存下来，在阅读器里读。</li>
+  <li><b>管理</b>：合集的“管理”里可以刷新、“全部标为已读”、取消订阅（已存的文章一起清掉）。你删掉的某一篇，下次更新不会再出现。</li>
+  <li><b>换设备</b>：在“管理”（或添加窗口的“导入 / 导出订阅清单”）里<b>导出 OPML</b>，或<b>复制清单链接</b>，到另一台设备上导入或打开那个链接。<b>只同步订阅清单</b>（一串网址），文章和已读状态各设备自己更新。OPML 也能和 Feedly 等阅读器互通。</li>
+  <li><b>隐私</b>：别人的网站不让网页直接读，所以读取由本站的“更新服务”代劳：你订阅的网址、你点开的文章网址会发给它，它读完把标题、摘要和正文还给你的浏览器，<b>自己什么都不保存</b>。它读页面时不带你的任何 cookie、不登录，自报家门（用户代理写着“ZhiTreeBooks-Reader”），并遵守对方的 robots.txt。订阅清单只存在你的浏览器里。</li>
+</ul>
+<div class="phones">
+  <figure><img width="600" height="1298" src="img/m-subscribed.webp" alt="手机上的左侧目录：订阅的合集旁边显示新文章数" loading="lazy"><figcaption>手机：合集列表里，订阅旁边有新文章数</figcaption></figure>
+</div>
+<div class="tip"><b class="h">没有看到“订阅”标签？</b><p>这个功能需要站长开通公共目录的服务（见“安装部署”）。没开通时，“添加”窗口里只有文件。</p></div>
+
+<h2 id="u-mobile"><span class="n">5</span>在手机上用</h2>
+<h3>装到主屏幕，像 App 一样用</h3>
+<ul>
+  <li><b>Android（Chrome）</b>：打开网站，点左侧栏最下面的“安装到主屏幕”，或浏览器菜单里的“安装应用 / 添加到主屏幕”。</li>
+  <li><b>iPhone（Safari）</b>：点底部的“分享”按钮 → “添加到主屏幕”。</li>
+</ul>
+<p>装好以后全屏打开，打开过的页面和文件（最多 120 个）会保存下来，<b>没有网络也能再读</b>。</p>
+<div class="warn"><b class="h">iPhone 一定要装到主屏幕再用</b><p>不装的话，Safari 大约 7 天不用，就会清掉这个网站的数据（阅读进度、书签、你添加的文件都会丢）。装到主屏幕的不受这个限制。</p></div>
+
+<h3>手机上的卡片和手势</h3>
+<ul>
+  <li><b>卡片视图是两列</b>：每张卡片留着封面、标题和一行信息，星标之外的按钮（置顶、隐藏、移动、公开、换封面、删除…）收在卡片上的“<b>…</b>”里，点一下展开，点别处收回。右上角的列表按钮可以切换成一列一条的列表。</li>
+  <li><b>读文章时左右滑</b>：向左滑是下一篇，向右滑是上一篇（顺序就是书架当前的排序）；到头了会提示。顶栏没有“上一篇 / 下一篇”按钮了，目录面板里还留着一份，PDF 这类滑不动的文件用它。往左右滑动的代码块和表格不会被误翻页；选中了文字、放大了页面、从屏幕最边上起手（那是系统的返回手势）都不会翻页。</li>
+  <li><b>书架上左右滑</b>：向右滑打开左侧列表，向左滑收起（在列表里的一条上向左滑，是露出它的按钮，见下面）。</li>
+</ul>
+<h3>左侧目录：合集、分类、左滑删除</h3>
+<p>点左上角的 <b>≡</b>（或在书架上向右滑）打开左侧列表：最上面是<b>合集</b>，然后是分类、标签，最下面是“卡片目录”。<b>把目录里的某一条往左滑</b>，下面露出按钮：</p>
+<div class="phones">
+  <figure><img width="600" height="1298" src="img/m-drawer.webp" alt="手机上的左侧目录：合集、分类、标签" loading="lazy"><figcaption>左侧目录：合集在最上面</figcaption></figure>
+  <figure><img width="600" height="1298" src="img/m-swipe.webp" alt="手机上把目录里的一条往左滑，露出红色删除按钮" loading="lazy"><figcaption>往左滑，露出“删除”</figcaption></figure>
+  <figure><img width="600" height="1298" src="img/m-reader.webp" alt="手机上的阅读器" loading="lazy"><figcaption>手机阅读器</figcaption></figure>
+</div>
+<ul>
+  <li><b>红色“删除”</b>：你自己的文件，点了会先确认。</li>
+  <li><b>灰色“隐藏”</b>：站点上的书（你删不了），只在你的浏览器里隐藏。在“已隐藏”里则是“恢复”。</li>
+  <li>竖着滑还是滚动列表；滑出来以后点一下别处就收回去。</li>
+</ul>
+<h3>把别的 App 里的文件“分享到知树阅读”（Android）</h3>
+<p>装到主屏幕以后，在文件管理器、微信、浏览器里点“分享”，选“知树阅读”：分享的 PDF / Markdown / TXT / HTML 会打开“添加”窗口，选好合集点保存；分享的<b>网址</b>会直接存成“收藏的链接”。第一次装完，要等浏览器更新应用信息（通常一天内，重新添加图标会立刻生效）才会出现在分享列表里。iPhone 的 Safari 没有这个功能，请用“添加”多选文件。</p>
+
+<h2 id="u-dir"><span class="n">6</span>公共目录与投稿</h2>
+<p>点左侧的“公共目录”，看到的是很多人的博客、文章、GitHub 仓库、视频汇成的一份目录。<b>它不存别人的全文</b>：只记标题、摘要、封面图地址和回到原站的链接。点一篇文章，会在阅读器里直接读（和订阅里的一样，由“更新服务”读原文；读不了的页面、视频和仓库去原站）；你收藏它，读过的正文也一起存进你的书架。</p>
+<figure class="shot"><img width="1600" height="1000" src="img/directory.webp" alt="公共目录：左侧按类型、标签、书架筛选，右侧是条目卡片" loading="lazy"><figcaption>公共目录。可以按类型、标签、书架（一个博客或一个仓库）筛选，也能搜索。</figcaption></figure>
+<ul>
+  <li><b>收藏</b>：卡片上的书签按钮，把这条链接存进你自己的书架（只存在你的浏览器里），标着“收藏的链接”。</li>
+  <li><b>订阅</b>：在公共目录里点“订阅”，订阅的是整个目录、某个类型、某个标签或某个书架。</li>
+  <li><b>推荐一个博客</b>：贴它的网址（博客首页或 RSS 都行）去“收录”。<b>订阅源也可以送审</b>，站长审核通过后，它的新文章每天自动进入目录。</li>
+</ul>
+<h3>把自己的内容送进去：三种方式，都不需要账号</h3>
+<figure class="shot"><img width="1040" height="860" src="img/submit.webp" alt="收录窗口：贴一个网址，点检查，再提交" loading="lazy"><figcaption>点右上角的“收录”：贴网址、检查、勾选声明、提交。</figcaption></figure>
+<ol class="steps">
+  <li><b>贴一个网址</b>：博客、文章、视频、GitHub 仓库、PDF 都可以。先点“检查”，页面会告诉你它是什么、读到几篇、最近几条是什么，也会先拦下“目录里已经有了”的重复项。确认后勾选“我有权发布这些内容”，点“提交”。</li>
+  <li><b>写文章</b>：在窗口里切到“写文章”，写或粘贴一篇 Markdown，署你填的作者名。通过后由目录托管成一个页面（<b>公开可见、不显示图片</b>），可以随时要求下架。</li>
+  <li><b>点卡片上的地球图标</b>：“我的书架”里每张卡片都有。有网址的，送这个网址；你电脑或浏览器里的 Markdown / TXT，送文章正文；书、PDF、网页小工具这类没有网址的，只公开一张<b>资料卡</b>（标题、作者、摘要、标签），不含文件。</li>
+</ol>
+<p>提交以后会进入站长的审核队列，卡片上显示“已提交，等待审核”；通过后就出现在公共目录里。网址的不同写法（http / https、www、末尾斜杠、跟踪参数）算同一个；标题、作者、摘要几乎一样的也会被拦下，并告诉你像哪一个。</p>
+<div class="tip"><b class="h">贴“阅读器的地址”没用</b><p>形如 <code>…/#read/local%3A…</code> 的地址是你自己浏览器里的阅读地址，别人打不开。提交时请用真实网址，或者直接点卡片上的地球图标。</p></div>
+
+<h2 id="u-feed"><span class="n">7</span>订阅本站（RSS）</h2>
+<p>这一节讲的是反过来：<b>订阅这个网站</b>，用你自己的 RSS 阅读器读。（订阅别人的文章，见第 4 节。）点顶栏绿色的“订阅”按钮：里面有“在 Feedly / Inoreader 中订阅”的一键链接和复制按钮。可以只订阅一部分：<b>全部、某个分类、某个标签</b>，打开时默认选中你正在看的那个。订阅以后，有新文章时你的 RSS 阅读器（Feedly、Inoreader 等）会提醒你。</p>
+
+<h2 id="u-faq"><span class="n">8</span>常见问题</h2>
+<details><summary>我添加的文件去哪了？手机上为什么看不到电脑里添加的？</summary><p>它们存在你添加时所用的那个浏览器里，不同设备、不同浏览器之间不同步。想在手机上读，就在手机上导入（可以多选，放进一个合集），或者用“分享到知树阅读”。想把电脑上的东西带过去：先在电脑上“备份与恢复”导出，再在手机上恢复。</p></details>
+<details><summary>我点了置顶 / 隐藏 / 移动，为什么别人看不到？</summary><p>在网站上点这些，只保存在你自己的浏览器里，是你自己的整理方式，不会改动网站。要让所有人看到，只有站长能在自己电脑上改，然后重新发布。</p></details>
+<details><summary>我想删除站点上的一本书，怎么办？</summary><p>访客不能删。你可以“隐藏”它（只对你自己有效）。如果你是站长，在自己电脑的 <code>library/</code> 里删掉，再重新部署。</p></details>
+<details><summary>订阅了一个博客，为什么没有出现新文章，或者显示“更新失败”？</summary><p>先在合集的“管理”里点“刷新”，看那一行写的原因。常见的是：对方网站暂时打不开、对方不让程序读取、或者那个地址其实不是订阅源。网页不能在后台自动更新，只有你打开页面的时候才会去读；对方没有发新文章，也就没有新的。</p></details>
+<details><summary>PDF 为什么没有目录和书签？</summary><p>PDF 由浏览器自带的阅读器显示，页面读不到它的结构（扫描版更是没有文字）。HTML、Markdown、TXT 才有目录和书签。</p></details>
+<details><summary>我的数据安全吗？</summary><p>你的文件、阅读进度、书签、合集都只保存在你自己的浏览器里，不会发送到服务器。网站本身不设账号。详细见<a href="/privacy.html">隐私政策</a>。</p></details>
+<details><summary>有哪些快捷键？</summary><p><kbd>/</kbd> 聚焦搜索；<kbd>Esc</kbd> 关闭阅读器；阅读时 <kbd>←</kbd> <kbd>→</kbd> 上一篇 / 下一篇。</p></details>
+
+<p>想自己搭一个这样的网站？<a href="#deploy" data-open="deploy">切到“安装部署”</a>。</p>
+</section>
+
+<!-- ============================ 安装部署 ============================ -->
+<section class="panel" id="deploy" role="tabpanel" aria-labelledby="tab-deploy" hidden>
+
+<ul class="toc">
+  <li><a href="#d-need">需要什么</a></li><li><a href="#d-local">本地跑起来</a></li><li><a href="#d-content">放内容</a></li><li><a href="#d-pin">置顶这篇说明</a></li>
+  <li><a href="#d-deploy">部署到 Vercel</a></li><li><a href="#d-seo">让搜索引擎找到</a></li><li><a href="#d-dir">开通公共目录</a></li><li><a href="#d-admin">审核页</a></li><li><a href="#d-trouble">疑难</a></li>
+</ul>
+
+<h2 id="d-need"><span class="n">0</span>你需要什么</h2>
+<table>
+  <tr><th>要做的事</th><th>需要</th><th>必须吗</th></tr>
+  <tr><td>在自己电脑上用</td><td>Python 3（不用装任何依赖）</td><td>必须</td></tr>
+  <tr><td>发布到网上</td><td>Node.js、一个 Vercel 账号（免费的就行）</td><td>想让别人访问就需要</td></tr>
+  <tr><td>自己的网址</td><td>一个域名，在 Vercel 里绑定</td><td>可选，不绑也有 <code>*.vercel.app</code></td></tr>
+  <tr><td>公共目录和投稿</td><td>一个 GitHub 账号</td><td>可选</td></tr>
+</table>
+<p>这个项目是一个文件夹：<code>index.html</code>（网页）、<code>serve.py</code>（本地服务）、<code>build_index.py</code> 和 <code>seo.py</code>（部署时构建）、<code>vercel.json</code>（部署设置），以及你的内容所在的 <code>library/</code>。</p>
+
+<h2 id="d-local"><span class="n">1</span>在自己电脑上跑起来</h2>
+<p>在项目文件夹里打开终端，运行：</p>
+<pre><code>python serve.py</code></pre>
+<p>Mac / Linux 用 <code>python3 serve.py</code>。浏览器会自动打开 <code>http://127.0.0.1:8000</code>，换端口用 <code>--port 9000</code>。就这一条命令，不用装别的。</p>
+<ul>
+  <li>往 <code>library/</code> 里放文件，<b>刷新页面就出现</b>；也可以点“添加”或把文件拖进页面，直接写进 <code>library/</code>。</li>
+  <li>这时页面是“站长模式”：卡片上的移动、删除、置顶、星标、隐藏都会<b>真的改文件</b>（星标、置顶、隐藏、改标题保存在 <code>library/_meta.json</code>）。</li>
+  <li>服务只接受发往本机的请求；它能写文件，<b>不要把它暴露到公网</b>。改了 <code>serve.py</code> 之后要重启它。</li>
+</ul>
+
+<h2 id="d-content"><span class="n">2</span>往书架里放内容</h2>
+<pre><code>library/
+├── books/      书籍
+├── tools/      工具（网页小程序）
+├── notes/      个人笔记
+├── featured/   精选
+└── _meta.json  星标、置顶、隐藏、标题改动（自动生成）</code></pre>
+<ul>
+  <li><b>一级文件夹就是分类</b>，新建别的文件夹会自动成为新分类。</li>
+  <li><b>工具 = 文件夹</b>：一个网页工具由 <code>index.html</code> + css + js + 图片组成时，放进 <code>library/tools/工具名/</code>，<b>整个文件夹是一张卡片</b>，里面的资源请用相对路径（<code>style.css</code>），不要用 <code>/</code> 开头。<b>这份指南本身就是这样放的</b>：<code>library/notes/guide/</code>。</li>
+  <li>支持 HTML、Markdown、TXT、PDF，单个文件上限 80 MB。Word（.docx）请另存为 PDF 或 Markdown。</li>
+</ul>
+<p>Markdown 开头可以写 front matter，指定标题、摘要、关键词；HTML 里用 meta：</p>
+<pre><code>---
+title: 我的标题
+description: 一句话摘要
+tags: [供应链, 读书]
+featured: true     # 设为精选
+pinned: true       # 置顶，所有访客都看到
+---</code></pre>
+<pre><code>&lt;meta name="description" content="一句话摘要"&gt;
+&lt;meta name="keywords" content="供应链, 采购"&gt;
+&lt;meta name="archive:pinned" content="true"&gt;</code></pre>
+
+<h3>同一篇的另一种语言</h3>
+<p>如果一篇内容有两种语言的页面，各放一个文件，再告诉网站英文那份在哪里。访客把界面切到英文时，看到的是英文标题和摘要，点开的是英文页；搜索引擎会拿到两个地址，并知道它们互为译文。</p>
+<pre><code>---
+title: 我的标题
+title_en: My title
+description_en: A one-sentence summary in English
+tags_en: [supply chain, reading]
+alt_en: en/index.html     # 英文页，相对于这一篇的位置，必须在 library/ 里
+---</code></pre>
+<pre><code>&lt;meta name="archive:title_en" content="My title"&gt;
+&lt;meta name="archive:description_en" content="A one-sentence summary in English"&gt;
+&lt;meta name="archive:keywords_en" content="supply chain, reading"&gt;
+&lt;meta name="archive:alt_en" content="en/index.html"&gt;</code></pre>
+<p>这份指南就是这样做的：<code>library/notes/guide/index.html</code> 是中文页，<code>library/notes/guide/en/index.html</code> 是英文页。</p>
+
+<h2 id="d-pin"><span class="n">3</span>让这篇说明排在第一位</h2>
+<p>想让所有访客都先看到这篇指南，需要<b>你</b>在自己电脑上置顶，再重新部署。两种做法，选一种：</p>
+<ol class="steps">
+  <li><b>在文档里写</b>（最省事）：Markdown 的 front matter 里加 <code>pinned: true</code>，HTML 里加 <code>&lt;meta name="archive:pinned" content="true"&gt;</code>。写成数字（比如 <code>pinned: 2</code>）也行，数字越大越靠前。这份指南用的就是这种。</li>
+  <li><b>在页面上点图钉</b>：用 <code>python serve.py</code> 打开页面，点卡片上的图钉（写进 <code>library/_meta.json</code>）。</li>
+</ol>
+<p>然后重新部署（见下一节）。多篇置顶时，最后置顶的排最前。</p>
+<div class="warn"><b class="h">在已经上线的网站上点图钉，只是你自己的置顶</b><p>线上网站没有后台，改不了服务器上的东西，所以访客（包括站长自己）在线上点的置顶、隐藏、星标都只保存在各自的浏览器里。</p></div>
+
+<h2 id="d-deploy"><span class="n">4</span>部署到 Vercel</h2>
+<p>Vercel 是静态 / 无服务器平台，<b>不能运行 <code>serve.py</code></b>。部署时它会按 <code>vercel.json</code> 先运行构建脚本，把站点构建到 <code>dist/</code>，<b>部署的是 <code>dist/</code>，不是你的原文件夹</b>。</p>
+<ol class="steps">
+  <li>安装 <a href="https://nodejs.org" rel="noopener">Node.js</a>，然后安装 Vercel 命令行并登录：
+<pre><code>npm i -g vercel
+vercel login</code></pre></li>
+  <li>在项目文件夹里运行 <code>vercel</code>，按提示创建项目（第一次回答几个问题，一路回车即可）。</li>
+  <li>打开 <code>vercel.json</code>，把构建命令里的网址 <code>--site-url https://books.zhitree.cn</code> 换成你自己的（站点地图和订阅源都用它）。</li>
+  <li>正式发布：
+<pre><code>vercel --prod</code></pre></li>
+  <li>想用自己的域名：Vercel 项目的 Settings → Domains 里添加并按提示设置解析。</li>
+</ol>
+<ul>
+  <li><b>之后每次更新</b>：往 <code>library/</code> 里放好 → 本地用 <code>serve.py</code> 看一眼 → <code>vercel --prod</code>。新文件必须重新部署才会出现。</li>
+  <li><b>隐藏的内容不会上线</b>：<code>dist/</code> 里没有隐藏的文件，清单里也没有；想让某篇上线就取消隐藏。</li>
+  <li>线上的书架<b>对所有访客只读</b>：访客不能往服务器里添加、移动、删除。</li>
+  <li>看不到新内容时，打开 <code>https://你的域名/manifest.json</code>，看 <code>generated</code> 和 <code>items</code>：不在清单里，就是部署的不是最新文件。</li>
+  <li>本地预览请用 <code>serve.py</code>，不要用 <code>vercel dev</code>（它启动时就记住了当时有哪些文件，之后新增或移动的文件会 404）。</li>
+</ul>
+
+<h3>署名、联系方式、隐私与条款</h3>
+<p><code>about.html</code>、<code>privacy.html</code>、<code>terms.html</code> 是普通 HTML，直接改文字。署名和联系方式写在 <code>site.json</code>（不会发布）：</p>
+<pre><code>{ "owner": "你的名字或昵称", "contact": "you@example.com", "license": "CC BY-NC 4.0" }</code></pre>
+<div class="warn"><b class="h">以后加了统计、评论或广告，请先改隐私政策再上线</b><p>隐私政策写的是网站<b>目前的实际情况</b>，要和你真正在用的东西保持一致。</p></div>
+
+<h2 id="d-seo"><span class="n">5</span>让搜索引擎找到你</h2>
+<p>部署时会自动做这些，你的原文件一个字节都不会改：给每个页面补上缺的标签、给 Markdown / TXT 生成带全文的页面、生成 <code>sitemap.xml</code> 和 <code>robots.txt</code>、把长长的中文文件名换成短而稳定的地址、生成订阅源。有英文版的页面还会互相补上 <code>hreflang</code> 链接，并一起写进站点地图，让搜索引擎把对应语言的页面给对应语言的读者。你要做的只有两步：</p>
+<ol class="steps">
+  <li><b>Google Search Console</b>：添加你的网址并验证，在“站点地图”里提交 <code>sitemap.xml</code>。刚提交时显示“无法获取”很常见，过几小时到两天才会变成“成功”。</li>
+  <li><b>Bing Webmaster Tools</b>：可以直接“从 Google Search Console 导入”；或者提交同一个 <code>sitemap.xml</code>。</li>
+</ol>
+<p>想把新地址主动告诉 Bing 等（IndexNow）：</p>
+<pre><code>python indexnow.py --init          # 只需第一次：生成密钥，写进 site.json
+vercel --prod
+python indexnow.py                 # 之后每次部署完运行，只发新的和改过的地址</code></pre>
+
+<h2 id="d-dir"><span class="n">6</span>开通公共目录和投稿（可选）</h2>
+<p>公共目录的数据和程序在<b>另一个项目</b> <code>shelf-directory</code>（和本项目同级的文件夹），由 GitHub 每天自动更新，本站只负责显示。分三步：</p>
+<ol class="steps">
+  <li><b>放到 GitHub 上</b>：新建一个<b>公开</b>仓库，把 <code>shelf-directory</code> 推上去；仓库 Settings → Actions → General → Workflow permissions 选“Read and write”；到 Actions → Daily → Run workflow 手动跑一次。</li>
+  <li><b>让本站显示它</b>：在 <code>site.json</code> 里加上 <code>"directory": "目录的网址"</code>（以 <code>/</code> 结尾），重新部署。页面左侧就出现“我的书架 | 公共目录”。</li>
+  <li><b>让访客不用 GitHub 账号就能提交</b>：把 <code>shelf-directory</code> 也部署成一个 Vercel 项目（里面的 <code>api/submit.py</code> 就是提交服务），并设置环境变量：
+<table>
+  <tr><th>名字</th><th>值</th></tr>
+  <tr><td><code>SHELF_REPO</code></td><td><code>用户名/仓库名</code></td></tr>
+  <tr><td><code>SUBMIT_GITHUB_TOKEN</code></td><td>只给这个仓库的 Issues 读写（再加 Contents 只读）的令牌</td></tr>
+  <tr><td><code>ALLOWED_ORIGINS</code></td><td>允许提交的网页来源，默认你的主站网址</td></tr>
+  <tr><td><code>IP_SALT</code></td><td>一长串随机文字，用来给来访者地址做不可逆的短哈希，限制每人每天的提交次数</td></tr>
+</table>
+把提交服务的地址（<code>https://…/api/submit</code>）写进 <code>shelf-directory/registry/config.json</code> 的 <code>"submit_api"</code>，推送。改了环境变量要重新部署一次才生效。</li>
+  <li><b>订阅功能自动跟着开通</b>：同一个目录项目里的 <code>api/feed.py</code> 就是读者订阅别人博客时用的“更新服务”（网页自己读不了别人的网站，由它代读，只返回标题、摘要和链接，<b>什么都不保存</b>，也不需要任何环境变量）。页面把提交服务地址末尾的 <code>/submit</code> 换成 <code>/feed</code> 来找它，所以只要 <code>submit_api</code> 写对了、<code>ALLOWED_ORIGINS</code> 里有你的主站网址，“添加”窗口里就会出现“订阅”标签。每个访客每 10 分钟的查询次数有软限制，防止被滥用。</li>
+  <li><b>同步（可选，需要一个 Redis）</b>：同一个目录项目里的 <code>api/sync.py</code> 是“同步码”服务，读者的书单和小文本加密后存在一个 Redis 里（服务器读不了内容）。在 Vercel 项目的 Storage / Marketplace 里添加一个 <b>Upstash Redis</b> 并连到这个项目，它会自动写入环境变量（<code>KV_REST_API_URL</code> + <code>KV_REST_API_TOKEN</code>，或 <code>UPSTASH_REDIS_REST_URL</code> + <code>UPSTASH_REDIS_REST_TOKEN</code>，两种都认），重新部署一次即可；打开 <code>https://你的目录站点/api/sync</code> 看到 <code>"configured": true</code> 就开通了，页面左下角会出现“同步”按钮。可选环境变量：<code>SYNC_QUOTA</code>（每个同步码的字符数上限，默认 1200 万）、<code>SYNC_TTL_DAYS</code>（不使用多少天后清掉，默认 180）、<code>SYNC_MAX_KEYS</code>（数据库里的键超过多少就不再接收新的同步码，默认 6000，约 1000 个）。每个访客每天最多新建 3 个同步空间。<code>GET /api/sync</code> 还会显示“愿意付费吗”问题收到的匿名计数。</li>
+</ol>
+
+<h2 id="d-admin"><span class="n">7</span>审核页：输入密码就能管理</h2>
+<p>所有申请（GitHub 表单、网页上提交的网址、书架里的文章）都进<b>同一个审核页</b>：<code>https://你的目录站点/admin/</code>。</p>
+<figure class="shot"><img width="1300" height="504" src="img/admin-login.webp" alt="审核页登录：输入管理密码" loading="lazy"><figcaption>登录：输入管理密码。GitHub 令牌放在服务器的环境变量里，不出现在浏览器里。</figcaption></figure>
+<p>在目录项目的 Vercel 环境变量里再加两个，重新部署：</p>
+<table>
+  <tr><th>名字</th><th>值</th></tr>
+  <tr><td><code>ADMIN_PASSWORD</code></td><td>管理密码，<b>至少 12 个字符</b>（最好是一句长长的话）。不到 12 个字符时密码登录不会启用。</td></tr>
+  <tr><td><code>ADMIN_GITHUB_TOKEN</code></td><td>令牌：只选这个仓库，Issues 读写、Actions 读写、Contents 只读。<b>不要</b>和上面的 <code>SUBMIT_GITHUB_TOKEN</code> 共用。</td></tr>
+</table>
+<figure class="shot"><img width="1300" height="898" src="img/admin-review.webp" alt="审核页：待审的申请，每条标着来源和检查结果，有“通过”和“拒绝”" loading="lazy"><figcaption>审核页：每条申请标着来源（网页提交 / GitHub 表单）和机器人的检查结果，点“通过”或“拒绝”。</figcaption></figure>
+<ul>
+  <li>通过 / 拒绝只改仓库里的数据，<b>不需要重新部署任何站点</b>。已收录的内容和托管的文章也能在这里下架。</li>
+  <li>登录后浏览器拿到的是一个<b>会过期的通行证</b>（默认 8 小时，勾“记住”是 14 天），不是令牌。换密码或换令牌，所有已登录的设备都会立刻退出。</li>
+  <li>没配密码时，页面会回到“用 GitHub 令牌登录”，并告诉你服务器上缺的是什么。</li>
+</ul>
+
+<h2 id="d-trouble"><span class="n">8</span>疑难</h2>
+<details><summary>Windows 上运行 <code>python3</code> 提示打不开 / 跳到应用商店</summary><p>那是微软商店的占位程序。直接用 <code>python serve.py</code>；如果 <code>python</code> 也不行，请先安装 Python 3 并勾选“Add Python to PATH”。</p></details>
+<details><summary>8000 端口被占用</summary><p><code>python serve.py --port 9000</code>，换一个端口。</p></details>
+<details><summary>线上看不到刚放进去的文件</summary><p>静态站点没有后台，新文件必须重新部署。部署后打开 <code>/manifest.json</code> 看 <code>generated</code>；如果文件在 <code>library/_meta.json</code> 里被标了隐藏，也不会上线。</p></details>
+<details><summary>构建失败，日志里写着 BUILD STOPPED</summary><p>这是构建自带的检查：首页、清单里的页面、私有文件有任何一项不对就会停止发布，保留上一次的网站不变。按日志里逐条列出的问题修就行。</p></details>
+<details><summary>点图钉提示 “serve.py 还是旧版本”</summary><p>说明你开着的 <code>serve.py</code> 是更新前启动的。关掉它，重新运行 <code>python serve.py</code>。</p></details>
+<details><summary>左下角没有“同步”按钮</summary><p>说明站点还没开通同步。目录项目要有一个 Redis（见上面“开通公共目录和投稿”的最后一步），部署后 <code>https://你的目录站点/api/sync</code> 应该显示 <code>"configured": true</code>；还要保证目录项目的 <code>ALLOWED_ORIGINS</code> 包含你的主站网址。</p></details>
+<details><summary>“添加”窗口里没有“订阅”标签，或者订阅时提示服务连不上</summary><p>订阅靠目录项目的 <code>/api/feed</code>。检查三件事：目录项目已部署（打开 <code>https://你的目录站点/api/feed</code> 应该看到 <code>"service": "shelf-feed"</code>）；目录的 <code>directory.json</code> 里有 <code>submit_api</code>（页面据此找到它）；目录项目的 <code>ALLOWED_ORIGINS</code> 包含你的主站网址。</p></details>
+<details><summary>页面上提交网址提示“提交功能还没有配置好”</summary><p>目录项目的 Vercel 环境变量里缺 <code>SHELF_REPO</code> 或 <code>SUBMIT_GITHUB_TOKEN</code>，补上并重新部署。</p></details>
+
+<p>只是想用？<a href="#usage" data-open="usage">回到“使用说明”</a>。</p>
+</section>
+
+<footer>这份指南是网站里的一个页面（<code>library/notes/guide/</code>）：改文字直接编辑 <code>index.html</code>，图在 <code>img/</code>，重新部署后生效。</footer>
+</div>
+
+<script src="guide.js"></script>
+</body>
+</html>

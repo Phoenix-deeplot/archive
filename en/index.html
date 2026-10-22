@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZhiTree Books — Read and Organize Your Books, Articles &amp; Notes</title>
+<meta name="description" content="ZhiTree Books is a personal digital library in your browser: read PDF, Markdown and HTML online, keep notes and ebooks in collections, follow blogs by RSS. No account needed.">
+<meta name="keywords" content="ZhiTree Books, zhitreebooks, online reader, read PDF online, Markdown reader, ebook reader, personal digital library, reading notes, RSS reader, bookshelf">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ZhiTree Books — a personal digital library in your browser">
+<meta property="og:description" content="Read PDF, Markdown and HTML online, keep your own books and notes in collections, follow blogs by RSS. No account needed.">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="zh_CN">
+<link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+<meta name="theme-color" content="#0B4F3B">
+<style>
+:root{--bg:#FBFBF9;--surface:#fff;--ink:#1A2229;--muted:#5A6670;--rule:#DDE1DF;--accent:#1F7A6D;--accent-ink:#fff;--tint:#E3F0ED}
+@media (prefers-color-scheme:dark){:root{--bg:#15191C;--surface:#1B2125;--ink:#E2E7E9;--muted:#9AA7AE;--rule:#2C363C;--accent:#5CC2B1;--accent-ink:#0E1A17;--tint:#1B2B28}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.75 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+.wrap{max-width:60rem;margin:0 auto;padding:0 20px 80px}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px 0;font-size:15px}
+.top .name{font-weight:700;color:var(--ink);text-decoration:none;font-size:18px}
+.top a.sw{display:inline-block;padding:4px 14px;border:1px solid var(--rule);border-radius:999px;color:var(--ink);text-decoration:none;background:var(--surface)}
+.hero{padding:34px 0 26px}
+h1{font:800 clamp(2.1rem,6vw,3.2rem)/1.15 Georgia,"Times New Roman",serif;margin:0 0 .4em;letter-spacing:-.01em}
+.lead{font-size:1.2rem;color:var(--muted);max-width:42em;margin:0 0 1.4em}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-block;padding:11px 22px;border-radius:10px;border:1px solid var(--accent);text-decoration:none;font-weight:600}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.shot{margin:34px 0 8px;border:1px solid var(--rule);border-radius:12px;overflow:hidden;background:var(--surface)}
+.shot img{display:block;width:100%;height:auto}
+.shot+p{font-size:14px;color:var(--muted);margin:0}
+h2{font:700 1.55rem/1.3 Georgia,"Times New Roman",serif;margin:2.4em 0 .6em}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15.5rem,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:16px 18px}
+.card h3{margin:0 0 .35em;font-size:1.05rem}
+.card p{margin:0;color:var(--muted);font-size:.97rem;line-height:1.65}
+ol.steps{padding-left:1.3em}ol.steps li{margin:.5em 0}
+details{border-top:1px solid var(--rule);padding:.7em 0}details:last-of-type{border-bottom:1px solid var(--rule)}
+summary{cursor:pointer;font-weight:600}
+details p{margin:.5em 0 .2em;color:var(--muted)}
+.note{margin:2em 0 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--tint);border-radius:0 10px 10px 0;font-size:.98rem}
+footer{margin-top:3em;padding-top:1.2em;border-top:1px solid var(--rule);font-size:15px;color:var(--muted)}
+footer a{margin-right:.9em}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <a class="name" href="/en/">ZhiTree Books</a>
+  <a class="sw" href="/" hreflang="zh-CN" lang="zh-CN">中文</a>
+</header>
+
+<section class="hero">
+  <h1>ZhiTree Books</h1>
+  <p class="lead">A personal digital library in your browser. Read PDF, Markdown, HTML and text online, keep your own books and notes on a shelf that lives on your device, and follow the blogs you like by RSS. No account, no sign-up.</p>
+  <div class="cta">
+    <a class="btn primary" href="/?lang=en">Open ZhiTree Books</a>
+    <a class="btn" href="/notes/guide/en/">Read the illustrated guide</a>
+  </div>
+  <div class="shot"><img src="/en/home.webp" width="1400" height="875" alt="The ZhiTree Books home page: categories and tags on the left, cards for books, notes and tools on the right" loading="lazy"></div>
+  <p>The home page in English (the screenshot shows a demo library).</p>
+</section>
+
+<h2>What you can do</h2>
+<div class="grid">
+  <div class="card"><h3>Read online</h3><p>Open PDF, Markdown, HTML and TXT in a clean reader. It remembers where you stopped, adds bookmarks and a table of contents, and offers light, dark, sepia and green reading colours.</p></div>
+  <div class="card"><h3>Keep your own books and notes</h3><p>Bring in files, many at a time, and sort them into collections. They stay in your browser: nothing is uploaded, nobody else sees them. On Chrome or Edge you can also connect a folder on your computer.</p></div>
+  <div class="card"><h3>Follow blogs by RSS</h3><p>Subscribe to a blog or feed (RSS, Atom, JSON Feed) and its new articles appear in your shelf as a collection. Only titles, summaries and links are kept; a click goes to the original site.</p></div>
+  <div class="card"><h3>Use it on your phone</h3><p>Add it to your home screen and it opens like an app. Pages you have opened can be read again without a network, and on Android you can share files and links to it.</p></div>
+  <div class="card"><h3>Browse a public directory</h3><p>A shared list of blogs, articles and reading lists from many people. It keeps only titles, summaries and links back to the original sites. You can submit your own, without an account.</p></div>
+  <div class="card"><h3>Private by design</h3><p>No accounts and no cookies of its own. Your files, reading progress, bookmarks and subscriptions are stored in your browser. Sync between devices is optional and end-to-end encrypted: you hold the key.</p></div>
+</div>
+
+<h2>Start in three steps</h2>
+<ol class="steps">
+  <li><a href="/?lang=en">Open ZhiTree Books</a>. The interface switches to English by itself when your browser is set to English; the <b>中文 | EN</b> switch is at the bottom left.</li>
+  <li>Click <b>Add</b> and choose some PDF, Markdown, HTML or TXT files, or switch to <b>Subscribe</b> and paste the address of a blog.</li>
+  <li>Click a card to read. Come back any time: the shelf and your place in each text are still there.</li>
+</ol>
+
+<div class="note"><b>About the library on this site.</b> The books and notes that ship with this site are mostly in Chinese. The interface is fully available in English, the <b>All / 中 / EN</b> filter shows one language of content at a time, and everything you add yourself can be in any language.</div>
+
+<h2>Questions</h2>
+<details><summary>Do I need an account?</summary><p>No. There is nothing to sign up for: open the page and read. The site does not ask for your name or email.</p></details>
+<details><summary>Where are the files I add stored?</summary><p>In your own browser. They are not uploaded to a server unless you turn on the optional, encrypted sync, so by default they are not shared between devices; to read on your phone, add the files on your phone or use sync or a backup file. If you clear the site’s data, they are removed, so make a backup first.</p></details>
+<details><summary>Which formats can I read?</summary><p>PDF, Markdown, HTML and plain text. Markdown and text get a table of contents, bookmarks and adjustable text size; PDF is shown by the browser’s own viewer.</p></details>
+<details><summary>Does it work offline?</summary><p>After you add it to the home screen, the pages and files you have opened are kept on the device, so you can read them again without a network. Subscriptions update when you open the page and are online.</p></details>
+<details><summary>Can I run my own copy?</summary><p>Yes. The <a href="/notes/guide/en/#deploy">Install &amp; deploy</a> part of the guide explains how to run it on your computer and put it online.</p></details>
+<details><summary>Who runs this site?</summary><p>It is run by an individual. Original notes and tools are © the site owner; books and third-party documents belong to their respective rights holders. Rights holders who think something infringes their rights can use the contact details on the (Chinese) <a href="/about.html">About page</a>.</p></details>
+
+<footer>
+  <a href="/?lang=en">Open the app</a>
+  <a href="/notes/guide/en/">Guide</a>
+  <a href="/about.html" lang="zh-CN">About (中文)</a>
+  <a href="/privacy.html" lang="zh-CN">Privacy (中文)</a>
+  <a href="/terms.html" lang="zh-CN">Terms (中文)</a>
+  <a href="/" hreflang="zh-CN" lang="zh-CN">中文首页</a>
+</footer>
+</div>
+</body>
+</html>
