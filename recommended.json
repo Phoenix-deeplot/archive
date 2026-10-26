@@ -1,0 +1,2669 @@
+{
+ "version": 1,
+ "updated": "2026-10-26",
+ "groups": [
+  {
+   "id": "hot",
+   "zh": "热榜与趋势（平台热榜、热门社区、各领域头条）",
+   "en": "Hot lists & trends (platform charts, busy communities, headlines by field)",
+   "items": [
+    {
+     "id": "hot-github",
+     "name": "GitHub Trending（今日）",
+     "name_en": "GitHub Trending (today)",
+     "zh": "今天在 GitHub 上最受关注的开源项目，每个条目是一个仓库，点开去 GitHub。",
+     "en": "The open-source repositories getting the most attention on GitHub today; each entry is a repository.",
+     "home": "https://github.com/trending",
+     "feed": "hot:github",
+     "lang": "en",
+     "tags": [
+      "科技",
+      "开源",
+      "热榜"
+     ],
+     "tags_en": [
+      "tech",
+      "open source",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-juejin",
+     "name": "掘金热榜",
+     "name_en": "Juejin hot articles",
+     "zh": "掘金社区当前最热的技术文章。",
+     "en": "The hottest technical articles on Juejin (a Chinese developer community) right now.",
+     "home": "https://juejin.cn/hot/articles",
+     "feed": "hot:juejin",
+     "lang": "zh",
+     "tags": [
+      "编程",
+      "科技",
+      "热榜"
+     ],
+     "tags_en": [
+      "programming",
+      "tech",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-v2ex",
+     "name": "V2EX 今日热议",
+     "name_en": "V2EX hot topics",
+     "zh": "V2EX 今天讨论最多的话题：程序员、创业、数码与生活。",
+     "en": "The most discussed topics on V2EX today: programming, startups, gadgets and life.",
+     "home": "https://www.v2ex.com/",
+     "feed": "hot:v2ex",
+     "lang": "zh",
+     "tags": [
+      "科技",
+      "社区",
+      "热榜"
+     ],
+     "tags_en": [
+      "tech",
+      "community",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-bilibili",
+     "name": "B 站热门视频",
+     "name_en": "Bilibili popular videos",
+     "zh": "B 站“综合热门”视频榜，每个条目是一个视频，点开去 B 站观看。",
+     "en": "Bilibili’s “popular” video chart; each entry is a video that opens on Bilibili.",
+     "home": "https://www.bilibili.com/v/popular/all",
+     "feed": "hot:bilibili",
+     "lang": "zh",
+     "tags": [
+      "视频",
+      "热榜"
+     ],
+     "tags_en": [
+      "video",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-netease",
+     "name": "网易云音乐飙升榜",
+     "name_en": "NetEase Cloud Music: rising songs",
+     "zh": "网易云音乐飙升榜：最近热度上升最快的歌曲。",
+     "en": "NetEase Cloud Music’s “rising” chart: the songs whose popularity is growing fastest.",
+     "home": "https://music.163.com/#/discover/toplist?id=19723756",
+     "feed": "hot:netease",
+     "lang": "zh",
+     "tags": [
+      "音乐",
+      "热榜"
+     ],
+     "tags_en": [
+      "music",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-zhihu",
+     "name": "知乎热榜",
+     "name_en": "Zhihu hot questions",
+     "zh": "知乎当前的热门问题（站长开启后才会出现）。",
+     "en": "The hot questions on Zhihu right now (shown only when the site’s owner has turned it on).",
+     "home": "https://www.zhihu.com/hot",
+     "feed": "hot:zhihu",
+     "lang": "zh",
+     "tags": [
+      "社区",
+      "热榜"
+     ],
+     "tags_en": [
+      "community",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-weibo",
+     "name": "微博热搜",
+     "name_en": "Weibo hot searches",
+     "zh": "微博当前的热搜词（站长开启后才会出现）。",
+     "en": "The hot searches on Weibo right now (shown only when the site’s owner has turned it on).",
+     "home": "https://s.weibo.com/top/summary",
+     "feed": "hot:weibo",
+     "lang": "zh",
+     "tags": [
+      "社交",
+      "热榜"
+     ],
+     "tags_en": [
+      "social",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hn",
+     "name": "Hacker News 头版",
+     "name_en": "Hacker News front page",
+     "zh": "科技与创业圈每天都在看的头版：程序员、创业、科学。官方 RSS。",
+     "en": "The front page the tech and startup world reads every day. The official feed.",
+     "home": "https://news.ycombinator.com/",
+     "feed": "https://news.ycombinator.com/rss",
+     "lang": "en",
+     "tags": [
+      "科技",
+      "创业",
+      "热榜"
+     ],
+     "tags_en": [
+      "tech",
+      "startups",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "producthunt",
+     "name": "Product Hunt",
+     "name_en": "Product Hunt",
+     "zh": "每天新发布的产品与工具，按热度排序的一天。",
+     "en": "The products and tools launched each day.",
+     "home": "https://www.producthunt.com/",
+     "feed": "https://www.producthunt.com/feed",
+     "lang": "en",
+     "tags": [
+      "产品",
+      "科技",
+      "热榜"
+     ],
+     "tags_en": [
+      "product",
+      "tech",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "lobsters",
+     "name": "Lobsters",
+     "name_en": "Lobsters",
+     "zh": "偏技术的链接社区，每条都有人讨论，比 HN 小而安静。",
+     "en": "A technical link-sharing community, smaller and quieter than HN.",
+     "home": "https://lobste.rs/",
+     "feed": "https://lobste.rs/rss",
+     "lang": "en",
+     "tags": [
+      "编程",
+      "科技",
+      "热榜"
+     ],
+     "tags_en": [
+      "programming",
+      "tech",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "reddit-popular",
+     "name": "Reddit 今日热门",
+     "name_en": "Reddit popular today",
+     "zh": "Reddit 全站今天最热的帖子（英文，内容杂，热度高）。",
+     "en": "The posts Reddit as a whole upvoted most today (English; mixed topics).",
+     "home": "https://www.reddit.com/r/popular/",
+     "feed": "https://www.reddit.com/r/popular/top/.rss?t=day",
+     "lang": "en",
+     "tags": [
+      "社区",
+      "热榜"
+     ],
+     "tags_en": [
+      "community",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "cnbc-top",
+     "name": "CNBC 头条",
+     "name_en": "CNBC top news",
+     "zh": "美国财经电视台 CNBC 的头条：市场、公司、宏观。",
+     "en": "The top stories of CNBC: markets, companies and the economy.",
+     "home": "https://www.cnbc.com/",
+     "feed": "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+     "lang": "en",
+     "tags": [
+      "金融",
+      "新闻"
+     ],
+     "tags_en": [
+      "finance",
+      "news"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "cnbc-finance",
+     "name": "CNBC 金融",
+     "name_en": "CNBC finance",
+     "zh": "CNBC 金融栏目：个人理财、投资、银行与保险。",
+     "en": "CNBC’s finance section: personal finance, investing, banking and insurance.",
+     "home": "https://www.cnbc.com/finance/",
+     "feed": "https://www.cnbc.com/id/10000664/device/rss/rss.html",
+     "lang": "en",
+     "tags": [
+      "金融",
+      "理财"
+     ],
+     "tags_en": [
+      "finance",
+      "personal finance"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "science-news",
+     "name": "Science 新闻",
+     "name_en": "Science News (AAAS)",
+     "zh": "《科学》杂志新闻栏目：研究进展与科研界的新闻。",
+     "en": "News from Science magazine: research results and what is happening in the lab.",
+     "home": "https://www.science.org/news",
+     "feed": "https://www.science.org/rss/news_current.xml",
+     "lang": "en",
+     "tags": [
+      "学术",
+      "科学"
+     ],
+     "tags_en": [
+      "academic",
+      "science"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "nature",
+     "name": "Nature 最新",
+     "name_en": "Nature: latest",
+     "zh": "《自然》杂志当前发表的研究与评论。",
+     "en": "The research and comment Nature has just published.",
+     "home": "https://www.nature.com/nature/",
+     "feed": "https://www.nature.com/nature.rss",
+     "lang": "en",
+     "tags": [
+      "学术",
+      "科学"
+     ],
+     "tags_en": [
+      "academic",
+      "science"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "sciencedaily",
+     "name": "ScienceDaily 头条",
+     "name_en": "ScienceDaily top",
+     "zh": "每天几条研究成果的通俗报道，涵盖健康、物理、技术。",
+     "en": "A few plain-language reports on research each day: health, physics, technology.",
+     "home": "https://www.sciencedaily.com/",
+     "feed": "https://www.sciencedaily.com/rss/top.xml",
+     "lang": "en",
+     "tags": [
+      "学术",
+      "科学"
+     ],
+     "tags_en": [
+      "academic",
+      "science"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "pitchfork",
+     "name": "Pitchfork 新闻",
+     "name_en": "Pitchfork news",
+     "zh": "音乐媒体 Pitchfork 的新闻：新专辑、巡演、乐评人在聊什么。",
+     "en": "News from the music site Pitchfork: new albums, tours and what critics are talking about.",
+     "home": "https://pitchfork.com/news/",
+     "feed": "https://pitchfork.com/feed/feed-news/rss",
+     "lang": "en",
+     "tags": [
+      "音乐"
+     ],
+     "tags_en": [
+      "music"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "bandcamp-daily",
+     "name": "Bandcamp Daily",
+     "name_en": "Bandcamp Daily",
+     "zh": "Bandcamp 的音乐专题：独立音乐人、流派入门和榜单。",
+     "en": "Bandcamp’s music features: independent artists, genre primers and lists.",
+     "home": "https://daily.bandcamp.com/",
+     "feed": "https://daily.bandcamp.com/feed",
+     "lang": "en",
+     "tags": [
+      "音乐"
+     ],
+     "tags_en": [
+      "music"
+     ],
+     "rank": 0
+    }
+   ]
+  },
+  {
+   "id": "podcasts",
+   "zh": "播客（订阅后可以边听边读）",
+   "en": "Podcasts (listen while you read)",
+   "items": [
+    {
+     "id": "pod-ted-daily",
+     "name": "TED Talks Daily",
+     "name_en": "TED Talks Daily",
+     "zh": "每天一场 TED 演讲的音频，十几分钟，适合练英语听力。",
+     "en": "One TED talk a day as audio, about fifteen minutes: good listening practice.",
+     "home": "https://www.ted.com/podcasts/ted-talks-daily",
+     "feed": "https://feeds.acast.com/public/shows/67587e77c705e441797aff96",
+     "lang": "en",
+     "tags": [
+      "演讲",
+      "英语听力",
+      "思考"
+     ],
+     "tags_en": [
+      "talks",
+      "English listening",
+      "ideas"
+     ],
+     "rank": 0,
+     "full": false
+    },
+    {
+     "id": "pod-bbc-6min",
+     "name": "BBC 6 Minute English",
+     "name_en": "BBC 6 Minute English",
+     "zh": "BBC 的英语学习节目，每集六分钟，一个话题，附词汇讲解。",
+     "en": "BBC’s English-learning show: six minutes, one topic, with vocabulary.",
+     "home": "https://www.bbc.co.uk/learningenglish/english/features/6-minute-english",
+     "feed": "https://podcasts.files.bbci.co.uk/p02pc9tn.rss",
+     "lang": "en",
+     "tags": [
+      "英语学习",
+      "英语听力"
+     ],
+     "tags_en": [
+      "learn English",
+      "English listening"
+     ],
+     "rank": 0,
+     "full": false
+    },
+    {
+     "id": "pod-bbc-tews",
+     "name": "BBC The English We Speak",
+     "name_en": "BBC The English We Speak",
+     "zh": "三分钟学一个地道的英语表达。",
+     "en": "One idiomatic English expression in three minutes.",
+     "home": "https://www.bbc.co.uk/learningenglish/english/features/the-english-we-speak",
+     "feed": "https://podcasts.files.bbci.co.uk/p02pc9zn.rss",
+     "lang": "en",
+     "tags": [
+      "英语学习",
+      "英语听力"
+     ],
+     "tags_en": [
+      "learn English",
+      "English listening"
+     ],
+     "rank": 0,
+     "full": false
+    },
+    {
+     "id": "pod-npr-upfirst",
+     "name": "NPR Up First",
+     "name_en": "NPR Up First",
+     "zh": "美国国家公共电台的每日早间新闻，十几分钟听完当天最重要的几件事。",
+     "en": "NPR’s morning news: the biggest stories of the day in about fifteen minutes.",
+     "home": "https://www.npr.org/podcasts/510318/up-first",
+     "feed": "https://feeds.npr.org/510318/podcast.xml",
+     "lang": "en",
+     "tags": [
+      "新闻",
+      "英语听力"
+     ],
+     "tags_en": [
+      "news",
+      "English listening"
+     ],
+     "rank": 0,
+     "full": false
+    },
+    {
+     "id": "pod-npr-planetmoney",
+     "name": "NPR Planet Money",
+     "name_en": "NPR Planet Money",
+     "zh": "用故事讲经济：一件商品、一个行业、一次危机背后发生了什么。",
+     "en": "The economy told through stories: what is behind a product, an industry, a crisis.",
+     "home": "https://www.npr.org/podcasts/510289/planet-money",
+     "feed": "https://feeds.npr.org/510289/podcast.xml",
+     "lang": "en",
+     "tags": [
+      "经济",
+      "商业"
+     ],
+     "tags_en": [
+      "economics",
+      "business"
+     ],
+     "rank": 0,
+     "full": false
+    },
+    {
+     "id": "pod-npr-shortwave",
+     "name": "NPR Short Wave",
+     "name_en": "NPR Short Wave",
+     "zh": "每集十来分钟的科学短节目，轻松、讲得清楚。",
+     "en": "Short science episodes of about ten minutes, light and clear.",
+     "home": "https://www.npr.org/podcasts/510351/short-wave",
+     "feed": "https://feeds.npr.org/510351/podcast.xml",
+     "lang": "en",
+     "tags": [
+      "科学"
+     ],
+     "tags_en": [
+      "science"
+     ],
+     "rank": 0,
+     "full": false
+    },
+    {
+     "id": "pod-npr-tedradiohour",
+     "name": "TED Radio Hour",
+     "name_en": "TED Radio Hour",
+     "zh": "围绕一个主题，把几场 TED 演讲和演讲者的访谈编成一小时的节目。",
+     "en": "One theme an hour: pieces of several TED talks woven with interviews with the speakers.",
+     "home": "https://www.npr.org/podcasts/510298/ted-radio-hour",
+     "feed": "https://feeds.npr.org/510298/podcast.xml",
+     "lang": "en",
+     "tags": [
+      "演讲",
+      "思考"
+     ],
+     "tags_en": [
+      "talks",
+      "ideas"
+     ],
+     "rank": 0,
+     "full": false
+    },
+    {
+     "id": "pod-99pi",
+     "name": "99% Invisible",
+     "name_en": "99% Invisible",
+     "zh": "讲设计和建筑里不起眼的东西：一座桥、一个标志、一条规则怎么来的。",
+     "en": "The overlooked side of design and architecture: how a bridge, a sign or a rule came to be.",
+     "home": "https://99percentinvisible.org/",
+     "feed": "https://feeds.simplecast.com/BqbsxVfO",
+     "lang": "en",
+     "tags": [
+      "设计",
+      "人文"
+     ],
+     "tags_en": [
+      "design",
+      "culture"
+     ],
+     "rank": 0,
+     "full": false
+    },
+    {
+     "id": "pod-nyt-daily",
+     "name": "The Daily（纽约时报）",
+     "name_en": "The Daily (The New York Times)",
+     "zh": "纽约时报的每日新闻播客，一集讲透一件事。",
+     "en": "The New York Times’ daily news podcast: one story, told properly.",
+     "home": "https://www.nytimes.com/column/the-daily",
+     "feed": "https://feeds.simplecast.com/54nAGcIl",
+     "lang": "en",
+     "tags": [
+      "新闻"
+     ],
+     "tags_en": [
+      "news"
+     ],
+     "rank": 0,
+     "full": false
+    },
+    {
+     "id": "pod-freakonomics",
+     "name": "Freakonomics Radio",
+     "name_en": "Freakonomics Radio",
+     "zh": "用经济学的眼光看日常的怪事，访谈为主。",
+     "en": "The hidden side of everything, seen with an economist’s eye; mostly interviews.",
+     "home": "https://freakonomics.com/",
+     "feed": "https://feeds.simplecast.com/Y8lFbOT4",
+     "lang": "en",
+     "tags": [
+      "经济",
+      "思考"
+     ],
+     "tags_en": [
+      "economics",
+      "ideas"
+     ],
+     "rank": 0,
+     "full": false
+    },
+    {
+     "id": "pod-supplychainnow",
+     "name": "Supply Chain Now",
+     "name_en": "Supply Chain Now",
+     "zh": "供应链行业的访谈和直播回放：采购、物流、制造、库存。",
+     "en": "Interviews and live shows from the supply chain world: procurement, logistics, manufacturing, inventory.",
+     "home": "https://supplychainnow.com/",
+     "feed": "https://feeds.simplecast.com/HFUiz5cM",
+     "lang": "en",
+     "tags": [
+      "供应链",
+      "物流",
+      "采购"
+     ],
+     "tags_en": [
+      "supply chain",
+      "logistics",
+      "procurement"
+     ],
+     "rank": 0,
+     "full": false
+    },
+    {
+     "id": "pod-lexfridman",
+     "name": "Lex Fridman Podcast",
+     "name_en": "Lex Fridman Podcast",
+     "zh": "科学家、创业者、作家的长篇对谈，一集常常三四个小时，适合慢慢听。",
+     "en": "Long conversations with scientists, founders and writers: three or four hours an episode, for slow listening.",
+     "home": "https://lexfridman.com/podcast/",
+     "feed": "https://lexfridman.com/feed/podcast/",
+     "lang": "en",
+     "tags": [
+      "科技",
+      "对话"
+     ],
+     "tags_en": [
+      "tech",
+      "conversation"
+     ],
+     "rank": 0,
+     "full": false
+    }
+   ]
+  },
+  {
+   "id": "zh-tech",
+   "zh": "中文 · 科技与数码",
+   "en": "Chinese · Tech & gadgets",
+   "items": [
+    {
+     "id": "ithome",
+     "name": "IT之家",
+     "name_en": "ITHome",
+     "zh": "每天几十条科技与数码新闻。",
+     "en": "Dozens of tech and gadget news items a day.",
+     "home": "https://www.ithome.com/",
+     "feed": "https://www.ithome.com/rss/",
+     "lang": "zh",
+     "tags": [
+      "新闻",
+      "数码"
+     ],
+     "tags_en": [
+      "news",
+      "gadgets"
+     ],
+     "rank": 16043,
+     "full": true
+    },
+    {
+     "id": "ruanyifeng",
+     "name": "阮一峰的网络日志",
+     "name_en": "Ruan Yifeng’s Weblog",
+     "zh": "每周一期《科技爱好者周刊》，中文互联网里最稳的长期更新。",
+     "en": "A weekly tech newsletter and essays in Chinese; one of the steadiest long-running blogs.",
+     "home": "https://www.ruanyifeng.com/blog/",
+     "feed": "https://feeds.feedburner.com/ruanyifeng",
+     "lang": "zh",
+     "tags": [
+      "科技",
+      "周刊"
+     ],
+     "tags_en": [
+      "tech",
+      "weekly"
+     ],
+     "rank": 29938,
+     "full": true,
+     "starter": true
+    },
+    {
+     "id": "sspai",
+     "name": "少数派",
+     "name_en": "Sspai",
+     "zh": "效率、工具与数字生活，文章质量稳定。",
+     "en": "Productivity, tools and digital life; steady quality.",
+     "home": "https://sspai.com/",
+     "feed": "https://sspai.com/feed",
+     "lang": "zh",
+     "tags": [
+      "效率",
+      "工具"
+     ],
+     "tags_en": [
+      "productivity",
+      "tools"
+     ],
+     "rank": 47156,
+     "full": false,
+     "starter": true
+    },
+    {
+     "id": "leiphone",
+     "name": "雷峰网",
+     "name_en": "Leiphone",
+     "zh": "AI 与科技产业报道，订阅源带全文。",
+     "en": "AI and tech-industry reporting; full text in the feed.",
+     "home": "https://www.leiphone.com/",
+     "feed": "https://www.leiphone.com/feed",
+     "lang": "zh",
+     "tags": [
+      "AI",
+      "产业"
+     ],
+     "tags_en": [
+      "AI",
+      "industry"
+     ],
+     "rank": 55089,
+     "full": true
+    },
+    {
+     "id": "ifanr",
+     "name": "爱范儿",
+     "name_en": "ifanr",
+     "zh": "科技与产品评论，订阅源带全文。",
+     "en": "Tech and product commentary; the feed carries the full text.",
+     "home": "https://www.ifanr.com/",
+     "feed": "https://www.ifanr.com/feed",
+     "lang": "zh",
+     "tags": [
+      "科技",
+      "产品"
+     ],
+     "tags_en": [
+      "tech",
+      "product"
+     ],
+     "rank": 66679,
+     "full": true
+    },
+    {
+     "id": "appinn",
+     "name": "小众软件",
+     "name_en": "Appinn",
+     "zh": "好用的小软件，几乎每天都有。",
+     "en": "Small, useful programs, nearly every day.",
+     "home": "https://www.appinn.com/",
+     "feed": "https://www.appinn.com/feed/",
+     "lang": "zh",
+     "tags": [
+      "软件",
+      "工具"
+     ],
+     "tags_en": [
+      "software",
+      "tools"
+     ],
+     "rank": 91549,
+     "full": true
+    },
+    {
+     "id": "iplaysoft",
+     "name": "异次元软件世界",
+     "name_en": "iPlaySoft",
+     "zh": "软件推荐与评测。",
+     "en": "Software picks and reviews.",
+     "home": "https://www.iplaysoft.com/",
+     "feed": "https://feed.iplaysoft.com/",
+     "lang": "zh",
+     "tags": [
+      "软件",
+      "评测"
+     ],
+     "tags_en": [
+      "software",
+      "reviews"
+     ],
+     "rank": 156199,
+     "full": false
+    },
+    {
+     "id": "williamlong",
+     "name": "月光博客",
+     "name_en": "Williamlong",
+     "zh": "老牌互联网个人博客，仍在更新。",
+     "en": "A veteran personal blog on the internet, still updated.",
+     "home": "https://www.williamlong.info/",
+     "feed": "https://www.williamlong.info/rss.xml",
+     "lang": "zh",
+     "tags": [
+      "互联网",
+      "科技"
+     ],
+     "tags_en": [
+      "internet",
+      "tech"
+     ],
+     "rank": 179559,
+     "full": true
+    },
+    {
+     "id": "dgtle",
+     "name": "数字尾巴",
+     "name_en": "DGtle",
+     "zh": "数码与生活方式。",
+     "en": "Gadgets and lifestyle.",
+     "home": "https://www.dgtle.com/",
+     "feed": "https://www.dgtle.com/rss/dgtle.xml",
+     "lang": "zh",
+     "tags": [
+      "数码",
+      "生活"
+     ],
+     "tags_en": [
+      "gadgets",
+      "life"
+     ],
+     "rank": 355894,
+     "full": true
+    },
+    {
+     "id": "landian",
+     "name": "蓝点网",
+     "name_en": "Landian News",
+     "zh": "操作系统、软件与互联网动态。",
+     "en": "Operating systems, software and internet news.",
+     "home": "https://www.landiannews.com/",
+     "feed": "https://www.landian.news/feed",
+     "lang": "zh",
+     "tags": [
+      "软件",
+      "新闻"
+     ],
+     "tags_en": [
+      "software",
+      "news"
+     ],
+     "rank": 467421,
+     "full": false
+    }
+   ]
+  },
+  {
+   "id": "zh-biz",
+   "zh": "中文 · 商业与产品",
+   "en": "Chinese · Business & product",
+   "items": [
+    {
+     "id": "tmtpost",
+     "name": "钛媒体",
+     "name_en": "TMTPost",
+     "zh": "商业与科技报道。",
+     "en": "Business and technology reporting.",
+     "home": "https://www.tmtpost.com/",
+     "feed": "https://www.tmtpost.com/rss.xml",
+     "lang": "zh",
+     "tags": [
+      "商业",
+      "科技"
+     ],
+     "tags_en": [
+      "business",
+      "tech"
+     ],
+     "rank": 46817,
+     "full": true
+    },
+    {
+     "id": "woshipm",
+     "name": "人人都是产品经理",
+     "name_en": "Everyone Is a Product Manager",
+     "zh": "产品与运营文章，订阅源带全文。",
+     "en": "Articles on product and operations; the feed carries the full text.",
+     "home": "https://www.woshipm.com/",
+     "feed": "https://www.woshipm.com/feed",
+     "lang": "zh",
+     "tags": [
+      "产品",
+      "运营",
+      "商业"
+     ],
+     "tags_en": [
+      "product",
+      "operations",
+      "business"
+     ],
+     "rank": 68170,
+     "full": true,
+     "starter": true
+    }
+   ]
+  },
+  {
+   "id": "zh-culture",
+   "zh": "中文 · 科学、人文与思考",
+   "en": "Chinese · Science, culture & thinking",
+   "items": [
+    {
+     "id": "changhai",
+     "name": "卢昌海个人主页",
+     "name_en": "Changhai Lu’s Homepage",
+     "zh": "物理科普与随笔，长文为主。",
+     "en": "Physics popularisation and essays, mostly long pieces.",
+     "home": "https://www.changhai.org/",
+     "feed": "https://www.changhai.org/feed.xml",
+     "lang": "zh",
+     "tags": [
+      "物理",
+      "科普"
+     ],
+     "tags_en": [
+      "physics",
+      "science"
+     ],
+     "rank": 2242903,
+     "full": false
+    },
+    {
+     "id": "hiwannz",
+     "name": "见字如面",
+     "name_en": "Hiwannz",
+     "zh": "产品、思考与生活。",
+     "en": "Product, thinking and life.",
+     "home": "https://hiwannz.com/",
+     "feed": "https://hiwannz.com/feed",
+     "lang": "zh",
+     "tags": [
+      "思考",
+      "生活"
+     ],
+     "tags_en": [
+      "thinking",
+      "life"
+     ],
+     "rank": 0,
+     "full": true
+    }
+   ]
+  },
+  {
+   "id": "zh-dev",
+   "zh": "中文 · 编程",
+   "en": "Chinese · Programming",
+   "items": [
+    {
+     "id": "zhangxinxu",
+     "name": "张鑫旭的博客",
+     "name_en": "Zhang Xinxu’s Blog",
+     "zh": "前端技术，偏教程。",
+     "en": "Front-end techniques, tutorial style.",
+     "home": "https://www.zhangxinxu.com/",
+     "feed": "https://www.zhangxinxu.com/wordpress/feed/",
+     "lang": "zh",
+     "tags": [
+      "前端",
+      "编程"
+     ],
+     "tags_en": [
+      "front-end",
+      "programming"
+     ],
+     "rank": 283204,
+     "full": true
+    },
+    {
+     "id": "codingnow",
+     "name": "云风的 BLOG",
+     "name_en": "Yunfeng’s Blog",
+     "zh": "游戏引擎与系统编程。",
+     "en": "Game engines and systems programming.",
+     "home": "https://blog.codingnow.com/",
+     "feed": "https://blog.codingnow.com/atom.xml",
+     "lang": "zh",
+     "tags": [
+      "编程",
+      "游戏开发"
+     ],
+     "tags_en": [
+      "programming",
+      "game dev"
+     ],
+     "rank": 505874,
+     "full": true
+    },
+    {
+     "id": "diygod",
+     "name": "DIYgod",
+     "name_en": "DIYgod",
+     "zh": "RSSHub 作者的博客，开源与折腾。",
+     "en": "The blog of RSSHub’s author: open source and tinkering.",
+     "home": "https://diygod.cc/",
+     "feed": "https://diygod.cc/feed",
+     "lang": "zh",
+     "tags": [
+      "开源",
+      "编程"
+     ],
+     "tags_en": [
+      "open source",
+      "programming"
+     ],
+     "rank": 855646,
+     "full": true
+    },
+    {
+     "id": "luolei",
+     "name": "罗磊的独立博客",
+     "name_en": "Luo Lei’s Blog",
+     "zh": "编程、工具与旅行。",
+     "en": "Programming, tools and travel.",
+     "home": "https://luolei.org/",
+     "feed": "https://luolei.org/feed.xml",
+     "lang": "zh",
+     "tags": [
+      "编程",
+      "旅行"
+     ],
+     "tags_en": [
+      "programming",
+      "travel"
+     ],
+     "rank": 2384254,
+     "full": true
+    },
+    {
+     "id": "mactalk",
+     "name": "MacTalk 池建强的随想录",
+     "name_en": "MacTalk",
+     "zh": "技术、产品与随想。",
+     "en": "Technology, product and musings.",
+     "home": "https://macshuo.com/",
+     "feed": "https://macshuo.com/?feed=rss2",
+     "lang": "zh",
+     "tags": [
+      "技术",
+      "随想"
+     ],
+     "tags_en": [
+      "tech",
+      "essays"
+     ],
+     "rank": 3043830,
+     "full": true
+    },
+    {
+     "id": "meituan",
+     "name": "美团技术团队",
+     "name_en": "Meituan Tech",
+     "zh": "大厂的工程实践与架构，订阅源带全文。",
+     "en": "Engineering practice and architecture from a large company; full text in the feed.",
+     "home": "https://tech.meituan.com/",
+     "feed": "https://tech.meituan.com/rss.xml",
+     "lang": "zh",
+     "tags": [
+      "架构",
+      "工程"
+     ],
+     "tags_en": [
+      "architecture",
+      "engineering"
+     ],
+     "rank": 0,
+     "full": true
+    }
+   ]
+  },
+  {
+   "id": "en-sc",
+   "zh": "供应链、物流与采购",
+   "en": "Supply chain, logistics & procurement",
+   "items": [
+    {
+     "id": "freightwaves",
+     "name": "FreightWaves",
+     "name_en": "FreightWaves",
+     "zh": "美国货运市场新闻与数据。",
+     "en": "US freight market news and data.",
+     "home": "https://www.freightwaves.com/",
+     "feed": "https://www.freightwaves.com/feed",
+     "lang": "en",
+     "tags": [
+      "货运",
+      "数据"
+     ],
+     "tags_en": [
+      "freight",
+      "data"
+     ],
+     "rank": 20200,
+     "full": false
+    },
+    {
+     "id": "industryweek",
+     "name": "IndustryWeek",
+     "name_en": "IndustryWeek",
+     "zh": "制造业与运营管理。",
+     "en": "Manufacturing and operations management.",
+     "home": "https://www.industryweek.com/",
+     "feed": "https://www.industryweek.com/__rss/website-scheduled-content.xml?input=%7B%22sectionAlias%22%3A%22home%22%7D",
+     "lang": "en",
+     "tags": [
+      "制造",
+      "运营"
+     ],
+     "tags_en": [
+      "manufacturing",
+      "operations"
+     ],
+     "rank": 37175,
+     "full": false
+    },
+    {
+     "id": "ttnews",
+     "name": "Transport Topics",
+     "name_en": "Transport Topics",
+     "zh": "运输与卡车行业新闻。",
+     "en": "Transport and trucking industry news.",
+     "home": "https://www.ttnews.com/",
+     "feed": "https://www.ttnews.com/rss.xml",
+     "lang": "en",
+     "tags": [
+      "运输",
+      "行业"
+     ],
+     "tags_en": [
+      "transport",
+      "industry"
+     ],
+     "rank": 44075,
+     "full": false
+    },
+    {
+     "id": "supplychainbrain",
+     "name": "SupplyChainBrain",
+     "name_en": "SupplyChainBrain",
+     "zh": "供应链综合媒体。",
+     "en": "A general supply chain publication.",
+     "home": "https://www.supplychainbrain.com/",
+     "feed": "https://www.supplychainbrain.com/rss/articles",
+     "lang": "en",
+     "tags": [
+      "供应链"
+     ],
+     "tags_en": [
+      "supply chain"
+     ],
+     "rank": 70969,
+     "full": false
+    },
+    {
+     "id": "leanpost",
+     "name": "The Lean Post（精益）",
+     "name_en": "The Lean Post",
+     "zh": "精益企业研究所的文章，订阅源带全文。",
+     "en": "Articles from the Lean Enterprise Institute; full text in the feed.",
+     "home": "https://www.lean.org/the-lean-post/",
+     "feed": "https://www.lean.org/feed/",
+     "lang": "en",
+     "tags": [
+      "精益",
+      "运营"
+     ],
+     "tags_en": [
+      "lean",
+      "operations"
+     ],
+     "rank": 104335,
+     "full": true
+    },
+    {
+     "id": "freightos",
+     "name": "Freightos",
+     "name_en": "Freightos",
+     "zh": "国际货运价格与市场分析，订阅源带全文。",
+     "en": "International freight rates and market analysis; full text in the feed.",
+     "home": "https://www.freightos.com/",
+     "feed": "https://www.freightos.com/feed/",
+     "lang": "en",
+     "tags": [
+      "货运",
+      "市场"
+     ],
+     "tags_en": [
+      "freight",
+      "markets"
+     ],
+     "rank": 114804,
+     "full": true
+    },
+    {
+     "id": "loadstar",
+     "name": "The Loadstar",
+     "name_en": "The Loadstar",
+     "zh": "货运与物流新闻；点开时站内读取原文。",
+     "en": "Freight and logistics news; the article is read in the page when opened.",
+     "home": "https://theloadstar.com/",
+     "feed": "https://theloadstar.com/feed/",
+     "lang": "en",
+     "tags": [
+      "货运",
+      "物流"
+     ],
+     "tags_en": [
+      "freight",
+      "logistics"
+     ],
+     "rank": 120907,
+     "full": true
+    },
+    {
+     "id": "project44",
+     "name": "project44 博客",
+     "name_en": "project44 Blog",
+     "zh": "供应链可视化公司的博客，订阅源带全文。",
+     "en": "The blog of a supply chain visibility company; full text in the feed.",
+     "home": "https://www.project44.com/blog/",
+     "feed": "https://www.project44.com/feed/",
+     "lang": "en",
+     "tags": [
+      "供应链",
+      "可视化"
+     ],
+     "tags_en": [
+      "supply chain",
+      "visibility"
+     ],
+     "rank": 125437,
+     "full": true
+    },
+    {
+     "id": "scmr",
+     "name": "Supply Chain Management Review",
+     "name_en": "Supply Chain Management Review",
+     "zh": "供应链管理的专业期刊文章。",
+     "en": "Articles from a professional supply chain journal.",
+     "home": "https://www.scmr.com/",
+     "feed": "https://feeds.feedburner.com/scmr/latest",
+     "lang": "en",
+     "tags": [
+      "供应链",
+      "管理"
+     ],
+     "tags_en": [
+      "supply chain",
+      "management"
+     ],
+     "rank": 139990,
+     "full": true,
+     "starter": true
+    },
+    {
+     "id": "dcvelocity",
+     "name": "DC Velocity",
+     "name_en": "DC Velocity",
+     "zh": "仓储与配送中心运营。",
+     "en": "Warehouse and distribution-centre operations.",
+     "home": "https://www.dcvelocity.com/",
+     "feed": "https://www.dcvelocity.com/feeds/feed.rss",
+     "lang": "en",
+     "tags": [
+      "仓储",
+      "物流"
+     ],
+     "tags_en": [
+      "warehouse",
+      "logistics"
+     ],
+     "rank": 172563,
+     "full": true
+    },
+    {
+     "id": "hackett",
+     "name": "The Hackett Group 博客",
+     "name_en": "The Hackett Group Blog",
+     "zh": "采购与供应链咨询公司的博客（Spend Matters 已并入它），订阅源带全文。",
+     "en": "The blog of a procurement and supply chain consultancy (Spend Matters is part of it); full text in the feed.",
+     "home": "https://www.thehackettgroup.com/",
+     "feed": "https://www.thehackettgroup.com/feed/",
+     "lang": "en",
+     "tags": [
+      "采购",
+      "咨询"
+     ],
+     "tags_en": [
+      "procurement",
+      "consulting"
+     ],
+     "rank": 190996,
+     "full": true
+    },
+    {
+     "id": "mhl",
+     "name": "Material Handling & Logistics",
+     "name_en": "Material Handling & Logistics",
+     "zh": "仓储自动化与物料搬运。",
+     "en": "Warehouse automation and material handling.",
+     "home": "https://www.mhlnews.com/",
+     "feed": "https://www.mhlnews.com/__rss/website-scheduled-content.xml?input=%7B%22sectionAlias%22%3A%22home%22%7D",
+     "lang": "en",
+     "tags": [
+      "仓储",
+      "物料搬运"
+     ],
+     "tags_en": [
+      "warehouse",
+      "material handling"
+     ],
+     "rank": 275636,
+     "full": false
+    },
+    {
+     "id": "logisticsviewpoints",
+     "name": "Logistics Viewpoints",
+     "name_en": "Logistics Viewpoints",
+     "zh": "供应链分析师的长文，订阅源带全文。",
+     "en": "Long pieces by supply chain analysts; full text in the feed.",
+     "home": "https://logisticsviewpoints.com/",
+     "feed": "https://logisticsviewpoints.com/feed/",
+     "lang": "en",
+     "tags": [
+      "物流",
+      "供应链"
+     ],
+     "tags_en": [
+      "logistics",
+      "supply chain"
+     ],
+     "rank": 475385,
+     "full": true,
+     "starter": true
+    },
+    {
+     "id": "shaman",
+     "name": "Supply Chain Shaman",
+     "name_en": "Supply Chain Shaman",
+     "zh": "Lora Cecere 的供应链计划与数据长文。",
+     "en": "Lora Cecere on supply chain planning and data.",
+     "home": "https://www.supplychainshaman.com/",
+     "feed": "https://www.supplychainshaman.com/feed/",
+     "lang": "en",
+     "tags": [
+      "供应链",
+      "计划"
+     ],
+     "tags_en": [
+      "supply chain",
+      "planning"
+     ],
+     "rank": 0,
+     "full": true
+    },
+    {
+     "id": "mitsmr",
+     "name": "MIT Sloan Management Review",
+     "name_en": "MIT Sloan Management Review",
+     "zh": "管理与运营研究，订阅源带全文。",
+     "en": "Management and operations research; full text in the feed.",
+     "home": "https://sloanreview.mit.edu/",
+     "feed": "https://sloanreview.mit.edu/feed/",
+     "lang": "en",
+     "tags": [
+      "管理",
+      "研究"
+     ],
+     "tags_en": [
+      "management",
+      "research"
+     ],
+     "rank": 0,
+     "full": true
+    }
+   ]
+  },
+  {
+   "id": "en-retail",
+   "zh": "零售与餐饮",
+   "en": "Retail, restaurants & food",
+   "items": [
+    {
+     "id": "eater",
+     "name": "Eater",
+     "name_en": "Eater",
+     "zh": "餐饮与美食文化，流量很大。",
+     "en": "Restaurants and food culture, with big traffic.",
+     "home": "https://www.eater.com/",
+     "feed": "https://www.eater.com/rss/index.xml",
+     "lang": "en",
+     "tags": [
+      "美食",
+      "餐饮"
+     ],
+     "tags_en": [
+      "food",
+      "restaurants"
+     ],
+     "rank": 6653,
+     "full": true
+    },
+    {
+     "id": "nrn",
+     "name": "Nation’s Restaurant News",
+     "name_en": "Nation’s Restaurant News",
+     "zh": "餐饮连锁与供应链动态。",
+     "en": "Restaurant chains and supply news.",
+     "home": "https://www.nrn.com/",
+     "feed": "https://www.nrn.com/rss.xml",
+     "lang": "en",
+     "tags": [
+      "餐饮",
+      "连锁"
+     ],
+     "tags_en": [
+      "restaurants",
+      "chains"
+     ],
+     "rank": 40241,
+     "full": false
+    },
+    {
+     "id": "restaurantbusiness",
+     "name": "Restaurant Business",
+     "name_en": "Restaurant Business",
+     "zh": "餐饮行业商业新闻与分析。",
+     "en": "Business news and analysis for the restaurant industry.",
+     "home": "https://www.restaurantbusinessonline.com/",
+     "feed": "https://www.restaurantbusinessonline.com/feed/",
+     "lang": "en",
+     "tags": [
+      "餐饮",
+      "商业"
+     ],
+     "tags_en": [
+      "restaurants",
+      "business"
+     ],
+     "rank": 48849,
+     "full": false
+    },
+    {
+     "id": "modernretail",
+     "name": "Modern Retail",
+     "name_en": "Modern Retail",
+     "zh": "零售与品牌新闻，订阅源带全文。",
+     "en": "Retail and brand news; full text in the feed.",
+     "home": "https://www.modernretail.co/",
+     "feed": "https://www.modernretail.co/feed/",
+     "lang": "en",
+     "tags": [
+      "零售",
+      "品牌"
+     ],
+     "tags_en": [
+      "retail",
+      "brands"
+     ],
+     "rank": 81063,
+     "full": true
+    }
+   ]
+  },
+  {
+   "id": "en-biz",
+   "zh": "商业与经济",
+   "en": "Business & economics",
+   "items": [
+    {
+     "id": "guardianbiz",
+     "name": "卫报·商业",
+     "name_en": "The Guardian · Business",
+     "zh": "商业与经济报道，订阅源带全文。",
+     "en": "Business and economics reporting; full text in the feed.",
+     "home": "https://www.theguardian.com/uk/business",
+     "feed": "https://www.theguardian.com/uk/business/rss",
+     "lang": "en",
+     "tags": [
+      "商业",
+      "新闻"
+     ],
+     "tags_en": [
+      "business",
+      "news"
+     ],
+     "rank": 194,
+     "full": true
+    },
+    {
+     "id": "owid",
+     "name": "Our World in Data",
+     "name_en": "Our World in Data",
+     "zh": "用数据看世界，图表漂亮。",
+     "en": "The world in data, with excellent charts.",
+     "home": "https://ourworldindata.org/",
+     "feed": "https://ourworldindata.org/atom.xml",
+     "lang": "en",
+     "tags": [
+      "数据",
+      "经济"
+     ],
+     "tags_en": [
+      "data",
+      "economics"
+     ],
+     "rank": 3717,
+     "full": false,
+     "starter": true
+    },
+    {
+     "id": "marginalrevolution",
+     "name": "Marginal Revolution",
+     "name_en": "Marginal Revolution",
+     "zh": "经济学家的日常博客，短而密。",
+     "en": "Two economists’ daily blog: short and dense.",
+     "home": "https://marginalrevolution.com/",
+     "feed": "https://marginalrevolution.com/feed",
+     "lang": "en",
+     "tags": [
+      "经济"
+     ],
+     "tags_en": [
+      "economics"
+     ],
+     "rank": 39327,
+     "full": true
+    },
+    {
+     "id": "noahpinion",
+     "name": "Noahpinion",
+     "name_en": "Noahpinion",
+     "zh": "Noah Smith 的经济评论。",
+     "en": "Noah Smith on economics.",
+     "home": "https://www.noahpinion.blog/",
+     "feed": "https://www.noahpinion.blog/feed",
+     "lang": "en",
+     "tags": [
+      "经济"
+     ],
+     "tags_en": [
+      "economics"
+     ],
+     "rank": 118702,
+     "full": true
+    },
+    {
+     "id": "wip",
+     "name": "Works in Progress",
+     "name_en": "Works in Progress",
+     "zh": "关于进步与增长的长文。",
+     "en": "Long pieces on progress and growth.",
+     "home": "https://worksinprogress.co/",
+     "feed": "https://worksinprogress.co/rss.xml",
+     "lang": "en",
+     "tags": [
+      "经济",
+      "科技",
+      "思想"
+     ],
+     "tags_en": [
+      "economics",
+      "tech",
+      "ideas"
+     ],
+     "rank": 126713,
+     "full": false
+    },
+    {
+     "id": "constructionphysics",
+     "name": "Construction Physics",
+     "name_en": "Construction Physics",
+     "zh": "Brian Potter：建造业与制造业为什么难、怎么变。",
+     "en": "Brian Potter on why building and manufacturing are hard, and how they change.",
+     "home": "https://www.construction-physics.com/",
+     "feed": "https://www.construction-physics.com/feed",
+     "lang": "en",
+     "tags": [
+      "制造",
+      "经济",
+      "基建"
+     ],
+     "tags_en": [
+      "manufacturing",
+      "economics",
+      "infrastructure"
+     ],
+     "rank": 226859,
+     "full": true,
+     "starter": true
+    }
+   ]
+  },
+  {
+   "id": "en-ideas",
+   "zh": "思考、效率与观点",
+   "en": "Ideas, productivity & opinion",
+   "items": [
+    {
+     "id": "vox",
+     "name": "Vox",
+     "name_en": "Vox",
+     "zh": "解释性新闻，流量很大，订阅源带全文。",
+     "en": "Explanatory journalism with big traffic; full text in the feed.",
+     "home": "https://www.vox.com/",
+     "feed": "https://www.vox.com/rss/index.xml",
+     "lang": "en",
+     "tags": [
+      "新闻",
+      "解读"
+     ],
+     "tags_en": [
+      "news",
+      "explainers"
+     ],
+     "rank": 2383,
+     "full": true
+    },
+    {
+     "id": "slate",
+     "name": "Slate",
+     "name_en": "Slate",
+     "zh": "时事与文化评论。",
+     "en": "Commentary on current affairs and culture.",
+     "home": "https://slate.com/",
+     "feed": "https://slate.com/feeds/all.rss",
+     "lang": "en",
+     "tags": [
+      "评论",
+      "文化"
+     ],
+     "tags_en": [
+      "commentary",
+      "culture"
+     ],
+     "rank": 2515,
+     "full": false
+    },
+    {
+     "id": "lifehacker",
+     "name": "Lifehacker",
+     "name_en": "Lifehacker",
+     "zh": "生活与效率技巧，订阅源带全文。",
+     "en": "Life and productivity tips; full text in the feed.",
+     "home": "https://lifehacker.com/",
+     "feed": "https://lifehacker.com/feed/rss",
+     "lang": "en",
+     "tags": [
+      "效率",
+      "生活"
+     ],
+     "tags_en": [
+      "productivity",
+      "life"
+     ],
+     "rank": 3394,
+     "full": true
+    },
+    {
+     "id": "kottke",
+     "name": "Kottke.org",
+     "name_en": "Kottke.org",
+     "zh": "二十多年的老牌链接博客。",
+     "en": "A link blog that has run for over twenty years.",
+     "home": "https://kottke.org/",
+     "feed": "https://feeds.kottke.org/main",
+     "lang": "en",
+     "tags": [
+      "杂谈",
+      "链接"
+     ],
+     "tags_en": [
+      "miscellany",
+      "links"
+     ],
+     "rank": 25305,
+     "full": false
+    },
+    {
+     "id": "farnamstreet",
+     "name": "Farnam Street",
+     "name_en": "Farnam Street",
+     "zh": "决策与心智模型，读书笔记式长文。",
+     "en": "Decision making and mental models, in reading-note style.",
+     "home": "https://fs.blog/",
+     "feed": "https://fs.blog/feed/",
+     "lang": "en",
+     "tags": [
+      "思考",
+      "决策"
+     ],
+     "tags_en": [
+      "thinking",
+      "decisions"
+     ],
+     "rank": 32016,
+     "full": true,
+     "starter": true
+    },
+    {
+     "id": "knowledgeproject",
+     "name": "The Knowledge Project",
+     "name_en": "The Knowledge Project",
+     "zh": "Farnam Street 的访谈节目，页面带文字稿。",
+     "en": "Farnam Street’s interview show, with transcripts on the pages.",
+     "home": "https://fs.blog/knowledge-project/",
+     "feed": "https://feeds.megaphone.fm/FSMI7575968096",
+     "lang": "en",
+     "tags": [
+      "访谈",
+      "思考"
+     ],
+     "tags_en": [
+      "interviews",
+      "thinking"
+     ],
+     "rank": 32016,
+     "full": true
+    },
+    {
+     "id": "timferriss",
+     "name": "Tim Ferriss",
+     "name_en": "Tim Ferriss",
+     "zh": "效率、访谈与生活方式，文章很长。",
+     "en": "Productivity, interviews and lifestyle, in long posts.",
+     "home": "https://tim.blog/",
+     "feed": "https://tim.blog/feed/",
+     "lang": "en",
+     "tags": [
+      "效率",
+      "访谈"
+     ],
+     "tags_en": [
+      "productivity",
+      "interviews"
+     ],
+     "rank": 35007,
+     "full": true
+    },
+    {
+     "id": "technium",
+     "name": "The Technium",
+     "name_en": "The Technium",
+     "zh": "Kevin Kelly 谈技术与未来。",
+     "en": "Kevin Kelly on technology and the future.",
+     "home": "https://kk.org/thetechnium/",
+     "feed": "https://kk.org/thetechnium/feed/",
+     "lang": "en",
+     "tags": [
+      "技术",
+      "未来"
+     ],
+     "tags_en": [
+      "technology",
+      "future"
+     ],
+     "rank": 37041,
+     "full": true
+    },
+    {
+     "id": "waitbutwhy",
+     "name": "Wait But Why",
+     "name_en": "Wait But Why",
+     "zh": "极长的经典长文，更新很慢（上次 2025-11）。",
+     "en": "Famously long essays; updates are slow (last in 2025-11).",
+     "home": "https://waitbutwhy.com/",
+     "feed": "https://waitbutwhy.com/feed",
+     "lang": "en",
+     "tags": [
+      "思考",
+      "长文"
+     ],
+     "tags_en": [
+      "thinking",
+      "long reads"
+     ],
+     "rank": 39674,
+     "full": true
+    },
+    {
+     "id": "noema",
+     "name": "Noema",
+     "name_en": "Noema",
+     "zh": "思想类长文杂志。",
+     "en": "A magazine of long essays on ideas.",
+     "home": "https://www.noemamag.com/",
+     "feed": "https://www.noemamag.com/?feed=noemarss",
+     "lang": "en",
+     "tags": [
+      "思想",
+      "社会"
+     ],
+     "tags_en": [
+      "ideas",
+      "society"
+     ],
+     "rank": 48700,
+     "full": true
+    },
+    {
+     "id": "calnewport",
+     "name": "Cal Newport",
+     "name_en": "Cal Newport",
+     "zh": "《深度工作》作者的博客。",
+     "en": "The author of Deep Work.",
+     "home": "https://calnewport.com/",
+     "feed": "https://calnewport.com/feed/",
+     "lang": "en",
+     "tags": [
+      "效率",
+      "读书"
+     ],
+     "tags_en": [
+      "productivity",
+      "reading"
+     ],
+     "rank": 49845,
+     "full": true
+    },
+    {
+     "id": "psyche",
+     "name": "Psyche",
+     "name_en": "Psyche",
+     "zh": "心理学与生活的长文。",
+     "en": "Long reads on psychology and living.",
+     "home": "https://psyche.co/",
+     "feed": "https://psyche.co/feed.rss",
+     "lang": "en",
+     "tags": [
+      "心理",
+      "人文"
+     ],
+     "tags_en": [
+      "psychology",
+      "humanities"
+     ],
+     "rank": 52370,
+     "full": false
+    },
+    {
+     "id": "sivers",
+     "name": "Derek Sivers",
+     "name_en": "Derek Sivers",
+     "zh": "短而有力的思考。",
+     "en": "Short, strong thoughts.",
+     "home": "https://sive.rs/",
+     "feed": "https://sive.rs/feed.xml",
+     "lang": "en",
+     "tags": [
+      "思考",
+      "创业"
+     ],
+     "tags_en": [
+      "thinking",
+      "startups"
+     ],
+     "rank": 55084,
+     "full": true
+    },
+    {
+     "id": "seth",
+     "name": "Seth Godin 的博客",
+     "name_en": "Seth’s Blog",
+     "zh": "每天一篇短文。",
+     "en": "One short post a day.",
+     "home": "https://seths.blog/",
+     "feed": "https://seths.blog/feed/atom/",
+     "lang": "en",
+     "tags": [
+      "营销",
+      "思考"
+     ],
+     "tags_en": [
+      "marketing",
+      "thinking"
+     ],
+     "rank": 58290,
+     "full": true
+    },
+    {
+     "id": "austinkleon",
+     "name": "Austin Kleon",
+     "name_en": "Austin Kleon",
+     "zh": "创作与灵感。",
+     "en": "Creativity and inspiration.",
+     "home": "https://austinkleon.com/",
+     "feed": "https://austinkleon.com/feed/",
+     "lang": "en",
+     "tags": [
+      "创作",
+      "读书"
+     ],
+     "tags_en": [
+      "creativity",
+      "reading"
+     ],
+     "rank": 96982,
+     "full": true
+    },
+    {
+     "id": "oneusefulthing",
+     "name": "One Useful Thing",
+     "name_en": "One Useful Thing",
+     "zh": "Ethan Mollick：AI 在工作和学习里怎么用。",
+     "en": "Ethan Mollick on how to use AI at work and in learning.",
+     "home": "https://www.oneusefulthing.org/",
+     "feed": "https://www.oneusefulthing.org/feed",
+     "lang": "en",
+     "tags": [
+      "AI",
+      "工作"
+     ],
+     "tags_en": [
+      "AI",
+      "work"
+     ],
+     "rank": 97290,
+     "full": true
+    },
+    {
+     "id": "acx",
+     "name": "Astral Codex Ten",
+     "name_en": "Astral Codex Ten",
+     "zh": "Scott Alexander 的长文：科学、心理与社会。",
+     "en": "Scott Alexander’s long essays on science, psychology and society.",
+     "home": "https://www.astralcodexten.com/",
+     "feed": "https://www.astralcodexten.com/feed",
+     "lang": "en",
+     "tags": [
+      "思想",
+      "科学"
+     ],
+     "tags_en": [
+      "ideas",
+      "science"
+     ],
+     "rank": 114431,
+     "full": true
+    },
+    {
+     "id": "nesslabs",
+     "name": "Ness Labs",
+     "name_en": "Ness Labs",
+     "zh": "做笔记、学习与专注（和本站主题相近）。",
+     "en": "Note-taking, learning and focus (close to this site’s theme).",
+     "home": "https://nesslabs.com/",
+     "feed": "https://nesslabs.com/feed",
+     "lang": "en",
+     "tags": [
+      "学习",
+      "笔记"
+     ],
+     "tags_en": [
+      "learning",
+      "notes"
+     ],
+     "rank": 159175,
+     "full": true
+    },
+    {
+     "id": "scottyoung",
+     "name": "Scott H Young",
+     "name_en": "Scott H Young",
+     "zh": "学习方法与自学。",
+     "en": "Learning methods and self-teaching.",
+     "home": "https://www.scotthyoung.com/blog/",
+     "feed": "https://www.scotthyoung.com/blog/feed/",
+     "lang": "en",
+     "tags": [
+      "学习"
+     ],
+     "tags_en": [
+      "learning"
+     ],
+     "rank": 186315,
+     "full": true
+    }
+   ]
+  },
+  {
+   "id": "en-books",
+   "zh": "读书与文化",
+   "en": "Books & culture",
+   "items": [
+    {
+     "id": "jstordaily",
+     "name": "JSTOR Daily",
+     "name_en": "JSTOR Daily",
+     "zh": "学术研究的通俗读物。",
+     "en": "Scholarship made readable.",
+     "home": "https://daily.jstor.org/",
+     "feed": "https://daily.jstor.org/feed/",
+     "lang": "en",
+     "tags": [
+      "学术",
+      "人文"
+     ],
+     "tags_en": [
+      "scholarship",
+      "humanities"
+     ],
+     "rank": 1312,
+     "full": true
+    },
+    {
+     "id": "openculture",
+     "name": "Open Culture",
+     "name_en": "Open Culture",
+     "zh": "免费电子书、课程和纪录片的索引，和本站主题很近。",
+     "en": "An index of free ebooks, courses and films: very close to this site’s theme.",
+     "home": "https://www.openculture.com/",
+     "feed": "https://www.openculture.com/feed",
+     "lang": "en",
+     "tags": [
+      "文化",
+      "免费资源"
+     ],
+     "tags_en": [
+      "culture",
+      "free resources"
+     ],
+     "rank": 12897,
+     "full": true,
+     "starter": true
+    },
+    {
+     "id": "lithub",
+     "name": "Literary Hub",
+     "name_en": "Literary Hub",
+     "zh": "文学与出版。",
+     "en": "Literature and publishing.",
+     "home": "https://lithub.com/",
+     "feed": "https://lithub.com/feed/",
+     "lang": "en",
+     "tags": [
+      "读书",
+      "文学"
+     ],
+     "tags_en": [
+      "books",
+      "literature"
+     ],
+     "rank": 14142,
+     "full": true
+    },
+    {
+     "id": "lrb",
+     "name": "London Review of Books",
+     "name_en": "London Review of Books",
+     "zh": "伦敦书评。",
+     "en": "Long book reviews and essays.",
+     "home": "https://www.lrb.co.uk/",
+     "feed": "https://www.lrb.co.uk/feeds/rss",
+     "lang": "en",
+     "tags": [
+      "书评"
+     ],
+     "tags_en": [
+      "book reviews"
+     ],
+     "rank": 15878,
+     "full": false
+    },
+    {
+     "id": "parisreview",
+     "name": "The Paris Review Daily",
+     "name_en": "The Paris Review Daily",
+     "zh": "《巴黎评论》每日专栏。",
+     "en": "The daily column of The Paris Review.",
+     "home": "https://www.theparisreview.org/blog/",
+     "feed": "https://www.theparisreview.org/blog/feed/",
+     "lang": "en",
+     "tags": [
+      "文学"
+     ],
+     "tags_en": [
+      "literature"
+     ],
+     "rank": 25630,
+     "full": true
+    },
+    {
+     "id": "marginalian",
+     "name": "The Marginalian",
+     "name_en": "The Marginalian",
+     "zh": "读书、艺术与思想。",
+     "en": "Books, art and ideas.",
+     "home": "https://www.themarginalian.org/",
+     "feed": "https://www.themarginalian.org/feed/",
+     "lang": "en",
+     "tags": [
+      "读书",
+      "人文"
+     ],
+     "tags_en": [
+      "books",
+      "humanities"
+     ],
+     "rank": 30183,
+     "full": true
+    },
+    {
+     "id": "bookriot",
+     "name": "Book Riot",
+     "name_en": "Book Riot",
+     "zh": "书单与阅读文化。",
+     "en": "Reading lists and reading culture.",
+     "home": "https://bookriot.com/",
+     "feed": "https://bookriot.com/feed/",
+     "lang": "en",
+     "tags": [
+      "书单",
+      "阅读"
+     ],
+     "tags_en": [
+      "reading lists",
+      "reading"
+     ],
+     "rank": 31684,
+     "full": true
+    },
+    {
+     "id": "longreads",
+     "name": "Longreads",
+     "name_en": "Longreads",
+     "zh": "编辑挑选的长文。",
+     "en": "Long reads picked by editors.",
+     "home": "https://longreads.com/",
+     "feed": "https://longreads.com/feed/",
+     "lang": "en",
+     "tags": [
+      "长文",
+      "推荐"
+     ],
+     "tags_en": [
+      "long reads",
+      "picks"
+     ],
+     "rank": 48788,
+     "full": true
+    },
+    {
+     "id": "standardebooks",
+     "name": "Standard Ebooks 新书",
+     "name_en": "Standard Ebooks · new releases",
+     "zh": "排版精良的公版电子书，每次新上架一本；点开是书页（EPUB 下载在原站）。",
+     "en": "Beautifully formatted public-domain ebooks, one new release at a time; the page opens the book’s page (the EPUB is on the original site).",
+     "home": "https://standardebooks.org/",
+     "feed": "https://standardebooks.org/feeds/atom/new-releases",
+     "lang": "en",
+     "tags": [
+      "电子书",
+      "公版书"
+     ],
+     "tags_en": [
+      "ebooks",
+      "public domain"
+     ],
+     "rank": 70431,
+     "full": true,
+     "starter": true
+    },
+    {
+     "id": "electricliterature",
+     "name": "Electric Literature",
+     "name_en": "Electric Literature",
+     "zh": "小说、散文与文学评论。",
+     "en": "Fiction, essays and literary criticism.",
+     "home": "https://electricliterature.com/",
+     "feed": "https://electricliterature.com/feed/",
+     "lang": "en",
+     "tags": [
+      "文学",
+      "小说"
+     ],
+     "tags_en": [
+      "literature",
+      "fiction"
+     ],
+     "rank": 97140,
+     "full": true
+    },
+    {
+     "id": "crimereads",
+     "name": "CrimeReads",
+     "name_en": "CrimeReads",
+     "zh": "推理与犯罪小说。",
+     "en": "Mystery and crime fiction.",
+     "home": "https://crimereads.com/",
+     "feed": "https://crimereads.com/feed/",
+     "lang": "en",
+     "tags": [
+      "推理",
+      "小说"
+     ],
+     "tags_en": [
+      "mystery",
+      "fiction"
+     ],
+     "rank": 117489,
+     "full": true
+    },
+    {
+     "id": "themillions",
+     "name": "The Millions",
+     "name_en": "The Millions",
+     "zh": "书评与随笔。",
+     "en": "Book reviews and essays.",
+     "home": "https://www.themillions.com/",
+     "feed": "https://themillions.com/feed",
+     "lang": "en",
+     "tags": [
+      "书评",
+      "随笔"
+     ],
+     "tags_en": [
+      "book reviews",
+      "essays"
+     ],
+     "rank": 137448,
+     "full": true
+    }
+   ]
+  },
+  {
+   "id": "en-tech",
+   "zh": "科技与编程",
+   "en": "Tech & programming",
+   "items": [
+    {
+     "id": "wired",
+     "name": "WIRED",
+     "name_en": "WIRED",
+     "zh": "科技与社会。",
+     "en": "Technology and society.",
+     "home": "https://www.wired.com/",
+     "feed": "https://www.wired.com/feed/rss",
+     "lang": "en",
+     "tags": [
+      "科技",
+      "社会"
+     ],
+     "tags_en": [
+      "tech",
+      "society"
+     ],
+     "rank": 559,
+     "full": false
+    },
+    {
+     "id": "techcrunch",
+     "name": "TechCrunch",
+     "name_en": "TechCrunch",
+     "zh": "创业公司与科技产业新闻。",
+     "en": "Startup and tech-industry news.",
+     "home": "https://techcrunch.com/",
+     "feed": "https://techcrunch.com/feed/",
+     "lang": "en",
+     "tags": [
+      "创业",
+      "科技"
+     ],
+     "tags_en": [
+      "startups",
+      "tech"
+     ],
+     "rank": 643,
+     "full": false
+    },
+    {
+     "id": "theverge",
+     "name": "The Verge",
+     "name_en": "The Verge",
+     "zh": "科技、数码与文化。",
+     "en": "Tech, gadgets and culture.",
+     "home": "https://www.theverge.com/",
+     "feed": "https://www.theverge.com/rss/index.xml",
+     "lang": "en",
+     "tags": [
+      "科技",
+      "数码"
+     ],
+     "tags_en": [
+      "tech",
+      "gadgets"
+     ],
+     "rank": 863,
+     "full": true
+    },
+    {
+     "id": "arstechnica",
+     "name": "Ars Technica",
+     "name_en": "Ars Technica",
+     "zh": "科技深度报道，订阅源带全文。",
+     "en": "In-depth tech reporting; full text in the feed.",
+     "home": "https://arstechnica.com/",
+     "feed": "https://feeds.arstechnica.com/arstechnica/index",
+     "lang": "en",
+     "tags": [
+      "科技",
+      "深度"
+     ],
+     "tags_en": [
+      "tech",
+      "in-depth"
+     ],
+     "rank": 1849,
+     "full": true
+    },
+    {
+     "id": "hackernews",
+     "name": "Hacker News",
+     "name_en": "Hacker News",
+     "zh": "程序员社区的首页，链接到各个网站（站内读不了的会跳原站）。",
+     "en": "The front page of the programmers’ community; its links lead to many sites (those that cannot be read here open on their own).",
+     "home": "https://news.ycombinator.com/",
+     "feed": "https://news.ycombinator.com/rss",
+     "lang": "en",
+     "tags": [
+      "科技",
+      "社区"
+     ],
+     "tags_en": [
+      "tech",
+      "community"
+     ],
+     "rank": 2289,
+     "full": false
+    },
+    {
+     "id": "mittr",
+     "name": "MIT Technology Review",
+     "name_en": "MIT Technology Review",
+     "zh": "新兴技术的深度报道，订阅源带全文。",
+     "en": "In-depth reports on emerging technology; full text in the feed.",
+     "home": "https://www.technologyreview.com/",
+     "feed": "https://www.technologyreview.com/feed/",
+     "lang": "en",
+     "tags": [
+      "科技",
+      "研究"
+     ],
+     "tags_en": [
+      "tech",
+      "research"
+     ],
+     "rank": 2605,
+     "full": true
+    },
+    {
+     "id": "smashing",
+     "name": "Smashing Magazine",
+     "name_en": "Smashing Magazine",
+     "zh": "网页设计与开发，订阅源带全文。",
+     "en": "Web design and development; full text in the feed.",
+     "home": "https://www.smashingmagazine.com/",
+     "feed": "https://www.smashingmagazine.com/feed/",
+     "lang": "en",
+     "tags": [
+      "设计",
+      "前端"
+     ],
+     "tags_en": [
+      "design",
+      "front-end"
+     ],
+     "rank": 5777,
+     "full": true
+    },
+    {
+     "id": "csstricks",
+     "name": "CSS-Tricks",
+     "name_en": "CSS-Tricks",
+     "zh": "前端与 CSS 技巧。",
+     "en": "Front-end and CSS tricks.",
+     "home": "https://css-tricks.com/",
+     "feed": "https://css-tricks.com/feed/",
+     "lang": "en",
+     "tags": [
+      "前端",
+      "CSS"
+     ],
+     "tags_en": [
+      "front-end",
+      "CSS"
+     ],
+     "rank": 10642,
+     "full": false
+    },
+    {
+     "id": "simonwillison",
+     "name": "Simon Willison 的博客",
+     "name_en": "Simon Willison’s Weblog",
+     "zh": "大模型与工具的实操记录。",
+     "en": "Hands-on notes on LLMs and tools.",
+     "home": "https://simonwillison.net/",
+     "feed": "https://simonwillison.net/atom/everything/",
+     "lang": "en",
+     "tags": [
+      "AI",
+      "编程"
+     ],
+     "tags_en": [
+      "AI",
+      "programming"
+     ],
+     "rank": 16117,
+     "full": false
+    },
+    {
+     "id": "codinghorror",
+     "name": "Coding Horror",
+     "name_en": "Coding Horror",
+     "zh": "程序员的老牌博客，订阅源带全文。",
+     "en": "A veteran programmer’s blog; full text in the feed.",
+     "home": "https://blog.codinghorror.com/",
+     "feed": "https://blog.codinghorror.com/rss/",
+     "lang": "en",
+     "tags": [
+      "编程",
+      "随笔"
+     ],
+     "tags_en": [
+      "programming",
+      "essays"
+     ],
+     "rank": 21618,
+     "full": true
+    },
+    {
+     "id": "stackoverflow",
+     "name": "Stack Overflow 博客",
+     "name_en": "Stack Overflow Blog",
+     "zh": "开发者社区的博客。",
+     "en": "The developer community’s blog.",
+     "home": "https://stackoverflow.blog/",
+     "feed": "https://stackoverflow.blog/feed/",
+     "lang": "en",
+     "tags": [
+      "编程",
+      "社区"
+     ],
+     "tags_en": [
+      "programming",
+      "community"
+     ],
+     "rank": 38392,
+     "full": false
+    },
+    {
+     "id": "netflixtech",
+     "name": "Netflix 技术博客",
+     "name_en": "Netflix Tech Blog",
+     "zh": "大规模系统的工程文章，订阅源带全文。",
+     "en": "Engineering posts on large-scale systems; full text in the feed.",
+     "home": "https://netflixtechblog.com/",
+     "feed": "https://netflixtechblog.com/feed",
+     "lang": "en",
+     "tags": [
+      "架构",
+      "工程"
+     ],
+     "tags_en": [
+      "architecture",
+      "engineering"
+     ],
+     "rank": 43346,
+     "full": true
+    },
+    {
+     "id": "jvns",
+     "name": "Julia Evans",
+     "name_en": "Julia Evans",
+     "zh": "把技术讲清楚的典范。",
+     "en": "A model of explaining technology clearly.",
+     "home": "https://jvns.ca/",
+     "feed": "https://jvns.ca/atom.xml",
+     "lang": "en",
+     "tags": [
+      "编程",
+      "教程"
+     ],
+     "tags_en": [
+      "programming",
+      "tutorials"
+     ],
+     "rank": 53216,
+     "full": true
+    },
+    {
+     "id": "pragmaticengineer",
+     "name": "The Pragmatic Engineer",
+     "name_en": "The Pragmatic Engineer",
+     "zh": "大公司的工程实践（免费部分）。",
+     "en": "Engineering practice at big companies (free posts).",
+     "home": "https://blog.pragmaticengineer.com/",
+     "feed": "https://blog.pragmaticengineer.com/rss/",
+     "lang": "en",
+     "tags": [
+      "工程管理",
+      "编程"
+     ],
+     "tags_en": [
+      "engineering management",
+      "programming"
+     ],
+     "rank": 55156,
+     "full": true
+    },
+    {
+     "id": "overreacted",
+     "name": "overreacted",
+     "name_en": "overreacted",
+     "zh": "Dan Abramov 的前端长文。",
+     "en": "Dan Abramov’s long front-end essays.",
+     "home": "https://overreacted.io/",
+     "feed": "https://overreacted.io/rss.xml",
+     "lang": "en",
+     "tags": [
+      "前端",
+      "编程"
+     ],
+     "tags_en": [
+      "front-end",
+      "programming"
+     ],
+     "rank": 174776,
+     "full": false
+    },
+    {
+     "id": "martinfowler",
+     "name": "Martin Fowler",
+     "name_en": "Martin Fowler",
+     "zh": "软件设计与架构的经典博客。",
+     "en": "A classic blog on software design and architecture.",
+     "home": "https://martinfowler.com/",
+     "feed": "https://martinfowler.com/feed.atom",
+     "lang": "en",
+     "tags": [
+      "软件设计",
+      "架构"
+     ],
+     "tags_en": [
+      "software design",
+      "architecture"
+     ],
+     "rank": 0,
+     "full": true
+    },
+    {
+     "id": "cloudflare",
+     "name": "Cloudflare 博客",
+     "name_en": "Cloudflare Blog",
+     "zh": "网络与安全的工程文章，订阅源带全文。",
+     "en": "Engineering posts on networks and security; full text in the feed.",
+     "home": "https://blog.cloudflare.com/",
+     "feed": "https://blog.cloudflare.com/rss/",
+     "lang": "en",
+     "tags": [
+      "网络",
+      "安全"
+     ],
+     "tags_en": [
+      "networking",
+      "security"
+     ],
+     "rank": 0,
+     "full": true
+    }
+   ]
+  },
+  {
+   "id": "en-sci",
+   "zh": "科学",
+   "en": "Science",
+   "items": [
+    {
+     "id": "nasa",
+     "name": "NASA",
+     "name_en": "NASA",
+     "zh": "航天与科学的官方文章，订阅源带全文。",
+     "en": "Official articles on space and science; full text in the feed.",
+     "home": "https://www.nasa.gov/",
+     "feed": "https://www.nasa.gov/feed/",
+     "lang": "en",
+     "tags": [
+      "航天",
+      "科学"
+     ],
+     "tags_en": [
+      "space",
+      "science"
+     ],
+     "rank": 356,
+     "full": true
+    },
+    {
+     "id": "sciencedaily",
+     "name": "ScienceDaily",
+     "name_en": "ScienceDaily",
+     "zh": "每天的科研新闻。",
+     "en": "Science news every day.",
+     "home": "https://www.sciencedaily.com/",
+     "feed": "https://www.sciencedaily.com/rss/all.xml",
+     "lang": "en",
+     "tags": [
+      "科学",
+      "新闻"
+     ],
+     "tags_en": [
+      "science",
+      "news"
+     ],
+     "rank": 1874,
+     "full": false
+    },
+    {
+     "id": "sciam",
+     "name": "Scientific American",
+     "name_en": "Scientific American",
+     "zh": "《科学美国人》。",
+     "en": "Scientific American.",
+     "home": "https://www.scientificamerican.com/",
+     "feed": "https://www.scientificamerican.com/platform/syndication/rss/",
+     "lang": "en",
+     "tags": [
+      "科学"
+     ],
+     "tags_en": [
+      "science"
+     ],
+     "rank": 1904,
+     "full": false
+    },
+    {
+     "id": "newscientist",
+     "name": "New Scientist",
+     "name_en": "New Scientist",
+     "zh": "科学新闻与解读。",
+     "en": "Science news and explainers.",
+     "home": "https://www.newscientist.com/",
+     "feed": "https://www.newscientist.com/feed/",
+     "lang": "en",
+     "tags": [
+      "科学",
+      "新闻"
+     ],
+     "tags_en": [
+      "science",
+      "news"
+     ],
+     "rank": 2810,
+     "full": true
+    },
+    {
+     "id": "physorg",
+     "name": "Phys.org",
+     "name_en": "Phys.org",
+     "zh": "物理与科研新闻。",
+     "en": "Physics and research news.",
+     "home": "https://phys.org/",
+     "feed": "https://phys.org/rss-feed/",
+     "lang": "en",
+     "tags": [
+      "物理",
+      "科学"
+     ],
+     "tags_en": [
+      "physics",
+      "science"
+     ],
+     "rank": 2938,
+     "full": false
+    },
+    {
+     "id": "quanta",
+     "name": "Quanta Magazine",
+     "name_en": "Quanta Magazine",
+     "zh": "数学与科学的深度报道。",
+     "en": "In-depth reporting on mathematics and science.",
+     "home": "https://www.quantamagazine.org/",
+     "feed": "https://www.quantamagazine.org/feed/",
+     "lang": "en",
+     "tags": [
+      "科学",
+      "数学"
+     ],
+     "tags_en": [
+      "science",
+      "mathematics"
+     ],
+     "rank": 14551,
+     "full": false
+    }
+   ]
+  }
+ ]
+}

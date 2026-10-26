@@ -10,11 +10,14 @@ Google does not use IndexNow (and has no way to request indexing by program): fo
     vercel --prod && python indexnow.py          # deploy, then tell them (one command)
 
 What counts as changed: an address that was not in the sitemap last time, or whose <lastmod> there is different (the build gives a page the date
-of its file, so a page you edit moves). What was sent is remembered in .indexnow-state.json (not published, not committed).
+of its file, so a page you edit moves), or whose title / description / canonical address (read from the live page) is different: the build
+writes those into a page without touching its file, so a renamed site or a new description would not move the date. What was sent is
+remembered in .indexnow-state.json (not published, not committed).
 The key is not a secret: IndexNow wants it published at https://your-site/<key>.txt so that the engines can see the site is yours.
 Nothing is sent unless you run this script, and only addresses of your own site are sent. Only the standard library is used.
 """
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -68,6 +71,19 @@ def live_sitemap(base):
     return out
 
 
+def fingerprint(url):
+    """A short hash of what a search engine shows of a page: its <title>, its description and its canonical address, read from the live page ('' when it cannot be read)."""
+    try:
+        t = get(url, 400 * 1024).decode('utf-8', 'replace')
+    except (urllib.error.URLError, OSError, ValueError):
+        return ''
+    pick = lambda pat: (re.search(pat, t, re.S | re.I) or [None, ''])[1].strip()
+    title = pick(r'<title[^>]*>(.*?)</title>')
+    desc = pick(r'<meta[^>]+name=["\']description["\'][^>]*content=["\']([^"\']*)') or pick(r'<meta[^>]+content=["\']([^"\']*)["\'][^>]*name=["\']description["\']')
+    canon = pick(r'<link[^>]+rel=["\']canonical["\'][^>]*href=["\']([^"\']+)') or pick(r'<link[^>]+href=["\']([^"\']+)["\'][^>]*rel=["\']canonical["\']')
+    return hashlib.sha1('\n'.join((title, desc, canon)).encode('utf-8')).hexdigest()[:8]
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description='Tell IndexNow about the new and changed pages of the site.')
     ap.add_argument('--init', action='store_true', help='make a key and save it in site.json')
@@ -103,7 +119,8 @@ def main(argv=None):
     live = {u: m for u, m in live.items() if urllib.parse.urlsplit(u).netloc == host}          # only this site's own addresses
     state = load_json(STATE)
     sent = state.get('sent') if state.get('host') == host and isinstance(state.get('sent'), dict) else {}
-    todo = [u for u, m in live.items() if a.all or sent.get(u) != m]
+    stamp = {u: '%s|%s' % (m, fingerprint(u) if len(live) <= 300 else '') for u, m in live.items()}            # (the date of the sitemap + what the page says of itself)
+    todo = [u for u in live if a.all or sent.get(u) != stamp[u]]
     print('Site %s: %d address(es) in the sitemap, %d new or changed since last time.' % (base, len(live), len(todo)))
     if not todo:
         print('Nothing to send.')
@@ -128,7 +145,7 @@ def main(argv=None):
         try:
             with urllib.request.urlopen(req, timeout=60) as r:
                 print('sent %d address(es): HTTP %s %s' % (len(part), r.status, {200: 'OK', 202: 'accepted (the key is being checked)'}.get(r.status, '')))
-                sent.update({u: live[u] for u in part})
+                sent.update({u: stamp[u] for u in part})
         except urllib.error.HTTPError as e:
             print('HTTP %s %s' % (e.code, {400: 'bad request', 403: 'the key is not valid for this site', 422: 'addresses do not belong to the host', 429: 'too many requests, try later'}.get(e.code, '')))
             status = 1
