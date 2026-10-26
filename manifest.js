@@ -1,5 +1,5 @@
 window.ARCHIVE_MANIFEST = {
- "generated": "2026-10-22 12:39",
+ "generated": "2026-10-26 16:50",
  "directory": "https://adminbook.zhitree.cn/",
  "items": [
   {
@@ -19,9 +19,9 @@ window.ARCHIVE_MANIFEST = {
     "安装部署",
     "教程"
    ],
-   "lang": "zh",
-   "minutes": 22,
-   "date": "2026-10-22",
+   "lang": "mixed",
+   "minutes": 30,
+   "date": "2026-10-26",
    "cover": "",
    "featured": false,
    "pinned": 1,
@@ -38,8 +38,8 @@ window.ARCHIVE_MANIFEST = {
     "deploy"
    ],
    "type": "html",
-   "size": 1664652,
-   "added": 1792643679,
+   "size": 1707456,
+   "added": 1793004601,
    "project": true,
    "files": 34,
    "alt_en": "library/notes/guide/en/index.html"
@@ -63,54 +63,6 @@ window.ARCHIVE_MANIFEST = {
    "noindex": true
   },
   {
-   "id": "notes/重资产到轻资产-读书笔记.html",
-   "path": "library/notes/重资产到轻资产-读书笔记.html",
-   "category": "notes",
-   "title": "读书笔记｜供应链管理：重资产到轻资产的解决方案",
-   "summary": "全书一条主线：垂直整合换来了控制力，也带来了两个改不掉的结构性缺陷——需求单一、竞争不充分。内部挖潜只能治标，外包才治本；而外包能否成功，取决于企业有没有三项能力：识别核心竞争力、模块化设计、选好管好供应商。",
-   "keywords": [],
-   "lang": "zh",
-   "minutes": 48,
-   "date": "2026-10-16",
-   "cover": "",
-   "featured": false,
-   "type": "html",
-   "size": 122659,
-   "added": 1792129594
-  },
-  {
-   "id": "notes/采购与供应链管理-读书笔记.html",
-   "path": "library/notes/采购与供应链管理-读书笔记.html",
-   "category": "notes",
-   "title": "读书笔记｜采购与供应链管理：一个实践者的角度（第3版）",
-   "summary": "全书从大到小、从宽到窄：先给供应链的全局观（三大职能、三条流、复杂度、牛鞭、库存、降本三台阶），再聚焦供应商管理（三大误区、五步流程、整合、下级与指定供应商），最后落到采购职能本身——从围着订单转的“小采购”，升级为管需求、管供应商、管总成本的“大采购”。",
-   "keywords": [],
-   "lang": "zh",
-   "minutes": 35,
-   "date": "2026-10-16",
-   "cover": "",
-   "featured": false,
-   "type": "html",
-   "size": 97597,
-   "added": 1792129592
-  },
-  {
-   "id": "notes/供应链读书笔记-合集.html",
-   "path": "library/notes/供应链读书笔记-合集.html",
-   "category": "notes",
-   "title": "供应链读书笔记：刘宝红两本书合读",
-   "summary": "两本书合起来是一条完整的决策链：第 1 本回答为什么重资产会拖垮企业、哪些该外包；第 2 本回答外包之后供应商怎么选、怎么管，以及采购职能如何从“小采购”升级为“大采购”。",
-   "keywords": [],
-   "lang": "zh",
-   "minutes": 84,
-   "date": "2026-10-16",
-   "cover": "",
-   "featured": false,
-   "type": "html",
-   "size": 208257,
-   "added": 1792129590
-  },
-  {
    "id": "notes/index.html",
    "path": "library/notes/index.html",
    "category": "notes",
@@ -128,9 +80,9 @@ window.ARCHIVE_MANIFEST = {
    "hidden": true
   },
   {
-   "id": "notes/AI_劳动力市场招聘情报报告.pdf",
-   "path": "library/notes/AI_劳动力市场招聘情报报告.pdf",
-   "category": "notes",
+   "id": "books/AI_劳动力市场招聘情报报告.pdf",
+   "path": "library/books/AI_劳动力市场招聘情报报告.pdf",
+   "category": "books",
    "title": "AI_劳动力市场招聘情报报告",
    "summary": "",
    "keywords": [],
@@ -142,8 +94,7 @@ window.ARCHIVE_MANIFEST = {
    "featured": false,
    "type": "pdf",
    "size": 924487,
-   "added": 1791876291,
-   "hidden": true
+   "added": 1791876291
   },
   {
    "id": "tools/supplychain/index.html",

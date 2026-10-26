@@ -3,7 +3,10 @@
   "buildCommand": "python3 build_index.py --keep-dates --seo --site-url https://books.zhitree.cn || python build_index.py --keep-dates --seo --site-url https://books.zhitree.cn",
   "outputDirectory": "dist",
   "redirects": [
-    { "source": "/library/:path*", "destination": "/:path*", "statusCode": 301 }
+    { "source": "/library/:path*", "destination": "/:path*", "statusCode": 301 },
+    { "source": "/notes/n-fcc9fa.html", "destination": "/books/n-909083.html", "statusCode": 301 },
+    { "source": "/notes/n-ad6d89.html", "destination": "/books/n-af90f1.html", "statusCode": 301 },
+    { "source": "/notes/n-ff09af.html", "destination": "/books/n-ec52a8.html", "statusCode": 301 }
   ],
   "rewrites": [
     { "source": "/share-target", "destination": "/index.html" }
