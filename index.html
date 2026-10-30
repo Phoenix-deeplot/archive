@@ -5155,7 +5155,7 @@ state.dListen=false;                    // today's listening: what the service s
 state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
 const PUBLIC_ROUTES={discover:'/discover/',hot:'/hot/',listen:'/listen/',books:'/picks/books/',articles:'/picks/articles/',watch:'/watch/'};
 const publicRouteFromPath=()=>Object.keys(PUBLIC_ROUTES).find(k=>PUBLIC_ROUTES[k]===location.pathname)||'';
-const publicLabel=k=>({discover:['发现','Discover'],hot:['热榜','Trending'],listen:['今日听什么','Listen today'],books:['精选图书','Book picks'],articles:['精选文章','Article picks'],watch:['看什么 · 视频','Videos to watch']}[k]||[])[state.lang==='zh'?0:1]||'';
+const publicLabel=k=>({discover:['发现','Discover'],hot:['热榜','Trending'],listen:['今日听什么','Listen today'],books:['精选图书','Book picks'],articles:['精选文章','Article picks'],watch:['看什么','What to watch']}[k]||[])[state.lang==='zh'?0:1]||'';
 state.dLanding='';
 function publicRouteApply(k){
   if(!k) return;
@@ -6294,6 +6294,14 @@ function interleaveDays(list){                                                  
 }
 const dirIsHome=()=>!tokens().length && !state.dShelf && !state.dTag && state.dType==='all' && state.dView==='all' && !state.dTab && state.lf==='all' && !pickOn();          // no filter, no search
 function dirGoHome(){ state.dHot=false; state.dListen=false; state.dLanding=''; state.dTab=''; state.dSub=''; state.dType='all'; state.dView='all'; state.lf='all'; state.q=''; $('#q').value=''; state.dTag=''; state.dShelf=''; state.dBrowse=false; }
+function dirLandingHTML(items){
+  if(!items.length || !['articles','watch'].includes(state.dLanding)) return '';
+  const rows=state.view==='list', saved=new Set(state.items.filter(x=>x.type==='link').map(x=>x.id));
+  const title=state.dLanding==='articles' ? publicLabel('articles') : (state.lang==='zh'?'推荐视频':'Recommended videos');
+  const cards=items.map(it=>rows?dirRowHTML(it,[],saved,true):dirCardHTML(it,[],saved,true)).join('');
+  const grid=rows ? `<div class="grid dir-rows">${cards}</div>` : `<div class="grid dcards" style="--cols:${dirCols()}">${cards}</div>`;
+  return `<section class="dr-sec dr-picks"><h2>${esc(title)}</h2>${grid}</section>`;
+}
 function renderDir(){
   const d=state.dirData, grid=$('#grid'), empty=$('#empty'), more=$('#moreRow');
   $('#continue').hidden=true; more.hidden=true; grid.className='grid'+(state.view==='list'?' list':'');
@@ -6312,11 +6320,18 @@ function renderDir(){
   const home=dirIsHome(), hot=home && state.dHot && !!hotBase(), listenOn=lpAvailable(), listen=home && state.dListen && listenOn && !hot, discover=home && !state.dBrowse && !hot && !listen;          // the first level of the public space is a discovery page; everything else (all sources, platforms, tags, a filter) is the second
   document.body.classList.toggle('dir-discover',discover); document.body.classList.toggle('dir-hot',hot); document.body.classList.toggle('dir-listen',listen);
   const navRow=(k,label,on)=>`<a class="cat-btn" href="${k?'/':'/discover/'}" data-dbrowse="${k}" aria-current="${on}"><span class="dot" style="background:var(--accent)"></span><span>${esc(label)}</span></a>`;
-  const row=(k,n)=>`<button class="cat-btn" type="button" data-dtype="${k}" aria-current="${!discover && !hot && !listen && k===state.dType}">${k==='all'?'<span class="dot" style="background:transparent;border:1.5px solid var(--muted)"></span>':`<span class="dot" style="background:var(--c-${TYPE_COLOR[k]})"></span>`}<span>${esc(k==='all'?t('all'):t('ty_'+k))}</span><span class="n">${n}</span></button>`;
+  const row=(k,n)=>{
+    const route=k==='article'?'articles':k==='video'?'watch':'';
+    const dot=k==='all'?'<span class="dot" style="background:transparent;border:1.5px solid var(--muted)"></span>':`<span class="dot" style="background:var(--c-${TYPE_COLOR[k]})"></span>`;
+    const label=route?publicLabel(route):k==='all'?t('all'):t('ty_'+k);
+    const active=!discover && !hot && !listen && k===state.dType;
+    return route ? `<a class="cat-btn" href="${PUBLIC_ROUTES[route]}" data-dlanding="${route}" aria-current="${active}">${dot}<span>${esc(label)}</span><span class="n">${n}</span></a>`
+      : `<button class="cat-btn" type="button" data-dtype="${k}" aria-current="${active}">${dot}<span>${esc(label)}</span><span class="n">${n}</span></button>`;
+  };
   const listenRow=()=>listenOn ? `<a class="cat-btn" href="/listen/" data-dlisten="1" aria-current="${listen}"><span class="dot" style="background:var(--c-${TYPE_COLOR.audio})"></span><span>${esc(t('lsSide'))}</span></a>` : '';          // (the sound of the public space: it takes the place of the "audio" type)
   const hotRow=()=>hotBase() && moduleOn('trending') ? `<a class="cat-btn" href="/hot/" data-dhot="1" aria-current="${hot}"><span class="dot" style="background:var(--heat)"></span><span>${esc(t('hotSide'))}</span></a>` : '';
   const picksRow=k=>`<a class="cat-btn" href="${PUBLIC_ROUTES[k]}" data-dlanding="${k}" aria-current="${state.dLanding===k}"><span class="dot" style="background:var(--c-${k==='books'?'books':k==='watch'?'featured':'notes'})"></span><span>${esc(publicLabel(k))}</span></a>`;
-  $('#cats').innerHTML = navRow(0,t('homeSide'),discover) + hotRow() + listenRow() + picksRow('books') + (counts.article?picksRow('articles'):'') + (counts.video?picksRow('watch'):'') + row('all',forType.length) + DIR_TYPES.filter(k=>counts[k] && !(k==='audio' && listenOn)).map(k=>row(k,counts[k])).join('');          // existing sidebar and card layout, with direct links for the public sections
+  $('#cats').innerHTML = navRow(0,t('homeSide'),discover) + hotRow() + listenRow() + picksRow('books') + row('all',forType.length) + DIR_TYPES.filter(k=>counts[k] && k!=='book' && !(k==='audio' && listenOn)).map(k=>row(k,counts[k])).join('');          // article/video keep their type; the same sidebar row opens their recommendation section
   renderTagbox(d.tags.slice(0,60), state.dTag);
   const shelves=d.shelves.filter(s=>s.kind!=='link' && s.n>0), openS=state.dirOpen.has('shelves');
   $('#dir').innerHTML = (openS?shelves:shelves.slice(0,DIR_SHELVES)).map(s=>`<button class="shelf-row" type="button" data-dshelf="${esc(s.id)}" aria-current="${s.id===state.dShelf}" title="${esc(s.name)}"><span>${esc(s.name)}</span><span class="n">${s.n}</span></button>`).join('')
@@ -6327,19 +6342,12 @@ function renderDir(){
 
   renderDirBar();
   const found=dirList(), byDate=(a,b)=>String(b.date||'').localeCompare(String(a.date||'')), key=state.dView==='hot' ? 'heat' : state.sort; let list=found.slice();
-  if(state.dLanding){
-    list=list.filter(canRecommend);
-    const slug=state.dLanding==='articles'?'selected':'featured';
-    list.sort((a,b)=>Number(hasPlacement(b,slug))-Number(hasPlacement(a,slug)) || moduleScore(b,slug)-moduleScore(a,slug) || byDate(a,b));
-  }
-  if(!state.dLanding){
-    if(key==='title') list.sort((a,b)=>a.title.localeCompare(b.title,state.lang==='zh'?'zh-Hans-CN':'en'));
-    else if(key==='read') list.sort((a,b)=>(state.dirRead[b.id]||0)-(state.dirRead[a.id]||0) || byDate(a,b));                 // what was opened here last comes first
-    else if(key==='heat' && heatAvailable()) list.sort((a,b)=>heatOf(b)-heatOf(a) || byDate(a,b));
-    else list=interleaveDays(list.sort(byDate));
-  }
+  if(key==='title') list.sort((a,b)=>a.title.localeCompare(b.title,state.lang==='zh'?'zh-Hans-CN':'en'));
+  else if(key==='read') list.sort((a,b)=>(state.dirRead[b.id]||0)-(state.dirRead[a.id]||0) || byDate(a,b));                 // what was opened here last comes first
+  else if(key==='heat' && heatAvailable()) list.sort((a,b)=>heatOf(b)-heatOf(a) || byDate(a,b));
+  else list=interleaveDays(list.sort(byDate));
   const sh=state.dShelf?state.shelfMap.get(state.dShelf):null;
-  $('#viewTitle').textContent = sh ? sh.name : state.dTag ? '#'+state.dTag : state.dLanding ? publicLabel(state.dLanding) : state.dType!=='all' ? t('ty_'+state.dType) : discover ? t('dirDiscover') : t('dirTitle');
+  $('#viewTitle').textContent = sh ? sh.name : state.dTag ? '#'+state.dTag : state.dLanding==='articles' ? t('ty_article') : state.dLanding ? publicLabel(state.dLanding) : state.dType!=='all' ? t('ty_'+state.dType) : discover ? t('dirDiscover') : t('dirTitle');
   let sub = tk.length ? t('matchCount',list.length,state.q.trim()) : '';                                // (no count of the whole directory: the page does not need it)
   if(sh && sh.description) sub = sh.description + (state.lang==='zh'?'。':'. ') + sub;
   let html = esc(sub);
@@ -6348,7 +6356,7 @@ function renderDir(){
   const cl=[], colL=state.dTab.startsWith('col:') ? colName(state.dTab.slice(4)) : '', pltL=state.dTab.startsWith('plat:') ? platName(state.dTab.slice(5)) : '';
   if(colL) cl.push(clr('dtab',t('scCol')+colL)); if(pltL) cl.push(clr('dtab',t('scPlat')+pltL));
   if(state.dSub){ const tp=dirTopics().find(x=>x.id===state.dSub)||{}; cl.push(clr('dsub',t('scSub')+((state.lang==='zh'?tp.zh:tp.en)||state.dSub))); }
-  if(state.dType!=='all') cl.push(clr('dtype',t('scType')+t('ty_'+state.dType)));
+  if(state.dType!=='all' && !state.dLanding) cl.push(clr('dtype',t('scType')+t('ty_'+state.dType)));
   if(state.lf!=='all') cl.push(clr('dlf',t('scLang')+(state.lf==='zh'?t('langZh'):t('langEn'))));
   if(state.q.trim()) cl.push(clr('dq',t('scQ')+state.q.trim()));
   if(sh) cl.push(clr('dshelf',sh.name)); if(state.dTag) cl.push(clr('dtag','#'+state.dTag)); if((pickOn() || topicPickOn()) && !sh) cl.push(clr('dpick',t(state.dTabs==='plat' ? 'dpSum' : 'dpSumT',pickCount())));
@@ -6357,10 +6365,15 @@ function renderDir(){
   { const pr=dirProfile(); state.dirInt = pr.n>=3 ? new Set([...pr.col].filter(([,w])=>w>=2).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0])) : new Set(); }          // (the columns this browser has really read, saved, liked or followed: said on a recommendation, never made up)
   state.subKeys=new Set(subCols().map(c=>urlKey(c.feed.url)));                                    // (the programs this browser follows: "you follow it" on a card)
   const saved=new Set(state.items.filter(x=>x.type==='link').map(x=>x.id)); state.dirAbove=null;
-  const reco=discover ? dirHomeHTML() : '';                                                          // the discovery page: only without any filter, and not when the whole directory was asked for
+  const landingHome=['articles','watch'].includes(state.dLanding) && !tk.length && !state.dShelf && !state.dTag && state.dView==='all' && !state.dTab && !state.dSub && state.lf==='all' && !pickOn() && !topicPickOn();
+  const slug=state.dLanding==='articles'?'selected':'featured';
+  const picks=landingHome ? moduleCap(found.filter(canRecommend).sort((a,b)=>Number(hasPlacement(b,slug))-Number(hasPlacement(a,slug)) || moduleScore(b,slug)-moduleScore(a,slug) || byDate(a,b)),slug,state.dLanding==='articles'?6:3) : [];
+  const moreTitle=state.dLanding==='articles' ? (state.lang==='zh'?'更多文章':'More articles') : (state.lang==='zh'?'更多视频':'More videos');
+  const reco=discover ? dirHomeHTML() : landingHome ? dirLandingHTML(picks)+(picks.length && list.length>picks.length ? `<h2 class="dr-all">${esc(moreTitle)}</h2>` : '') : '';                       // one recommendation section above the unchanged article/video cards
   $('#dirReco').innerHTML=reco; $('#dirReco').hidden=!reco; $('#dirBar').hidden=discover;
   grid.className='grid '+(state.view==='list'?'dir-rows':'dcards');                                   // the button: cards in a tidy grid of three columns at most (the default) or light rows, on the home page too
   if(discover) list=list.filter(it=>!state.dirAbove.has(it.id));                                          // (what the page shows above is not shown again below)
+  if(picks.length) list=list.filter(it=>!picks.some(p=>p.id===it.id));
   const latestVisible=!discover || moduleOn('latest'), shown=latestVisible ? list.slice(0, discover && state.dLimit===DIR_PAGE ? moduleLimit('latest',HOME_PAGE) : state.dLimit) : [], rows=state.view==='list';
   const infeed=!adRailWide() && adOn('public-infeed-mobile'), infeedAfter=(adSetting('public-infeed-mobile')||{}).after||8;
   const flat=shown.flatMap((it,i)=>{
@@ -6372,7 +6385,7 @@ function renderDir(){
   grid.innerHTML = flat.join('');
   if(infeed) initInfeedAds(grid);
   more.hidden = !latestVisible || list.length<=shown.length; $('#moreBtn').textContent = t('showMore')+` (${shown.length} / ${list.length})`;
-  if(list.length) empty.hidden=true;
+  if(list.length || picks.length) empty.hidden=true;
   else { empty.hidden=false; empty.innerHTML = state.dLanding==='books' ? (state.lang==='zh'?'公共目录还没有可推荐的图书，待审核书目上线后会在这里展示。':'There are no reviewed books in the public directory yet.') : d.items.length ? t('emptySearch',esc(state.q.trim()||'…')) : t('dirEmpty'); }
   $('#source').innerHTML = t('srcDir',esc(hostOf(state.dirCfg)||state.dirCfg),esc(d.generated||''));
 }
@@ -7198,7 +7211,7 @@ $('#cats').addEventListener('click',e=>{
   const db=e.target.closest('[data-dbrowse]');                       // public directory: the discovery page / the whole directory
   if(db){ e.preventDefault(); if(db.dataset.dbrowse==='1'){ dirGoHome(); state.dBrowse=true; history.pushState({},'','/'); } else { publicGo('discover'); return; } state.dLimit=DIR_PAGE; render(); window.scrollTo({top:0}); document.body.classList.remove('drawer'); return; }
   const dt=e.target.closest('[data-dtype]');                         // public directory: a type
-  if(dt){ state.dType=dt.dataset.dtype; state.dLanding=''; state.dBrowse=true; state.dHot=false; state.dListen=false; state.dLimit=DIR_PAGE; render(); window.scrollTo({top:0}); document.body.classList.remove('drawer'); return; }
+  if(dt){ if(publicRouteFromPath()) history.pushState({},'','/'); state.dType=dt.dataset.dtype; state.dLanding=''; state.dBrowse=true; state.dHot=false; state.dListen=false; state.dLimit=DIR_PAGE; render(); window.scrollTo({top:0}); document.body.classList.remove('drawer'); return; }
   const b=e.target.closest('[data-cat]'); if(!b) return; state.cat=b.dataset.cat; render(); window.scrollTo({top:0}); document.body.classList.remove('drawer');
 });
 $('#tagbox').addEventListener('click',e=>{

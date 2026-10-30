@@ -37,8 +37,8 @@ PUBLIC_SECTIONS = (
     ('hot', 'hot', '热榜', '浏览正在受到关注的内容与平台热榜，打开原始来源继续阅读。', True),
     ('listen', 'listen', '今日听什么', '每天发现音乐歌单与播客节目；可用的试听和播放方式以来源授权为准。', True),
     ('picks/books', 'books', '精选图书', '查看公共目录审核过的图书推荐。书目尚未上线，暂不收录空栏目。', False),
-    ('picks/articles', 'articles', '精选文章', '从公共目录挑选值得读的文章，保留原文来源与阅读入口。', True),
-    ('watch', 'watch', '看什么 · 视频', '发现值得看的视频与创作者内容，并前往原平台观看。', True),
+    ('picks/articles', 'articles', '精选文章', '文章页先展示精选文章，再浏览全部文章；卡片仍按文章类型、来源和标签分类。', True),
+    ('watch', 'watch', '看什么', '看什么页面先展示推荐视频，再浏览全部视频；卡片仍按视频类型、来源和标签分类。', True),
 )
 
 
@@ -755,6 +755,7 @@ def _inject(text, name, content):
 def _public_section_page(home, rel, title, desc, indexable, base, brand):
     """Use the same app shell and layout; only route metadata and the no-JS fallback differ."""
     url = base + '/' + rel + '/' if base else '/' + rel + '/'
+    display_title = '文章' if rel == 'picks/articles' else title
     page = re.sub(r'<title>.*?</title>', '<title>%s｜%s</title>' % (esc(title, quote=False), esc(brand, quote=False)), home, count=1, flags=re.S)
     page = re.sub(r'(<meta name="description" content=")[^"]*(")', lambda m: m.group(1) + esc(desc) + m.group(2), page, count=1)
     page = re.sub(r'(<meta property="og:title" content=")[^"]*(")', lambda m: m.group(1) + esc(title + '｜' + brand) + m.group(2), page, count=1)
@@ -768,9 +769,9 @@ def _public_section_page(home, rel, title, desc, indexable, base, brand):
     head = ['<link rel="canonical" href="%s">' % esc(url), '<meta property="og:url" content="%s">' % esc(url)] if indexable and base else []
     page = _inject(page, 'head', '\n'.join(head))
     links = ''.join('<li><a href="/%s/">%s</a></li>' % (p, esc(n, quote=False)) for p, _, n, _, _ in PUBLIC_SECTIONS)
-    fallback = '<noscript><h1>%s</h1><p>%s</p><ul>%s</ul><p><a href="/">%s</a></p></noscript>' % (esc(title, quote=False), esc(desc, quote=False), links, esc(brand, quote=False))
+    fallback = '<noscript><h1>%s</h1><p>%s</p><ul>%s</ul><p><a href="/">%s</a></p></noscript>' % (esc(display_title, quote=False), esc(desc, quote=False), links, esc(brand, quote=False))
     page = _inject(page, 'body', fallback)
-    page = page.replace('<h1 id="viewTitle">全部</h1>', '<h1 id="viewTitle">%s</h1>' % esc(title, quote=False), 1)
+    page = page.replace('<h1 id="viewTitle">全部</h1>', '<h1 id="viewTitle">%s</h1>' % esc(display_title, quote=False), 1)
     page = page.replace('<p id="viewSub"></p>', '<p id="viewSub">%s</p>' % esc(desc, quote=False), 1)
     return page
 
