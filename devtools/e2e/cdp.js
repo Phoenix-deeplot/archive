@@ -35,7 +35,10 @@ async function connect(port = 9444) {
       if (r.exceptionDetails) { const d = r.exceptionDetails; throw new Error('page: ' + ((d.exception && (d.exception.description || d.exception.value)) || d.text)); }
       return r.result.value;
     },
-    async goto(url, settle = 800) { await send('Page.navigate', { url }); await sleep(settle); },
+    async goto(url, settle = 800) {                                                       // navigate, wait until the page has loaded (at most 15 s), then settle
+      const loaded = new Promise(res => { const f = m => { if (m.method === 'Page.loadEventFired') { const i = listeners.indexOf(f); if (i >= 0) listeners.splice(i, 1); res(); } }; listeners.push(f); setTimeout(res, 15000); });
+      await send('Page.navigate', { url }); if (!/^about:/.test(url)) await loaded; await sleep(settle);
+    },
     async clearSite(origin) { await send('Storage.clearDataForOrigin', { origin, storageTypes: 'all' }); },
     async desktop(width = 1280, height = 900, dpr = 1) {
       await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: dpr, mobile: false });
