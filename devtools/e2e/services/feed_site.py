@@ -1,4 +1,4 @@
-"""A made-up blog for the browser tests (port 8841): /blog/ (a home page that announces its feed), /blog/feed.xml?d=<name> (an Atom feed of five entries that
+"""A made-up blog for the browser tests (port 8841): /blog/ (a home page that announces its feed), /blog/feed.xml?d=<name> (an Atom feed of three entries that
 changes when /__add?d=<name> is called, answers 304 to a repeated If-None-Match), /blog/post-<name>-<n> (an article page), /__reset (back to the start).
 Written again after the first one was lost: the titles are "<name> 第 N 篇", so a test that needs other words has to say so itself."""
 import hashlib
@@ -12,13 +12,13 @@ EXTRA = {}                                                       # name -> how m
 
 
 def entries(name):
-    n = 5 + EXTRA.get(name, 0)
+    n = 3 + EXTRA.get(name, 0)
     return [(i, '%s 第 %d 篇' % (name, i), '2026-10-%02d' % min(28, 10 + i)) for i in range(n, 0, -1)]
 
 
 def feed(name, base):
     es = entries(name)
-    items = ''.join('<entry><title>%s</title><link href="%s/blog/post-%s-%d"/><id>%s/blog/post-%s-%d</id><updated>%sT08:00:00Z</updated><summary>%s 的摘要：这是第 %d 篇。</summary></entry>' % (t, base, name, i, base, name, i, d, t, i) for i, t, d in es)
+    items = ''.join('<entry><title>%s</title><link href="%s/blog/post-%s-%d"/><id>%s/blog/post-%s-%d</id><updated>%sT08:00:00Z</updated><summary>%s 的摘要：这是第 %d 篇。</summary><content type="html">&lt;p&gt;%s 的全文：这是第 %d 篇，带着全文。%s&lt;/p&gt;</content></entry>' % (t, base, name, i, base, name, i, d, t, i, t, i, '正文。' * 30) for i, t, d in es)
     return '<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><title>%s</title><link rel="alternate" href="%s/blog/"/><id>%s/blog/feed.xml?d=%s</id><updated>2026-10-28T08:00:00Z</updated>%s</feed>' % (name, base, base, name, items)
 
 
