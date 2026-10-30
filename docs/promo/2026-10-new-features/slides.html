@@ -109,6 +109,13 @@ body.one .slide.on{display:block}
 .focus .timer span.on{background:var(--sun);color:#14211F;border-color:var(--sun)}
 .focus .pat{position:absolute;left:0;right:0;top:100px;text-align:center;color:#9FB4B0;font-size:18px}
 
+/* ---------- real screenshots with numbered marks ---------- */
+.shotbox{position:absolute;left:0;right:0;top:34px;aspect-ratio:390/844;background:#F2F3F0}
+.shotbox img{display:block;width:100%;height:100%}
+.pin{position:absolute;border:4px solid var(--coral);border-radius:14px;box-shadow:0 0 0 3px rgba(255,255,255,.75),0 6px 14px rgba(242,104,74,.35)}
+.pin b{position:absolute;left:-20px;top:-22px;width:32px;height:32px;border-radius:50%;background:var(--coral);color:#fff;display:grid;place-items:center;font-size:22px;font-weight:900;box-shadow:0 3px 8px rgba(0,0,0,.25)}
+.real{position:absolute;right:50px;top:1214px;font-size:22px;font-weight:700;color:#8A9A97;width:380px;text-align:center}
+
 /* ---------- add to home screen ---------- */
 .os{position:absolute;left:60px;right:60px;top:290px;display:flex;flex-direction:column;gap:20px}
 .osc{background:#fff;border-radius:34px;border:2px solid #E6EAE6;box-shadow:0 10px 26px rgba(14,74,66,.10);padding:26px 36px 24px 36px;position:relative}
@@ -126,46 +133,33 @@ body.one .slide.on{display:block}
 <script>
 /* ---------- DATA: 要改字就改这里 ---------- */
 const LOGO = '../../../icons/zhishishu-icon.png';
-const TB = '<div class="tb"><u><s>📚</s>我的书架</u><div class="plus">+</div><u class="on"><s>🧭</s>发现世界</u></div>';
-const TABS = on => ['发现','热榜','今日听什么','精选图书','全部'].map(x => `<span class="${x===on?'on':''}">${x}</span>`).join('');
-const ROW = (c, p) => `<div class="row"><div class="cv ${c||''}"></div><div class="lines"><i></i><i class="s"></i></div><div class="play ${p?'on':''}">▶</div></div>`;
-const PBAR = x => `<div class="pbar"><div class="cv"></div><div class="lines"><i style="width:70%"></i><i class="s"></i></div>${x||''}<div class="play on" style="background:#fff;color:#14211F">❚❚</div></div>`;
-const PHONE = (tabsOn, pane, extra) => `<div class="phone"><div class="screen"><div class="notch"></div>
-  <div class="sbar"><div class="search">🔍 搜索</div><div class="dot">中</div><div class="dot">⚙</div></div>
-  <div class="tabs">${TABS(tabsOn)}</div><div class="pane">${pane}</div>${extra||''}${TB}</div></div>`;
-
-const MUSIC = PHONE('今日听什么',
-  `<div class="seg2"><span class="on">音乐</span><span>播客</span></div>
-   <div class="chips2"><span class="on">每日推荐</span><span>华语热歌</span><span>欧美</span><span>韩流</span></div>
-   ${ROW('',1)}${ROW('b')}${ROW('c')}${ROW('')}`, PBAR());
-const POD = PHONE('今日听什么',
-  `<div class="seg2"><span>音乐</span><span class="on">播客</span></div>
-   <div class="chips2"><span class="on">热门播客</span><span>中国大陆</span><span>新闻</span><span>英语学习</span></div>
-   ${ROW('c',1)}${ROW('')}${ROW('b')}${ROW('c')}`, PBAR('<b>1.5×</b>'));
-const HOT = PHONE('热榜',
-  `<div class="chips2"><span class="on">综合热点</span><span>科技</span><span>财经</span><span>国际</span></div>
-   ${[1,2,3,4,5].map(n=>`<div class="row"><div class="rank ${n<4?'t':''}">${n}</div><div class="lines"><i></i><i class="s"></i></div><div class="heat">🔥</div></div>`).join('')}
-   <div style="margin-top:14px;text-align:center"><span style="display:inline-block;background:var(--teal);color:#fff;font-size:19px;font-weight:800;padding:10px 22px;border-radius:14px">订阅这个榜单</span></div>`);
-const DISC = PHONE('发现',
-  `<div class="h2">今日 3 件值得看</div><div class="big"><em>为什么值得看</em></div><div class="two"><div></div><div></div></div>
-   <div class="h2">编辑精选</div>${ROW('b')}<div class="acts"><span class="on">♥</span><span>🔖</span><span>＋订阅</span></div>`);
-const FOCUS = `<div class="phone"><div class="screen"><div class="notch"></div><div class="focus"><div class="pat">呼吸 · 极光 · 暗（点一下换）</div><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="nm">— 专 注 —</div><div class="timer"><span>15</span><span class="on">25</span><span>45</span><span>60 分钟</span></div></div></div></div>`;
+// the pictures in shots/ are real screenshots of books.zhitree.cn (a phone of 390 x 844, taken 2026-10-30; the songs and the lists change every day).
+// PIN: where the thing a step talks about is on that picture [x, y, width, height] in the 390 x 844 px of the phone.
+const PIN = {
+  listen: [[16,20,32,32],[292,319,36,36],[276,229,98,44]],
+  podcast: [[91,118,74,44],[166,175,57,40],[292,319,36,36]],
+  hot: [[114,162,104,40],[16,214,191,40],[164,345,104,26]],
+  discover: [[16,20,32,32],[16,230,358,150],[322,238,44,44]],
+  focus: []
+};
+const pinHTML = (r, n) => { const g = 3; return `<div class="pin" style="left:${(r[0]-g)/390*100}%;top:${(r[1]-g)/844*100}%;width:${(r[2]+2*g)/390*100}%;height:${(r[3]+2*g)/844*100}%"><b>${n}</b></div>`; };
+const SHOT = (name, bare) => `<div class="phone"><div class="screen"${name === 'focus' ? ' style="background:#180c20"' : ''}><div class="notch"></div><div class="shotbox"${name === 'focus' ? ' style="background:#180c20"' : ''}><img src="shots/${name}.jpg" alt="">${bare ? '' : PIN[name].map((r, i) => pinHTML(r, i + 1)).join('')}</div></div></div>`;
 
 const SCENES = [
- {when:'早上 8:10', where:'通勤', icon:'🎧', title:'听音乐', story:'每天一批新歌，戴上耳机就能开始。', phone:MUSIC,
-  steps:[['点「发现世界」','打开 books.zhitree.cn，不用注册'],['点「今日听什么」','每日推荐、华语 / 欧美 / 韩流 / 日系热歌榜'],['点一首，再点<b>「播放全部」</b>','底部出现播放条，一首接一首']],
+ {when:'早上 8:10', where:'通勤', icon:'🎧', title:'听音乐', story:'每天一批新歌，戴上耳机就能开始。', phone:SHOT('listen'),
+  steps:[['点左上角 ☰，选「发现世界」','再点「今日听什么」，不用注册'],['点一首歌的 ▶','每日推荐、华语 / 韩流 / 日系 / 欧美热歌'],['想连着听，点「播放全部」','底部出现播放条，一首接一首']],
   tip:['💡','有的是 <b>30 秒试听</b>，有的是整首，那一行会标“试听”；喜欢的点 ↗ 去原平台听全曲。']},
- {when:'中午 12:30', where:'通勤第二程', icon:'🎙️', title:'听播客', story:'听腻了歌，同一页切个开关就是播客。', phone:POD,
-  steps:[['点顶上的「播客」','「今日听什么」页里的「音乐 | 播客」开关'],['选一个榜单或分类','热门播客、各国榜单、新闻 / 商业 / 英语学习…'],['点一集就播','倍速 0.75×–2×，可定时关闭']],
+ {when:'中午 12:30', where:'通勤第二程', icon:'🎙️', title:'听播客', story:'听腻了歌，同一页切个开关就是播客。', phone:SHOT('podcast'),
+  steps:[['把「音乐」切到「播客」','就在「今日听什么」这一页'],['选一个榜单或分类','各国榜单、科技、英语学习、历史'],['点一集就播','倍速 0.75×–2×，可定时关闭']],
   tip:['💡','有自己爱听的节目？贴它的 <b>RSS 地址</b>就能订阅；听到哪一集只记在你自己的浏览器里。']},
- {when:'午休 12:50', where:'十分钟', icon:'🔥', title:'刷热榜', story:'不用开五个 App，六个栏目一页看完。', phone:HOT,
-  steps:[['点「发现世界 → 热榜」','综合热点、科技、财经、国际…'],['先选一栏，再选平台','右边是名次、标题、热度'],['点<b>「订阅这个榜单」</b>','会变成书架里的一个合集']],
+ {when:'午休 12:50', where:'十分钟', icon:'🔥', title:'刷热榜', story:'不用开五个 App，六个栏目一页看完。', phone:SHOT('hot'),
+  steps:[['点「热榜」，再选一栏','☰ → 发现世界 → 热榜；综合热点、科技、财经…'],['再选这一栏的平台','右边是名次、标题、热度'],['点「订阅这个榜单」','会变成书架里的一个合集']],
   tip:['💡','点开的内容尽量在页面里直接看；<b>平台不让显示的</b>才跳去原站。']},
- {when:'晚上 21:00', where:'慢慢逛', icon:'🧭', title:'逛发现', story:'今天有什么值得看，一页给你理好。', phone:DISC,
-  steps:[['点「发现世界 → 发现」','今日 3 件 → 编辑精选 → 值得订阅'],['喜欢就点 <b>♥</b>','只写真实的理由，不会编'],['想留着的点<b>书签</b>','存进「我的书架」，不上传']],
+ {when:'晚上 21:00', where:'慢慢逛', icon:'🧭', title:'逛发现', story:'今天有什么值得看，一页给你理好。', phone:SHOT('discover'),
+  steps:[['点 ☰ →「发现世界」','再点「发现」：今日 3 件 → 今日听什么 → 编辑精选'],['点卡片就读','每张都写着为什么值得看'],['想留着的点<b>书签</b>','存进「我的书架」，不上传']],
   tip:['💡','想追更的博客或节目，点<b>订阅</b>，新文章会出现在你自己的书架里。']},
- {when:'睡前 / 学习', where:'安静一会儿', icon:'🌙', title:'专注模式', story:'屏幕只剩一个慢慢变化的图案，加上声音。', phone:FOCUS,
-  steps:[['点「专注」','「今日听什么」页，或播放条上的 ◎'],['点一下屏幕换图案','呼吸 · 极光 · 暗'],['选一个<b>定时</b>','15 / 25 / 45 / 60 分钟，到点自己停']],
+ {when:'睡前 / 学习', where:'安静一会儿', icon:'🌙', title:'专注模式', story:'屏幕只剩一个慢慢变化的图案，加上声音。', phone:SHOT('focus'),
+  steps:[['在「今日听什么」点「专注」','也可以点播放条上的 ◎'],['点一下屏幕换图案','呼吸 · 极光 · 暗'],['选一个<b>定时</b>','15 / 25 / 45 / 60 分钟，到点自己停']],
   tip:['💡','它只放<b>整首歌或整集节目</b>（30 秒试听不算）；按 Esc 或点 × 退出，声音继续。']},
 ];
 
@@ -185,7 +179,7 @@ const COVER = `<section class="slide cover" id="s1">
   <div class="sub">从早上的通勤，到睡前的专注</div>
   <div class="chips"><div class="chip"><i>🎧</i>听音乐</div><div class="chip"><i>🎙️</i>听播客</div><div class="chip"><i>🔥</i>刷热榜</div><div class="chip"><i>🧭</i>逛发现</div></div>
   <div class="foot"><span>手机可添加到主屏幕</span><span>books.zhitree.cn</span></div>
-  <div class="cphone">${MUSIC}</div>
+  <div class="cphone">${SHOT('listen', true)}</div>
  </section>`;
 const HOME = `<section class="slide" id="s7">
   <div class="head"><div class="when"><b>最后一步</b><span>像 App 一样，没网也能读</span></div><div class="logo"><img src="${LOGO}" alt="">知树阅读</div></div>
