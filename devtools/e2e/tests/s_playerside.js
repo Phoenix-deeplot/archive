@@ -31,8 +31,8 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await c.desktop(1280, 900, 1);
   await fresh();
   await play();
-  const bar = await J(`(()=>{ const r=document.querySelector('#player').getBoundingClientRect(), s=document.querySelector('.side').getBoundingClientRect(); return {left:Math.round(r.left), right:Math.round(r.right), side:Math.round(s.right), vw:innerWidth, bottom:Math.round(r.bottom), vh:innerHeight, hidden:document.querySelector('#player').hidden}; })()`);
-  ok('a wide screen: the player bar starts where the side list ends and goes to the right edge of the page, at the bottom', !bar.hidden && bar.left === bar.side && bar.right === bar.vw && bar.bottom === bar.vh, bar);
+  const bar = await J(`(()=>{ const r=document.querySelector('#player').getBoundingClientRect(), s=document.querySelector('.side').getBoundingClientRect(); return {left:Math.round(r.left), right:Math.round(r.right), side:Math.round(s.right), vw:document.documentElement.clientWidth, bottom:Math.round(r.bottom), vh:innerHeight, hidden:document.querySelector('#player').hidden}; })()`);
+  ok('a wide screen: the player bar starts where the side list ends and goes to the right edge of the page (not counting the scroll bar), at the bottom', !bar.hidden && bar.left === bar.side && bar.right === bar.vw && bar.bottom === bar.vh, bar);
   for (const sel of ['#langBtn', '#themeBtn', '#bkBtn']) { const t = await top(sel); ok('a wide screen, the player on: ' + sel + ' is not under the bar', t.inSide && !t.inPlayer, t); }
   await J(`plFold(true)`); await sleep(400);
   const mini = await J(`(()=>{ const r=document.querySelector('#plMini').getBoundingClientRect(), s=document.querySelector('.side').getBoundingClientRect(), shown=getComputedStyle(document.querySelector('#plMini')).display!=='none'; return {shown, left:Math.round(r.left), side:Math.round(s.right)}; })()`);

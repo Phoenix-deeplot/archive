@@ -26,6 +26,7 @@ async function connect(port = 9444) {
     ws.send(JSON.stringify({ id: n, method, params }));
     setTimeout(() => { if (pending.has(n)) { pending.delete(n); rej(new Error('timeout: ' + method)); } }, 60000);
   });
+  send('Page.handleJavaScriptDialog', { accept: true }).catch(() => {});                  // (a dialog left open by an earlier run blocks everything: answer it first)
   await send('Page.enable'); await send('Runtime.enable');
   const baseUA = (await send('Runtime.evaluate', { expression: 'navigator.userAgent', returnByValue: true })).result.value;
   const c = {
