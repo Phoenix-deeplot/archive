@@ -32,6 +32,8 @@ const withPods = (on = true) => {
   const errs = [];
   c.on(m => { if (m.method === 'Runtime.exceptionThrown') errs.push(JSON.stringify(m.params.exceptionDetails.exception && m.params.exceptionDetails.exception.description || m.params.exceptionDetails.text).slice(0, 300)); });
   await c.send('Network.enable'); await c.send('Network.setCacheDisabled', { cacheDisabled: true });
+  const AT = process.env.FREEZE_AT || '2026-10-28T12:00:00+08:00';          // ("today's three" take the entries of the last 72 hours: the made-up episodes are from 10-25 .. 27, the service's day is 10-28)
+  await c.send('Page.addScriptToEvaluateOnNewDocument', { source: `(()=>{ const R=Date, off=new R('${AT}').getTime()-R.now(); class D extends R{ constructor(...a){ if(a.length===0) super(R.now()+off); else super(...a); } static now(){ return R.now()+off; } } window.Date=D; })();` });
   const J = expr => c.js(`(()=>{ const {state,LS,pl,plAudio,render}=window.__zt||{}; return eval(${JSON.stringify(expr)}); })()`);
   const waitFor = async (expr, ms = 8000) => { const t0 = Date.now(); for (;;) { const v = await J(expr); if (v || Date.now() - t0 > ms) return v; await sleep(120); } };
   const fresh = async (lang = 'zh', view = 'cards') => {                                          // (cards: most of this test looks at cards; null = what a new reader gets)
@@ -71,7 +73,7 @@ const withPods = (on = true) => {
   ok('the line under the chips says where the songs come from', (await J(`document.querySelector('#lsBlock .ls-sub').textContent`)) === '来源：Deezer · Audius · Apple Music');
   ok('the service was asked for the index and for one list, nothing more', JSON.stringify(await get('/__listen_log')) === JSON.stringify(['', 'daily']), await get('/__listen_log'));
   const sideTxt = await J(`[...document.querySelectorAll('#cats .cat-btn')].map(b=>b.textContent.trim().replace(/\\d+$/,''))`);
-  ok('the sidebar has 今日听什么 where "音频" was; "音频" is gone', sideTxt.slice(0, 4).join('|') === '发现|热榜|今日听什么|全部' && !sideTxt.includes('音频'), sideTxt);
+  ok('the sidebar has 今日听什么 where "音频" was; "音频" is gone', sideTxt.slice(0, 5).join('|') === '发现|热榜|今日听什么|精选图书|全部' && !sideTxt.includes('音频'), sideTxt);
   await J(`[...document.querySelectorAll('#lsBlock .ls-chips .dr-chip')].find(b=>b.textContent==='热门播客').click()`); await sleep(900);
   ok('a podcast chart in the small block: episodes of shows (the show as the "artist"), six of them', (await J(`document.querySelectorAll('#lsBlock .ls-row').length`)) === 6 && /Show 0/.test(await J(`document.querySelector('#lsBlock .ls-row .ls-m').textContent`)), await J(`document.querySelector('#lsBlock .ls-row .ls-m').textContent`));
   await J(`[...document.querySelectorAll('#lsBlock .ls-chips .dr-chip')].find(b=>b.textContent==='华语热歌').click()`); await sleep(900);
