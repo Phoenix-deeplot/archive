@@ -44,7 +44,7 @@
   padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
+  :root:not([data-theme="light"]):not([data-theme="cloud"]){
     --bg:#121619; --side:#161B1F; --surface:#1B2125; --ink:#E4E9EA; --muted:#9AA7AE; --rule:#2C363C;
     --danger:#F2A7A0; --accent:#5CC2B1; --c-books:#8EA6D9; --c-tools:#E0B04A; --c-notes:#5CC2B1; --c-featured:#C99BC0; --c-other:#9AA7AE; --heat:#F59E5B;
     --mark:#5C4A12;
@@ -55,11 +55,15 @@
   --danger:#F2A7A0; --accent:#5CC2B1; --c-books:#8EA6D9; --c-tools:#E0B04A; --c-notes:#5CC2B1; --c-featured:#C99BC0; --c-other:#9AA7AE; --heat:#F59E5B;
   --mark:#5C4A12;
 }
-/* the palette "cloud" (云红: a cool white, one red; the choice is in the new shell only: the top bar of a phone, the foot of the side list). It is written after the themes and is stronger than them by its selectors. */
-:root[data-palette="cloud"],:root[data-palette="cloud"][data-theme="light"]{--bg:#F6F7F9;--side:#EEF0F3;--surface:#FFFFFF;--ink:#1E2026;--muted:#6B7280;--rule:#E3E6EB;--accent:#D8363A;--mark:#FBE7A6}
-@media (prefers-color-scheme: dark){:root[data-palette="cloud"]:not([data-theme="light"]){--bg:#141416;--side:#18181B;--surface:#1F1F23;--ink:#ECECEF;--muted:#9A9AA3;--rule:#2E2E34;--accent:#FF5B5B;--mark:#5C4A12}}
-:root[data-palette="cloud"][data-theme="dark"]{--bg:#141416;--side:#18181B;--surface:#1F1F23;--ink:#ECECEF;--muted:#9A9AA3;--rule:#2E2E34;--accent:#FF5B5B;--mark:#5C4A12}
-:root[data-palette="cloud"] .where.good{color:var(--c-notes);border-color:var(--c-notes)}          /* (red is not "good") */
+/* the theme "cloud" (云红), the third of the three themes of the new shell (classic = light, dark, cloud): a cool white and one red, sans-serif headings, a heavier line for the icons, rounder corners. A theme changes all of these together. */
+:root[data-theme="cloud"]{--bg:#F6F7F9;--side:#EEF0F3;--surface:#FFFFFF;--ink:#1E2026;--muted:#6B7280;--rule:#E3E6EB;--accent:#D8363A;--mark:#FBE7A6;--serif:var(--sans)}
+:root[data-theme="cloud"] .where.good{color:var(--c-notes);border-color:var(--c-notes)}          /* (red is not "good") */
+:root[data-theme="cloud"] .icon{stroke-width:2.1}
+:root[data-theme="cloud"] .card{border-radius:16px}
+:root[data-theme="cloud"] .btn{border-radius:10px}
+:root[data-theme="cloud"] .search input{border-radius:12px}
+:root[data-theme="cloud"] .view-head h1,:root[data-theme="cloud"] .brand{font-weight:800}
+:root[data-theme="cloud"] .tabbar button[aria-pressed="true"] .icon{fill:color-mix(in srgb,var(--accent) 18%,transparent)}
 *,*::before,*::after{box-sizing:inherit}
 [hidden]{display:none !important}
 html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px);-webkit-text-size-adjust:100%}
@@ -1096,11 +1100,10 @@ body.has-player.pl-folded{--pl-h:0px}
 body.drawer .player,body.drawer .pl-mini{z-index:18}
 
 /* ===== shell2 (?shell=2): the side list can be hidden; on a phone a bottom bar, one strip of sections, a filter panel, a "me" list for the settings ===== */
-.tabbar,.strip,.st-tools,.fl-panel,.set-btn,.lang-top,.th-top,.set-title,.side-toggle,.sheet,.tag-btn,.tag-pop,.fab-lbl,#paletteBtn{display:none}
+.tabbar,.strip,.st-tools,.fl-panel,.set-btn,.lang-top,.th-top,.set-title,.side-toggle,.sheet,.tag-btn,.tag-pop,.fab-lbl{display:none}
 body.shell2 #noteBtn{display:none}                                          /* (writing a note is the round button at the corner, or the + of a phone: the pen in the top bar said the same as "add") */
-body.shell2 #paletteBtn{display:inline-flex;align-items:center}
 .sw{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px;border:1px solid rgba(127,127,127,.4)}
-.sw-classic{background:#1F7A6D}.sw-cloud{background:#D8363A}
+.sw-classic{background:#1F7A6D}.sw-dark{background:#1B2125}.sw-cloud{background:#D8363A}
 .vh-txt{min-width:0}
 .vh-ctl{display:none}
 body.dir-listen .vh-txt,body.dir-hot .vh-txt{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 14px}
@@ -1256,7 +1259,7 @@ body.dir-listen .ctl-box,body.dir-hot .ctl-box{display:none}
           <button type="button" data-lang="auto" aria-pressed="false" data-i="langAuto">自动</button>
           <button type="button" id="langBtn" data-i-aria="langToggle">中</button>
         </div>
-        <button class="btn" type="button" id="themeBtn"></button><button class="btn" type="button" id="paletteBtn"></button>
+        <button class="btn" type="button" id="themeBtn"></button>
       </div>
       <p class="legal-links"><a href="about.html" data-i="legalAbout">关于本站</a> · <a href="privacy.html" data-i="legalPrivacy">隐私政策</a> · <a href="terms.html" data-i="legalTerms">使用条款</a> · <button class="link-btn" type="button" id="introLink" data-i="introLink">这是什么</button></p>
     </div>
@@ -1304,8 +1307,7 @@ body.dir-listen .ctl-box,body.dir-hot .ctl-box{display:none}
       </section>
       <section class="fl-panel" id="colPop" hidden aria-label="合集"></section>
       <section class="fl-panel" id="themePop" hidden aria-label="主题">
-        <div class="fl-row"><span data-i="thLabel">外观</span><span class="fl-slot"><span class="seg" role="group"><button type="button" data-thset="auto" aria-pressed="false" data-i="thFollow">跟随系统</button><button type="button" data-thset="light" aria-pressed="false" data-i="thLight">浅色</button><button type="button" data-thset="dark" aria-pressed="false" data-i="thDark">深色</button></span></span></div>
-        <div class="fl-row"><span data-i="palLabel">配色</span><span class="fl-slot"><span class="seg" role="group"><button type="button" data-palset="classic" aria-pressed="false"><i class="sw sw-classic"></i><span data-i="palClassic">经典</span></button><button type="button" data-palset="cloud" aria-pressed="false"><i class="sw sw-cloud"></i><span data-i="palCloud">云红</span></button></span></span></div>
+        <div class="fl-row"><span data-i="thLabel">主题</span><span class="fl-slot"><span class="seg" role="group"><button type="button" data-thset="light" aria-pressed="false"><i class="sw sw-classic"></i><span data-i="thClassic">经典</span></button><button type="button" data-thset="dark" aria-pressed="false"><i class="sw sw-dark"></i><span data-i="thDark">深色</span></button><button type="button" data-thset="cloud" aria-pressed="false"><i class="sw sw-cloud"></i><span data-i="thCloud">云红</span></button></span></span></div>
       </section>
     </header>
 
@@ -2238,8 +2240,8 @@ const state = {
   dType:'all', dTag:'', dShelf:'', dLimit:60
 };
 const $ = s => document.querySelector(s);
-Object.assign(I18N.zh,{themeTop:'主题', thLabel:'外观', palLabel:'配色', palClassic:'经典', palCloud:'云红', setTitle:'设置', viewIsCards:'卡片', viewIsList:'列表'});
-Object.assign(I18N.en,{themeTop:'Theme', thLabel:'Appearance', palLabel:'Palette', palClassic:'Classic', palCloud:'Cloud red', setTitle:'Settings', viewIsCards:'Cards', viewIsList:'List'});
+Object.assign(I18N.zh,{themeTop:'主题', thLabel:'主题', thClassic:'经典', thCloud:'云红', setTitle:'设置', viewIsCards:'卡片', viewIsList:'列表'});
+Object.assign(I18N.en,{themeTop:'Theme', thLabel:'Theme', thClassic:'Classic', thCloud:'Cloud red', setTitle:'Settings', viewIsCards:'Cards', viewIsList:'List'});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const catName = c => (['all','featured','books','tools','notes','hidden'].includes(c)? t(c) : c);
@@ -3220,7 +3222,7 @@ function render(){
   sel.value = (dm && state.sort==='date') || (!dm && state.sort==='heat') || (state.sort==='heat' && !heatOn) ? 'recent' : state.sort;
   syncFt(dm);
   const vl=state.view==='grid'?t('viewGrid'):t('viewList'); $('#viewBtn').innerHTML=state.view==='grid'?ICON.list:ICON.grid; $('#viewBtn').title=vl; $('#viewBtn').setAttribute('aria-label',vl);
-  $('#themeBtn').textContent=t(state.theme==='light'?'themeLight':state.theme==='dark'?'themeDark':'themeAuto');
+  $('#themeBtn').textContent=t(themeNow()==='light'?'themeLight':themeNow()==='dark'?'themeDark':'themeAuto');
   document.title=dirOn() && publicRouteFromPath() ? publicLabel(publicRouteFromPath())+'｜'+t('brand') : t('siteTitle');
 
   const dirMode = dirOn();
@@ -3310,10 +3312,11 @@ const DOC_CSS = `
 :root{--bg:#FBFBF9;--ink:#1A2229;--muted:#5A6670;--rule:#DDE1DF;--code:#F0F2F1;--accent:#1F7A6D;color-scheme:light;
   --serif:"Noto Serif SC","Songti SC","STSong",Georgia,serif;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15191C;--ink:#E2E7E9;--muted:#9AA7AE;--rule:#2C363C;--code:#1F262B;--accent:#5CC2B1;color-scheme:dark}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="cloud"]){--bg:#15191C;--ink:#E2E7E9;--muted:#9AA7AE;--rule:#2C363C;--code:#1F262B;--accent:#5CC2B1;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#15191C;--ink:#E2E7E9;--muted:#9AA7AE;--rule:#2C363C;--code:#1F262B;--accent:#5CC2B1;color-scheme:dark}
 :root[data-theme="sepia"]{--bg:#F4ECD8;--ink:#3B2F1E;--muted:#7A6A55;--rule:#DCCFB4;--code:#EBE0C6;--accent:#8A5A00;color-scheme:light}
 :root[data-theme="green"]{--bg:#CCE8CF;--ink:#1F3A27;--muted:#4C6B55;--rule:#B3D3B8;--code:#BFDDC3;--accent:#1F6B3A;color-scheme:light}
+:root[data-theme="cloud"]{--bg:#F6F7F9;--ink:#1E2026;--muted:#6B7280;--rule:#E3E6EB;--code:#EEF0F3;--accent:#D8363A;color-scheme:light}
 *,*::before,*::after{box-sizing:inherit}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:var(--fs,17px);line-height:var(--lh,1.85)}
@@ -3362,7 +3365,7 @@ details.toc a{text-decoration:none;color:var(--ink)}
 /* what the reader settings mean for a Markdown / TXT document (the page is ours, so size, spacing, width and colours are native); a page shown as it is gets only a colour change (see applyReader) */
 const LH={s:1.65, m:1.85, l:2.1}, WD={n:'36em', m:'44em', w:'60em'};
 const docVars = () => `--fs:${(17*state.rs.fs/100).toFixed(1)}px;--lh:${LH[state.rs.lh]||1.85};--w:${WD[state.rs.w]||'44em'}`;
-const docTheme = () => state.rs.th!=='follow' ? state.rs.th : state.theme!=='auto' ? state.theme : '';
+const docTheme = () => state.rs.th!=='follow' ? state.rs.th : themeNow()!=='auto' ? themeNow() : '';
 const STRICT = `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https: data:; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com"><meta name="referrer" content="no-referrer">`;
 function docShell(title, bodyHTML, meta, strict){                                  // strict: somebody else's text; the document itself allows no script and sends no referrer
   const th = docTheme() ? ` data-theme="${docTheme()}"` : '';
@@ -7483,11 +7486,17 @@ document.querySelector('[data-lang="auto"]').addEventListener('click',()=>setLan
 $('#langBtn').addEventListener('click',()=>setLang(state.lang==='zh' ? 'en' : 'zh'));
 addEventListener('languagechange',()=>{ if(state.langAuto && sysLang()!==state.lang) setLang('auto'); });                 // (the system's language was changed while the page is open)
 document.querySelectorAll('[data-lf]').forEach(b=>b.addEventListener('click',()=>{ state.lf=b.dataset.lf; render(); }));
+function themeNow(){ return state.theme==='cloud' && LS.get('shell','1')!=='2' ? 'light' : state.theme; }                 // (the third theme is the new shell's: the old page shows it as the light one)
+function themeEff(){ const t0=themeNow(); return t0==='auto' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : t0; }          // (what is on screen: the system's choice when none was made)
 function applyTheme(){
-  const h=document.documentElement; if(state.theme==='auto') h.removeAttribute('data-theme'); else h.setAttribute('data-theme',state.theme);
-  if(LS.get('palette','classic')==='cloud' && LS.get('shell','1')==='2') h.setAttribute('data-palette','cloud'); else h.removeAttribute('data-palette');          // (the palette is a part of the new shell)
+  if(LS.get('palette','')==='cloud'){ state.theme='cloud'; LS.set('theme','cloud'); LS.set('palette',''); }          // (an earlier preview kept the red palette apart: it is the theme "cloud" now)
+  const h=document.documentElement, th=themeNow(); if(th==='auto') h.removeAttribute('data-theme'); else h.setAttribute('data-theme',th);
 }
-$('#themeBtn').addEventListener('click',()=>{ state.theme=state.theme==='auto'?'light':state.theme==='light'?'dark':'auto'; LS.set('theme',state.theme); applyTheme(); render(); });
+$('#themeBtn').addEventListener('click',()=>{
+  if(LS.get('shell','1')==='2') state.theme={light:'dark',dark:'cloud',cloud:'light'}[themeEff()];                      // (the new shell: three themes in a ring)
+  else state.theme=state.theme==='auto'?'light':state.theme==='light'?'dark':'auto';
+  LS.set('theme',state.theme); applyTheme(); render();
+});
 $('#menuBtn').addEventListener('click',()=>document.body.classList.add('drawer'));
 $('#sideClose').addEventListener('click',()=>document.body.classList.remove('drawer'));
 document.addEventListener('click',e=>{ if(document.body.classList.contains('drawer') && !e.target.closest('.side') && !e.target.closest('#menuBtn') && !e.target.closest('#setBtn')) document.body.classList.remove('drawer'); });
@@ -7542,11 +7551,10 @@ function shPanels(which){                                                       
   const fl=$('#flPanel'), co=$('#colPop'), th=$('#themePop'), openFl=which==='fl' && fl.hidden, openCo=which==='col' && co.hidden, openTh=which==='theme' && th.hidden;
   fl.hidden=!openFl; co.hidden=!openCo; th.hidden=!openTh; $('#flBtn').setAttribute('aria-expanded',String(openFl)); $('#colChip').setAttribute('aria-expanded',String(openCo)); $('#themeTop').setAttribute('aria-expanded',String(openTh));
 }
-function shTheme(){                                                                                   // the marks of the theme controls: what is on, and the label of the palette button
-  const pal=LS.get('palette','classic')==='cloud' ? 'cloud' : 'classic';
-  document.querySelectorAll('[data-thset]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.thset===state.theme)));
-  document.querySelectorAll('[data-palset]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.palset===pal)));
-  $('#paletteBtn').textContent=t('palLabel')+(state.lang==='zh' ? '：' : ': ')+t(pal==='cloud' ? 'palCloud' : 'palClassic');
+function shTheme(){                                                                                   // the marks of the theme controls: the theme that is on screen, and the label of the button in the settings
+  const eff=themeEff();
+  document.querySelectorAll('[data-thset]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.thset===eff)));
+  $('#themeBtn').textContent=t('thLabel')+(state.lang==='zh' ? '：' : ': ')+t({light:'thClassic', dark:'thDark', cloud:'thCloud'}[eff]);
 }
 function shStep(d){ const bs=[...$('#cats').querySelectorAll('.cat-btn')], i=bs.findIndex(x=>x.getAttribute('aria-current')==='true'), n=bs[i+d]; if(n) n.click(); }          // (a swipe on a phone: the next / the previous section of the strip)
 new MutationObserver(shLayout).observe($('#cats'),{childList:true});
@@ -7563,8 +7571,7 @@ document.addEventListener('click',e=>{ if(!e.target.closest('.top') && (!$('#flP
 $('#setBtn').addEventListener('click',()=>document.body.classList.add('drawer'));          // (a phone: the side list is the settings)
 $('#langTop').addEventListener('click',()=>$('#langBtn').click());
 $('#themeTop').addEventListener('click',()=>shPanels('theme'));
-$('#themePop').addEventListener('click',e=>{ const a=e.target.closest('[data-thset]'), p=e.target.closest('[data-palset]'); if(a){ state.theme=a.dataset.thset; LS.set('theme',state.theme); } else if(p) LS.set('palette',p.dataset.palset); else return; applyTheme(); render(); });
-$('#paletteBtn').addEventListener('click',()=>{ LS.set('palette',LS.get('palette','classic')==='cloud' ? 'classic' : 'cloud'); applyTheme(); render(); });
+$('#themePop').addEventListener('click',e=>{ const a=e.target.closest('[data-thset]'); if(!a) return; state.theme=a.dataset.thset; LS.set('theme',state.theme); applyTheme(); render(); });
 $('#cats').addEventListener('click',e=>{ if(shOn() && e.target.closest('.cat-btn')) window.scrollTo(0,0); });          // (another section starts at its top)
 { const tp=$('#tagPop'), tb2=$('#tagBtn'), shut=()=>{ tp.hidden=true; tb2.setAttribute('aria-expanded','false'); };
   tb2.addEventListener('click',()=>{ tp.hidden=!tp.hidden; tb2.setAttribute('aria-expanded',String(!tp.hidden)); });

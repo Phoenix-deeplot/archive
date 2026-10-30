@@ -1,5 +1,5 @@
 // e2e: the new shell (?shell=2). A phone (a window up to 980 px): a bottom bar, ONE strip of sections (a swipe moves along it), a row of tools, a filter panel, a "+" sheet, the collections as a chip, the side list as the settings (the player no longer covers it), the language in the top bar, no sign-in;
-// themes: a button beside the settings (appearance, palette "云红"), the bottom bar in the colour of the theme; "写笔记": a pill in the corner on a wide screen, a row of the + on a phone, in both spaces
+// themes: THREE (经典, 深色, 云红), a button beside the settings; a theme changes the colours, the font of the headings, the line of the icons and the corners together; the bottom bar in the colour of the theme; "写笔记": a pill in the corner on a wide screen, a row of the + on a phone, in both spaces
 // wide screens: the side list can be hidden, sort / language / view / tags beside the list (my shelf has no list of titles and no tags in the side list). Without the switch nothing changes.
 const { connect, sleep } = require('../cdp');
 const { writeDir } = require('../dir_fixture.js');
@@ -53,19 +53,22 @@ const get = p => fetch(SVC + p).then(r => r.json());
   const tc0 = await tabcol(), ac0 = await accent();
   ok('the bottom bar: the one that is on has the colour of the theme (bold, a small bar over it), the other one is grey, the + has the colour of the theme too', tc0.on === ac0 && tc0.off !== ac0 && tc0.plus === ac0 && +tc0.w >= 600, [tc0, ac0]);
   await J(`document.querySelector('#themeTop').click()`); await sleep(300);
-  const thp = await J(`({open:!document.querySelector('#themePop').hidden, chips:[...document.querySelectorAll('#themePop button')].map(b=>b.textContent.trim()).join('|'), h:Math.min(...[...document.querySelectorAll('#themePop button')].map(b=>Math.round(b.getBoundingClientRect().height))), on:[...document.querySelectorAll('#themePop [aria-pressed="true"]')].map(b=>b.textContent.trim()).join('|'), set:getComputedStyle(document.querySelector('#setBtn')).display, th:getComputedStyle(document.querySelector('#themeTop')).display})`);
-  ok('a theme button sits beside the settings: it opens a panel with 外观 (跟随系统 | 浅色 | 深色) and 配色 (经典 | 云红), each at least 44 px high; what is on is marked', thp.open && thp.chips === '跟随系统|浅色|深色|经典|云红' && thp.h >= 44 && thp.on === '跟随系统|经典' && thp.set !== 'none' && thp.th !== 'none', thp);
-  await J(`document.querySelector('[data-palset="cloud"]').click()`); await sleep(400);
-  const cl = await J(`({pal:document.documentElement.getAttribute('data-palette'), stored:LS.get('palette',''), stillOpen:!document.querySelector('#themePop').hidden, accent:getComputedStyle(document.documentElement).getPropertyValue('--accent').trim().toLowerCase(), btn:document.querySelector('#paletteBtn').textContent, bg:getComputedStyle(document.body).backgroundColor})`);
-  ok('"云红" changes the palette at once (a cool white, a red accent; the panel stays open to see it) and is kept in this browser; the label in the settings says so', cl.pal === 'cloud' && cl.stored === 'cloud' && cl.stillOpen && cl.accent === '#d8363a' && cl.btn === '配色：云红' && cl.bg === 'rgb(246, 247, 249)', cl);
-  const tc1 = await tabcol(), ac1 = await accent();
+  const look = () => J(`(()=>{ const cs=s=>getComputedStyle(document.querySelector(s)); return {th:document.documentElement.getAttribute('data-theme'), stored:LS.get('theme',''), accent:getComputedStyle(document.documentElement).getPropertyValue('--accent').trim().toLowerCase(), bg:getComputedStyle(document.body).backgroundColor, font:cs('#viewTitle').fontFamily, stroke:cs('#tabbar .icon').strokeWidth, card:cs('#grid .card').borderTopLeftRadius, btn:document.querySelector('#themeBtn').textContent, open:!document.querySelector('#themePop').hidden}; })()`);
+  const thp = await J(`({open:!document.querySelector('#themePop').hidden, rows:document.querySelectorAll('#themePop .fl-row').length, chips:[...document.querySelectorAll('#themePop button')].map(b=>b.textContent.trim()).join('|'), h:Math.min(...[...document.querySelectorAll('#themePop button')].map(b=>Math.round(b.getBoundingClientRect().height))), on:[...document.querySelectorAll('#themePop [aria-pressed="true"]')].map(b=>b.textContent.trim()).join('|'), set:getComputedStyle(document.querySelector('#setBtn')).display, th:getComputedStyle(document.querySelector('#themeTop')).display})`);
+  ok('a theme button sits beside the settings: it opens ONE row of three themes (经典 | 深色 | 云红), each at least 44 px high; the one on screen is marked', thp.open && thp.rows === 1 && thp.chips === '经典|深色|云红' && thp.h >= 44 && thp.on === '经典' && thp.set !== 'none' && thp.th !== 'none', thp);
+  const l0 = await look();
+  await J(`document.querySelector('[data-thset="cloud"]').click()`); await sleep(400);
+  const l1 = await look(), tc1 = await tabcol(), ac1 = await accent();
+  ok('"云红" is a whole theme at once: a cool white, a red accent, sans-serif headings (not the serif), a heavier line for the icons, rounder cards; kept in this browser; the settings say so; the panel stays open to see it', l1.th === 'cloud' && l1.stored === 'cloud' && l1.open && l1.accent === '#d8363a' && l1.bg === 'rgb(246, 247, 249)' && l1.font !== l0.font && !/Noto Serif/.test(l1.font) && /Noto Serif/.test(l0.font) && parseFloat(l1.stroke) > parseFloat(l0.stroke) && parseFloat(l1.card) > parseFloat(l0.card) && l1.btn === '主题：云红', [l0, l1]);
   ok('the bottom bar follows the theme: the one that is on and the + are red now', ac1 !== ac0 && tc1.on === ac1 && tc1.plus === ac1, [tc1, ac1]);
   await J(`document.querySelector('[data-thset="dark"]').click()`); await sleep(400);
-  const dk = await J(`({th:document.documentElement.getAttribute('data-theme'), pal:document.documentElement.getAttribute('data-palette'), accent:getComputedStyle(document.documentElement).getPropertyValue('--accent').trim().toLowerCase(), bg:getComputedStyle(document.body).backgroundColor})`);
-  ok('dark with the palette: near-black, a lighter red', dk.th === 'dark' && dk.pal === 'cloud' && dk.accent === '#ff5b5b' && dk.bg === 'rgb(20, 20, 22)', dk);
-  await J(`document.querySelector('[data-thset="auto"]').click()`); await J(`document.querySelector('[data-palset="classic"]').click()`); await sleep(300);
+  const l2 = await look();
+  ok('"深色": dark colours, and the serif and the thin icons of the classic theme again', l2.th === 'dark' && l2.accent === '#5cc2b1' && l2.bg === 'rgb(18, 22, 25)' && l2.font === l0.font && l2.stroke === l0.stroke && l2.btn === '主题：深色', l2);
+  await J(`document.querySelector('[data-thset="light"]').click()`); await sleep(300);
   await J(`document.querySelector('#grid').click()`); await sleep(300);
-  ok('a tap on the page closes the theme panel; "经典" and "跟随系统" bring the page back as it was', await J(`document.querySelector('#themePop').hidden && !document.documentElement.getAttribute('data-palette') && !document.documentElement.getAttribute('data-theme') && LS.get('palette','')==='classic'`));
+  const l3 = await look();
+  ok('"经典" is the first page again (colours, font, icons, corners as at the start); a tap on the page closes the panel', l3.th === 'light' && !l3.open && l3.accent === l0.accent && l3.bg === l0.bg && l3.font === l0.font && l3.stroke === l0.stroke && l3.card === l0.card && l3.btn === '主题：经典', [l0, l3]);
+  await J(`state.theme='auto'; LS.set('theme','auto'); document.documentElement.removeAttribute('data-theme')`);
 
   // the filter panel
   await J(`document.querySelector('#flBtn').click()`); await sleep(400);
@@ -213,8 +216,8 @@ const get = p => fetch(SVC + p).then(r => r.json());
   ok('and the button brings it back', await J(`getComputedStyle(document.querySelector('.side')).display!=='none' && LS.get('sideOff',0)===0`));
   const fb = await J(`(()=>{ const f=document.querySelector('#noteFab'), r=f.getBoundingClientRect(), cs=getComputedStyle(f); return {pen:getComputedStyle(document.querySelector('#noteBtn')).display, d:cs.display, txt:f.textContent.trim(), w:Math.round(r.width), h:Math.round(r.height), right:Math.round(innerWidth-r.right), bottom:Math.round(innerHeight-r.bottom), bg:cs.backgroundColor}; })()`), acd = await accent();
   ok('a wide screen: the pen in the top bar is gone (it said the same as "添加"); "写笔记" is a pill in the corner of the page, the colour of the theme, with its name', fb.pen === 'none' && fb.d !== 'none' && fb.txt === '写笔记' && fb.w >= 100 && fb.h >= 44 && fb.right <= 60 && fb.bottom <= 60 && fb.bg === acd, [fb, acd]);
-  const pb0 = await J(`({d:getComputedStyle(document.querySelector('#paletteBtn')).display, txt:document.querySelector('#paletteBtn').textContent, inSide:!!document.querySelector('#paletteBtn').closest('.side-foot'), top:getComputedStyle(document.querySelector('#themeTop')).display})`);
-  ok('a wide screen: "配色：经典" sits by the theme button in the foot of the side list (the top bar has no theme button)', pb0.d !== 'none' && pb0.txt === '配色：经典' && pb0.inSide && pb0.top === 'none', pb0);
+  const pb0 = await J(`({d:getComputedStyle(document.querySelector('#themeBtn')).display, txt:document.querySelector('#themeBtn').textContent, inSide:!!document.querySelector('#themeBtn').closest('.side-foot'), top:getComputedStyle(document.querySelector('#themeTop')).display, pal:!!document.querySelector('#paletteBtn')})`);
+  ok('a wide screen: "主题：经典" in the foot of the side list is the one button for the theme (no separate palette button); the top bar has no theme button', pb0.d !== 'none' && pb0.txt === '主题：经典' && pb0.inSide && pb0.top === 'none' && !pb0.pal, pb0);
   await J(`document.querySelector('[data-space="dir"]').click()`); await sleep(2200);
   await J(`document.querySelector('#cats [data-dbrowse="1"], #cats [data-dtype="all"]').click()`); await sleep(1200);
   const dl = await J(`({inLine:!!document.querySelector('#dirBar .dir-line #ctlBox #sort'), barVisible:!document.querySelector('#dirBar').hidden, level:(()=>{ const a=document.querySelector('#dirBar .dir-line').getBoundingClientRect(), b=document.querySelector('#ctlBox').getBoundingClientRect(); return Math.abs(a.top-b.top)<30 && b.right>a.right-20; })()})`);
@@ -229,17 +232,20 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await J(`document.querySelector('#noteFab').click()`); await sleep(900);
   ok('and takes you to my shelf and opens the editor', await J(`state.space==='mine' && document.body.classList.contains('noting')`), await J(`({sp:state.space, c:document.body.className})`));
   await J(`document.querySelector('#neBack').click()`); await sleep(600);
-  await J(`document.querySelector('#paletteBtn').click()`); await sleep(400);
-  ok('the palette button switches to 云红 (the label says so, the page is red and kept)', await J(`document.documentElement.getAttribute('data-palette')==='cloud' && document.querySelector('#paletteBtn').textContent==='配色：云红' && LS.get('palette','')==='cloud'`));
+  const ring = [];
+  for (let k = 0; k < 3; k++) { await J(`document.querySelector('#themeBtn').click()`); await sleep(400); ring.push(await J(`document.documentElement.getAttribute('data-theme')+' '+document.querySelector('#themeBtn').textContent`)); }
+  ok('the button goes round the three themes (深色, 云红, 经典); the page changes with each', ring.join('|') === 'dark 主题：深色|cloud 主题：云红|light 主题：经典', ring);
+  await J(`document.querySelector('#themeBtn').click()`); await J(`document.querySelector('#themeBtn').click()`); await sleep(400);
+  ok('云红 again (kept in this browser)', await J(`document.documentElement.getAttribute('data-theme')==='cloud' && LS.get('theme','')==='cloud'`));
   await c.goto(BASE, 2500);
-  ok('after a reload it is still 云红', await J(`document.documentElement.getAttribute('data-palette')==='cloud'`));
+  ok('after a reload it is still 云红', await J(`document.documentElement.getAttribute('data-theme')==='cloud'`));
   await J(`location.href=location.pathname+'?shell=1'`); await sleep(3000);
-  ok('?shell=1 (the old page) has no palette; the choice waits in the browser', await J(`!document.documentElement.getAttribute('data-palette') && LS.get('palette','')==='cloud' && getComputedStyle(document.querySelector('#paletteBtn')).display==='none'`));
+  ok('?shell=1 (the old page) knows two themes only: it shows 云红 as the light one; the choice waits in the browser', await J(`document.documentElement.getAttribute('data-theme')==='light' && LS.get('theme','')==='cloud' && document.querySelector('#themeBtn').textContent==='主题：浅色'`));
 
   // without the switch: nothing is different
   await fresh('');
-  const o3 = await J(`({shell:document.body.classList.contains('shell2'), tog:getComputedStyle(document.querySelector('#sideToggle')).display, me:!!document.querySelector('#meBox'), inTop:!!document.querySelector('.toolbar #sort'), vh:getComputedStyle(document.querySelector('#vhCtl')).display, pen:getComputedStyle(document.querySelector('#noteBtn')).display, fab:getComputedStyle(document.querySelector('#noteFab')).display, pal:getComputedStyle(document.querySelector('#paletteBtn')).display})`);
-  ok('without ?shell=2 nothing is different: no hide button, the controls and the pen in the top bar, no pill in the corner, no palette button (and no sign-in card)', !o3.shell && o3.tog === 'none' && !o3.me && o3.inTop && o3.vh === 'none' && o3.pen !== 'none' && o3.fab === 'none' && o3.pal === 'none', o3);
+  const o3 = await J(`({shell:document.body.classList.contains('shell2'), tog:getComputedStyle(document.querySelector('#sideToggle')).display, me:!!document.querySelector('#meBox'), inTop:!!document.querySelector('.toolbar #sort'), vh:getComputedStyle(document.querySelector('#vhCtl')).display, pen:getComputedStyle(document.querySelector('#noteBtn')).display, fab:getComputedStyle(document.querySelector('#noteFab')).display})`);
+  ok('without ?shell=2 nothing is different: no hide button, the controls and the pen in the top bar, no pill in the corner (and no sign-in card)', !o3.shell && o3.tog === 'none' && !o3.me && o3.inTop && o3.vh === 'none' && o3.pen !== 'none' && o3.fab === 'none', o3);
 
   // ================================================ D. a window of 800 px is a phone too (the old side list slides out up to 980 px)
   await c.desktop(800, 900, 1);
