@@ -3,7 +3,8 @@ const { connect, sleep } = require('../cdp');
 const path = require('path');
 const os = require('os');
 const BASE = process.env.READER_TEST_BASE || 'http://127.0.0.1:8920/';
-const CDP_PORT = Number(process.env.READER_TEST_CDP || 9544);
+const CDP_PORT = Number(process.env.READER_TEST_CDP || 9454);
+const SHELL2 = process.env.READER_TEST_SHELL === '2';
 let passed = 0, failed = 0;
 const check = (name, yes, detail) => {
   if (yes) { passed++; console.log('PASS', name); }
@@ -22,7 +23,7 @@ const swipe = async (c, x1, y1, x2, y2) => {
   await c.mobile(375, 812, 2);
   await c.goto('about:blank', 200);
   await c.clearSite(new URL(BASE).origin);
-  await c.goto(BASE, 1000);
+  await c.goto(BASE + (SHELL2 ? '?shell=2' : ''), 1000);
   await J(`localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver', JSON.stringify('2026-10-22'))`);
   await c.goto(BASE, 1600);
   await J(`(async()=>{
@@ -39,6 +40,7 @@ const swipe = async (c, x1, y1, x2, y2) => {
   check('手机阅读器直接显示上一篇/下一篇，不必先打开目录', mobileNav.shown && mobileNav.pos==='1 / 3' && mobileNav.prev && !mobileNav.next, mobileNav);
   const navRect = await J(`(()=>{ const n=document.querySelector('#readerMobileNav').getBoundingClientRect(), f=document.querySelector('.frame-wrap').getBoundingClientRect(), p=document.querySelector('#readerMobilePrev').getBoundingClientRect(); return {navTop:n.top,frameBottom:f.bottom,buttonHeight:p.height}; })()`);
   check('手机切篇栏在正文下方且按钮至少 44px', navRect.navTop>=navRect.frameBottom-1 && navRect.buttonHeight>=44, navRect);
+  if (SHELL2) check('新版外壳阅读时隐藏底栏，只显示阅读器切篇栏', await J(`document.body.classList.contains('shell2') && getComputedStyle(document.querySelector('#tabbar')).display==='none' && document.querySelector('#readerMobileNav').offsetParent!==null`));
   await c.shot(process.env.READER_TEST_SHOT || path.join(os.tmpdir(), 'codex-reader-usability-mobile.png'));
   await J(`document.querySelector('#readerMobileNext').click()`);
   await sleep(500);
@@ -49,6 +51,7 @@ const swipe = async (c, x1, y1, x2, y2) => {
   check('点目录外的页面可关闭目录但保留阅读器', await J(`document.querySelector('#rTocPanel').hidden && !document.querySelector('#reader').hidden`));
   await J(`document.querySelector('#readerBack').click()`);
   await sleep(500);
+  if (SHELL2) check('退出阅读后新版底栏恢复', await J(`document.querySelector('#reader').hidden && getComputedStyle(document.querySelector('#tabbar')).display!=='none'`));
 
   await J(`(async()=>{
     const d=await (await fetch('/dir/directory.json')).json();
