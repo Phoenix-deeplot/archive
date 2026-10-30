@@ -55,6 +55,11 @@
   --danger:#F2A7A0; --accent:#5CC2B1; --c-books:#8EA6D9; --c-tools:#E0B04A; --c-notes:#5CC2B1; --c-featured:#C99BC0; --c-other:#9AA7AE; --heat:#F59E5B;
   --mark:#5C4A12;
 }
+/* the palette "cloud" (云红: a cool white, one red; the choice is in the new shell only: the top bar of a phone, the foot of the side list). It is written after the themes and is stronger than them by its selectors. */
+:root[data-palette="cloud"],:root[data-palette="cloud"][data-theme="light"]{--bg:#F6F7F9;--side:#EEF0F3;--surface:#FFFFFF;--ink:#1E2026;--muted:#6B7280;--rule:#E3E6EB;--accent:#D8363A;--mark:#FBE7A6}
+@media (prefers-color-scheme: dark){:root[data-palette="cloud"]:not([data-theme="light"]){--bg:#141416;--side:#18181B;--surface:#1F1F23;--ink:#ECECEF;--muted:#9A9AA3;--rule:#2E2E34;--accent:#FF5B5B;--mark:#5C4A12}}
+:root[data-palette="cloud"][data-theme="dark"]{--bg:#141416;--side:#18181B;--surface:#1F1F23;--ink:#ECECEF;--muted:#9A9AA3;--rule:#2E2E34;--accent:#FF5B5B;--mark:#5C4A12}
+:root[data-palette="cloud"] .where.good{color:var(--c-notes);border-color:var(--c-notes)}          /* (red is not "good") */
 *,*::before,*::after{box-sizing:inherit}
 [hidden]{display:none !important}
 html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px);-webkit-text-size-adjust:100%}
@@ -1091,7 +1096,11 @@ body.has-player.pl-folded{--pl-h:0px}
 body.drawer .player,body.drawer .pl-mini{z-index:18}
 
 /* ===== shell2 (?shell=2): the side list can be hidden; on a phone a bottom bar, one strip of sections, a filter panel, a "me" list for the settings ===== */
-.tabbar,.strip,.st-tools,.fl-panel,.set-btn,.lang-top,.set-title,.side-toggle,.sheet,.tag-btn,.tag-pop{display:none}
+.tabbar,.strip,.st-tools,.fl-panel,.set-btn,.lang-top,.th-top,.set-title,.side-toggle,.sheet,.tag-btn,.tag-pop,.fab-lbl,#paletteBtn{display:none}
+body.shell2 #noteBtn{display:none}                                          /* (writing a note is the round button at the corner, or the + of a phone: the pen in the top bar said the same as "add") */
+body.shell2 #paletteBtn{display:inline-flex;align-items:center}
+.sw{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px;border:1px solid rgba(127,127,127,.4)}
+.sw-classic{background:#1F7A6D}.sw-cloud{background:#D8363A}
 .vh-txt{min-width:0}
 .vh-ctl{display:none}
 body.dir-listen .vh-txt,body.dir-hot .vh-txt{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 14px}
@@ -1115,14 +1124,21 @@ body.dir-listen .ctl-box,body.dir-hot .ctl-box{display:none}
   body.shell2 .tag-pop{display:block;position:absolute;right:0;top:calc(100% + 4px);z-index:7;width:min(440px,calc(100vw - 48px));max-height:min(60vh,420px);overflow:auto;padding:12px 14px;background:var(--bg);border:1px solid var(--rule);border-radius:10px;box-shadow:0 12px 24px rgba(0,0,0,.14)}
   body.shell2 .tag-pop[hidden]{display:none}
   body.shell2 .tag-pop .tagbox{margin:0}
+  body.shell2 .fab{display:inline-flex;width:auto;height:48px;padding:0 20px 0 16px;gap:8px;border-radius:999px;background:var(--accent);color:var(--bg);font:inherit;font-size:15px;font-weight:600;right:max(28px,env(safe-area-inset-right));bottom:calc(28px + env(safe-area-inset-bottom,0px));box-shadow:0 8px 22px rgba(0,0,0,.28)}
+  body.shell2 .fab:hover{filter:brightness(1.06)}
+  body.shell2 .fab .fab-lbl{display:inline}
+  body.shell2.has-player .fab{bottom:calc(var(--pl-h) + 20px + env(safe-area-inset-bottom,0px))}
+  body.shell2.reading .fab,body.shell2.noting .fab{display:none}
   body.sh-shelf .side-scroll>.dir-label,body.sh-shelf #dir{display:none}      /* (my shelf: the list of titles is the page itself; the tags are a button beside the sort) */
 }
 @media (max-width:980px){
   body.sh-phone{--tb:calc(56px + env(safe-area-inset-bottom,0px))}
   body.sh-phone .menu-btn,body.sh-phone #noteBtn,body.sh-phone #subBtn,body.sh-phone #addBtn,body.sh-phone .fab,body.sh-phone #colRow,body.sh-phone .side-head .space,body.sh-phone .side-scroll,body.sh-phone .toolbar,body.sh-phone .side-foot .seg{display:none!important}
-  body.sh-phone .set-btn,body.sh-phone .lang-top{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:44px}
+  body.sh-phone .set-btn,body.sh-phone .lang-top,body.sh-phone .th-top{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:40px}
   body.sh-phone .lang-top{order:2;font:inherit;font-weight:700;font-size:14px;color:var(--ink)}
-  body.sh-phone .set-btn{order:3}
+  body.sh-phone .th-top{order:3}
+  body.sh-phone .set-btn{order:4}
+  body.sh-phone .top{gap:6px 4px}
   body.sh-phone .set-title{display:block;grid-column:1 / -1;margin:0;font-size:15px;font-weight:700}
   body.sh-phone .top{flex-wrap:wrap;gap:6px 8px;padding:10px 0 6px}
   body.sh-phone .search{order:1;flex:1 1 0;max-width:none}
@@ -1169,8 +1185,10 @@ body.dir-listen .ctl-box,body.dir-hot .ctl-box{display:none}
   body.sh-phone .tabbar{display:grid;grid-template-columns:1fr 72px 1fr;position:fixed;left:0;right:0;bottom:0;z-index:25;height:var(--tb);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--surface);border-top:1px solid var(--rule)}
   .tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;background:none;color:var(--muted);font:inherit;font-size:11.5px;cursor:pointer;min-height:56px}
   .tabbar button .icon{width:22px;height:22px}
-  .tabbar button[aria-pressed="true"]{color:var(--ink);font-weight:600}
-  .tabbar .tb-plus{justify-self:center;align-self:center;width:56px;min-height:44px;height:44px;border-radius:14px;background:var(--ink);color:var(--bg)}
+  .tabbar button{position:relative}
+  .tabbar button[aria-pressed="true"]{color:var(--accent);font-weight:700}                         /* (the one that is on has the colour of the theme, and a small bar over it) */
+  .tabbar button[aria-pressed="true"]::before{content:"";position:absolute;top:0;left:50%;width:24px;height:3px;margin-left:-12px;border-radius:0 0 3px 3px;background:var(--accent)}
+  .tabbar .tb-plus{justify-self:center;align-self:center;width:56px;min-height:44px;height:44px;border-radius:14px;background:var(--accent);color:var(--bg)}
   .tabbar .tb-plus .icon{width:22px;height:22px}
   body.sh-phone.reading .tabbar{display:none}
   body.sh-phone .main{padding-bottom:calc(72px + var(--tb))}
@@ -1238,7 +1256,7 @@ body.dir-listen .ctl-box,body.dir-hot .ctl-box{display:none}
           <button type="button" data-lang="auto" aria-pressed="false" data-i="langAuto">自动</button>
           <button type="button" id="langBtn" data-i-aria="langToggle">中</button>
         </div>
-        <button class="btn" type="button" id="themeBtn"></button>
+        <button class="btn" type="button" id="themeBtn"></button><button class="btn" type="button" id="paletteBtn"></button>
       </div>
       <p class="legal-links"><a href="about.html" data-i="legalAbout">关于本站</a> · <a href="privacy.html" data-i="legalPrivacy">隐私政策</a> · <a href="terms.html" data-i="legalTerms">使用条款</a> · <button class="link-btn" type="button" id="introLink" data-i="introLink">这是什么</button></p>
     </div>
@@ -1248,6 +1266,7 @@ body.dir-listen .ctl-box,body.dir-hot .ctl-box{display:none}
     <header class="top">
       <button class="ibtn menu-btn" type="button" id="menuBtn" data-i-aria="menu"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
       <button class="ibtn lang-top" type="button" id="langTop" data-i-aria="langToggle">中</button>
+      <button class="ibtn th-top" type="button" id="themeTop" aria-expanded="false" aria-controls="themePop" data-i-aria="themeTop"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor"/></svg></button>
       <button class="ibtn set-btn" type="button" id="setBtn" data-i-aria="setTitle"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
       <button class="ibtn side-toggle" type="button" id="sideToggle" aria-expanded="true" data-i-aria="sideHide"><svg class="icon" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M9.5 5v14"/></svg></button>
       <div class="search">
@@ -1284,6 +1303,10 @@ body.dir-listen .ctl-box,body.dir-hot .ctl-box{display:none}
         <div class="fl-dir" id="flDir"></div>
       </section>
       <section class="fl-panel" id="colPop" hidden aria-label="合集"></section>
+      <section class="fl-panel" id="themePop" hidden aria-label="主题">
+        <div class="fl-row"><span data-i="thLabel">外观</span><span class="fl-slot"><span class="seg" role="group"><button type="button" data-thset="auto" aria-pressed="false" data-i="thFollow">跟随系统</button><button type="button" data-thset="light" aria-pressed="false" data-i="thLight">浅色</button><button type="button" data-thset="dark" aria-pressed="false" data-i="thDark">深色</button></span></span></div>
+        <div class="fl-row"><span data-i="palLabel">配色</span><span class="fl-slot"><span class="seg" role="group"><button type="button" data-palset="classic" aria-pressed="false"><i class="sw sw-classic"></i><span data-i="palClassic">经典</span></button><button type="button" data-palset="cloud" aria-pressed="false"><i class="sw sw-cloud"></i><span data-i="palCloud">云红</span></button></span></span></div>
+      </section>
     </header>
 
     <div class="col-row" id="colRow" hidden>
@@ -1319,7 +1342,7 @@ body.dir-listen .ctl-box,body.dir-hot .ctl-box{display:none}
     <section class="reco" id="recoPane" hidden></section>
     <div class="grid" id="grid"></div>
     <aside class="ad-rail" id="publicAdRail" aria-label="Advertisement" hidden></aside>
-    <button class="fab" type="button" id="noteFab" data-i-aria="noteNew"><svg class="icon" viewBox="0 0 24 24"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19zM14.5 6.5l3 3"/></svg></button>
+    <button class="fab" type="button" id="noteFab" data-i-aria="noteNew"><svg class="icon" viewBox="0 0 24 24"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19zM14.5 6.5l3 3"/></svg><span class="fab-lbl" data-i="plusNote">写笔记</span></button>
     <div class="empty" id="empty" hidden></div>
     <div class="more-row" id="moreRow" hidden><button class="btn" type="button" id="moreBtn"></button></div>
   </div>
@@ -2215,8 +2238,8 @@ const state = {
   dType:'all', dTag:'', dShelf:'', dLimit:60
 };
 const $ = s => document.querySelector(s);
-Object.assign(I18N.zh,{setTitle:'设置', viewIsCards:'卡片', viewIsList:'列表'});
-Object.assign(I18N.en,{setTitle:'Settings', viewIsCards:'Cards', viewIsList:'List'});
+Object.assign(I18N.zh,{themeTop:'主题', thLabel:'外观', palLabel:'配色', palClassic:'经典', palCloud:'云红', setTitle:'设置', viewIsCards:'卡片', viewIsList:'列表'});
+Object.assign(I18N.en,{themeTop:'Theme', thLabel:'Appearance', palLabel:'Palette', palClassic:'Classic', palCloud:'Cloud red', setTitle:'Settings', viewIsCards:'Cards', viewIsList:'List'});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const catName = c => (['all','featured','books','tools','notes','hidden'].includes(c)? t(c) : c);
@@ -3203,7 +3226,7 @@ function render(){
   const dirMode = dirOn();
   $('#spaceSwitch').hidden = !state.dirCfg;
   document.querySelectorAll('[data-space]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.space===(dirMode?'dir':'mine'))));
-  $('#noteBtn').hidden=$('#noteFab').hidden=dirMode;
+  $('#noteBtn').hidden=dirMode; $('#noteFab').hidden=dirMode && LS.get('shell','1')!=='2';          // (the new shell writes a note from both spaces)
   const addTxt=t(dirMode?'submit':'add'); $('#addLbl').textContent=addTxt; $('#addBtn').title=addTxt; $('#addBtn').setAttribute('aria-label',addTxt);
   syncSubscribe();
   if(dirMode){ $('#colRow').hidden=true; $('#colNav').hidden=true; $('#recoPane').hidden=true; $('#recoBanner').hidden=true; renderDir(); renderPublicAd(); syncReader(); return; }
@@ -7293,7 +7316,7 @@ window.addEventListener('resize',()=>{ if(NE.open) neLayout(); });
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden' && NE.open) neSave(); });
 window.addEventListener('pagehide',()=>{ if(NE.open) neSave(); });
 $('#noteBtn').addEventListener('click',()=>openNote(''));
-$('#noteFab').addEventListener('click',()=>openNote(''));
+$('#noteFab').addEventListener('click',()=>{ if(dirOn()) setSpace('mine'); openNote(''); });          // (a note belongs to my shelf: from the public space the page goes there first)
 $('#addNote').addEventListener('click',()=>{ dlg.close(); openNote(''); });
 $('#readerEdit').addEventListener('click',()=>{ if(state.readingId) openNote(state.readingId); });
 
@@ -7460,7 +7483,10 @@ document.querySelector('[data-lang="auto"]').addEventListener('click',()=>setLan
 $('#langBtn').addEventListener('click',()=>setLang(state.lang==='zh' ? 'en' : 'zh'));
 addEventListener('languagechange',()=>{ if(state.langAuto && sysLang()!==state.lang) setLang('auto'); });                 // (the system's language was changed while the page is open)
 document.querySelectorAll('[data-lf]').forEach(b=>b.addEventListener('click',()=>{ state.lf=b.dataset.lf; render(); }));
-function applyTheme(){ if(state.theme==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',state.theme); }
+function applyTheme(){
+  const h=document.documentElement; if(state.theme==='auto') h.removeAttribute('data-theme'); else h.setAttribute('data-theme',state.theme);
+  if(LS.get('palette','classic')==='cloud' && LS.get('shell','1')==='2') h.setAttribute('data-palette','cloud'); else h.removeAttribute('data-palette');          // (the palette is a part of the new shell)
+}
 $('#themeBtn').addEventListener('click',()=>{ state.theme=state.theme==='auto'?'light':state.theme==='light'?'dark':'auto'; LS.set('theme',state.theme); applyTheme(); render(); });
 $('#menuBtn').addEventListener('click',()=>document.body.classList.add('drawer'));
 $('#sideClose').addEventListener('click',()=>document.body.classList.remove('drawer'));
@@ -7501,6 +7527,7 @@ function shLayout(){
   else { [lf,so,vb].forEach(e=>shMove(e,tb,$('#noteBtn'))); }
   tg.hidden=!(on && !phone && shelf && !$('#tagbox').hidden); tg.classList.toggle('on',!!state.tag); tg.textContent=t('flTag')+(state.tag ? '：#'+cut(state.tag,8) : '')+' ▾'; if(tg.hidden) $('#tagPop').hidden=true;
   if(!on) return;
+  shTheme();
   { const sl=so.selectedOptions && so.selectedOptions[0]; $('#flSum').textContent=(sl ? sl.textContent : '')+' · '+t(state.view==='grid' ? 'viewIsCards' : 'viewIsList'); }
   $('#tabbar [data-space="dir"]').hidden=!state.dirCfg; $('#tabbar').classList.toggle('one',!state.dirCfg);
   $('#flTagRow').hidden=!phone || !$('#flTag').children.length || $('#tagbox').hidden;
@@ -7512,8 +7539,14 @@ function shLayout(){
   if(phone){ const st=$('#stripIn'), on2=$('#cats [aria-current="true"]'); if(st && on2 && st.scrollWidth>st.clientWidth+2) st.scrollLeft=Math.max(0, on2.offsetLeft-st.offsetLeft-(st.clientWidth-on2.offsetWidth)/2); }
 }
 function shPanels(which){                                                                          // the filter panel and the list of collections drop down under the strip, one at a time
-  const fl=$('#flPanel'), co=$('#colPop'), openFl=which==='fl' && fl.hidden, openCo=which==='col' && co.hidden;
-  fl.hidden=!openFl; co.hidden=!openCo; $('#flBtn').setAttribute('aria-expanded',String(openFl)); $('#colChip').setAttribute('aria-expanded',String(openCo));
+  const fl=$('#flPanel'), co=$('#colPop'), th=$('#themePop'), openFl=which==='fl' && fl.hidden, openCo=which==='col' && co.hidden, openTh=which==='theme' && th.hidden;
+  fl.hidden=!openFl; co.hidden=!openCo; th.hidden=!openTh; $('#flBtn').setAttribute('aria-expanded',String(openFl)); $('#colChip').setAttribute('aria-expanded',String(openCo)); $('#themeTop').setAttribute('aria-expanded',String(openTh));
+}
+function shTheme(){                                                                                   // the marks of the theme controls: what is on, and the label of the palette button
+  const pal=LS.get('palette','classic')==='cloud' ? 'cloud' : 'classic';
+  document.querySelectorAll('[data-thset]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.thset===state.theme)));
+  document.querySelectorAll('[data-palset]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.palset===pal)));
+  $('#paletteBtn').textContent=t('palLabel')+(state.lang==='zh' ? '：' : ': ')+t(pal==='cloud' ? 'palCloud' : 'palClassic');
 }
 function shStep(d){ const bs=[...$('#cats').querySelectorAll('.cat-btn')], i=bs.findIndex(x=>x.getAttribute('aria-current')==='true'), n=bs[i+d]; if(n) n.click(); }          // (a swipe on a phone: the next / the previous section of the strip)
 new MutationObserver(shLayout).observe($('#cats'),{childList:true});
@@ -7526,9 +7559,12 @@ $('#colChip').addEventListener('click',e=>{ if(e.target.closest('[data-colclear]
 $('#colChip').addEventListener('keydown',e=>{ if((e.key==='Enter' || e.key===' ') && e.target.closest('[data-colclear]')){ e.preventDefault(); e.target.click(); } });
 $('#stripIn').addEventListener('click',e=>{ const b=e.target.closest('.cat-btn'); if(b && b.id!=='colChip') shPanels(''); });
 $('#colPop').addEventListener('click',e=>{ if(e.target.closest('[data-colnav]')) shPanels(''); });
-document.addEventListener('click',e=>{ if(!e.target.closest('.top') && (!$('#flPanel').hidden || !$('#colPop').hidden)) shPanels(''); });
+document.addEventListener('click',e=>{ if(!e.target.closest('.top') && (!$('#flPanel').hidden || !$('#colPop').hidden || !$('#themePop').hidden)) shPanels(''); });
 $('#setBtn').addEventListener('click',()=>document.body.classList.add('drawer'));          // (a phone: the side list is the settings)
 $('#langTop').addEventListener('click',()=>$('#langBtn').click());
+$('#themeTop').addEventListener('click',()=>shPanels('theme'));
+$('#themePop').addEventListener('click',e=>{ const a=e.target.closest('[data-thset]'), p=e.target.closest('[data-palset]'); if(a){ state.theme=a.dataset.thset; LS.set('theme',state.theme); } else if(p) LS.set('palette',p.dataset.palset); else return; applyTheme(); render(); });
+$('#paletteBtn').addEventListener('click',()=>{ LS.set('palette',LS.get('palette','classic')==='cloud' ? 'classic' : 'cloud'); applyTheme(); render(); });
 $('#cats').addEventListener('click',e=>{ if(shOn() && e.target.closest('.cat-btn')) window.scrollTo(0,0); });          // (another section starts at its top)
 { const tp=$('#tagPop'), tb2=$('#tagBtn'), shut=()=>{ tp.hidden=true; tb2.setAttribute('aria-expanded','false'); };
   tb2.addEventListener('click',()=>{ tp.hidden=!tp.hidden; tb2.setAttribute('aria-expanded',String(!tp.hidden)); });
@@ -7537,13 +7573,13 @@ $('#cats').addEventListener('click',e=>{ if(shOn() && e.target.closest('.cat-btn
 $('#sideToggle').addEventListener('click',()=>{ const off=!document.body.classList.contains('side-off'); LS.set('sideOff',off?1:0); shLayout(); });
 const plusDlg=$('#plusDlg');
 $('#tbPlus').addEventListener('click',()=>{
-  const dm=dirOn(); plusDlg.querySelector('[data-plus="sub"]').hidden=!feedApi(); plusDlg.querySelector('[data-plus="note"]').hidden=dm; plusDlg.querySelector('[data-plus="submit"]').hidden=!state.dirCfg;
+  plusDlg.querySelector('[data-plus="sub"]').hidden=!feedApi(); plusDlg.querySelector('[data-plus="submit"]').hidden=!state.dirCfg;          // (the same rows in both spaces)
   plusDlg.showModal();
 });
 plusDlg.addEventListener('click',e=>{
   if(e.target===plusDlg){ plusDlg.close(); return; }
   const b=e.target.closest('[data-plus]'); if(!b) return; const k=b.dataset.plus; plusDlg.close();
-  if(k==='files') openAdd(); else if(k==='sub') openAdd(null,'sub'); else if(k==='note') openNote(''); else if(k==='submit') openSubmit();
+  if(k==='files') openAdd(); else if(k==='sub') openAdd(null,'sub'); else if(k==='note'){ if(dirOn()) setSpace('mine'); openNote(''); } else if(k==='submit') openSubmit();
 });
 shLayout();
 

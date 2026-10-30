@@ -1,4 +1,5 @@
 // e2e: the new shell (?shell=2). A phone (a window up to 980 px): a bottom bar, ONE strip of sections (a swipe moves along it), a row of tools, a filter panel, a "+" sheet, the collections as a chip, the side list as the settings (the player no longer covers it), the language in the top bar, no sign-in;
+// themes: a button beside the settings (appearance, palette "云红"), the bottom bar in the colour of the theme; "写笔记": a pill in the corner on a wide screen, a row of the + on a phone, in both spaces
 // wide screens: the side list can be hidden, sort / language / view / tags beside the list (my shelf has no list of titles and no tags in the side list). Without the switch nothing changes.
 const { connect, sleep } = require('../cdp');
 const { writeDir } = require('../dir_fixture.js');
@@ -22,6 +23,8 @@ const get = p => fetch(SVC + p).then(r => r.json());
   };
   const rect = sel => J(`(()=>{ const e=document.querySelector(${JSON.stringify(sel)}); if(!e) return null; const r=e.getBoundingClientRect(); return {x:Math.round(r.left), y:Math.round(r.top), w:Math.round(r.width), h:Math.round(r.height), r:Math.round(r.right), b:Math.round(r.bottom), d:getComputedStyle(e).display}; })()`);
   const bar = () => J(`(()=>{ const r=s=>{ const e=document.querySelector(s), b=e.getBoundingClientRect(); return [Math.round(b.top), Math.round(b.height)].join('/'); }; return {top:r('.top'), strip:r('#strip'), tools:r('#stTools'), head:r('.view-head'), pos:getComputedStyle(document.querySelector('.top')).position}; })()`);
+  const accent = () => J(`(()=>{ const p=document.createElement('i'); p.style.color='var(--accent)'; document.body.append(p); const c=getComputedStyle(p).color; p.remove(); return c; })()`);
+  const tabcol = () => J(`({on:getComputedStyle(document.querySelector('#tabbar [aria-pressed="true"]')).color, off:getComputedStyle(document.querySelector('#tabbar [data-space="dir"]')).color, plus:getComputedStyle(document.querySelector('#tbPlus')).backgroundColor, w:getComputedStyle(document.querySelector('#tabbar [aria-pressed="true"]')).fontWeight})`);
   const swipe = async (x1, x2, y = 560) => { await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x1, y }] }); for (let i = 1; i <= 6; i++) { await c.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x1 + (x2 - x1) * i / 6, y }] }); await sleep(12); } await c.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await sleep(900); };
   const active = () => J(`[...document.querySelectorAll('#cats .cat-btn')].filter(b=>b.getAttribute('aria-current')==='true').map(b=>b.textContent.trim().replace(/\\d+$/,'')).join()`);
   const library = async () => {
@@ -47,6 +50,22 @@ const get = p => fetch(SVC + p).then(r => r.json());
   ok('under the strip a row of tools: what the list is sorted by and how it is shown ("最近添加 · 卡片") on the left, "筛选" on the right', tl.sum === '最近添加 · 卡片' && tl.inTools === 'stTools' && tl.tools.y >= tl.strip.y + tl.strip.h - 2 && tl.tools.h >= 36, tl);
   const b0 = await bar();
   ok('the bar (top bar, strip, row of tools) is fixed to the top of the screen', b0.pos === 'sticky', b0);
+  const tc0 = await tabcol(), ac0 = await accent();
+  ok('the bottom bar: the one that is on has the colour of the theme (bold, a small bar over it), the other one is grey, the + has the colour of the theme too', tc0.on === ac0 && tc0.off !== ac0 && tc0.plus === ac0 && +tc0.w >= 600, [tc0, ac0]);
+  await J(`document.querySelector('#themeTop').click()`); await sleep(300);
+  const thp = await J(`({open:!document.querySelector('#themePop').hidden, chips:[...document.querySelectorAll('#themePop button')].map(b=>b.textContent.trim()).join('|'), h:Math.min(...[...document.querySelectorAll('#themePop button')].map(b=>Math.round(b.getBoundingClientRect().height))), on:[...document.querySelectorAll('#themePop [aria-pressed="true"]')].map(b=>b.textContent.trim()).join('|'), set:getComputedStyle(document.querySelector('#setBtn')).display, th:getComputedStyle(document.querySelector('#themeTop')).display})`);
+  ok('a theme button sits beside the settings: it opens a panel with 外观 (跟随系统 | 浅色 | 深色) and 配色 (经典 | 云红), each at least 44 px high; what is on is marked', thp.open && thp.chips === '跟随系统|浅色|深色|经典|云红' && thp.h >= 44 && thp.on === '跟随系统|经典' && thp.set !== 'none' && thp.th !== 'none', thp);
+  await J(`document.querySelector('[data-palset="cloud"]').click()`); await sleep(400);
+  const cl = await J(`({pal:document.documentElement.getAttribute('data-palette'), stored:LS.get('palette',''), stillOpen:!document.querySelector('#themePop').hidden, accent:getComputedStyle(document.documentElement).getPropertyValue('--accent').trim().toLowerCase(), btn:document.querySelector('#paletteBtn').textContent, bg:getComputedStyle(document.body).backgroundColor})`);
+  ok('"云红" changes the palette at once (a cool white, a red accent; the panel stays open to see it) and is kept in this browser; the label in the settings says so', cl.pal === 'cloud' && cl.stored === 'cloud' && cl.stillOpen && cl.accent === '#d8363a' && cl.btn === '配色：云红' && cl.bg === 'rgb(246, 247, 249)', cl);
+  const tc1 = await tabcol(), ac1 = await accent();
+  ok('the bottom bar follows the theme: the one that is on and the + are red now', ac1 !== ac0 && tc1.on === ac1 && tc1.plus === ac1, [tc1, ac1]);
+  await J(`document.querySelector('[data-thset="dark"]').click()`); await sleep(400);
+  const dk = await J(`({th:document.documentElement.getAttribute('data-theme'), pal:document.documentElement.getAttribute('data-palette'), accent:getComputedStyle(document.documentElement).getPropertyValue('--accent').trim().toLowerCase(), bg:getComputedStyle(document.body).backgroundColor})`);
+  ok('dark with the palette: near-black, a lighter red', dk.th === 'dark' && dk.pal === 'cloud' && dk.accent === '#ff5b5b' && dk.bg === 'rgb(20, 20, 22)', dk);
+  await J(`document.querySelector('[data-thset="auto"]').click()`); await J(`document.querySelector('[data-palset="classic"]').click()`); await sleep(300);
+  await J(`document.querySelector('#grid').click()`); await sleep(300);
+  ok('a tap on the page closes the theme panel; "经典" and "跟随系统" bring the page back as it was', await J(`document.querySelector('#themePop').hidden && !document.documentElement.getAttribute('data-palette') && !document.documentElement.getAttribute('data-theme') && LS.get('palette','')==='classic'`));
 
   // the filter panel
   await J(`document.querySelector('#flBtn').click()`); await sleep(400);
@@ -137,6 +156,15 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await J(`document.querySelector('#langTop').click()`); await sleep(800);
   await J(`document.body.classList.remove('drawer'); plStop()`);
 
+  // the + sheet in the discover space
+  await J(`document.querySelector('#tbPlus').click()`); await sleep(400);
+  const pd = await J(`({sp:state.space, items:[...document.querySelectorAll('#plusDlg [data-plus]')].filter(b=>!b.hidden).map(b=>b.textContent.trim())})`);
+  ok('"+" in the discover space has the same rows as on my shelf, 写笔记 among them', pd.sp === 'dir' && pd.items.includes('添加文件') && pd.items.includes('写笔记') && pd.items.includes('收录到公共目录') && pd.items.includes('取消'), pd);
+  await J(`document.querySelector('#plusDlg [data-plus="note"]').click()`); await sleep(900);
+  ok('"写笔记" there takes you to my shelf (a note belongs to it) and opens the editor', await J(`state.space==='mine' && document.body.classList.contains('noting')`), await J(`({sp:state.space, c:document.body.className})`));
+  await J(`document.querySelector('#neBack').click()`); await sleep(600);
+  ok('the editor closes again (nothing was written, nothing is kept)', await J(`!document.body.classList.contains('noting')`));
+
   // a text: the bars give way
   await J(`openReader('local:m')`); await sleep(1500);
   ok('reading a text: the bottom bar is gone', (await rect('#tabbar')).d === 'none');
@@ -183,6 +211,10 @@ const get = p => fetch(SVC + p).then(r => r.json());
   ok('after a reload it is still hidden', await J(`getComputedStyle(document.querySelector('.side')).display==='none'`));
   await J(`document.querySelector('#sideToggle').click()`); await sleep(400);
   ok('and the button brings it back', await J(`getComputedStyle(document.querySelector('.side')).display!=='none' && LS.get('sideOff',0)===0`));
+  const fb = await J(`(()=>{ const f=document.querySelector('#noteFab'), r=f.getBoundingClientRect(), cs=getComputedStyle(f); return {pen:getComputedStyle(document.querySelector('#noteBtn')).display, d:cs.display, txt:f.textContent.trim(), w:Math.round(r.width), h:Math.round(r.height), right:Math.round(innerWidth-r.right), bottom:Math.round(innerHeight-r.bottom), bg:cs.backgroundColor}; })()`), acd = await accent();
+  ok('a wide screen: the pen in the top bar is gone (it said the same as "添加"); "写笔记" is a pill in the corner of the page, the colour of the theme, with its name', fb.pen === 'none' && fb.d !== 'none' && fb.txt === '写笔记' && fb.w >= 100 && fb.h >= 44 && fb.right <= 60 && fb.bottom <= 60 && fb.bg === acd, [fb, acd]);
+  const pb0 = await J(`({d:getComputedStyle(document.querySelector('#paletteBtn')).display, txt:document.querySelector('#paletteBtn').textContent, inSide:!!document.querySelector('#paletteBtn').closest('.side-foot'), top:getComputedStyle(document.querySelector('#themeTop')).display})`);
+  ok('a wide screen: "配色：经典" sits by the theme button in the foot of the side list (the top bar has no theme button)', pb0.d !== 'none' && pb0.txt === '配色：经典' && pb0.inSide && pb0.top === 'none', pb0);
   await J(`document.querySelector('[data-space="dir"]').click()`); await sleep(2200);
   await J(`document.querySelector('#cats [data-dbrowse="1"], #cats [data-dtype="all"]').click()`); await sleep(1200);
   const dl = await J(`({inLine:!!document.querySelector('#dirBar .dir-line #ctlBox #sort'), barVisible:!document.querySelector('#dirBar').hidden, level:(()=>{ const a=document.querySelector('#dirBar .dir-line').getBoundingClientRect(), b=document.querySelector('#ctlBox').getBoundingClientRect(); return Math.abs(a.top-b.top)<30 && b.right>a.right-20; })()})`);
@@ -193,10 +225,21 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await J(`document.querySelector('#cats [data-dlisten]').click()`); await waitFor(`document.querySelector('#lpRoot .ls-row')`, 12000); await sleep(400);
   ok('the listening page keeps its own controls only (the others are not shown)', (await rect('#ctlBox')).d === 'none');
 
+  ok('the pill is there in the discover space too', await J(`getComputedStyle(document.querySelector('#noteFab')).display!=='none'`));
+  await J(`document.querySelector('#noteFab').click()`); await sleep(900);
+  ok('and takes you to my shelf and opens the editor', await J(`state.space==='mine' && document.body.classList.contains('noting')`), await J(`({sp:state.space, c:document.body.className})`));
+  await J(`document.querySelector('#neBack').click()`); await sleep(600);
+  await J(`document.querySelector('#paletteBtn').click()`); await sleep(400);
+  ok('the palette button switches to 云红 (the label says so, the page is red and kept)', await J(`document.documentElement.getAttribute('data-palette')==='cloud' && document.querySelector('#paletteBtn').textContent==='配色：云红' && LS.get('palette','')==='cloud'`));
+  await c.goto(BASE, 2500);
+  ok('after a reload it is still 云红', await J(`document.documentElement.getAttribute('data-palette')==='cloud'`));
+  await J(`location.href=location.pathname+'?shell=1'`); await sleep(3000);
+  ok('?shell=1 (the old page) has no palette; the choice waits in the browser', await J(`!document.documentElement.getAttribute('data-palette') && LS.get('palette','')==='cloud' && getComputedStyle(document.querySelector('#paletteBtn')).display==='none'`));
+
   // without the switch: nothing is different
   await fresh('');
-  const o3 = await J(`({shell:document.body.classList.contains('shell2'), tog:getComputedStyle(document.querySelector('#sideToggle')).display, me:!!document.querySelector('#meBox'), inTop:!!document.querySelector('.toolbar #sort'), vh:getComputedStyle(document.querySelector('#vhCtl')).display})`);
-  ok('without ?shell=2 nothing is different: no hide button, the controls in the top bar (and no sign-in card)', !o3.shell && o3.tog === 'none' && !o3.me && o3.inTop && o3.vh === 'none', o3);
+  const o3 = await J(`({shell:document.body.classList.contains('shell2'), tog:getComputedStyle(document.querySelector('#sideToggle')).display, me:!!document.querySelector('#meBox'), inTop:!!document.querySelector('.toolbar #sort'), vh:getComputedStyle(document.querySelector('#vhCtl')).display, pen:getComputedStyle(document.querySelector('#noteBtn')).display, fab:getComputedStyle(document.querySelector('#noteFab')).display, pal:getComputedStyle(document.querySelector('#paletteBtn')).display})`);
+  ok('without ?shell=2 nothing is different: no hide button, the controls and the pen in the top bar, no pill in the corner, no palette button (and no sign-in card)', !o3.shell && o3.tog === 'none' && !o3.me && o3.inTop && o3.vh === 'none' && o3.pen !== 'none' && o3.fab === 'none' && o3.pal === 'none', o3);
 
   // ================================================ D. a window of 800 px is a phone too (the old side list slides out up to 980 px)
   await c.desktop(800, 900, 1);
