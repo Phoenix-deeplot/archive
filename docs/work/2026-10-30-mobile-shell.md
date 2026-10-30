@@ -120,3 +120,4 @@ A → C → B（B 先合并最新的 `master`，在分支上解决冲突，跑�
 - 合并顺序：
 - 合并后的测试结果：
 - 删除的分支和 worktree：
+- B 第五轮：新外壳改成**默认开启**（旧版留 `?shell=1`）。原因：iPhone 主屏幕里的网页没有地址栏，没法加 `?shell=2`，Safari 和主屏幕图标又各存各的设置，所以它看到的永远是旧版。测试：`cdp.js` 的 `connect(port, {newShell:true})`，不带这个选项的测试仍从旧版开始（页面读 `window.__ZT_SHELL`）。

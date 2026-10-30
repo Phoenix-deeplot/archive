@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-async function connect(port = 9444) {
+async function connect(port = 9444, opts = {}) {                                          // opts.newShell: the page's own default (the new shell); otherwise the page starts as the old one, which most tests were written for
   let target = null;
   for (let i = 0; i < 40 && !target; i++) {                                              // (the browser may still be starting)
     try { const list = await (await fetch(`http://127.0.0.1:${port}/json`)).json(); target = list.find(t => t.type === 'page' && t.webSocketDebuggerUrl); } catch (e) { /* not up yet */ }
@@ -28,6 +28,7 @@ async function connect(port = 9444) {
   });
   send('Page.handleJavaScriptDialog', { accept: true }).catch(() => {});                  // (a dialog left open by an earlier run blocks everything: answer it first)
   await send('Page.enable'); await send('Runtime.enable');
+  if (!opts.newShell) await send('Page.addScriptToEvaluateOnNewDocument', { source: "window.__ZT_SHELL = '1';" });
   const baseUA = (await send('Runtime.evaluate', { expression: 'navigator.userAgent', returnByValue: true })).result.value;
   const c = {
     send, sleep, on: f => listeners.push(f),

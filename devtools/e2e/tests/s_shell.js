@@ -1,6 +1,6 @@
 // e2e: the new shell (?shell=2). A phone (a window up to 980 px): a bottom bar, ONE strip of sections (a swipe moves along it), a row of tools, a filter panel, a "+" sheet, the collections as a chip, the side list as the settings (the player no longer covers it), the language in the top bar, no sign-in;
 // themes: THREE (经典, 深色, 云红), a button beside the settings; a theme changes the colours, the font of the headings, the line of the icons and the corners together; the bottom bar in the colour of the theme; "写笔记": a pill in the corner on a wide screen, a row of the + on a phone, in both spaces
-// wide screens: the side list can be hidden, sort / language / view / tags beside the list (my shelf has no list of titles and no tags in the side list). Without the switch nothing changes.
+// wide screens: the side list can be hidden, sort / language / view / tags beside the list (my shelf has no list of titles and no tags in the side list). The new shell is the default (a home-screen app on an iPhone cannot take a switch in the address); ?shell=1 is the old page.
 const { connect, sleep } = require('../cdp');
 const { writeDir } = require('../dir_fixture.js');
 const BASE = 'http://127.0.0.1:8820/', SVC = 'http://127.0.0.1:8840';
@@ -9,7 +9,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
 const get = p => fetch(SVC + p).then(r => r.json());
 
 (async () => {
-  const c = await connect(9444);
+  const c = await connect(9444, { newShell: true });
   c.autoDialog(true, []);
   const errs = [];
   c.on(m => { if (m.method === 'Runtime.exceptionThrown') errs.push(JSON.stringify(m.params.exceptionDetails.exception && m.params.exceptionDetails.exception.description || m.params.exceptionDetails.text).slice(0, 300)); });
@@ -242,10 +242,18 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await J(`location.href=location.pathname+'?shell=1'`); await sleep(3000);
   ok('?shell=1 (the old page) knows two themes only: it shows 云红 as the light one; the choice waits in the browser', await J(`document.documentElement.getAttribute('data-theme')==='light' && LS.get('theme','')==='cloud' && document.querySelector('#themeBtn').textContent==='主题：浅色'`));
 
-  // without the switch: nothing is different
+  // the new shell is the default: no switch in the address (a home-screen app on an iPhone has no address to type it in)
   await fresh('');
-  const o3 = await J(`({shell:document.body.classList.contains('shell2'), tog:getComputedStyle(document.querySelector('#sideToggle')).display, me:!!document.querySelector('#meBox'), inTop:!!document.querySelector('.toolbar #sort'), vh:getComputedStyle(document.querySelector('#vhCtl')).display, pen:getComputedStyle(document.querySelector('#noteBtn')).display, fab:getComputedStyle(document.querySelector('#noteFab')).display})`);
-  ok('without ?shell=2 nothing is different: no hide button, the controls and the pen in the top bar, no pill in the corner (and no sign-in card)', !o3.shell && o3.tog === 'none' && !o3.me && o3.inTop && o3.vh === 'none' && o3.pen !== 'none' && o3.fab === 'none', o3);
+  const o3 = await J(`({shell:document.body.classList.contains('shell2'), tog:getComputedStyle(document.querySelector('#sideToggle')).display, me:!!document.querySelector('#meBox'), inVh:!!document.querySelector('#vhCtl #ctlBox #sort'), inTop:!!document.querySelector('.toolbar #sort'), pen:getComputedStyle(document.querySelector('#noteBtn')).display, fab:getComputedStyle(document.querySelector('#noteFab')).display, stored:LS.get('shell','none')})`);
+  ok('without any switch the new shell is on: the hide button, sort / language / view beside the list, the pill in the corner, no pen in the top bar; nothing is stored', o3.shell && o3.tog !== 'none' && !o3.me && o3.inVh && !o3.inTop && o3.pen === 'none' && o3.fab !== 'none' && o3.stored === 'none', o3);
+  await c.mobile(390, 844, 2);
+  await fresh('');
+  const o4 = await J(`({ph:document.body.classList.contains('sh-phone'), shell:document.body.classList.contains('shell2'), tab:getComputedStyle(document.querySelector('#tabbar')).display, strip:getComputedStyle(document.querySelector('#strip')).display, tools:getComputedStyle(document.querySelector('#stTools')).display, menu:getComputedStyle(document.querySelector('#menuBtn')).display, over:document.documentElement.scrollWidth>innerWidth})`);
+  ok('a phone of 390 px (an iPhone 12) without any switch: the bottom bar, the strip and the row of tools; no menu button of the old page; no sideways scroll', o4.ph && o4.shell && o4.tab === 'grid' && o4.strip !== 'none' && o4.tools !== 'none' && o4.menu === 'none' && !o4.over, o4);
+  await c.mobile(375, 667, 2);
+  await fresh('&shell=1');
+  const o5 = await J(`({ph:document.body.classList.contains('sh-phone'), tab:getComputedStyle(document.querySelector('#tabbar')).display, menu:getComputedStyle(document.querySelector('#menuBtn')).display, stored:LS.get('shell','')})`);
+  ok('?shell=1 brings the old page back (the menu button, no bottom bar) and the browser keeps the choice', !o5.ph && o5.tab === 'none' && o5.menu !== 'none' && o5.stored === '1', o5);
 
   // ================================================ D. a window of 800 px is a phone too (the old side list slides out up to 980 px)
   await c.desktop(800, 900, 1);
