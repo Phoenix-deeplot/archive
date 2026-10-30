@@ -29,7 +29,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   // ---- opened by address
   await open('picks/articles/');
   let v = await view();
-  ok('/picks/articles/ opens the public space on the articles section (title, heading, the row of the side list that is on)', v.space === 'dir' && v.landing === 'articles' && v.path === '/picks/articles/' && v.title === '文章｜知树阅读' && v.h1 === '文章' && v.curLanding === 'articles' && /^文章/.test(v.cur), v);
+  ok('/picks/articles/ opens the public space on the articles section (title, heading, the row of the side list that is on)', v.space === 'dir' && v.landing === 'articles' && v.path === '/picks/articles/' && v.title === '精选文章｜知树阅读' && v.h1 === '精选文章' && v.curLanding === 'articles' && /^精选文章/.test(v.cur), v);
   ok('it opens with the recommended articles (at most six), then "更多文章" and the rest', v.picks >= 1 && v.picks <= 6 && v.picksTitle === '精选文章' && v.more === '更多文章' && v.cards > 0, v);
   ok('nothing is shown twice (the recommended ones are not in the list below)', await J(`(()=>{ const a=[...document.querySelectorAll('#dirReco .dr-picks .card')].map(c=>c.dataset.did), b=[...document.querySelectorAll('#grid .card[data-did]')].map(c=>c.dataset.did); return a.length>0 && !a.some(x=>b.includes(x)) && new Set(a.concat(b)).size===a.length+b.length; })()`));
   await open('watch/');
@@ -57,7 +57,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   ok('a click on "看什么" in the side list: the address is /watch/, the page was not reloaded, the section is shown', v.path === '/watch/' && v.landing === 'watch' && (await J(`window.__keep`)) === 1 && v.picksTitle === '推荐视频', v);
   await J(`document.querySelector('#cats [data-dlanding="articles"]').click()`); await sleep(700);
   v = await view();
-  ok('then "文章": /picks/articles/ with the recommended articles', v.path === '/picks/articles/' && v.picksTitle === '精选文章' && v.picks >= 1, v);
+  ok('then "精选文章": /picks/articles/ with the recommended articles', v.path === '/picks/articles/' && v.picksTitle === '精选文章' && v.picks >= 1, v);
   // (the back button of the browser: what it does to the page is what the page does with the address: a script cannot press it, so the same event is sent)
   await J(`history.replaceState({}, '', '/watch/'); window.dispatchEvent(new PopStateEvent('popstate',{state:{}}))`); await sleep(600);
   v = await view();
@@ -66,11 +66,10 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   v = await view();
   ok('"back" to / : the public space is at its start page again, no section', v.path === '/' && !v.landing && v.space === 'dir', v);
 
-  // ---- a type row is not a section: it takes the address back to /
-  await J(`document.querySelector('#cats [data-dlanding="articles"]').click()`); await sleep(600);
-  await J(`document.querySelector('#cats [data-dtype="note"]').click()`); await sleep(700);
-  v = await view();
-  ok('a type that has no section of its own (notes) leaves /picks/articles/: the address is / again, only notes are listed', v.path === '/' && !v.landing && v.cards === 2 && /^笔记/.test(v.cur), v);
+  // ---- notes belong to my shelf: the public space has no row for them, they are filed under the articles
+  await J(`document.querySelector('#cats [data-dlanding="articles"]').click()`); await sleep(900);
+  v = await J(`(()=>{ const art=state.dirData.items.filter(i=>i.type==='article').length, notes=state.dirData.items.filter(i=>i.type==='note').length; const row=document.querySelector('#cats [data-dlanding="articles"] .n'); return {noteRow:!!document.querySelector('#cats [data-dtype="note"]'), rowN:row?+row.textContent:-1, art, notes, tags:[...document.querySelectorAll('#grid .xmeta .tag')].filter(x=>x.textContent.trim()==='笔记').length}; })()`);
+  ok('no "笔记" row in the public space; the notes are counted and listed in 精选文章 (their cards still say 笔记)', !v.noteRow && v.notes > 0 && v.rowN === v.art + v.notes && v.tags === v.notes, v);
 
   // ---- a search or a filter in a section: no recommendations, only what matches
   await J(`document.querySelector('#cats [data-dlanding="articles"]').click()`); await sleep(600);
@@ -84,8 +83,8 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   // ---- English
   await open('picks/articles/', 'en');
   v = await view();
-  ok('English: "Articles", the heading, the row and the title say the same word; the rows of the other sections are in English', v.title === 'Articles｜ZhiTree Books' && v.h1 === 'Articles' && /^Articles/.test(v.cur) && v.more === 'More articles', v);
-  ok('English: "What to watch" and "Book picks" in the side list', await J(`(()=>{ const t=[...document.querySelectorAll('#cats [data-dlanding]')].map(b=>b.textContent.trim().replace(/\\d+$/,'')); return t.includes('What to watch') && t.includes('Book picks') && t.includes('Articles'); })()`));
+  ok('English: "Article picks", the heading, the row and the title say the same word; the rows of the other sections are in English', v.title === 'Article picks｜ZhiTree Books' && v.h1 === 'Article picks' && /^Article picks/.test(v.cur) && v.more === 'More articles', v);
+  ok('English: "What to watch" and "Book picks" in the side list', await J(`(()=>{ const t=[...document.querySelectorAll('#cats [data-dlanding]')].map(b=>b.textContent.trim().replace(/\\d+$/,'')); return t.includes('What to watch') && t.includes('Book picks') && t.includes('Article picks'); })()`));
 
   // ---- a phone: the same rows are in the drawer
   await c.mobile(375, 812, 2);

@@ -1,5 +1,5 @@
-// e2e: the new shell (?shell=2). A phone: a bottom bar, ONE strip of sections (a swipe moves along it), a filter panel, a "+" sheet, the collections as a chip, the side list as "me" (the player no longer covers it);
-// wide screens: the side list can be hidden, sort / language / view beside the list. Without the switch nothing changes.
+// e2e: the new shell (?shell=2). A phone (a window up to 980 px): a bottom bar, ONE strip of sections (a swipe moves along it), a row of tools, a filter panel, a "+" sheet, the collections as a chip, the side list as the settings (the player no longer covers it), the language in the top bar, no sign-in;
+// wide screens: the side list can be hidden, sort / language / view / tags beside the list (my shelf has no list of titles and no tags in the side list). Without the switch nothing changes.
 const { connect, sleep } = require('../cdp');
 const { writeDir } = require('../dir_fixture.js');
 const BASE = 'http://127.0.0.1:8820/', SVC = 'http://127.0.0.1:8840';
@@ -21,6 +21,7 @@ const get = p => fetch(SVC + p).then(r => r.json());
     await c.goto(BASE, 2800);
   };
   const rect = sel => J(`(()=>{ const e=document.querySelector(${JSON.stringify(sel)}); if(!e) return null; const r=e.getBoundingClientRect(); return {x:Math.round(r.left), y:Math.round(r.top), w:Math.round(r.width), h:Math.round(r.height), r:Math.round(r.right), b:Math.round(r.bottom), d:getComputedStyle(e).display}; })()`);
+  const bar = () => J(`(()=>{ const r=s=>{ const e=document.querySelector(s), b=e.getBoundingClientRect(); return [Math.round(b.top), Math.round(b.height)].join('/'); }; return {top:r('.top'), strip:r('#strip'), tools:r('#stTools'), head:r('.view-head'), pos:getComputedStyle(document.querySelector('.top')).position}; })()`);
   const swipe = async (x1, x2, y = 560) => { await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x1, y }] }); for (let i = 1; i <= 6; i++) { await c.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x1 + (x2 - x1) * i / 6, y }] }); await sleep(12); } await c.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await sleep(900); };
   const active = () => J(`[...document.querySelectorAll('#cats .cat-btn')].filter(b=>b.getAttribute('aria-current')==='true').map(b=>b.textContent.trim().replace(/\\d+$/,'')).join()`);
   const library = async () => {
@@ -37,11 +38,15 @@ const get = p => fetch(SVC + p).then(r => r.json());
   ok('?shell=2 switches the new shell on (kept in this browser, the address is cleaned)', A.shell && A.ph && A.stored === '2' && !/shell=/.test(A.url), A);
   const tb = await rect('#tabbar'), tbs = await J(`[...document.querySelectorAll('#tabbar button')].map(b=>({t:b.textContent.trim(), h:Math.round(b.getBoundingClientRect().height), on:b.getAttribute('aria-pressed')}))`);
   ok('a bottom bar: my shelf | + | discover, fixed at the bottom of the screen, every button at least 44 px, the shelf is the one that is on', tb.d === 'grid' && tb.b === 812 && tb.h >= 56 && tbs.map(x => x.t).join('|') === '我的书架||发现世界' && tbs.every(x => x.h >= 44) && tbs[0].on === 'true' && tbs[2].on === 'false', [tb, tbs]);
-  const tbar = await J(`({me:getComputedStyle(document.querySelector('#meBtn')).display, menu:getComputedStyle(document.querySelector('#menuBtn')).display, add:getComputedStyle(document.querySelector('#addBtn')).display, note:getComputedStyle(document.querySelector('#noteBtn')).display, fab:getComputedStyle(document.querySelector('#noteFab')).display, sort:!!document.querySelector('.toolbar #sort'), h:Math.round(document.querySelector('.top').getBoundingClientRect().height)})`);
-  ok('the top bar is the "me" button and the search; the add, note and subscribe buttons, the old menu button, the round note button are gone (they are behind the +)', tbar.me !== 'none' && tbar.menu === 'none' && tbar.add === 'none' && tbar.note === 'none' && tbar.fab === 'none' && !tbar.sort, tbar);
+  const tbar = await J(`({set:getComputedStyle(document.querySelector('#setBtn')).display, lang:getComputedStyle(document.querySelector('#langTop')).display, langTxt:document.querySelector('#langTop').textContent, menu:getComputedStyle(document.querySelector('#menuBtn')).display, add:getComputedStyle(document.querySelector('#addBtn')).display, note:getComputedStyle(document.querySelector('#noteBtn')).display, fab:getComputedStyle(document.querySelector('#noteFab')).display, sort:!!document.querySelector('.toolbar #sort'), login:!!document.querySelector('#meBox, #meLogin, #meBtn'), h:Math.round(document.querySelector('.top').getBoundingClientRect().height)})`);
+  ok('the top bar is the search, the language (中 / EN) and the settings; the add, note and subscribe buttons, the old menu button, the round note button are gone (they are behind the +); there is no sign-in card anywhere', tbar.set !== 'none' && tbar.lang !== 'none' && tbar.langTxt === '中' && tbar.menu === 'none' && tbar.add === 'none' && tbar.note === 'none' && tbar.fab === 'none' && !tbar.sort && !tbar.login, tbar);
   const strip = await J(`(()=>{ const st=document.querySelector('#stripIn'), cs=[...document.querySelectorAll('#stripIn #cats .cat-btn')]; return {inStrip:!!document.querySelector('#stripIn > #cats'), chips:cs.map(b=>b.textContent.trim().replace(/\\d+$/,'')), h:Math.min(...cs.map(b=>Math.round(b.getBoundingClientRect().height))), ox:getComputedStyle(st).overflowX, on:cs.filter(b=>b.getAttribute('aria-current')==='true').length, dots:cs.some(b=>b.querySelector('.dot') && getComputedStyle(b.querySelector('.dot')).display!=='none')}; })()`);
   ok('the sections of the shelf are ONE strip under the search: a chip each, at least 40 px high, scrolling sideways, the open one is dark', strip.inStrip && strip.chips.slice(0, 3).join('|') === '全部|精选|书籍' && strip.h >= 40 && strip.ox === 'auto' && strip.on === 1 && !strip.dots, strip);
   ok('the side list does not hold them any more on a phone (the list of the shelf is not there: the page is the list)', (await rect('.side-scroll')).d === 'none');
+  const tl = await J(`(()=>{ const r=s=>{ const b=document.querySelector(s).getBoundingClientRect(); return {y:Math.round(b.top), h:Math.round(b.height)}; }; return {sum:document.querySelector('#flSum').textContent, tools:r('#stTools'), strip:r('#strip'), inTools:document.querySelector('#flBtn').parentElement.id}; })()`);
+  ok('under the strip a row of tools: what the list is sorted by and how it is shown ("最近添加 · 卡片") on the left, "筛选" on the right', tl.sum === '最近添加 · 卡片' && tl.inTools === 'stTools' && tl.tools.y >= tl.strip.y + tl.strip.h - 2 && tl.tools.h >= 36, tl);
+  const b0 = await bar();
+  ok('the bar (top bar, strip, row of tools) is fixed to the top of the screen', b0.pos === 'sticky', b0);
 
   // the filter panel
   await J(`document.querySelector('#flBtn').click()`); await sleep(400);
@@ -89,6 +94,9 @@ const get = p => fetch(SVC + p).then(r => r.json());
   ok('the bottom bar switches to the discover space; the strip is its sections: 发现 | 热榜 | 今日听什么 | 全部 | …', dsp.sp === 'dir' && dsp.on === 'false,,true' || (dsp.sp === 'dir' && /^发现\|热榜\|今日听什么\|精选图书\|全部/.test(dsp.chips) && dsp.chip), dsp);
   ok('the strip begins with 发现 | 热榜 | 今日听什么 | 精选图书 | 全部', /^发现\|热榜\|今日听什么\|精选图书\|全部/.test(dsp.chips), dsp.chips);
   ok('the collections chip is for the shelf only', dsp.chip === true);
+  ok('the names are the owner’s: 精选图书 | 精选文章 | 看什么 are in the strip, there is no 笔记 in the public space, nothing is called 公共目录 on the bottom bar', dsp.chips.includes('精选文章') && dsp.chips.includes('看什么') && !dsp.chips.includes('笔记') && !/公共目录/.test(await J(`document.querySelector('#tabbar').textContent`)), dsp.chips);
+  const b1 = await bar();
+  ok('the bar does not move or change height from my shelf to the discover space (the content under it changes)', b1.top === b0.top && b1.strip === b0.strip && b1.tools === b0.tools && b1.head === b0.head, [b0, b1]);
   const a0 = await active();
   await swipe(300, 90);
   const a1 = await active();
@@ -98,28 +106,35 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await J(`[...document.querySelectorAll('#cats .cat-btn')].find(b=>b.textContent.includes('全部')).click()`); await sleep(1500);
   const dir = await J(`({inPanel:!!document.querySelector('#flDir > #dirBar'), barHidden:document.querySelector('#dirBar').hidden, vis:getComputedStyle(document.querySelector('#flBtn')).display})`);
   ok('the whole list of the directory: its own filters (the dropdown, the columns / platforms, the tabs) are behind "筛选" too', dir.inPanel && !dir.barHidden && dir.vis !== 'none', dir);
+  const b2 = await bar();
+  ok('... and the bar is the same on the whole list as well', b2.top === b0.top && b2.strip === b0.strip && b2.tools === b0.tools && b2.head === b0.head, [b0, b2]);
   await J(`document.querySelector('#flBtn').click()`); await sleep(400);
   ok('... and the panel shows them together with the sort and the language of the content', await J(`(()=>{ const p=document.querySelector('#flPanel'); return !p.hidden && !!p.querySelector('#dTabs') && getComputedStyle(p.querySelector('#dTabs')).display!=='none' && !!p.querySelector('#sort') && p.getBoundingClientRect().height>200; })()`));
   await J(`document.querySelector('#flBtn').click()`); await sleep(200);
 
   // the player and the bar: the player sits above the bar; the list of "me" is not covered
   await J(`[...document.querySelectorAll('#cats .cat-btn')].find(b=>b.textContent.includes('今日听什么')).click()`); await waitFor(`document.querySelector('#lpRoot .ls-row')`, 12000); await sleep(600);
-  ok('the listening page has no filter button (it has its own controls)', (await rect('#flBtn')).d === 'none');
+  ok('the listening page has no filter button to see (it has its own controls): the row of tools is there but empty', await J(`getComputedStyle(document.querySelector('#stTools')).visibility==='hidden'`));
+  const b3 = await bar();
+  ok('the listening page: the row of tools is empty but there, the bar keeps its height', b3.top === b0.top && b3.strip === b0.strip && b3.tools === b0.tools && b3.head === b0.head, [b0, b3]);
   await J(`document.querySelector('#lpRoot .ls-main').click()`); await waitFor(`!plAudio.paused && plAudio.currentTime>0.3`); await sleep(500);
   const pb = await rect('#player'), tb2 = await rect('#tabbar');
   ok('the player bar sits right above the bottom bar (not over it, not under it)', Math.abs(pb.b - tb2.y) <= 1 && pb.h >= 70, [pb, tb2]);
   const lastRow = await J(`(()=>{ const rows=document.querySelectorAll('#lpRoot .ls-row'); return Math.round(rows[rows.length-1].getBoundingClientRect().bottom); })()`);
   await J(`window.scrollTo(0, document.documentElement.scrollHeight)`); await sleep(500);
   ok('the end of a page is not under the two bars', await J(`(()=>{ const m=document.querySelector('#moreRow, #lpRoot .lp-end, #lpRoot .ls-rows'); const pt=document.querySelector('#player').getBoundingClientRect().top; const rows=document.querySelectorAll('#lpRoot .ls-row'); return Math.round(rows[rows.length-1].getBoundingClientRect().bottom) <= pt + 2 || document.documentElement.scrollHeight>innerHeight; })()`));
-  await J(`document.querySelector('#meBtn').click()`); await sleep(700);
-  const me = await J(`(()=>{ const q=s=>document.querySelector(s), r=e=>e.getBoundingClientRect(), side=r(q('.side')), lang=r(q('#langBtn')), th=r(q('#themeBtn')), at=(b)=>document.elementFromPoint(b.left+b.width/2,b.top+b.height/2); return {open:document.body.classList.contains('drawer'), sideH:Math.round(side.height), vh:innerHeight, me:getComputedStyle(q('#meBox')).display, login:!!q('#meLogin'), langIn:!!at(lang).closest('.side'), themeIn:!!at(th).closest('.side'), langB:Math.round(lang.bottom), spaceHidden:getComputedStyle(q('#spaceSwitch')).display, scroll:getComputedStyle(q('.side-scroll')).display, side:q('.side').getBoundingClientRect().left>=0}; })()`);
-  ok('"me" (the old side list) opens from the left: a card for the account that is to come, then the settings; the language and theme buttons are NOT under the player', me.open && me.me === 'flex' && me.login && me.langIn && me.themeIn && me.langB <= me.vh && me.spaceHidden === 'none' && me.scroll === 'none', me);
-  ok('it is as tall as the screen (the settings are at its foot, in reach)', me.sideH >= me.vh - 2, me);
-  await J(`document.querySelector('#meLogin').click()`); await sleep(400);
-  ok('"登录 / 注册" says kindly that sign-in is not there yet and nothing is lost', /登录功能还在准备中/.test(await J(`document.querySelector('#toastMsg').textContent`)), await J(`document.querySelector('#toastMsg').textContent`));
-  await J(`document.querySelector('#langBtn').click()`); await sleep(1200);
-  ok('the language button of "me" works (it switches the page to the other language)', (await J(`state.lang`)) === 'en' && (await J(`document.querySelector('#tabbar').textContent.replace(/\\s+/g,' ')`)).includes('Discover'), await J(`document.querySelector('#tabbar').textContent`));
-  await J(`document.querySelector('#langBtn').click()`); await sleep(800);
+  await J(`document.querySelector('#setBtn').click()`); await sleep(700);
+  const me = await J(`(()=>{ const q=s=>document.querySelector(s), r=e=>e.getBoundingClientRect(), side=r(q('.side')), th=r(q('#themeBtn')), bk=r(q('#bkBtn')), at=(b)=>document.elementFromPoint(b.left+b.width/2,b.top+b.height/2); return {open:document.body.classList.contains('drawer'), sideH:Math.round(side.height), vh:innerHeight, title:(q('.set-title')||{}).textContent, noLogin:!q('#meBox') && !q('#meLogin'), themeIn:!!at(th).closest('.side'), bkIn:!!at(bk).closest('.side'), themeB:Math.round(th.bottom), langSeg:getComputedStyle(q('.side-foot .seg')).display, spaceHidden:getComputedStyle(q('#spaceSwitch')).display, scroll:getComputedStyle(q('.side-scroll')).display}; })()`);
+  ok('"设置" (the old side list) opens from the left: the title, then the buttons (backup, sync, theme, install, about); no sign-in card; the language is not here (it is in the top bar); the buttons are NOT under the player', me.open && me.title === '设置' && me.noLogin && me.themeIn && me.bkIn && me.themeB <= me.vh && me.spaceHidden === 'none' && me.scroll === 'none' && me.langSeg === 'none', me);
+  ok('it is as tall as the screen', me.sideH >= me.vh - 2, me);
+  await J(`document.body.classList.remove('drawer')`);
+  const lt0 = await rect('#langTop');
+  await J(`document.querySelector('#langTop').click()`); await sleep(1200);
+  const lt1 = await rect('#langTop');
+  ok('the language button of the top bar works: it switches the page to the other language, says EN, and does not move or change size', (await J(`state.lang`)) === 'en' && (await J(`document.querySelector('#tabbar').textContent.replace(/\\s+/g,' ')`)).includes('Explore') && (await J(`document.querySelector('#langTop').textContent`)) === 'EN' && lt0.x === lt1.x && lt0.w === lt1.w && lt0.y === lt1.y, [lt0, lt1]);
+  const b4 = await bar();
+  ok('and the bar is as high in English as it was in Chinese', b4.top === b3.top && b4.strip === b3.strip && b4.tools === b3.tools, [b3, b4]);
+  await J(`document.querySelector('#langTop').click()`); await sleep(800);
   await J(`document.body.classList.remove('drawer'); plStop()`);
 
   // a text: the bars give way
@@ -130,8 +145,8 @@ const get = p => fetch(SVC + p).then(r => r.json());
 
   // the old shell and the way back
   await J(`location.href=location.pathname+'?shell=1'`); await sleep(3000);
-  const old = await J(`({ph:document.body.classList.contains('sh-phone'), tab:getComputedStyle(document.querySelector('#tabbar')).display, menu:getComputedStyle(document.querySelector('#menuBtn')).display, sort:!!document.querySelector('.toolbar #sort'), cats:!!document.querySelector('.side-scroll > #cats'), me:getComputedStyle(document.querySelector('#meBox')).display, stored:LS.get('shell','')})`);
-  ok('?shell=1 is the old page again: no bar, the menu button, the sort in the top bar, the sections in the side list, no "me" card', !old.ph && old.tab === 'none' && old.menu !== 'none' && old.sort && old.cats && old.me === 'none' && old.stored === '1', old);
+  const old = await J(`({ph:document.body.classList.contains('sh-phone'), tab:getComputedStyle(document.querySelector('#tabbar')).display, menu:getComputedStyle(document.querySelector('#menuBtn')).display, sort:!!document.querySelector('.toolbar #sort'), cats:!!document.querySelector('.side-scroll > #cats'), me:!!document.querySelector('#meBox'), stored:LS.get('shell','')})`);
+  ok('?shell=1 is the old page again: no bar, the menu button, the sort in the top bar, the sections in the side list (and no sign-in card in it either)', !old.ph && old.tab === 'none' && old.menu !== 'none' && old.sort && old.cats && !old.me && old.stored === '1', old);
 
   // ================================================ B. the old shell: the player did cover the side list
   await J(`document.querySelector('[data-space="dir"]').click()`); await sleep(2200);
@@ -145,10 +160,22 @@ const get = p => fetch(SVC + p).then(r => r.json());
   // ================================================ C. wide screens
   await c.desktop(1280, 900, 1);
   await fresh('&shell=2');
-  const w = await J(`({ph:document.body.classList.contains('sh-phone'), shell:document.body.classList.contains('shell2'), tab:getComputedStyle(document.querySelector('#tabbar')).display, toggle:getComputedStyle(document.querySelector('#sideToggle')).display, me:getComputedStyle(document.querySelector('#meBox')).display, sideW:Math.round(document.querySelector('.side').getBoundingClientRect().width), inVh:!!document.querySelector('#vhCtl #ctlBox #sort') && !!document.querySelector('#vhCtl #ctlBox #langFilter') && !!document.querySelector('#vhCtl #ctlBox #viewBtn'), inTop:!!document.querySelector('.toolbar #sort'), strip:getComputedStyle(document.querySelector('#strip')).display})`);
-  ok('a wide screen: no bottom bar and no strip (the side list stays), a button to hide the side list, the "me" card on top of it, sort / language / view beside the list instead of in the top bar', !w.ph && w.shell && w.tab === 'none' && w.toggle !== 'none' && w.me === 'flex' && w.sideW > 200 && w.inVh && !w.inTop && w.strip === 'none', w);
+  const w = await J(`({ph:document.body.classList.contains('sh-phone'), shell:document.body.classList.contains('shell2'), tab:getComputedStyle(document.querySelector('#tabbar')).display, toggle:getComputedStyle(document.querySelector('#sideToggle')).display, me:!!document.querySelector('#meBox'), sideW:Math.round(document.querySelector('.side').getBoundingClientRect().width), inVh:!!document.querySelector('#vhCtl #ctlBox #sort') && !!document.querySelector('#vhCtl #ctlBox #langFilter') && !!document.querySelector('#vhCtl #ctlBox #viewBtn'), inTop:!!document.querySelector('.toolbar #sort'), strip:getComputedStyle(document.querySelector('#strip')).display})`);
+  ok('a wide screen: no bottom bar and no strip (the side list stays), a button to hide the side list (no sign-in card), sort / language / view beside the list instead of in the top bar', !w.ph && w.shell && w.tab === 'none' && w.toggle !== 'none' && !w.me && w.sideW > 200 && w.inVh && !w.inTop && w.strip === 'none', w);
   const cr = await J(`(()=>{ const c=document.querySelector('#ctlBox').getBoundingClientRect(), h=document.querySelector('#viewTitle').getBoundingClientRect(); return {ctlLeft:Math.round(c.left), titleRight:Math.round(h.right), ctlRight:Math.round(c.right), ctlTop:Math.round(c.top), titleTop:Math.round(h.top), iw:innerWidth}; })()`);
   ok('they are on the right of the page head, level with it', cr.ctlLeft > cr.titleRight && cr.ctlRight > cr.iw - 80 && Math.abs(cr.ctlTop - cr.titleTop) < 140, cr);
+  const h0 = await rect('.view-head');
+  const sh = await J(`({dir:getComputedStyle(document.querySelector('#dir')).display, lab:getComputedStyle(document.querySelector('.side-scroll > .dir-label')).display, tagIn:document.querySelector('#tagbox').parentElement.id, cats:document.querySelectorAll('.side-scroll #cats .cat-btn').length, tagBtn:getComputedStyle(document.querySelector('#tagBtn')).display, tagTxt:document.querySelector('#tagBtn').textContent})`);
+  ok('my shelf on a wide screen: the side list has the sections only (no list of titles, no tags); "标签 ▾" sits with the sort / language / view', sh.dir === 'none' && sh.lab === 'none' && sh.tagIn === 'tagPop' && sh.cats >= 3 && sh.tagBtn !== 'none' && /^标签/.test(sh.tagTxt), sh);
+  await J(`document.querySelector('#tagBtn').click()`); await sleep(300);
+  const tp = await J(`(()=>{ const p=document.querySelector('#tagPop'), b=document.querySelector('#tagBtn').getBoundingClientRect(), r=p.getBoundingClientRect(); return {open:!p.hidden, chips:p.querySelectorAll('[data-tag]').length, below:r.top>=b.bottom-1, inside:r.right<=innerWidth && r.left>=0, exp:document.querySelector('#tagBtn').getAttribute('aria-expanded')}; })()`);
+  ok('it opens a small panel with the tags under the button', tp.open && tp.chips >= 3 && tp.below && tp.inside && tp.exp === 'true', tp);
+  const tg = await J(`document.querySelector('#tagPop [data-tag]').dataset.tag`);
+  await J(`document.querySelector('#tagPop [data-tag]').click()`); await sleep(500);
+  const tq = await J(`({tag:state.tag, shut:document.querySelector('#tagPop').hidden, chip:!!document.querySelector('#viewSub [data-clear="tag"]'), btn:document.querySelector('#tagBtn').textContent, cards:document.querySelectorAll('#grid .card').length})`);
+  ok('choosing a tag filters the list, closes the panel, the button says which tag, and the heading has a chip to take it back', tq.tag === tg && tq.shut && tq.chip && tq.btn.includes('#') && tq.cards >= 1, tq);
+  await J(`document.querySelector('#viewSub [data-clear="tag"]').click()`); await sleep(400);
+  ok('the chip takes the tag back', (await J(`state.tag`)) === '' && (await J(`document.querySelector('#tagBtn').textContent`)) === '标签 ▾');
   await J(`document.querySelector('#sideToggle').click()`); await sleep(500);
   const off = await J(`({side:getComputedStyle(document.querySelector('.side')).display, cols:getComputedStyle(document.querySelector('.app')).gridTemplateColumns.split(' ').length, stored:LS.get('sideOff',0), exp:document.querySelector('#sideToggle').getAttribute('aria-expanded'), main:Math.round(document.querySelector('.main').getBoundingClientRect().left)})`);
   ok('the button hides the side list: the page takes the whole width, the choice is kept', off.side === 'none' && off.cols === 1 && off.stored === 1 && off.exp === 'false' && off.main < 20, off);
@@ -160,15 +187,22 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await J(`document.querySelector('#cats [data-dbrowse="1"], #cats [data-dtype="all"]').click()`); await sleep(1200);
   const dl = await J(`({inLine:!!document.querySelector('#dirBar .dir-line #ctlBox #sort'), barVisible:!document.querySelector('#dirBar').hidden, level:(()=>{ const a=document.querySelector('#dirBar .dir-line').getBoundingClientRect(), b=document.querySelector('#ctlBox').getBoundingClientRect(); return Math.abs(a.top-b.top)<30 && b.right>a.right-20; })()})`);
   ok('the whole list of the directory: sort / language / view are on the row of the tabs (the column | platform choice), at its right end', dl.inLine && dl.barVisible && dl.level, dl);
+  const h1 = await rect('.view-head');
+  ok('the heading of the page is as high on the directory as on my shelf (the list under it does not jump when the section changes)', Math.abs(h1.h - h0.h) <= 1, [h0, h1]);
+  ok('the public space keeps its list of shelves in the side list (a filter of its own)', (await J(`getComputedStyle(document.querySelector('#dir')).display`)) !== 'none');
   await J(`document.querySelector('#cats [data-dlisten]').click()`); await waitFor(`document.querySelector('#lpRoot .ls-row')`, 12000); await sleep(400);
   ok('the listening page keeps its own controls only (the others are not shown)', (await rect('#ctlBox')).d === 'none');
-  await J(`document.querySelector('#meLogin').click()`); await sleep(300);
-  ok('"登录 / 注册" on a wide screen too', /登录功能还在准备中/.test(await J(`document.querySelector('#toastMsg').textContent`)));
 
   // without the switch: nothing is different
   await fresh('');
-  const o3 = await J(`({shell:document.body.classList.contains('shell2'), tog:getComputedStyle(document.querySelector('#sideToggle')).display, me:getComputedStyle(document.querySelector('#meBox')).display, inTop:!!document.querySelector('.toolbar #sort'), vh:getComputedStyle(document.querySelector('#vhCtl')).display})`);
-  ok('without ?shell=2 nothing is different: no hide button, no "me" card, the controls in the top bar', !o3.shell && o3.tog === 'none' && o3.me === 'none' && o3.inTop && o3.vh === 'none', o3);
+  const o3 = await J(`({shell:document.body.classList.contains('shell2'), tog:getComputedStyle(document.querySelector('#sideToggle')).display, me:!!document.querySelector('#meBox'), inTop:!!document.querySelector('.toolbar #sort'), vh:getComputedStyle(document.querySelector('#vhCtl')).display})`);
+  ok('without ?shell=2 nothing is different: no hide button, the controls in the top bar (and no sign-in card)', !o3.shell && o3.tog === 'none' && !o3.me && o3.inTop && o3.vh === 'none', o3);
+
+  // ================================================ D. a window of 800 px is a phone too (the old side list slides out up to 980 px)
+  await c.desktop(800, 900, 1);
+  await fresh('&shell=2');
+  const m8 = await J(`({ph:document.body.classList.contains('sh-phone'), tab:getComputedStyle(document.querySelector('#tabbar')).display, strip:getComputedStyle(document.querySelector('#strip')).display, tools:getComputedStyle(document.querySelector('#stTools')).display, set:getComputedStyle(document.querySelector('#setBtn')).display, menu:getComputedStyle(document.querySelector('#menuBtn')).display, over:document.documentElement.scrollWidth>innerWidth})`);
+  ok('a window of 800 px has the phone’s bottom bar, strip, row of tools and settings button (and does not scroll sideways)', m8.ph && m8.tab === 'grid' && m8.strip !== 'none' && m8.tools !== 'none' && m8.set !== 'none' && m8.menu === 'none' && !m8.over, m8);
 
   ok('no script errors in the whole run', errs.length === 0, errs);
   console.log(`\n${pass} passed, ${fail} failed`);
