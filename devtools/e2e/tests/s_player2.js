@@ -54,7 +54,7 @@ const dir0 = JSON.parse(fs.readFileSync(DIRF, 'utf8'));
   await fetch(POD + '/__reset');
   await fresh();
   await J(`document.querySelector('[data-space="dir"]').click()`); await sleep(2600);
-  const marks = await J(`({marks:document.querySelectorAll('.play.ro').length, cats:[...document.querySelectorAll('#cats button')].map(b=>b.textContent.trim().replace(/\\d+$/,'')).join('|')})`);
+  const marks = await J(`({marks:document.querySelectorAll('.play.ro').length, cats:[...document.querySelectorAll('#cats .cat-btn')].map(b=>b.textContent.trim().replace(/\\d+$/,'')).join('|')})`);
   ok('the discovery page shows a play mark on the covers of episodes, and the sidebar has 今日听什么 (where 音频 was) beside 全部 / 文章', marks.marks >= 1 && /今日听什么/.test(marks.cats) && !/音频/.test(marks.cats) && /文章/.test(marks.cats), marks);
   await J(`document.querySelector('#cats [data-dtype="all"]').click()`); await sleep(700);
   const aud = await J(`({cards:document.querySelectorAll('#grid .card[data-did]').length, marks:document.querySelectorAll('#grid .card[data-did] .play.ro').length, titles:[...document.querySelectorAll('#grid .card[data-did] .play.ro')].map(x=>x.closest('.card').querySelector('.card-title').textContent.slice(0,4)).sort().join()})`);

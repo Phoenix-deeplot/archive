@@ -34,7 +34,7 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await get('/__hot?reset=1');
   await fresh('zh'); await toDir();
   const side = await J(`[...document.querySelectorAll('#cats .cat-btn')].map(b=>b.textContent.trim().replace(/\\d+$/,'')+(b.getAttribute('aria-current')==='true'?'*':'')).slice(0,4).join('|')`);
-  ok('the sidebar of the public space has 热榜 beside 发现 / 全部 / 文章', /^发现\*\|热榜\|今日听什么\|全部/.test(side), side);
+  ok('the sidebar of the public space has 热榜 beside 发现 / 全部 / 文章', /^发现\*\|热榜\|今日听什么\|精选图书/.test(side), side);
   ok('the discovery page itself has a "热榜 ›" button beside "全部来源 · 平台 · 标签 ›" (a phone does not open the sidebar by chance)', (await J(`[...document.querySelectorAll('#dirReco .dr-explore .dr-act')].map(b=>b.textContent.trim()).join('|')`)) === '热榜 ›|今日听什么 ›|全部来源 · 平台 · 标签 ›');
   await openHot();
   const page = await J(`({cls:document.body.classList.contains('dir-hot'), disc:document.body.classList.contains('dir-discover'), title:document.querySelector('#viewTitle').textContent, bar:document.querySelector('#dirBar').hidden, grid:document.querySelector('#grid').children.length,
@@ -226,7 +226,7 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await get('/__hot?reset=1');
   await fresh('en'); await toDir();
   const sideEn = await J(`[...document.querySelectorAll('#cats .cat-btn')].map(b=>b.textContent.trim()).slice(0,4).join('|')`);
-  ok('English: the row is "Hot lists"', /^Discover\|Hot lists\|What to listen to\|All/.test(sideEn), sideEn);
+  ok('English: the row is "Hot lists"', /^Discover\|Hot lists\|What to listen to\|Book picks/.test(sideEn), sideEn);
   await openHot(); await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0`);
   h = await head();
   ok('English: the title, the six columns, the platforms, the header', (await J(`document.querySelector('#viewTitle').textContent`)) === 'Hot lists' && (await cols()).join('|') === 'Top stories*|Tech & dev|Finance|World|AI & research|Books & media' && (await tabs())[0] === 'Weibo hot searches*' && /Updated 2 min ago/.test(h.meta), [await cols(), await tabs(), h]);

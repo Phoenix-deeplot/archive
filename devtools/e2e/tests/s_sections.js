@@ -35,7 +35,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await open('watch/');
   v = await view();
   ok('/watch/: "看什么", the recommended videos first (at most three; the fixture has two), the row that is on', v.landing === 'watch' && v.title === '看什么｜知树阅读' && v.h1 === '看什么' && v.picksTitle === '推荐视频' && v.picks >= 1 && v.picks <= 3 && v.curLanding === 'watch', v);
-  ok('when all the videos are recommended there is no "更多视频" heading over an empty list', v.more === '' && v.cards === 0, v);
+  ok('"更多视频" is over the list only when the list has something in it (one recommended video per program: the rest follow)', v.picks + v.cards >= 1 && ((v.cards > 0) === (v.more === '更多视频')), v);
   await open('picks/books/');
   v = await view();
   ok('/picks/books/: "精选图书", its row is on; books are listed or, when there are none, the page says so', v.landing === 'books' && v.title === '精选图书｜知树阅读' && v.curLanding === 'books' && (v.cards > 0 || /还没有可推荐的图书/.test(v.empty)), v);
