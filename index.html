@@ -1082,6 +1082,13 @@ body.has-player.pl-folded{--pl-h:0px}
 .brand-copy{min-width:0}
 .brand-sub{margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .side-head .space{grid-column:1 / -1;width:max-content;margin:0}
+/* the player does not cover the side list: on a wide screen it starts where the side list ends (the language, theme, sync and backup buttons at the foot of the list stay in reach);
+   on a narrow one the list that slides out is above it */
+@media (min-width:981px){
+  body.has-player .player{left:276px}
+  body.has-player .pl-mini{left:calc(276px + 12px)}
+}
+body.drawer .player,body.drawer .pl-mini{z-index:18}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9444360386337348"
      crossorigin="anonymous"></script>
