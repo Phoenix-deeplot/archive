@@ -51,15 +51,22 @@ def main():
     dist = os.path.join(out, 'dist')
     os.makedirs(os.path.join(dist, 'dir'), exist_ok=True)
     shutil.copy2(os.path.join(HERE, 'fixtures', 'directory.base.json'), os.path.join(dist, 'dir', 'directory.json'))
-    page = os.path.join(dist, 'index.html')
-    text = open(page, encoding='utf-8', newline='').read()
     end = '\n})();\n</script>'
-    i = text.rfind(end)
-    if i < 0:
-        sys.exit('the end of the script of index.html was not found: the hook for the tests cannot be put in')
     hook = ("\nwindow.__zt={}; %s.forEach(function(n){ try{ window.__zt[n]=eval(n); }catch(e){} });" % repr(HOOKS))
-    open(page, 'w', encoding='utf-8', newline='').write(text[:i] + hook + text[i:])
-    print('demo built from %s -> %s' % (src, dist))
+    n = 0
+    for folder, _, names in os.walk(dist):                       # the page itself and every page the build made from it (the pages of the sections of the directory open the same application)
+        for name in names:
+            if not name.endswith('.html'):
+                continue
+            page = os.path.join(folder, name)
+            text = open(page, encoding='utf-8', newline='').read()
+            i = text.rfind(end)
+            if i >= 0 and 'const I18N' in text:
+                open(page, 'w', encoding='utf-8', newline='').write(text[:i] + hook + text[i:])
+                n += 1
+    if not os.path.isfile(os.path.join(dist, 'index.html')) or n == 0:
+        sys.exit('the end of the script of index.html was not found: the hook for the tests cannot be put in')
+    print('demo built from %s -> %s (the hook is in %d pages)' % (src, dist, n))
 
 
 if __name__ == '__main__':
