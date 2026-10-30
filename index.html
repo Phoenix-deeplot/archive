@@ -44,7 +44,7 @@
   padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
+  :root:not([data-theme="light"]):not([data-theme="cloud"]){
     --bg:#121619; --side:#161B1F; --surface:#1B2125; --ink:#E4E9EA; --muted:#9AA7AE; --rule:#2C363C;
     --danger:#F2A7A0; --accent:#5CC2B1; --c-books:#8EA6D9; --c-tools:#E0B04A; --c-notes:#5CC2B1; --c-featured:#C99BC0; --c-other:#9AA7AE; --heat:#F59E5B;
     --mark:#5C4A12;
@@ -55,6 +55,15 @@
   --danger:#F2A7A0; --accent:#5CC2B1; --c-books:#8EA6D9; --c-tools:#E0B04A; --c-notes:#5CC2B1; --c-featured:#C99BC0; --c-other:#9AA7AE; --heat:#F59E5B;
   --mark:#5C4A12;
 }
+/* the theme "cloud" (云红), the third of the three themes of the new shell (classic = light, dark, cloud): a cool white and one red, sans-serif headings, a heavier line for the icons, rounder corners. A theme changes all of these together. */
+:root[data-theme="cloud"]{--bg:#F6F7F9;--side:#EEF0F3;--surface:#FFFFFF;--ink:#1E2026;--muted:#6B7280;--rule:#E3E6EB;--accent:#D8363A;--mark:#FBE7A6;--serif:var(--sans)}
+:root[data-theme="cloud"] .where.good{color:var(--c-notes);border-color:var(--c-notes)}          /* (red is not "good") */
+:root[data-theme="cloud"] .icon{stroke-width:2.1}
+:root[data-theme="cloud"] .card{border-radius:16px}
+:root[data-theme="cloud"] .btn{border-radius:10px}
+:root[data-theme="cloud"] .search input{border-radius:12px}
+:root[data-theme="cloud"] .view-head h1,:root[data-theme="cloud"] .brand{font-weight:800}
+:root[data-theme="cloud"] .tabbar button[aria-pressed="true"] .icon{fill:color-mix(in srgb,var(--accent) 18%,transparent)}
 *,*::before,*::after{box-sizing:inherit}
 [hidden]{display:none !important}
 html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px);-webkit-text-size-adjust:100%}
@@ -214,7 +223,7 @@ body.dir-discover .dir-label,body.dir-discover #dir,body.dir-discover #tagbox,bo
 .ft-where{display:inline-block;margin-right:6px;padding:0 7px;border:1px solid var(--rule);border-radius:999px;font-size:11.5px;color:var(--accent)}
 .search kbd{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--rule);border-radius:4px;padding:0 6px;background:var(--bg)}
 .toolbar{display:flex;align-items:center;gap:8px;margin-left:auto}
-.toolbar select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:6px 8px}
+.toolbar select,.ctl-box select,.fl-slot select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:6px 8px}
 
 .view-head{max-width:1280px;padding:34px 0 18px}
 .view-head h1{font-family:var(--serif);font-weight:900;font-size:clamp(30px,3.8vw,44px);line-height:1.2;margin:0 0 6px;letter-spacing:-.01em}
@@ -411,7 +420,7 @@ body.noting{overflow:hidden}
 @media(max-width:620px){.ls>.dr-note:not(.ls-sub){display:none}}
 /* the listening page: one row (music / podcasts, the sort, cards / rows), ONE strip of lists, and the songs straight under it; the title and its subtitle in one line */
 body.dir-listen #sort,body.dir-listen #viewBtn,body.dir-listen #langFilter{display:none}
-body.dir-listen .view-head,body.dir-hot .view-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 14px;padding:22px 0 10px}
+body.dir-listen .view-head,body.dir-hot .view-head{padding:22px 0 10px}
 body.dir-listen .view-head h1,body.dir-hot .view-head h1{font-size:clamp(22px,2.4vw,28px);margin:0}
 body.dir-listen .view-head p,body.dir-hot .view-head p{font-size:14px}
 .lp-bar{display:flex;align-items:center;gap:10px;margin:0 0 10px}
@@ -1095,6 +1104,123 @@ body.reader-focus .reader-mobile-nav{display:none!important}
   body.has-player .pl-mini{left:calc(276px + 12px)}
 }
 body.drawer .player,body.drawer .pl-mini{z-index:18}
+
+/* ===== shell2 (?shell=2): the side list can be hidden; on a phone a bottom bar, one strip of sections, a filter panel, a "me" list for the settings ===== */
+.tabbar,.strip,.st-tools,.fl-panel,.set-btn,.lang-top,.th-top,.set-title,.side-toggle,.sheet,.tag-btn,.tag-pop,.fab-lbl{display:none}
+body.shell2 #noteBtn{display:none}                                          /* (writing a note is the round button at the corner, or the + of a phone: the pen in the top bar said the same as "add") */
+.sw{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px;border:1px solid rgba(127,127,127,.4)}
+.sw-classic{background:#1F7A6D}.sw-dark{background:#1B2125}.sw-cloud{background:#D8363A}
+.vh-txt{min-width:0}
+.vh-ctl{display:none}
+body.dir-listen .vh-txt,body.dir-hot .vh-txt{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 14px}
+.ctl-box{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+body.dir-listen .ctl-box,body.dir-hot .ctl-box{display:none}
+@media (min-width:981px){
+  body.shell2 .side-toggle{display:inline-flex}
+  body.shell2.side-off .app{grid-template-columns:minmax(0,1fr)}
+  body.shell2.side-off .side{display:none}
+  body.shell2.side-off.has-player .player{left:0}
+  body.shell2.side-off.has-player .pl-mini{left:max(12px,env(safe-area-inset-left))}
+  body.shell2 .view-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  body.shell2 .vh-ctl{display:block;padding-bottom:6px}
+  body.shell2 .dir-line .ctl-box{margin-left:auto}
+  body.shell2 .view-head p{min-height:25px}                                   /* (the heading has the same height on every page: the content under it does not move) */
+  body.shell2 #viewSub br{display:none}
+  body.shell2 .vh-ctl{position:relative}
+  body.shell2 .tag-btn{display:inline-flex;align-items:center;font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:6px 10px;cursor:pointer;white-space:nowrap}
+  body.shell2 .tag-btn[hidden]{display:none}
+  body.shell2 .tag-btn.on,body.shell2 .tag-btn[aria-expanded="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  body.shell2 .tag-pop{display:block;position:absolute;right:0;top:calc(100% + 4px);z-index:7;width:min(440px,calc(100vw - 48px));max-height:min(60vh,420px);overflow:auto;padding:12px 14px;background:var(--bg);border:1px solid var(--rule);border-radius:10px;box-shadow:0 12px 24px rgba(0,0,0,.14)}
+  body.shell2 .tag-pop[hidden]{display:none}
+  body.shell2 .tag-pop .tagbox{margin:0}
+  body.shell2 .fab{display:inline-flex;width:auto;height:48px;padding:0 20px 0 16px;gap:8px;border-radius:999px;background:var(--accent);color:var(--bg);font:inherit;font-size:15px;font-weight:600;right:max(28px,env(safe-area-inset-right));bottom:calc(28px + env(safe-area-inset-bottom,0px));box-shadow:0 8px 22px rgba(0,0,0,.28)}
+  body.shell2 .fab:hover{filter:brightness(1.06)}
+  body.shell2 .fab .fab-lbl{display:inline}
+  body.shell2.has-player .fab{bottom:calc(var(--pl-h) + 20px + env(safe-area-inset-bottom,0px))}
+  body.shell2.reading .fab,body.shell2.noting .fab{display:none}
+  body.sh-shelf .side-scroll>.dir-label,body.sh-shelf #dir{display:none}      /* (my shelf: the list of titles is the page itself; the tags are a button beside the sort) */
+}
+@media (max-width:980px){
+  body.sh-phone{--tb:calc(56px + env(safe-area-inset-bottom,0px))}
+  body.sh-phone .menu-btn,body.sh-phone #noteBtn,body.sh-phone #subBtn,body.sh-phone #addBtn,body.sh-phone .fab,body.sh-phone #colRow,body.sh-phone .side-head .space,body.sh-phone .side-scroll,body.sh-phone .toolbar,body.sh-phone .side-foot .seg{display:none!important}
+  body.sh-phone .set-btn,body.sh-phone .lang-top,body.sh-phone .th-top{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:40px}
+  body.sh-phone .lang-top{order:2;font:inherit;font-weight:700;font-size:14px;color:var(--ink)}
+  body.sh-phone .th-top{order:3}
+  body.sh-phone .set-btn{order:4}
+  body.sh-phone .top{gap:6px 4px}
+  body.sh-phone .set-title{display:block;grid-column:1 / -1;margin:0;font-size:15px;font-weight:700}
+  body.sh-phone .top{flex-wrap:wrap;gap:6px 8px;padding:10px 0 6px}
+  body.sh-phone .search{order:1;flex:1 1 0;max-width:none}
+  body.sh-phone .strip{order:5;flex:1 1 100%;display:flex;align-items:center;gap:6px;min-width:0}
+  body.sh-phone .st-tools{order:6;flex:1 1 100%;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:40px}
+  .st-sum{flex:1;min-width:0;border:0;background:none;color:var(--muted);font:inherit;font-size:13.5px;min-height:40px;padding:0 2px;text-align:left;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  body.sh-phone .strip .cat-btn{white-space:nowrap}
+  .strip-in{flex:1;min-width:0;display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+  .strip-in::-webkit-scrollbar{display:none}
+  body.sh-phone .cats{display:contents}
+  body.sh-phone .strip .cat-btn{text-decoration:none;flex:0 0 auto;width:auto;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:6px 14px;border:1px solid var(--rule);border-radius:999px;background:var(--bg);color:var(--ink);font-size:14px;text-align:left}
+  body.sh-phone .strip .cat-btn[aria-current="true"],body.sh-phone .strip .cat-btn[aria-expanded="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  body.sh-phone .strip .cat-btn .dot,body.sh-phone .strip .cat-sep,body.sh-phone .strip .cat-btn .cicon{display:none}
+  body.sh-phone .strip .cat-btn .n{font-size:12px;opacity:.7;margin-left:0}
+  body.sh-phone .strip .cat-btn.muted{color:var(--muted)}
+  .strip-fl{flex:none;display:inline-flex;align-items:center;gap:4px;min-height:40px;padding:0 12px;border:1px solid var(--rule);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+  .strip-fl .icon{width:16px;height:16px}
+  .strip-fl[aria-expanded="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .strip-fl .fl-n{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--accent);color:var(--bg);font-size:11px;line-height:18px;text-align:center}
+  .strip-col .col-x{display:inline-grid;place-items:center;min-width:24px;min-height:24px;margin:-2px -6px -2px 2px;border-radius:50%;font-size:12px}
+  .strip-col .col-x:hover{background:rgba(127,127,127,.3)}
+  body.dir-listen .st-tools,body.dir-hot .st-tools{visibility:hidden}           /* (the row stays: the bar is the same height on every page) */
+  body.sh-phone .fl-panel{position:absolute;left:0;right:0;top:100%;z-index:7;display:block;max-height:calc(100dvh - 190px);overflow:auto;background:var(--bg);border:1px solid var(--rule);border-radius:0 0 12px 12px;box-shadow:0 12px 24px rgba(0,0,0,.14)}
+  body.sh-phone .fl-panel[hidden]{display:none}
+  .fl-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 14px;border-bottom:1px solid var(--rule);min-height:52px}
+  .fl-row>span:first-child{color:var(--muted);font-size:13px;flex:none}
+  .fl-slot{display:flex;align-items:center;gap:8px;justify-content:flex-end;min-width:0}
+  .fl-slot select,.fl-slot .ibtn{min-height:44px}
+  .fl-slot .ibtn{width:44px;height:44px;border:1px solid var(--rule);border-radius:8px;color:var(--ink)}
+  .fl-slot .seg button{min-height:44px;min-width:44px}
+  .fl-col{flex-direction:column;align-items:stretch}
+  .fl-col .fl-slot{justify-content:flex-start}
+  .fl-row.fl-col:has(#flTag:empty),#flTagRow[hidden]{display:none}
+  .fl-dir:empty{display:none}
+  body.sh-phone .view-head{padding:8px 0 4px}
+  body.sh-phone .view-head h1{position:absolute;width:1px;height:1px;margin:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}          /* (the strip names the page: the heading is only for a reader of the screen) */
+  body.sh-phone .view-head p{font-size:13px;min-height:26px;white-space:nowrap;overflow-x:auto;scrollbar-width:none}
+  body.sh-phone #viewSub br{display:none}
+  #flTagRow>span:first-child{display:none}
+  .fl-dir{padding:4px 14px 12px}
+  .fl-dir .dir-bar{margin:0}
+  .fl-dir .dir-pick{position:static;box-shadow:none;border:0;max-width:none;width:auto}
+  #colPop .col-nav{display:block;padding:10px 14px}
+  body.sh-phone .tabbar{display:grid;grid-template-columns:1fr 72px 1fr;position:fixed;left:0;right:0;bottom:0;z-index:25;height:var(--tb);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--surface);border-top:1px solid var(--rule)}
+  .tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;background:none;color:var(--muted);font:inherit;font-size:11.5px;cursor:pointer;min-height:56px}
+  .tabbar button .icon{width:22px;height:22px}
+  .tabbar button{position:relative}
+  .tabbar button[aria-pressed="true"]{color:var(--accent);font-weight:700}                         /* (the one that is on has the colour of the theme, and a small bar over it) */
+  .tabbar button[aria-pressed="true"]::before{content:"";position:absolute;top:0;left:50%;width:24px;height:3px;margin-left:-12px;border-radius:0 0 3px 3px;background:var(--accent)}
+  .tabbar .tb-plus{justify-self:center;align-self:center;width:56px;min-height:44px;height:44px;border-radius:14px;background:var(--accent);color:var(--bg)}
+  .tabbar .tb-plus .icon{width:22px;height:22px}
+  body.sh-phone.reading .tabbar{display:none}
+  body.sh-phone .main{padding-bottom:calc(72px + var(--tb))}
+  body.sh-phone.has-player{padding-bottom:calc(var(--pl-h) + var(--tb))}
+  body.sh-phone .player{bottom:var(--tb);height:72px;padding-bottom:6px}
+  body.sh-phone .pl-mini{bottom:calc(14px + var(--tb))}
+  body.sh-phone.reading .player{bottom:0;height:calc(72px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
+  body.sh-phone.reading .pl-mini{bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+  body.sh-phone .toast{bottom:calc(var(--tb) + 16px)}
+  body.sh-phone.has-player .toast{bottom:calc(var(--pl-h) + var(--tb) + 16px)}
+  body.sh-phone .side{z-index:40;height:100dvh}
+  body.sh-phone .side-foot{margin-top:0;border-top:0;gap:12px}
+  body.sh-phone .side-foot .btn{min-height:44px}
+  body.sh-phone.drawer .drawer-back{z-index:39}
+  body.sh-phone .sheet{display:none}
+  dialog.sheet{width:100%;max-width:none;margin:auto 0 0;border-radius:16px 16px 0 0;border:0;border-top:1px solid var(--rule);padding:0}
+  dialog.sheet[open]{display:block}
+  dialog.sheet::backdrop{background:rgba(10,14,18,.4)}
+  .sheet-in{padding:8px 12px calc(12px + env(safe-area-inset-bottom,0px))}
+  .sheet-in button{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:0 8px;border:0;border-bottom:1px solid var(--rule);background:none;color:var(--ink);font:inherit;font-size:16px;text-align:left;cursor:pointer}
+  .sheet-in button:last-child{border-bottom:0}
+  .sheet-in .sheet-x{justify-content:center;color:var(--muted)}
+}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9444360386337348"
      crossorigin="anonymous"></script>
@@ -1117,8 +1243,9 @@ body.drawer .player,body.drawer .pl-mini{z-index:18}
       <button class="ibtn side-close" type="button" id="sideClose" data-i-aria="close"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       <div class="seg space" id="spaceSwitch" role="group" aria-label="Space" hidden>
         <button type="button" data-space="mine" aria-pressed="true" data-i="spaceMine">我的书架</button>
-        <button type="button" data-space="dir" aria-pressed="false" data-i="spaceDir">公共目录</button>
+        <button type="button" data-space="dir" aria-pressed="false" data-i="spaceDir">发现世界</button>
       </div>
+      <p class="set-title" data-i="setTitle">设置</p>
     </div>
     <div class="side-scroll">
       <nav class="col-nav" id="colNav" aria-label="Collections" hidden></nav>
@@ -1147,6 +1274,10 @@ body.drawer .player,body.drawer .pl-mini{z-index:18}
   <div class="main">
     <header class="top">
       <button class="ibtn menu-btn" type="button" id="menuBtn" data-i-aria="menu"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <button class="ibtn lang-top" type="button" id="langTop" data-i-aria="langToggle">中</button>
+      <button class="ibtn th-top" type="button" id="themeTop" aria-expanded="false" aria-controls="themePop" data-i-aria="themeTop"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor"/></svg></button>
+      <button class="ibtn set-btn" type="button" id="setBtn" data-i-aria="setTitle"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+      <button class="ibtn side-toggle" type="button" id="sideToggle" aria-expanded="true" data-i-aria="sideHide"><svg class="icon" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M9.5 5v14"/></svg></button>
       <div class="search">
         <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
         <input id="q" type="search" autocomplete="off" data-i-ph="search" placeholder="搜索标题、摘要、关键词">
@@ -1171,6 +1302,19 @@ body.drawer .player,body.drawer .pl-mini{z-index:18}
         <button class="btn sub" type="button" id="subBtn" data-i-aria="subscribe" hidden><svg class="icon" viewBox="0 0 24 24"><path d="M5 11a8 8 0 0 1 8 8M5 4a15 15 0 0 1 15 15"/><circle cx="6" cy="18" r="1.4"/></svg><span class="lbl" data-i="subscribe">订阅</span></button>
         <button class="btn primary" type="button" id="addBtn"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span class="lbl" id="addLbl">添加</span></button>
       </div>
+      <div class="strip" id="strip"><div class="strip-in" id="stripIn"><button class="cat-btn strip-col" type="button" id="colChip" hidden aria-expanded="false" aria-controls="colPop"></button></div></div>
+      <div class="st-tools" id="stTools"><button class="st-sum" type="button" id="flSum" aria-controls="flPanel"></button><button class="strip-fl" type="button" id="flBtn" aria-expanded="false" aria-controls="flPanel"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg><span data-i="flBtn">筛选</span></button></div>
+      <section class="fl-panel" id="flPanel" hidden aria-label="筛选">
+        <div class="fl-row"><span data-i="flSort">排序</span><span class="fl-slot" id="flSort"></span></div>
+        <div class="fl-row"><span data-i="flLang">内容语言</span><span class="fl-slot" id="flLang"></span></div>
+        <div class="fl-row"><span data-i="flView">显示</span><span class="fl-slot" id="flView"></span></div>
+        <div class="fl-row fl-col" id="flTagRow"><span data-i="flTag">标签</span><div class="fl-slot" id="flTag"></div></div>
+        <div class="fl-dir" id="flDir"></div>
+      </section>
+      <section class="fl-panel" id="colPop" hidden aria-label="合集"></section>
+      <section class="fl-panel" id="themePop" hidden aria-label="主题">
+        <div class="fl-row"><span data-i="thLabel">主题</span><span class="fl-slot"><span class="seg" role="group"><button type="button" data-thset="light" aria-pressed="false"><i class="sw sw-classic"></i><span data-i="thClassic">经典</span></button><button type="button" data-thset="dark" aria-pressed="false"><i class="sw sw-dark"></i><span data-i="thDark">深色</span></button><button type="button" data-thset="cloud" aria-pressed="false"><i class="sw sw-cloud"></i><span data-i="thCloud">云红</span></button></span></span></div>
+      </section>
     </header>
 
     <div class="col-row" id="colRow" hidden>
@@ -1180,8 +1324,9 @@ body.drawer .player,body.drawer .pl-mini{z-index:18}
       <button class="btn" type="button" id="colManage" data-i="colManage">管理</button>
     </div>
     <section class="view-head">
-      <h1 id="viewTitle">全部</h1>
-      <p id="viewSub"></p>
+      <div class="vh-txt"><h1 id="viewTitle">全部</h1>
+      <p id="viewSub"></p></div>
+      <div class="vh-ctl" id="vhCtl"><span class="ctl-box" id="ctlBox"><button class="tag-btn" type="button" id="tagBtn" hidden aria-expanded="false" aria-controls="tagPop"></button></span><section class="tag-pop" id="tagPop" hidden aria-label="标签"></section></div>
     </section>
     <div class="dir-bar" id="dirBar" hidden>
       <div class="dir-line">
@@ -1205,7 +1350,7 @@ body.drawer .player,body.drawer .pl-mini{z-index:18}
     <section class="reco" id="recoPane" hidden></section>
     <div class="grid" id="grid"></div>
     <aside class="ad-rail" id="publicAdRail" aria-label="Advertisement" hidden></aside>
-    <button class="fab" type="button" id="noteFab" data-i-aria="noteNew"><svg class="icon" viewBox="0 0 24 24"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19zM14.5 6.5l3 3"/></svg></button>
+    <button class="fab" type="button" id="noteFab" data-i-aria="noteNew"><svg class="icon" viewBox="0 0 24 24"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19zM14.5 6.5l3 3"/></svg><span class="fab-lbl" data-i="plusNote">写笔记</span></button>
     <div class="empty" id="empty" hidden></div>
     <div class="more-row" id="moreRow" hidden><button class="btn" type="button" id="moreBtn"></button></div>
   </div>
@@ -1334,6 +1479,20 @@ body.drawer .player,body.drawer .pl-mini{z-index:18}
     <div class="dlg-head"><h2 id="embedTitle"></h2><p class="emb-sub" id="embedSub"></p></div>
     <div class="dlg-body"><div class="emb-box" id="embedBox"></div><p class="emb-body" id="embedBody" hidden></p></div>
     <div class="dlg-foot"><a class="btn" id="embedOrig" target="_blank" rel="noopener noreferrer"></a><button class="btn primary" type="button" id="embedDone"></button></div>
+  </div>
+</dialog>
+<nav class="tabbar" id="tabbar" aria-label="Main">
+  <button type="button" data-space="mine" aria-pressed="true"><svg class="icon" viewBox="0 0 24 24"><path d="M5 4h4v16H5zM10 4h4v16h-4zM15.5 5.5l3.8-1 3 14.5-3.8 1z"/></svg><span data-i="spaceMine">我的书架</span></button>
+  <button type="button" class="tb-plus" id="tbPlus" data-i-aria="tbPlus"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button type="button" data-space="dir" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg><span data-i="tbDiscover">发现世界</span></button>
+</nav>
+<dialog class="sheet" id="plusDlg" aria-label="添加">
+  <div class="sheet-in">
+    <button type="button" data-plus="files"><svg class="icon" viewBox="0 0 24 24"><path d="M7 4h7l4 4v12H7zM14 4v4h4M12 12v5M9.5 14.5h5"/></svg><span data-i="plusFiles">添加文件</span></button>
+    <button type="button" data-plus="sub"><svg class="icon" viewBox="0 0 24 24"><path d="M5 11a8 8 0 0 1 8 8M5 4a15 15 0 0 1 15 15"/><circle cx="6" cy="18" r="1.4"/></svg><span data-i="plusSub">订阅一个网站</span></button>
+    <button type="button" data-plus="note"><svg class="icon" viewBox="0 0 24 24"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19zM14.5 6.5l3 3"/></svg><span data-i="plusNote">写笔记</span></button>
+    <button type="button" data-plus="submit"><svg class="icon" viewBox="0 0 24 24"><path d="M4 12l16-7-6 15-3-6z"/></svg><span data-i="plusSubmit">收录到公共目录</span></button>
+    <button type="button" class="sheet-x" data-plus="close" data-i="plusCancel">取消</button>
   </div>
 </dialog>
 <audio id="plAudio" preload="none" playsinline></audio>
@@ -1649,7 +1808,7 @@ const I18N = {
     plSleepOff:'不定时', plSleepMin:n=>`${n} 分钟`, plSleepEnd:'本集结束', plSleepSet:m=>m<0?'本集结束后停止':`${m} 分钟后停止`, plSleepDone:'到时间了，已暂停。', plEmpty:'列表是空的。点节目里每一集上的“加入播放列表”。',
     plFail:'这一集在站内放不了（网站不让外部播放，或地址不是 https）。', plOpenOrig:'打开原站', plPlayThis:'播放这一集', plPrev:'上一集（听了 5 秒以上先回到开头）', plNextEp:'下一集', plRateTip:'倍速（点一下换一档）', plVolume:'音量', plNotes:'节目说明全文', recoListen:'试听', recoListenTip:'试听最新一集（不用订阅）', recoListenFail:m=>`试听不了：${m}`,
     introNext:'下一步 ›', dirDiscover:'发现', exploreTitle:'继续探索', exploreAll:'全部来源 · 平台 · 标签 ›', exploreSide:'全部来源 · 平台 · 标签', homeSide:'发现',
-    lsTitle:'今日听什么', lsNote:'每天换一批。标着“站内播放”和“30 秒试听”的会在页面底部的播放条里一首接一首放（试听是平台公开的片段，想听全曲点 ↗ 去平台）；其余用平台自己的播放器，在窗口里放。', lsStream:'站内播放', lsPreview:'30 秒试听', lsSkip:x=>`《${x}》放不了，已跳到下一首`, lsEmbed:'平台播放器', lsList:'歌单', lsGlobal:'需海外网络', lsGlobalShort:'海外', lsSide:'今日听什么', lpIntro:'每天换一批歌和播客。能直接放的都在页面底部的播放条里放，一首接一首。', lpTop:'推荐发现', lpMoreLists:n=>`更多榜单和歌单（${n}）▾`, lpFewer:'收起 ▴', lpStyles:'风格', lpShows:'节目', lpAllShows:'全部节目', lpPod:'播客', lpPodSub:'每个节目的最新一集；点上面的节目看它的全部。', lpDirShows:'目录里的节目', lpMode_music:'音乐', lpMode_podcast:'播客', lpCats:'分类', lpSortChart:'榜单序', lpSort_new:'最新', lpSort_artistP:'节目', lpMoreItems:(a,b)=>`加载更多（${a} / ${b}）`, focusBtn:'专注', lsSub:'每日新歌/节目，喜欢不重样', hotSub:'全球最新内容，第一时间了解', lpRank:n=>`第 ${n} 名`, lsPreviewS:'试听', lpMoreN:n=>`更多（${n}）▾`, lpLess:'收起 ▴', lpViewRows:'切换为列表', lpViewCards:'切换为卡片', focusTitle:'专注模式', focusOpen:'全屏只留图案和声音', focusExit:'退出专注', focusRead:'专注阅读', focusReadTip:'专注阅读：收起所有按钮，只留正文，边读边听', focusReadGo:'收起所有按钮，只留正文，边读边听', focusMusic:'音乐', focusPodcast:'播客', focusTime0:'不限时', focusTimeL:s=>`剩 ${s}`, focusPatL:n=>`图案：${n}`, focusPat_breath:'呼吸', focusPat_aurora:'极光', focusPat_dark:'暗', focusNone:'现在没有可以连续播放的整首歌或整集节目（30 秒试听不算）。', focusDone:'时间到，已暂停。起来活动一下吧。', lpEps:n=>`${n} 集`, lpCount:n=>`${n} 首`, lpPlayAll:'播放全部', lpSort:'排序', lpSortRank:'推荐序', lpSortNew:'最新', lpSort_dur:'时长', lpSort_title:'歌名 / 标题', lpSort_artist:'艺人 / 节目', lpKind:(k,ty)=>ty==='podcast' ? ({chart:'播客榜', list:'节目', style:'分类', daily:'每日推荐'}[k]||'') : ({daily:'每日推荐', chart:'榜单', list:'歌单', style:'风格'}[k]||''), lpEnter:'进入 ›', lpLoading:'正在读取……', lpErr:'这个榜单现在读不到，请稍后再试。', lsGlobalNote:'这一组来自 YouTube / Spotify，需要能访问它们的网络（中国大陆通常打不开）。', lsPod:'播客新集', lsPodSub:'每个节目的最新一集，每天换一批节目。', lsPlayX:x=>`播放：${x}`, lsSrc:x=>`去 ${x} 的页面`,
+    lsTitle:'今日听什么', lsNote:'每天换一批。标着“站内播放”和“30 秒试听”的会在页面底部的播放条里一首接一首放（试听是平台公开的片段，想听全曲点 ↗ 去平台）；其余用平台自己的播放器，在窗口里放。', lsStream:'站内播放', lsPreview:'30 秒试听', lsSkip:x=>`《${x}》放不了，已跳到下一首`, lsEmbed:'平台播放器', lsList:'歌单', lsGlobal:'需海外网络', lsGlobalShort:'海外', lsSide:'今日听什么', lpIntro:'每天换一批歌和播客。能直接放的都在页面底部的播放条里放，一首接一首。', lpTop:'推荐发现', lpMoreLists:n=>`更多榜单和歌单（${n}）▾`, lpFewer:'收起 ▴', lpStyles:'风格', lpShows:'节目', lpAllShows:'全部节目', lpPod:'播客', lpPodSub:'每个节目的最新一集；点上面的节目看它的全部。', lpDirShows:'目录里的节目', lpMode_music:'音乐', lpMode_podcast:'播客', lpCats:'分类', lpSortChart:'榜单序', lpSort_new:'最新', lpSort_artistP:'节目', lpMoreItems:(a,b)=>`加载更多（${a} / ${b}）`, focusBtn:'专注', lsSub:'每日新歌/节目，喜欢不重样', hotSub:'全球最新内容，第一时间了解', lpRank:n=>`第 ${n} 名`, lsPreviewS:'试听', lpMoreN:n=>`更多（${n}）▾`, lpLess:'收起 ▴', lpViewRows:'切换为列表', lpViewCards:'切换为卡片', tbDiscover:'发现世界', tbPlus:'添加', plusFiles:'添加文件', plusSub:'订阅一个网站', plusNote:'写笔记', plusSubmit:'收录到公共目录', plusCancel:'取消', flBtn:'筛选', flSort:'排序', flLang:'内容语言', flView:'显示', flTag:'标签', sideHide:'收起左侧栏', sideShow:'展开左侧栏', colChip:'合集', colClear:'取消合集', focusTitle:'专注模式', focusOpen:'全屏只留图案和声音', focusExit:'退出专注', focusRead:'专注阅读', focusReadTip:'专注阅读：收起所有按钮，只留正文，边读边听', focusReadGo:'收起所有按钮，只留正文，边读边听', focusMusic:'音乐', focusPodcast:'播客', focusTime0:'不限时', focusTimeL:s=>`剩 ${s}`, focusPatL:n=>`图案：${n}`, focusPat_breath:'呼吸', focusPat_aurora:'极光', focusPat_dark:'暗', focusNone:'现在没有可以连续播放的整首歌或整集节目（30 秒试听不算）。', focusDone:'时间到，已暂停。起来活动一下吧。', lpEps:n=>`${n} 集`, lpCount:n=>`${n} 首`, lpPlayAll:'播放全部', lpSort:'排序', lpSortRank:'推荐序', lpSortNew:'最新', lpSort_dur:'时长', lpSort_title:'歌名 / 标题', lpSort_artist:'艺人 / 节目', lpKind:(k,ty)=>ty==='podcast' ? ({chart:'播客榜', list:'节目', style:'分类', daily:'每日推荐'}[k]||'') : ({daily:'每日推荐', chart:'榜单', list:'歌单', style:'风格'}[k]||''), lpEnter:'进入 ›', lpLoading:'正在读取……', lpErr:'这个榜单现在读不到，请稍后再试。', lsGlobalNote:'这一组来自 YouTube / Spotify，需要能访问它们的网络（中国大陆通常打不开）。', lsPod:'播客新集', lsPodSub:'每个节目的最新一集，每天换一批节目。', lsPlayX:x=>`播放：${x}`, lsSrc:x=>`去 ${x} 的页面`,
     hotSide:'热榜', hotTitle:'热榜', hotIntro:'各平台此刻最热的内容。这里只列标题、热度和链接：点开是平台自己的页面，能在站内读的就在站内读。', hotLoading:'正在读取榜单…', hotErr:'榜单服务现在连不上，请稍后再试。', hotListErr:m=>`这个榜单现在读不到：${m}`, hotEmpty:'这个榜单现在是空的。',
     hotAgo:m=>m<1?'刚刚更新':m<60?`${m} 分钟前更新`:`${Math.round(m/60)} 小时前更新`, hotVia:s=>`数据来自 ${s}`, hotNewest:'按时间排列，最新在前', hotFollow:'订阅这个榜单', hotFollowed:'已订阅', hotRefresh:'刷新', hotHome:'打开平台 ↗', hotTalk:'讨论', hotFollowTip:'订阅后，上榜的新内容会像文章一样出现在你的书架里', hotLive:'看实时热榜', hotRegion:'地区', hotRegionAuto:n=>n?`自动（${n}）`:'自动',
     relTitle:'相关报道', relLoading:'正在找相关报道…', relNone:'暂时没有找到相关报道。', relFail:'相关报道现在读不到。', embedOrig:s=>`去 ${s} 看原页面`, embedDone:'关闭', epTitle:'最新几集', epPlay:'播放这一集', epNone:'这个节目现在读不到可以播放的节目。',
@@ -1767,7 +1926,7 @@ const I18N = {
     subScope:'订阅哪一部分', subAll:'全部', subCatGroup:'分类', subTagGroup:'标签', subTypeGroup:'类型', subShelfGroup:'书架',
     subDirTitle:'订阅公共目录', subDirHint:'选择要订阅的范围：全部、某种类型、某个标签，或某个书架。更新会出现在你的阅读器里，点开去原站阅读。', subOpml:'下载所有书架的订阅清单（OPML）',
     dirMore:n=>`展开其余 ${n} 项`, dirLess:'收起',
-    spaceMine:'我的书架', spaceDir:'公共目录', dirTitle:'公共目录', dirShelves:'书架', tagsLabel:'标签', dirLoading:'正在读取公共目录…',
+    spaceMine:'我的书架', spaceDir:'发现世界', dirTitle:'发现世界', dirShelves:'书架', tagsLabel:'标签', dirLoading:'正在读取公共目录…',
     dirError:'读取公共目录失败', dirRetry:'重试', dirSub:(n,s,d)=>`共 ${n} 条，来自 ${s} 个书架${d?`，更新于 ${d}`:''}`,
     dirEmpty:'<h2>目录里还没有内容</h2><p>还没有收录任何书架。点右上角“收录”提交第一个。</p>',
     ty_article:'文章', ty_note:'笔记', ty_video:'视频', ty_audio:'音频', ty_pdf:'PDF', ty_tool:'工具', ty_book:'书籍',
@@ -1844,7 +2003,7 @@ const I18N = {
     plSleepOff:'Off', plSleepMin:n=>`${n} min`, plSleepEnd:'End of this episode', plSleepSet:m=>m<0?'It stops when this episode ends':`It stops in ${m} minutes`, plSleepDone:'Time is up: paused.', plEmpty:'The list is empty. Use “Add to the play list” on an episode.',
     plFail:'This episode cannot be played here (the site does not allow it, or the address is not https).', plOpenOrig:'Open the original', plPlayThis:'Play this episode', plPrev:'Previous (back to the start first when more than 5 s in)', plNextEp:'Next episode', plRateTip:'Speed (tap for the next step)', plVolume:'Volume', plNotes:'Full show notes', recoListen:'Listen', recoListenTip:'Listen to the newest episode (no need to subscribe)', recoListenFail:m=>`Cannot play it: ${m}`,
     introNext:'Next ›', dirDiscover:'Discover', exploreTitle:'Keep exploring', exploreAll:'All sources · platforms · tags ›', exploreSide:'All sources · platforms · tags', homeSide:'Discover',
-    lsTitle:'What to listen to today', lsNote:'A new set every day. What says “Plays here” or “30-second preview” plays one after the other in the bar at the foot of the page (a preview is the piece the platform publishes; the ↗ goes to the full song there); the rest opens in the platform’s own player, in a window.', lsStream:'Plays here', lsPreview:'30-second preview', lsSkip:x=>`“${x}” cannot be played; on to the next one`, lsEmbed:'Platform player', lsList:'Play list', lsGlobal:'Needs a connection outside China', lsGlobalShort:'Global', lsSide:'What to listen to', lpIntro:'A new set of songs and podcasts every day. What can be played here plays in the bar at the foot of the page, one after the other.', lpTop:'Discover', lpMoreLists:n=>`More charts and play lists (${n}) ▾`, lpFewer:'Show fewer ▴', lpStyles:'Styles', lpShows:'Shows', lpAllShows:'All shows', lpPod:'Podcasts', lpPodSub:'The newest episode of each show; pick a show above for all of its episodes.', lpDirShows:'Shows of the directory', lpMode_music:'Music', lpMode_podcast:'Podcasts', lpCats:'Categories', lpSortChart:'Chart order', lpSort_new:'Newest', lpSort_artistP:'Show', lpMoreItems:(a,b)=>`Load more (${a} / ${b})`, focusBtn:'Focus', lsSub:'New songs and shows every day, never the same twice', hotSub:'The latest from around the world, as it happens', lpRank:n=>`#${n}`, lsPreviewS:'Preview', lpMoreN:n=>`More (${n}) ▾`, lpLess:'Less ▴', lpViewRows:'Switch to list', lpViewCards:'Switch to cards', focusTitle:'Focus mode', focusOpen:'Full screen: just a pattern and the sound', focusExit:'Leave focus', focusRead:'Focus reading', focusReadTip:'Focus reading: hide every button, keep the text, listen while you read', focusReadGo:'Hide every button, keep the text, listen while you read', focusMusic:'Music', focusPodcast:'Podcasts', focusTime0:'No timer', focusTimeL:s=>`${s} left`, focusPatL:n=>`Pattern: ${n}`, focusPat_breath:'Breath', focusPat_aurora:'Aurora', focusPat_dark:'Dark', focusNone:'There is no whole song or episode to play right now (30-second previews do not count).', focusDone:'Time is up: paused. Stand up and stretch.', lpEps:n=>`${n} episodes`, lpCount:n=>`${n} songs`, lpPlayAll:'Play all', lpSort:'Sort', lpSortRank:'Recommended', lpSortNew:'Newest', lpSort_dur:'Length', lpSort_title:'Title', lpSort_artist:'Artist / show', lpKind:(k,ty)=>ty==='podcast' ? ({chart:'Podcast chart', list:'Shows', style:'Category', daily:'Daily picks'}[k]||'') : ({daily:'Daily picks', chart:'Chart', list:'Play list', style:'Style'}[k]||''), lpEnter:'Open ›', lpLoading:'Loading…', lpErr:'This list cannot be read right now. Please try again later.', lsGlobalNote:'This group comes from YouTube / Spotify, which need a network that can reach them (usually not possible in mainland China).', lsPod:'New podcast episodes', lsPodSub:'The newest episode of each show; a different set of shows every day.', lsPlayX:x=>`Play: ${x}`, lsSrc:x=>`Go to the page on ${x}`,
+    lsTitle:'What to listen to today', lsNote:'A new set every day. What says “Plays here” or “30-second preview” plays one after the other in the bar at the foot of the page (a preview is the piece the platform publishes; the ↗ goes to the full song there); the rest opens in the platform’s own player, in a window.', lsStream:'Plays here', lsPreview:'30-second preview', lsSkip:x=>`“${x}” cannot be played; on to the next one`, lsEmbed:'Platform player', lsList:'Play list', lsGlobal:'Needs a connection outside China', lsGlobalShort:'Global', lsSide:'What to listen to', lpIntro:'A new set of songs and podcasts every day. What can be played here plays in the bar at the foot of the page, one after the other.', lpTop:'Discover', lpMoreLists:n=>`More charts and play lists (${n}) ▾`, lpFewer:'Show fewer ▴', lpStyles:'Styles', lpShows:'Shows', lpAllShows:'All shows', lpPod:'Podcasts', lpPodSub:'The newest episode of each show; pick a show above for all of its episodes.', lpDirShows:'Shows of the directory', lpMode_music:'Music', lpMode_podcast:'Podcasts', lpCats:'Categories', lpSortChart:'Chart order', lpSort_new:'Newest', lpSort_artistP:'Show', lpMoreItems:(a,b)=>`Load more (${a} / ${b})`, focusBtn:'Focus', lsSub:'New songs and shows every day, never the same twice', hotSub:'The latest from around the world, as it happens', lpRank:n=>`#${n}`, lsPreviewS:'Preview', lpMoreN:n=>`More (${n}) ▾`, lpLess:'Less ▴', lpViewRows:'Switch to list', lpViewCards:'Switch to cards', tbDiscover:'Explore', tbPlus:'Add', plusFiles:'Add a file', plusSub:'Follow a site', plusNote:'Write a note', plusSubmit:'Submit to the directory', plusCancel:'Cancel', flBtn:'Filter', flSort:'Sort', flLang:'Language of the content', flView:'View', flTag:'Tags', sideHide:'Hide the side list', sideShow:'Show the side list', colChip:'Collections', colClear:'Show all collections', focusTitle:'Focus mode', focusOpen:'Full screen: just a pattern and the sound', focusExit:'Leave focus', focusRead:'Focus reading', focusReadTip:'Focus reading: hide every button, keep the text, listen while you read', focusReadGo:'Hide every button, keep the text, listen while you read', focusMusic:'Music', focusPodcast:'Podcasts', focusTime0:'No timer', focusTimeL:s=>`${s} left`, focusPatL:n=>`Pattern: ${n}`, focusPat_breath:'Breath', focusPat_aurora:'Aurora', focusPat_dark:'Dark', focusNone:'There is no whole song or episode to play right now (30-second previews do not count).', focusDone:'Time is up: paused. Stand up and stretch.', lpEps:n=>`${n} episodes`, lpCount:n=>`${n} songs`, lpPlayAll:'Play all', lpSort:'Sort', lpSortRank:'Recommended', lpSortNew:'Newest', lpSort_dur:'Length', lpSort_title:'Title', lpSort_artist:'Artist / show', lpKind:(k,ty)=>ty==='podcast' ? ({chart:'Podcast chart', list:'Shows', style:'Category', daily:'Daily picks'}[k]||'') : ({daily:'Daily picks', chart:'Chart', list:'Play list', style:'Style'}[k]||''), lpEnter:'Open ›', lpLoading:'Loading…', lpErr:'This list cannot be read right now. Please try again later.', lsGlobalNote:'This group comes from YouTube / Spotify, which need a network that can reach them (usually not possible in mainland China).', lsPod:'New podcast episodes', lsPodSub:'The newest episode of each show; a different set of shows every day.', lsPlayX:x=>`Play: ${x}`, lsSrc:x=>`Go to the page on ${x}`,
     hotSide:'Hot lists', hotTitle:'Hot lists', hotIntro:'What is hottest on each platform right now. Only titles, heat and links are listed here: a click opens the platform’s own page, or reads it here where that works.', hotLoading:'Loading the list…', hotErr:'The hot-list service cannot be reached right now. Please try again later.', hotListErr:m=>`This list cannot be read right now: ${m}`, hotEmpty:'This list is empty right now.',
     hotAgo:m=>m<1?'Updated just now':m<60?`Updated ${m} min ago`:`Updated ${Math.round(m/60)} h ago`, hotVia:s=>`Data from ${s}`, hotNewest:'Newest first', hotFollow:'Subscribe to this list', hotFollowed:'Subscribed', hotRefresh:'Refresh', hotHome:'Open the platform ↗', hotTalk:'Discuss', hotFollowTip:'Subscribe, and what comes onto the list shows up on your shelf like articles', hotLive:'Live hot list', hotRegion:'Country', hotRegionAuto:n=>n?`Automatic (${n})`:'Automatic',
     relTitle:'Related news', relLoading:'Looking for related news…', relNone:'No related news found for now.', relFail:'The related news cannot be read right now.', embedOrig:s=>`See the original on ${s}`, embedDone:'Close', epTitle:'Latest episodes', epPlay:'Play this episode', epNone:'No episode of this show can be played right now.',
@@ -1961,7 +2120,7 @@ const I18N = {
     subScope:'What to subscribe to', subAll:'Everything', subCatGroup:'Categories', subTagGroup:'Tags', subTypeGroup:'Types', subShelfGroup:'Shelves',
     subDirTitle:'Subscribe to the public directory', subDirHint:'Pick a scope: everything, one type, one tag or one shelf. Updates show up in your feed reader and open the original site.', subOpml:'Download the list of all shelves (OPML)',
     dirMore:n=>`Show ${n} more`, dirLess:'Show less',
-    spaceMine:'My shelf', spaceDir:'Public directory', dirTitle:'Public directory', dirShelves:'Shelves', tagsLabel:'Tags', dirLoading:'Loading the public directory…',
+    spaceMine:'My shelf', spaceDir:'Explore', dirTitle:'Explore', dirShelves:'Shelves', tagsLabel:'Tags', dirLoading:'Loading the public directory…',
     dirError:'Could not load the public directory', dirRetry:'Retry', dirSub:(n,s,d)=>`${n} ${n===1?'entry':'entries'} from ${s} ${s===1?'shelf':'shelves'}${d?`, updated ${d}`:''}`,
     dirEmpty:'<h2>The directory is empty</h2><p>No shelf has been listed yet. Use “Submit” at the top right to add the first one.</p>',
     ty_article:'Articles', ty_note:'Notes', ty_video:'Videos', ty_audio:'Audio', ty_pdf:'PDF', ty_tool:'Tools', ty_book:'Books',
@@ -2092,6 +2251,8 @@ const state = {
   dType:'all', dTag:'', dShelf:'', dLimit:60
 };
 const $ = s => document.querySelector(s);
+Object.assign(I18N.zh,{themeTop:'主题', thLabel:'主题', thClassic:'经典', thCloud:'云红', setTitle:'设置', viewIsCards:'卡片', viewIsList:'列表'});
+Object.assign(I18N.en,{themeTop:'Theme', thLabel:'Theme', thClassic:'Classic', thCloud:'Cloud red', setTitle:'Settings', viewIsCards:'Cards', viewIsList:'List'});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const catName = c => (['all','featured','books','tools','notes','hidden'].includes(c)? t(c) : c);
@@ -3065,20 +3226,20 @@ function render(){
   document.querySelectorAll('[data-i]').forEach(el=>{ el.textContent=t(el.dataset.i); });
   document.querySelectorAll('[data-i-aria]').forEach(el=>{ el.setAttribute('aria-label',t(el.dataset.iAria)); el.title=t(el.dataset.iAria); });
   document.querySelectorAll('[data-i-ph]').forEach(el=>{ el.placeholder=t(el.dataset.iPh); });
-  $('#langBtn').textContent=state.lang==='zh' ? '中' : 'EN'; document.querySelector('[data-lang="auto"]').setAttribute('aria-pressed',String(state.langAuto));          // ("auto" follows the system; the button shows the language and switches it to the other one)
+  $('#langBtn').textContent=$('#langTop').textContent=state.lang==='zh' ? '中' : 'EN'; document.querySelector('[data-lang="auto"]').setAttribute('aria-pressed',String(state.langAuto));          // ("auto" follows the system; the button shows the language and switches it to the other one)
   document.querySelectorAll('[data-lf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lf===state.lf)));
   const dm=dirOn(), heatOn=heatAvailable(), sel=$('#sort');                                                // my shelf: added / published / read / title; the directory: newest / read here / heat / title
   [...sel.options].forEach(o=>{ o.hidden=o.disabled = dm ? o.value==='date' : o.value==='heat'; if(o.value==='heat' && !heatOn) o.hidden=o.disabled=true; if(o.value==='recent') o.textContent=t(dm?'sortNewest':'sortRecent'); });
   sel.value = (dm && state.sort==='date') || (!dm && state.sort==='heat') || (state.sort==='heat' && !heatOn) ? 'recent' : state.sort;
   syncFt(dm);
   const vl=state.view==='grid'?t('viewGrid'):t('viewList'); $('#viewBtn').innerHTML=state.view==='grid'?ICON.list:ICON.grid; $('#viewBtn').title=vl; $('#viewBtn').setAttribute('aria-label',vl);
-  $('#themeBtn').textContent=t(state.theme==='light'?'themeLight':state.theme==='dark'?'themeDark':'themeAuto');
+  $('#themeBtn').textContent=t(themeNow()==='light'?'themeLight':themeNow()==='dark'?'themeDark':'themeAuto');
   document.title=dirOn() && publicRouteFromPath() ? publicLabel(publicRouteFromPath())+'｜'+t('brand') : t('siteTitle');
 
   const dirMode = dirOn();
   $('#spaceSwitch').hidden = !state.dirCfg;
   document.querySelectorAll('[data-space]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.space===(dirMode?'dir':'mine'))));
-  $('#noteBtn').hidden=$('#noteFab').hidden=dirMode;
+  $('#noteBtn').hidden=dirMode; $('#noteFab').hidden=dirMode && LS.get('shell','1')!=='2';          // (the new shell writes a note from both spaces)
   const addTxt=t(dirMode?'submit':'add'); $('#addLbl').textContent=addTxt; $('#addBtn').title=addTxt; $('#addBtn').setAttribute('aria-label',addTxt);
   syncSubscribe();
   if(dirMode){ $('#colRow').hidden=true; $('#colNav').hidden=true; $('#recoPane').hidden=true; $('#recoBanner').hidden=true; renderDir(); renderPublicAd(); syncReader(); return; }
@@ -3162,10 +3323,11 @@ const DOC_CSS = `
 :root{--bg:#FBFBF9;--ink:#1A2229;--muted:#5A6670;--rule:#DDE1DF;--code:#F0F2F1;--accent:#1F7A6D;color-scheme:light;
   --serif:"Noto Serif SC","Songti SC","STSong",Georgia,serif;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15191C;--ink:#E2E7E9;--muted:#9AA7AE;--rule:#2C363C;--code:#1F262B;--accent:#5CC2B1;color-scheme:dark}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="cloud"]){--bg:#15191C;--ink:#E2E7E9;--muted:#9AA7AE;--rule:#2C363C;--code:#1F262B;--accent:#5CC2B1;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#15191C;--ink:#E2E7E9;--muted:#9AA7AE;--rule:#2C363C;--code:#1F262B;--accent:#5CC2B1;color-scheme:dark}
 :root[data-theme="sepia"]{--bg:#F4ECD8;--ink:#3B2F1E;--muted:#7A6A55;--rule:#DCCFB4;--code:#EBE0C6;--accent:#8A5A00;color-scheme:light}
 :root[data-theme="green"]{--bg:#CCE8CF;--ink:#1F3A27;--muted:#4C6B55;--rule:#B3D3B8;--code:#BFDDC3;--accent:#1F6B3A;color-scheme:light}
+:root[data-theme="cloud"]{--bg:#F6F7F9;--ink:#1E2026;--muted:#6B7280;--rule:#E3E6EB;--code:#EEF0F3;--accent:#D8363A;color-scheme:light}
 *,*::before,*::after{box-sizing:inherit}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:var(--fs,17px);line-height:var(--lh,1.85)}
@@ -3214,7 +3376,7 @@ details.toc a{text-decoration:none;color:var(--ink)}
 /* what the reader settings mean for a Markdown / TXT document (the page is ours, so size, spacing, width and colours are native); a page shown as it is gets only a colour change (see applyReader) */
 const LH={s:1.65, m:1.85, l:2.1}, WD={n:'36em', m:'44em', w:'60em'};
 const docVars = () => `--fs:${(17*state.rs.fs/100).toFixed(1)}px;--lh:${LH[state.rs.lh]||1.85};--w:${WD[state.rs.w]||'44em'}`;
-const docTheme = () => state.rs.th!=='follow' ? state.rs.th : state.theme!=='auto' ? state.theme : '';
+const docTheme = () => state.rs.th!=='follow' ? state.rs.th : themeNow()!=='auto' ? themeNow() : '';
 const STRICT = `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https: data:; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com"><meta name="referrer" content="no-referrer">`;
 function docShell(title, bodyHTML, meta, strict){                                  // strict: somebody else's text; the document itself allows no script and sends no referrer
   const th = docTheme() ? ` data-theme="${docTheme()}"` : '';
@@ -3581,6 +3743,7 @@ watchSwipe(document,(dir,st)=>{                                                 
   if(!$('#reader').hidden){ if(dir==='right' && !$('#rTocPanel').hidden && matchMedia('(max-width:620px)').matches) closePanels(); return; }          // in the reader: a swipe to the right sends the contents panel back
   if(!matchMedia('(max-width:980px)').matches || document.querySelector('dialog[open]')) return;
   if(document.body.classList.contains('dir-listen') && !document.body.classList.contains('drawer')){ lpStep(dir==='left' ? 1 : -1); return; }          // (on the listening page a swipe changes the list, as in a feed; the left list opens with its button)
+  if(document.body.classList.contains('sh-phone') && !document.body.classList.contains('drawer')){ shStep(dir==='left' ? 1 : -1); return; }          // (the new shell: a swipe moves along the strip of sections)
   const open=document.body.classList.contains('drawer');
   if(dir==='right' && !open) document.body.classList.add('drawer');
   else if(dir==='left' && open && !(st.tg.closest && st.tg.closest('.dir-row'))) document.body.classList.remove('drawer');          // (on an entry, a swipe to the left shows its action instead)
@@ -5104,6 +5267,7 @@ function pickTag(name){
    loaded without a referrer. "Save to my shelf" keeps a link in this browser's own storage; nothing is sent anywhere. */
 const DIR_TYPES=['article','note','video','audio','pdf','tool','book'], DIR_PAGE=60, DIR_SHELVES=12, HOME_PAGE=24;
 const TYPE_COLOR={article:'notes',note:'notes',video:'featured',audio:'featured',pdf:'books',tool:'tools',book:'books'};
+const dirTypeOf = it => it.type==='note' ? 'article' : it.type;                                  // (a note of the public space is filed under the articles: no row of its own)
 const dirOn = () => state.space==='dir' && !!state.dirCfg;
 const AD_RAIL_MEDIA='(min-width: 1900px)';
 const adRailWide = () => window.matchMedia(AD_RAIL_MEDIA).matches;
@@ -5202,7 +5366,7 @@ state.dListen=false;                    // today's listening: what the service s
 state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
 const PUBLIC_ROUTES={discover:'/discover/',hot:'/hot/',listen:'/listen/',books:'/picks/books/',articles:'/picks/articles/',watch:'/watch/'};
 const publicRouteFromPath=()=>Object.keys(PUBLIC_ROUTES).find(k=>PUBLIC_ROUTES[k]===location.pathname)||'';
-const publicLabel=k=>({discover:['发现','Discover'],hot:['热榜','Trending'],listen:['今日听什么','Listen today'],books:['精选图书','Book picks'],articles:['文章','Articles'],watch:['看什么','What to watch']}[k]||[])[state.lang==='zh'?0:1]||'';
+const publicLabel=k=>({discover:['发现','Discover'],hot:['热榜','Trending'],listen:['今日听什么','Listen today'],books:['精选图书','Book picks'],articles:['精选文章','Article picks'],watch:['看什么','What to watch']}[k]||[])[state.lang==='zh'?0:1]||'';
 state.dLanding='';
 function publicRouteApply(k){
   if(!k) return;
@@ -5566,10 +5730,10 @@ function dirTagChips(it, n){                                                    
   return kwChips(own.concat((it.tags||[]).filter(x=>ok(x) && !own.includes(x))), n);
 }
 function dirStatsHTML(it, live){                                                                  // ♥ likes (a button), 👁 reads, 🔥 heat: where the counters exist; without the service only the heart (no number)
-  const hs=heatRow(it), liked=state.vote[it.id]===1, tip=esc(t('voteLike'));
-  const heart = live ? `<button class="cstat heart" type="button" data-d="like" aria-pressed="${liked}" title="${tip}" aria-label="${tip}">${ICON.heart}${state.heat?`<span>${esc(kfmt(hs?(hs.l||0):0))}</span>`:''}</button>`
-                     : state.heat ? `<span class="cstat" title="${tip}">${ICON.heart}<span>${esc(kfmt(hs?(hs.l||0):0))}</span></span>` : '';
-  const eye = state.heat ? `<span class="cstat" title="${esc(t('viewsTip'))}">${ICON.eye}<span>${esc(kfmt(hs?(hs.o||0):0))}</span></span>` : '';
+  const hs=heatRow(it), liked=state.vote[it.id]===1, tip=esc(t('voteLike')), nl=hs?(hs.l||0):0, no=hs?(hs.o||0):0;          // (a number that is 0 is not shown: the heart of a card still is a button)
+  const heart = live ? `<button class="cstat heart" type="button" data-d="like" aria-pressed="${liked}" title="${tip}" aria-label="${tip}">${ICON.heart}${state.heat && nl>0?`<span>${esc(kfmt(nl))}</span>`:''}</button>`
+                     : state.heat && nl>0 ? `<span class="cstat" title="${tip}">${ICON.heart}<span>${esc(kfmt(nl))}</span></span>` : '';
+  const eye = state.heat && no>0 ? `<span class="cstat" title="${esc(t('viewsTip'))}">${ICON.eye}<span>${esc(kfmt(no))}</span></span>` : '';
   const fire = hs && hs.h>0 ? `<span class="cstat fire" title="${esc(t('heatTip'))}">${ICON.flame}<span>${esc(kfmt(hs.h))}</span></span>` : '';
   return `<span class="cstats">${heart}${eye}${fire}</span>`;
 }
@@ -6212,7 +6376,7 @@ function dirLikeClick(e){                                                       
   const c=b.closest('.card'), did=c && c.dataset.did; if(!did) return true;
   statVote(did,1);
   const v=state.vote[did]||0, h=state.heat && state.heat.items[did];
-  document.querySelectorAll(`.card[data-did="${CSS.escape(did)}"] [data-d="like"]`).forEach(x=>{ x.setAttribute('aria-pressed',String(v===1)); const s=x.querySelector('span'); if(s && h) s.textContent=kfmt(h.l||0); });
+  document.querySelectorAll(`.card[data-did="${CSS.escape(did)}"] [data-d="like"]`).forEach(x=>{ x.setAttribute('aria-pressed',String(v===1)); if(!h) return; const n=h.l||0; let s=x.querySelector('span'); if(n>0){ if(!s){ s=document.createElement('span'); x.appendChild(s); } s.textContent=kfmt(n); } else if(s) s.remove(); });          // (a 0 is not shown: the number comes and goes with the likes)
   if(!$('#reader').hidden) syncVote();
   return true;
 }
@@ -6313,7 +6477,7 @@ function dirList(skip){
   const tk=tokens(), tg=state.dTag.toLowerCase(), subs=state.dView==='subs' ? new Set(subCols().map(c=>urlKey(c.feed.url))) : null;
   return state.dirData.items.filter(it=>{
     if(state.lf==='zh' && it.lang==='en') return false; if(state.lf==='en' && it.lang==='zh') return false;
-    if(skip!=='type' && state.dType!=='all' && it.type!==state.dType) return false;
+    if(skip!=='type' && state.dType!=='all' && dirTypeOf(it)!==state.dType) return false;
     if(skip!=='shelf' && state.dShelf && it.shelf!==state.dShelf) return false;
     if(skip!=='pick' && !state.dShelf && pickOn() && !state.dPick.has(it.shelf)) return false;                  // (the programs ticked in the panel; a program chosen on its own wins)
     if(skip!=='pickt' && !state.dShelf && topicPickOn() && !(dirMeta(it) && state.dPickT.has(it.col))) return false;                // (the categories ticked in the panel, domain side)
@@ -6363,7 +6527,7 @@ function renderDir(){
   }
   if(state.dShelf && !state.shelfMap.has(state.dShelf)) state.dShelf='';                       // a filter for something the directory no longer has
   if(state.dTag && !d.tags.some(g=>g.name.toLowerCase()===state.dTag.toLowerCase())) state.dTag='';
-  const tk=tokens(), forType=dirList('type'), counts={}; forType.forEach(it=>{ counts[it.type]=(counts[it.type]||0)+1; });
+  const tk=tokens(), forType=dirList('type'), counts={}; forType.forEach(it=>{ const k=dirTypeOf(it); counts[k]=(counts[k]||0)+1; });
   const home=dirIsHome(), hot=home && state.dHot && !!hotBase(), listenOn=lpAvailable(), listen=home && state.dListen && listenOn && !hot, discover=home && !state.dBrowse && !hot && !listen;          // the first level of the public space is a discovery page; everything else (all sources, platforms, tags, a filter) is the second
   document.body.classList.toggle('dir-discover',discover); document.body.classList.toggle('dir-hot',hot); document.body.classList.toggle('dir-listen',listen);
   const navRow=(k,label,on)=>`<a class="cat-btn" href="${k?'/':'/discover/'}" data-dbrowse="${k}" aria-current="${on}"><span class="dot" style="background:var(--accent)"></span><span>${esc(label)}</span></a>`;
@@ -6394,7 +6558,7 @@ function renderDir(){
   else if(key==='heat' && heatAvailable()) list.sort((a,b)=>heatOf(b)-heatOf(a) || byDate(a,b));
   else list=interleaveDays(list.sort(byDate));
   const sh=state.dShelf?state.shelfMap.get(state.dShelf):null;
-  $('#viewTitle').textContent = sh ? sh.name : state.dTag ? '#'+state.dTag : state.dLanding==='articles' ? t('ty_article') : state.dLanding ? publicLabel(state.dLanding) : state.dType!=='all' ? t('ty_'+state.dType) : discover ? t('dirDiscover') : t('dirTitle');
+  $('#viewTitle').textContent = sh ? sh.name : state.dTag ? '#'+state.dTag : state.dLanding ? publicLabel(state.dLanding) : state.dType!=='all' ? t('ty_'+state.dType) : discover ? t('dirDiscover') : t('dirTitle');
   let sub = tk.length ? t('matchCount',list.length,state.q.trim()) : '';                                // (no count of the whole directory: the page does not need it)
   if(sh && sh.description) sub = sh.description + (state.lang==='zh'?'。':'. ') + sub;
   let html = esc(sub);
@@ -7196,7 +7360,7 @@ window.addEventListener('resize',()=>{ if(NE.open) neLayout(); });
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden' && NE.open) neSave(); });
 window.addEventListener('pagehide',()=>{ if(NE.open) neSave(); });
 $('#noteBtn').addEventListener('click',()=>openNote(''));
-$('#noteFab').addEventListener('click',()=>openNote(''));
+$('#noteFab').addEventListener('click',()=>{ if(dirOn()) setSpace('mine'); openNote(''); });          // (a note belongs to my shelf: from the public space the page goes there first)
 $('#addNote').addEventListener('click',()=>{ dlg.close(); openNote(''); });
 $('#readerEdit').addEventListener('click',()=>{ if(state.readingId) openNote(state.readingId); });
 
@@ -7363,11 +7527,20 @@ document.querySelector('[data-lang="auto"]').addEventListener('click',()=>setLan
 $('#langBtn').addEventListener('click',()=>setLang(state.lang==='zh' ? 'en' : 'zh'));
 addEventListener('languagechange',()=>{ if(state.langAuto && sysLang()!==state.lang) setLang('auto'); });                 // (the system's language was changed while the page is open)
 document.querySelectorAll('[data-lf]').forEach(b=>b.addEventListener('click',()=>{ state.lf=b.dataset.lf; render(); }));
-function applyTheme(){ if(state.theme==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',state.theme); }
-$('#themeBtn').addEventListener('click',()=>{ state.theme=state.theme==='auto'?'light':state.theme==='light'?'dark':'auto'; LS.set('theme',state.theme); applyTheme(); render(); });
+function themeNow(){ return state.theme==='cloud' && LS.get('shell','1')!=='2' ? 'light' : state.theme; }                 // (the third theme is the new shell's: the old page shows it as the light one)
+function themeEff(){ const t0=themeNow(); return t0==='auto' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : t0; }          // (what is on screen: the system's choice when none was made)
+function applyTheme(){
+  if(LS.get('palette','')==='cloud'){ state.theme='cloud'; LS.set('theme','cloud'); LS.set('palette',''); }          // (an earlier preview kept the red palette apart: it is the theme "cloud" now)
+  const h=document.documentElement, th=themeNow(); if(th==='auto') h.removeAttribute('data-theme'); else h.setAttribute('data-theme',th);
+}
+$('#themeBtn').addEventListener('click',()=>{
+  if(LS.get('shell','1')==='2') state.theme={light:'dark',dark:'cloud',cloud:'light'}[themeEff()];                      // (the new shell: three themes in a ring)
+  else state.theme=state.theme==='auto'?'light':state.theme==='light'?'dark':'auto';
+  LS.set('theme',state.theme); applyTheme(); render();
+});
 $('#menuBtn').addEventListener('click',()=>document.body.classList.add('drawer'));
 $('#sideClose').addEventListener('click',()=>document.body.classList.remove('drawer'));
-document.addEventListener('click',e=>{ if(document.body.classList.contains('drawer') && !e.target.closest('.side') && !e.target.closest('#menuBtn')) document.body.classList.remove('drawer'); });
+document.addEventListener('click',e=>{ if(document.body.classList.contains('drawer') && !e.target.closest('.side') && !e.target.closest('#menuBtn') && !e.target.closest('#setBtn')) document.body.classList.remove('drawer'); });
 document.addEventListener('keydown',e=>{
   if(NE.open || fcDlg.open) return;                                                           // (the editor has its own keys; so has the focus page: Esc closes it by itself)
   const typing=/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement && document.activeElement.tagName);
@@ -7383,6 +7556,80 @@ document.addEventListener('keydown',e=>{
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') refreshSubs(); });          // back to the page after a while: the subscriptions that are due
 $('#colRefresh').addEventListener('click',()=>refreshSubs({force:true,manual:true}));
 window.addEventListener('focus',()=>{ if($('#reader').hidden && !dlg.open && (state.mode==='server'||state.dir)) loadAll(); });
+
+/* ================= the new shell ("shell2", ?shell=2 switches it on and ?shell=1 off; kept in this browser) =================
+   A phone: a bottom bar [my shelf | + | discover], the sections of the side list as ONE strip under the search (a swipe moves to the next one), a filter panel (sort, language of the content, cards / rows, tags,
+   the directory's own filters), a "+" sheet (add, follow, note, submit), and the side list becomes the settings (the language is in the top bar). Wide screens: the side list can be hidden,
+   and sort / language / view sit beside the list. The elements are the same ones as before: only where they live changes (nothing is made twice). */
+{ const q=new URLSearchParams(location.search).get('shell'); if(q==='1' || q==='2'){ LS.set('shell',q); const u=new URL(location.href); u.searchParams.delete('shell'); history.replaceState(history.state,'',u.pathname+u.search+u.hash); } }
+const SH_PHONE=matchMedia('(max-width:980px)'), shOn=()=>LS.get('shell','1')==='2';
+function shMove(el, to, before){ if(el && to && el.parentElement!==to) to.insertBefore(el, before && before.parentElement===to ? before : null); }
+function shLayout(){
+  const b=document.body, on=shOn(), phone=on && SH_PHONE.matches, shelf=on && !dirOn(), lab=$('.side-scroll>.dir-label');
+  b.classList.toggle('shell2',on); b.classList.toggle('sh-phone',phone); b.classList.toggle('sh-shelf',shelf); b.classList.toggle('side-off',on && !!LS.get('sideOff',0));
+  shMove($('#cats'), phone ? $('#stripIn') : $('.side-scroll'), phone ? $('#colChip') : lab);
+  shMove($('#colNav'), phone ? $('#colPop') : $('.side-scroll'), phone ? null : $('#cats'));
+  shMove($('#tagbox'), phone ? $('#flTag') : shelf ? $('#tagPop') : $('.side-scroll'), phone || shelf ? null : lab);
+  shMove($('#dirBar'), phone ? $('#flDir') : $('.main'), phone ? null : $('#dPickBack'));
+  const lf=$('#langFilter'), so=$('#sort'), vb=$('#viewBtn'), bar=$('#dirBar'), tb=$('.toolbar'), tg=$('#tagBtn');
+  if(phone){ shMove(so,$('#flSort')); shMove(lf,$('#flLang')); shMove(vb,$('#flView')); }
+  else if(on){ const box=$('#ctlBox'), to=bar && !bar.hidden ? bar.querySelector('.dir-line') : $('#vhCtl'); shMove(box,to); [tg,lf,so,vb].forEach(e=>shMove(e,box)); }
+  else { [lf,so,vb].forEach(e=>shMove(e,tb,$('#noteBtn'))); }
+  tg.hidden=!(on && !phone && shelf && !$('#tagbox').hidden); tg.classList.toggle('on',!!state.tag); tg.textContent=t('flTag')+(state.tag ? '：#'+cut(state.tag,8) : '')+' ▾'; if(tg.hidden) $('#tagPop').hidden=true;
+  if(!on) return;
+  shTheme();
+  { const sl=so.selectedOptions && so.selectedOptions[0]; $('#flSum').textContent=(sl ? sl.textContent : '')+' · '+t(state.view==='grid' ? 'viewIsCards' : 'viewIsList'); }
+  $('#tabbar [data-space="dir"]').hidden=!state.dirCfg; $('#tabbar').classList.toggle('one',!state.dirCfg);
+  $('#flTagRow').hidden=!phone || !$('#flTag').children.length || $('#tagbox').hidden;
+  const chip=$('#colChip'), hasCol=!$('#colNav').hidden && !dirOn();
+  chip.hidden=!phone || !hasCol; if(phone && hasCol){ const c=(state.cols||[]).find(x=>x.id===state.col); chip.innerHTML=esc((c ? t('colChip')+'：'+cut(c.name,10) : t('colChip'))+' ▾')+(state.col!=='all' ? `<span class="col-x" data-colclear role="button" tabindex="0" aria-label="${esc(t('colClear'))}">✕</span>` : ''); chip.classList.toggle('on',state.col!=='all'); }
+  const nf=(state.lf!=='all' ? 1 : 0)+(state.tag ? 1 : 0)+(state.dTag ? 1 : 0)+(state.dShelf ? 1 : 0)+(state.dTab ? 1 : 0)+(state.dSub ? 1 : 0)+(typeof pickOn==='function' && (pickOn() || topicPickOn()) ? 1 : 0);
+  const fb=$('#flBtn span:not(.fl-n)'), fn=$('#flBtn .fl-n'); if(nf){ if(fn) fn.textContent=nf; else fb.insertAdjacentHTML('afterend',`<span class="fl-n">${nf}</span>`); } else if(fn) fn.remove();
+  const sb=$('#sideToggle'); sb.setAttribute('aria-expanded',String(!b.classList.contains('side-off'))); const l=t(b.classList.contains('side-off') ? 'sideShow' : 'sideHide'); sb.title=l; sb.setAttribute('aria-label',l);
+  if(phone){ const st=$('#stripIn'), on2=$('#cats [aria-current="true"]'); if(st && on2 && st.scrollWidth>st.clientWidth+2) st.scrollLeft=Math.max(0, on2.offsetLeft-st.offsetLeft-(st.clientWidth-on2.offsetWidth)/2); }
+}
+function shPanels(which){                                                                          // the filter panel and the list of collections drop down under the strip, one at a time
+  const fl=$('#flPanel'), co=$('#colPop'), th=$('#themePop'), openFl=which==='fl' && fl.hidden, openCo=which==='col' && co.hidden, openTh=which==='theme' && th.hidden;
+  fl.hidden=!openFl; co.hidden=!openCo; th.hidden=!openTh; $('#flBtn').setAttribute('aria-expanded',String(openFl)); $('#colChip').setAttribute('aria-expanded',String(openCo)); $('#themeTop').setAttribute('aria-expanded',String(openTh));
+}
+function shTheme(){                                                                                   // the marks of the theme controls: the theme that is on screen, and the label of the button in the settings
+  const eff=themeEff();
+  document.querySelectorAll('[data-thset]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.thset===eff)));
+  $('#themeBtn').textContent=t('thLabel')+(state.lang==='zh' ? '：' : ': ')+t({light:'thClassic', dark:'thDark', cloud:'thCloud'}[eff]);
+}
+function shStep(d){ const bs=[...$('#cats').querySelectorAll('.cat-btn')], i=bs.findIndex(x=>x.getAttribute('aria-current')==='true'), n=bs[i+d]; if(n) n.click(); }          // (a swipe on a phone: the next / the previous section of the strip)
+new MutationObserver(shLayout).observe($('#cats'),{childList:true});
+new MutationObserver(shLayout).observe($('#dirBar'),{attributes:true,attributeFilter:['hidden']});
+new MutationObserver(shLayout).observe($('#colNav'),{attributes:true,attributeFilter:['hidden']});
+SH_PHONE.addEventListener('change',shLayout);
+$('#flBtn').addEventListener('click',()=>shPanels('fl'));
+$('#flSum').addEventListener('click',()=>shPanels('fl'));
+$('#colChip').addEventListener('click',e=>{ if(e.target.closest('[data-colclear]')){ const all=$('#colPop [data-colnav="all"]'); if(all) all.click(); shPanels(''); return; } shPanels('col'); });          // (the cross takes the collection back: "all")
+$('#colChip').addEventListener('keydown',e=>{ if((e.key==='Enter' || e.key===' ') && e.target.closest('[data-colclear]')){ e.preventDefault(); e.target.click(); } });
+$('#stripIn').addEventListener('click',e=>{ const b=e.target.closest('.cat-btn'); if(b && b.id!=='colChip') shPanels(''); });
+$('#colPop').addEventListener('click',e=>{ if(e.target.closest('[data-colnav]')) shPanels(''); });
+document.addEventListener('click',e=>{ if(!e.target.closest('.top') && (!$('#flPanel').hidden || !$('#colPop').hidden || !$('#themePop').hidden)) shPanels(''); });
+$('#setBtn').addEventListener('click',()=>document.body.classList.add('drawer'));          // (a phone: the side list is the settings)
+$('#langTop').addEventListener('click',()=>$('#langBtn').click());
+$('#themeTop').addEventListener('click',()=>shPanels('theme'));
+$('#themePop').addEventListener('click',e=>{ const a=e.target.closest('[data-thset]'); if(!a) return; state.theme=a.dataset.thset; LS.set('theme',state.theme); applyTheme(); render(); });
+$('#cats').addEventListener('click',e=>{ if(shOn() && e.target.closest('.cat-btn')) window.scrollTo(0,0); });          // (another section starts at its top)
+{ const tp=$('#tagPop'), tb2=$('#tagBtn'), shut=()=>{ tp.hidden=true; tb2.setAttribute('aria-expanded','false'); };
+  tb2.addEventListener('click',()=>{ tp.hidden=!tp.hidden; tb2.setAttribute('aria-expanded',String(!tp.hidden)); });
+  tp.addEventListener('click',e=>{ if(e.target.closest('[data-tag]')) shut(); });
+  document.addEventListener('click',e=>{ if(!tp.hidden && !e.target.closest('#tagPop') && !e.target.closest('#tagBtn')) shut(); }); }
+$('#sideToggle').addEventListener('click',()=>{ const off=!document.body.classList.contains('side-off'); LS.set('sideOff',off?1:0); shLayout(); });
+const plusDlg=$('#plusDlg');
+$('#tbPlus').addEventListener('click',()=>{
+  plusDlg.querySelector('[data-plus="sub"]').hidden=!feedApi(); plusDlg.querySelector('[data-plus="submit"]').hidden=!state.dirCfg;          // (the same rows in both spaces)
+  plusDlg.showModal();
+});
+plusDlg.addEventListener('click',e=>{
+  if(e.target===plusDlg){ plusDlg.close(); return; }
+  const b=e.target.closest('[data-plus]'); if(!b) return; const k=b.dataset.plus; plusDlg.close();
+  if(k==='files') openAdd(); else if(k==='sub') openAdd(null,'sub'); else if(k==='note'){ if(dirOn()) setSpace('mine'); openNote(''); } else if(k==='submit') openSubmit();
+});
+shLayout();
 
 /* ================= app: install to the home screen, read again without a network ================= */
 /* The service worker (sw.js) is registered only on a deployed https site: serve.py always shows the folder as it is. */

@@ -263,8 +263,8 @@ const N = 37;                                     // the fixture's entries
   const subs = await J(`[...document.querySelectorAll('#dirReco .dr-subs .dr-card h3')].map(h=>h.textContent)`);
   ok('programs worth following: the owner’s pick first (供应链周刊), then the busiest ones; at most 3', subs[0] === '供应链周刊' && subs.length === 3, subs);
   await clickTab('col:biz');
-  const cs = await J(`(()=>{ const f=id=>{ const c=document.querySelector('#grid .card[data-did="'+id+'"]'); return {stats:[...c.querySelectorAll('.cstat:not(.fire)')].map(x=>x.textContent).join('|'), fire:!!c.querySelector('.cstat.fire'), why:(c.querySelector('.why')||{}).textContent||''}; }; return {a1:f('a1aaaaaaa1'), a2:f('a2aaaaaaa2'), a4:f('a4aaaaaaa4')}; })()`);
-  ok('every card has its numbers: ♥ and 👁 (a1 0|40, a2 7|0, a4 0|0), and the flame (heat) where there is some', cs.a1.stats === '0|40' && cs.a2.stats === '7|0' && cs.a4.stats === '0|0' && cs.a1.fire && cs.a2.fire && !cs.a4.fire, cs);
+  const cs = await J(`(()=>{ const f=id=>{ const c=document.querySelector('#grid .card[data-did="'+id+'"]'); return {stats:[...c.querySelectorAll('.cstat:not(.fire)')].map(x=>x.textContent).join('|'), heart:!!c.querySelector('button.cstat.heart'), eyes:c.querySelectorAll('.cstat:not(.heart):not(.fire)').length, fire:!!c.querySelector('.cstat.fire'), why:(c.querySelector('.why')||{}).textContent||''}; }; return {a1:f('a1aaaaaaa1'), a2:f('a2aaaaaaa2'), a4:f('a4aaaaaaa4')}; })()`);
+  ok('a number that is 0 is not shown: ♥ and 👁 (a1 ♥0 👁40 → only 40, a2 ♥7 👁0 → only 7, a4 0|0 → none), the heart stays a button on every card, and the flame (heat) where there is some', cs.a1.stats === '|40' && cs.a2.stats === '7' && cs.a4.stats === '' && cs.a1.eyes === 1 && cs.a2.eyes === 0 && cs.a4.eyes === 0 && cs.a1.heart && cs.a2.heart && cs.a4.heart && cs.a1.fire && cs.a2.fire && !cs.a4.fire, cs);
   ok('the reason is a pill on the cover, ONE per card, and the owner’s pick comes first even where the entry is busy (a1, a2, a4 are all of the picked program)', cs.a1.why === '站长推荐' && cs.a2.why === '站长推荐' && cs.a4.why === '站长推荐', cs);
   await clickTab('col:tech');
   ok('a busy entry of a program that is not the owner’s pick says "本周热读" (b2); a quiet one says nothing', (await J(`(document.querySelector('#grid .card[data-did="b2bbbbbbb2"] .why')||{}).textContent`)) === '本周热读' && (await J(`(document.querySelector('#grid .card[data-did="b3bbbbbbb3"] .why')||{}).textContent||''`)) === '');
@@ -276,7 +276,7 @@ const N = 37;                                     // the fixture's entries
   await J(`statFlush()`); await sleep(500);
   ok('and it is counted once: one "like"', (await statLog()).filter(e => e.t === 'like' && e.id === 'a1aaaaaaa1').length === 1, await statLog());
   await J(`document.querySelector('#grid .card[data-did="a1aaaaaaa1"] .cstat.heart').click()`); await sleep(250);
-  ok('the same tap again takes it back (0)', await J(`document.querySelector('#grid .card[data-did="a1aaaaaaa1"] .cstat.heart').getAttribute('aria-pressed')`) === 'false' && await J(`document.querySelector('#grid .card[data-did="a1aaaaaaa1"] .cstat.heart').textContent`) === '0' && await J(`LS.get('dirVote',{}).a1aaaaaaa1===undefined`));
+  ok('the same tap again takes it back (the 0 is not shown)', await J(`document.querySelector('#grid .card[data-did="a1aaaaaaa1"] .cstat.heart').getAttribute('aria-pressed')`) === 'false' && await J(`document.querySelector('#grid .card[data-did="a1aaaaaaa1"] .cstat.heart').textContent`) === '' && await J(`LS.get('dirVote',{}).a1aaaaaaa1===undefined`));
   await J(`statFlush()`); await sleep(500);
   ok('and what was sent is a change, never a person: like then unlike', (await statLog()).filter(e => e.id === 'a1aaaaaaa1').map(e => e.t).join() === 'like,unlike', await statLog());
   await J(`document.querySelector('#viewBtn').click()`); await sleep(400);
