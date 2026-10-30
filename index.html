@@ -5155,7 +5155,7 @@ state.dListen=false;                    // today's listening: what the service s
 state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
 const PUBLIC_ROUTES={discover:'/discover/',hot:'/hot/',listen:'/listen/',books:'/picks/books/',articles:'/picks/articles/',watch:'/watch/'};
 const publicRouteFromPath=()=>Object.keys(PUBLIC_ROUTES).find(k=>PUBLIC_ROUTES[k]===location.pathname)||'';
-const publicLabel=k=>({discover:['发现','Discover'],hot:['热榜','Trending'],listen:['今日听什么','Listen today'],books:['精选图书','Book picks'],articles:['精选文章','Article picks'],watch:['看什么','What to watch']}[k]||[])[state.lang==='zh'?0:1]||'';
+const publicLabel=k=>({discover:['发现','Discover'],hot:['热榜','Trending'],listen:['今日听什么','Listen today'],books:['精选图书','Book picks'],articles:['文章','Articles'],watch:['看什么','What to watch']}[k]||[])[state.lang==='zh'?0:1]||'';
 state.dLanding='';
 function publicRouteApply(k){
   if(!k) return;
