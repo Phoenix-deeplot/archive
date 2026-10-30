@@ -803,11 +803,11 @@ def _fill_site(text, cfg):
 
 
 # ======================================================================= the published copy
-SKIP_ROOT_FILES = {'serve.py', 'build_index.py', 'seo.py', 'convert.py', 'indexnow.py', 'export_guide.py', 'README.md', 'PROMO.md', 'vercel.json', 'manifest.json', 'manifest.js', 'site.json'}
+SKIP_ROOT_FILES = {'serve.py', 'build_index.py', 'seo.py', 'convert.py', 'indexnow.py', 'export_guide.py', 'README.md', 'PROMO.md', 'vercel.json', 'manifest.json', 'manifest.js', 'site.json', 'AGENTS.md', 'CLAUDE.md'}          # (AGENTS.md / CLAUDE.md: the working rules of the project, not a page of the site)
 SKIP_DIRS = {'__pycache__', 'node_modules'}
 # Local development utilities can contain key-entry forms and rely on serve.py-only routes.
 # Do not turn them into inert, publicly reachable files in a static site build.
-SKIP_ROOT_DIRS = {'devtools'}
+SKIP_ROOT_DIRS = {'devtools', 'docs'}          # (docs/: the plans of the work, for the people and agents who build the site)
 
 
 def _meta_has(head, pattern):
@@ -900,7 +900,7 @@ def _copy_site(root, library, out, out_name, hidden_files, hidden_dirs, file_map
     return dest_rel
 
 
-PRIVATE_FILES = ('site.json', 'PROMO.md', 'indexnow.py', 'export_guide.py', '.indexnow-state.json', 'serve.py', 'build_index.py', 'seo.py', 'convert.py', 'README.md', 'vercel.json')
+PRIVATE_FILES = ('site.json', 'PROMO.md', 'AGENTS.md', 'CLAUDE.md', 'indexnow.py', 'export_guide.py', '.indexnow-state.json', 'serve.py', 'build_index.py', 'seo.py', 'convert.py', 'README.md', 'vercel.json')
 
 
 def verify_site(out):
