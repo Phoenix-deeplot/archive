@@ -228,6 +228,8 @@ def _extract_md(path, st, is_txt=False):
         out['slug'] = str(fm['slug']).strip()
     if str(fm.get('directory', '')).strip().lower() in ('false', 'no', '0', 'off'):      # keep it out of every public directory (see seo.py `_shelf.listed`)
         out['nodirectory'] = True
+    if str(fm.get('convert', '')).strip().lower() in ('false', 'no', '0', 'off'):        # `convert: false`: not turned into readable HTML / data (see convert.py)
+        out['noconvert'] = True
     if _pin_value(fm.get('pinned')):                 # kept at the top of the shelf for every visitor (a pin made in the page, in _meta.json, goes before it)
         out['pinned'] = _pin_value(fm.get('pinned'))
     for k, key in (('title_en', 'title_en'), ('summary_en', 'description_en'), ('alt_en', 'alt_en')):       # what the page shows (and where it goes) when the visitor reads English
@@ -367,6 +369,8 @@ def _extract_html(path, st, name=None):
         out['slug'] = m['archive:slug'].strip()
     if m.get('archive:directory', '').strip().lower() in ('no', 'false', '0', 'off'):   # <meta name="archive:directory" content="no">: out of every public directory
         out['nodirectory'] = True
+    if m.get('archive:convert', '').strip().lower() in ('no', 'false', '0', 'off'):     # <meta name="archive:convert" content="no">: not turned into readable HTML / data
+        out['noconvert'] = True
     if _pin_value(m.get('archive:pinned')):          # <meta name="archive:pinned" content="true">: kept at the top of the shelf for every visitor
         out['pinned'] = _pin_value(m.get('archive:pinned'))
     for k, key in (('title_en', 'archive:title_en'), ('summary_en', 'archive:description_en'), ('alt_en', 'archive:alt_en')):       # shown (and opened) when the visitor reads English
@@ -434,6 +438,8 @@ def _apply_overrides(item, overrides):
     for k in ('title', 'summary', 'featured', 'hidden', 'keywords', 'cover', 'noindex', 'slug', 'nodirectory', 'pinned', 'title_en', 'summary_en', 'alt_en', 'keywords_en', 'kind', 'author', 'isbn'):
         if k in o and o[k] not in (None, ''):
             item[k] = o[k]
+    if o.get('convert') is False:                    # "convert": false in _meta.json: the file is not turned into readable HTML / data (see convert.py)
+        item['noconvert'] = True
     if item.get('nodirectory') is False:             # switched back on in the page: the key only exists while it is true
         del item['nodirectory']
     if not item.get('pinned'):                       # unpinned in the page (false): the key only exists while the item is pinned
@@ -519,6 +525,11 @@ def scan_library(keep_dates=False, skip=()):
             if old and old.get('size') == item.get('size') and old.get('files') == item.get('files') \
                     and old.get('added') and old.get('date'):
                 item['added'], item['date'] = old['added'], old['date']
+    try:
+        import convert
+        convert.apply_to_items(items, LIBRARY)       # summary / keywords / author / pages of a converted file, and `conv` (see convert.py); nothing is converted here
+    except ImportError:
+        pass
     items.sort(key=lambda x: x['added'], reverse=True)
     return items
 
@@ -617,8 +628,22 @@ if __name__ == '__main__':
     ap.add_argument('--site-url', default='',
                     help='public address of the site, e.g. https://example.com (else $SITE_URL, else on Vercel the project domain)')
     ap.add_argument('--out', default='dist', help='folder for --seo (default: dist)')
+    ap.add_argument('--convert', action='store_true',
+                    help='first turn the files that are new or changed into readable HTML and data (converted/, see convert.py; PDF needs PyMuPDF); commit converted/')
+    ap.add_argument('--force', action='store_true', help='with --convert: convert everything again')
     args = ap.parse_args()
     found = scan_library(keep_dates=args.keep_dates)
+    if args.convert:
+        import convert
+        stats = convert.convert_items(found, LIBRARY, force=args.force)
+        print(f'convert: {stats["done"]} converted, {stats["kept"]} up to date' + (f', {len(stats["skipped"])} PDF not converted (pip install pymupdf)' if stats['skipped'] else '')
+              + (f', could not be read: {", ".join(stats["failed"])}' if stats['failed'] else ''))
+        found = scan_library(keep_dates=args.keep_dates)
+    try:
+        import convert as _convert
+        _convert.write_ft(found, _convert.CACHE)     # converted/ft.json: which documents can hold a word (the search of "my shelf" reads it)
+    except ImportError:
+        pass
     write_manifest(found)
     cats = {}
     for it in found:

@@ -72,7 +72,7 @@ self.addEventListener('fetch', event => {
   if (req.method === 'POST' && url.origin === self.location.origin && url.pathname === '/share-target') { event.respondWith(handleShare(req)); return; }
   if (req.method !== 'GET' || url.origin !== self.location.origin || req.headers.has('range')) return;
   const path = url.pathname;
-  if (path.startsWith('/api/') || path === '/sw.js' || path === '/sitemap.xml' || path === '/robots.txt' || path.startsWith('/feed')) return;
+  if (path.startsWith('/api/') || path === '/sw.js' || path === '/sitemap.xml' || path === '/robots.txt' || path.startsWith('/feed') || path.startsWith('/converted/')) return;     // (the texts of a search must not push the books out of the offline copies)
   if (path.startsWith('/vendor/') || path.startsWith('/icons/')) { event.respondWith(cacheFirst(event, SHELL)); return; }
   if (req.mode === 'navigate' || path === '/' || /(^|\/)(index\.html|manifest\.(json|js|webmanifest)|all\.html)$/.test(path)) { event.respondWith(networkFirst(event, SHELL)); return; }
   event.respondWith(networkFirst(event, DOCS));                                       // a document: fetched first, kept for next time

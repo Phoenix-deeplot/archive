@@ -85,6 +85,7 @@
   },
   "books/政治的人生 (王沪宁) (z-library.sk, 1lib.sk, z-lib.sk).pdf": {
     "title": "政治的人生 (王沪宁)",
-    "noindex": true
+    "noindex": true,
+    "convert": false
   }
 }

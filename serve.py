@@ -32,6 +32,8 @@ import sys
 import threading
 import time
 import urllib.parse
+import urllib.error
+import urllib.request
 import webbrowser
 
 from build_index import (LIBRARY, ROOT, SKIP_DIRS, load_meta, norm_category, project_entry, safe_dirname,
@@ -201,13 +203,18 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     # ---------- routes ----------
     def do_HEAD(self):
         if self._host_ok():
+            if urllib.parse.urlparse(self.path).path in ('/discover/', '/hot/', '/listen/', '/picks/books/', '/picks/articles/', '/watch/'):
+                self.path = '/index.html'
             super().do_HEAD()
 
     def do_GET(self):
         if not self._host_ok():
             return
-        if urllib.parse.urlparse(self.path).path == '/api/list':
+        route = urllib.parse.urlparse(self.path).path
+        if route == '/api/list':
             return self._json({'mode': 'server', 'items': mark_duplicates(refresh()), 'directory': site_directory()})
+        if route in ('/discover/', '/hot/', '/listen/', '/picks/books/', '/picks/articles/', '/watch/'):
+            self.path = '/index.html'
         return super().do_GET()
 
     def do_POST(self):
@@ -221,6 +228,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if length > MAX_UPLOAD:
             return self._json({'error': 'file too large (max 80 MB)'}, 413)
         q = {k: v[0] for k, v in urllib.parse.parse_qs(parsed.query).items()}
+
+        # A deliberately narrow, local-only relay for devtools/netease-openapi-tester.html.
+        # The tester sends an App ID / App Secret to localhost only for the lifetime of one
+        # request; this relay exists because the upstream OpenAPI may not grant a browser CORS origin.
+        # It accepts no arbitrary URL and is never included in the generated static deployment.
+        if route == '/api/netease-openapi-test':
+            return self._netease_openapi_test(length)
 
         if route == '/api/upload':
             # raw file bytes in the body; metadata in the query string
@@ -249,7 +263,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             rel = os.path.relpath(target, LIBRARY).replace(os.sep, '/')
             self._store_meta(rel, q)
             refresh()
-            return self._json({'ok': True, 'id': rel})
+            done = convert_in_background()
+            done.join(CONVERT_WAIT)                                    # the page lists the library again as soon as this answers: with the readable page, if it is ready
+            return self._json({'ok': True, 'id': rel, 'converted': not done.is_alive()})
 
         # A project folder is uploaded in three steps so that nothing half-finished ever shows up:
         #   begin  -> reserves library/<category>/<name>/ (a free name is chosen)
@@ -378,6 +394,80 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         return self._json({'error': 'not found'}, 404)
 
+    def _netease_openapi_test(self, length):
+        """Forward a read-only NetEase OpenAPI test request from localhost.
+
+        This is not an application integration endpoint.  It is intentionally available only
+        while `serve.py` is running on the developer's computer, only accepts the official
+        OpenAPI host, and has no persistence or request logging.
+        """
+        if length <= 0 or length > 96 * 1024:
+            return self._json({'error': 'request body must be between 1 byte and 96 KB'}, 400)
+        try:
+            body = json.loads(self.rfile.read(length).decode('utf-8'))
+        except Exception:
+            return self._json({'error': 'invalid JSON request'}, 400)
+
+        method = str(body.get('method') or 'POST').upper()
+        if method not in ('GET', 'POST'):
+            return self._json({'error': 'only GET and POST are supported'}, 400)
+        path = str(body.get('path') or '')
+        if not path.startswith('/openapi/music/') or '://' in path or '?' in path or '#' in path:
+            return self._json({'error': 'invalid OpenAPI path'}, 400)
+        params = body.get('params')
+        if not isinstance(params, dict) or not params:
+            return self._json({'error': 'params must be a non-empty JSON object'}, 400)
+        clean = {}
+        for key, value in params.items():
+            if not isinstance(key, str) or not key or len(key) > 80:
+                return self._json({'error': 'invalid request parameter name'}, 400)
+            if isinstance(value, (dict, list)):
+                return self._json({'error': 'request parameter values must be strings or numbers'}, 400)
+            text = str(value)
+            if len(text) > 64 * 1024:
+                return self._json({'error': 'request parameter is too long'}, 400)
+            clean[key] = text
+
+        encoded = urllib.parse.urlencode(clean).encode('utf-8')
+        url = 'https://openapi.music.163.com' + path
+        request = urllib.request.Request(
+            url + (('?' + encoded.decode('ascii')) if method == 'GET' else ''),
+            data=None if method == 'GET' else encoded,
+            method=method,
+            headers={
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'User-Agent': 'ZhiTree-Local-OpenAPI-Tester/1.0',
+            },
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=20) as response:
+                raw = response.read(512 * 1024)
+                status = response.status
+                content_type = response.headers.get('Content-Type', '')
+        except urllib.error.HTTPError as err:
+            raw = err.read(512 * 1024)
+            status = err.code
+            content_type = err.headers.get('Content-Type', '') if err.headers else ''
+        except Exception as err:  # surface local DNS/TLS/network failures without leaking a traceback
+            return self._json({'error': 'upstream request failed', 'detail': str(err)}, 502)
+
+        text = raw.decode('utf-8', errors='replace')
+        try:
+            data = json.loads(text)
+        except Exception:
+            data = None
+        api_code = data.get('code') if isinstance(data, dict) else None
+        api_ok = api_code in (None, 200, '200')
+        return self._json({
+            'ok': 200 <= status < 300 and api_ok,
+            'upstreamStatus': status,
+            'apiCode': api_code,
+            'contentType': content_type,
+            'data': data,
+            'raw': None if data is not None else text,
+        }, 200)
+
     def _store_meta(self, item_id, q):
         """Save the title / summary / featured flag chosen in the Add dialog."""
         entry = {k: q[k] for k in ('title', 'summary') if q.get(k)}
@@ -412,6 +502,31 @@ def refresh():
         return items
 
 
+CONVERT_WAIT = 40                                      # seconds an upload waits for its conversion (a very big PDF goes on in the background)
+_convert_lock = threading.Lock()
+
+
+def convert_in_background():
+    """What is in library/ and was not converted yet is turned into readable HTML and data (convert.py), off the request: a big PDF takes a few seconds. -> the thread (join it to wait)."""
+    def work():
+        with _convert_lock:                          # one conversion at a time: two uploads never write the same package together
+            try:
+                import convert
+                items = scan_library(skip=Handler.pending_projects)
+                stats = convert.convert_items(items, LIBRARY, log=lambda *a: None)
+                if stats['skipped'] and not getattr(convert_in_background, 'told', False):
+                    convert_in_background.told = True
+                    print('NOTE: PyMuPDF is not installed (pip install pymupdf): PDF files are shown as they are (the page can still turn the ones added in the browser into readable pages).', file=sys.stderr)
+                if stats['done']:
+                    refresh()
+                    convert.write_ft(scan_library(skip=Handler.pending_projects), convert.CACHE)
+            except Exception as e:                   # noqa: BLE001  (a conversion that fails never breaks the server)
+                print('convert:', e, file=sys.stderr)
+    th = threading.Thread(target=work, daemon=True)
+    th.start()
+    return th
+
+
 def _library_signature():
     sig = []
     for d, dns, fns in os.walk(LIBRARY):
@@ -436,6 +551,7 @@ def watch_library(interval=2.0):
             if now != last:
                 last = now
                 refresh()
+                convert_in_background()                  # a file copied in by hand is converted too
         except Exception as e:                  # never let the watcher die
             print('watcher:', e)
 
@@ -460,6 +576,7 @@ def main():
     args = ap.parse_args()
     os.makedirs(LIBRARY, exist_ok=True)
     refresh()
+    convert_in_background()                                # what was put into library/ while the server was off
     threading.Thread(target=watch_library, daemon=True).start()
     url = f'http://{args.host}:{args.port}/'
     with Server((args.host, args.port), Handler) as httpd:

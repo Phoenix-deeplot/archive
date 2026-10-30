@@ -1,5 +1,5 @@
 window.ARCHIVE_MANIFEST = {
- "generated": "2026-10-26 16:50",
+ "generated": "2026-10-29 16:45",
  "directory": "https://adminbook.zhitree.cn/",
  "items": [
   {
@@ -20,8 +20,8 @@ window.ARCHIVE_MANIFEST = {
     "教程"
    ],
    "lang": "mixed",
-   "minutes": 30,
-   "date": "2026-10-26",
+   "minutes": 33,
+   "date": "2026-10-29",
    "cover": "",
    "featured": false,
    "pinned": 1,
@@ -38,8 +38,8 @@ window.ARCHIVE_MANIFEST = {
     "deploy"
    ],
    "type": "html",
-   "size": 1707456,
-   "added": 1793004601,
+   "size": 1717395,
+   "added": 1793263517,
    "project": true,
    "files": 34,
    "alt_en": "library/notes/guide/en/index.html"
@@ -60,7 +60,8 @@ window.ARCHIVE_MANIFEST = {
    "type": "pdf",
    "size": 1781687,
    "added": 1792136606,
-   "noindex": true
+   "noindex": true,
+   "noconvert": true
   },
   {
    "id": "notes/index.html",
@@ -84,9 +85,18 @@ window.ARCHIVE_MANIFEST = {
    "path": "library/books/AI_劳动力市场招聘情报报告.pdf",
    "category": "books",
    "title": "AI_劳动力市场招聘情报报告",
-   "summary": "",
-   "keywords": [],
-   "lang": "en",
+   "summary": "本报告旨在通过对“行业研究”、“投资研究”、“AI 商业分析师”、“商业智能”、“AI 产品”、“AI 解决方案”、“金融科技”和“战略”八个关键职位类别的招聘市场进行逆向工程，提供全面的招聘情报。报告分析了大量的职位描述，并总结了关键的 ATS 关键词、业务技能、技术技能、项目描述、面试问题以及未来五年的招聘趋势，旨在为求职者和招聘人员提供战略性洞察。",
+   "keywords": [
+    "解决方案",
+    "management",
+    "strategy",
+    "项目",
+    "prompt engineering",
+    "关键",
+    "analysis",
+    "business"
+   ],
+   "lang": "mixed",
    "minutes": null,
    "pages": 14,
    "date": "2026-10-13",
@@ -94,7 +104,15 @@ window.ARCHIVE_MANIFEST = {
    "featured": false,
    "type": "pdf",
    "size": 924487,
-   "added": 1791876291
+   "added": 1791876291,
+   "conv": {
+    "id": "327733fc4f51",
+    "q": 1.0,
+    "ok": 1,
+    "u": "page",
+    "n": 16,
+    "c": 12836
+   }
   },
   {
    "id": "tools/supplychain/index.html",
@@ -121,7 +139,16 @@ window.ARCHIVE_MANIFEST = {
    "category": "notes",
    "title": "出海 × 供应链：图谱化研究笔记 V3",
    "summary": "不是ERP替代品，不是单纯APS，也不是让AI直接下采购决策，而是建立在现有业务系统之上的“策略与控制层”。",
-   "keywords": [],
+   "keywords": [
+    "库存",
+    "策略",
+    "系统",
+    "供应",
+    "数据",
+    "成本",
+    "需求",
+    "风险"
+   ],
    "lang": "zh",
    "minutes": 14,
    "date": "2026-10-13",
@@ -129,7 +156,15 @@ window.ARCHIVE_MANIFEST = {
    "featured": false,
    "type": "html",
    "size": 53459,
-   "added": 1791868249
+   "added": 1791868249,
+   "conv": {
+    "id": "14b7de0945d2",
+    "q": 1.0,
+    "ok": 0,
+    "u": "part",
+    "n": 43,
+    "c": 7604
+   }
   },
   {
    "id": "books/供应链读书笔记-合集.html",
@@ -137,7 +172,16 @@ window.ARCHIVE_MANIFEST = {
    "category": "books",
    "title": "供应链读书笔记：刘宝红两本书合读",
    "summary": "两本书合起来是一条完整的决策链：第 1 本回答为什么重资产会拖垮企业、哪些该外包；第 2 本回答外包之后供应商怎么选、怎么管，以及采购职能如何从“小采购”升级为“大采购”。",
-   "keywords": [],
+   "keywords": [
+    "供应商",
+    "外包",
+    "采购",
+    "管理",
+    "供应链",
+    "资产",
+    "成本",
+    "设计"
+   ],
    "lang": "zh",
    "minutes": 84,
    "date": "2026-10-13",
@@ -146,7 +190,15 @@ window.ARCHIVE_MANIFEST = {
    "type": "html",
    "size": 208257,
    "added": 1791862242,
-   "hidden": false
+   "hidden": false,
+   "conv": {
+    "id": "9b357e3d296d",
+    "q": 1.0,
+    "ok": 0,
+    "u": "part",
+    "n": 127,
+    "c": 43001
+   }
   },
   {
    "id": "books/采购与供应链管理-读书笔记.html",
@@ -154,7 +206,16 @@ window.ARCHIVE_MANIFEST = {
    "category": "books",
    "title": "读书笔记｜采购与供应链管理：一个实践者的角度（第3版）",
    "summary": "全书从大到小、从宽到窄：先给供应链的全局观（三大职能、三条流、复杂度、牛鞭、库存、降本三台阶），再聚焦供应商管理（三大误区、五步流程、整合、下级与指定供应商），最后落到采购职能本身——从围着订单转的“小采购”，升级为管需求、管供应商、管总成本的“大采购”。",
-   "keywords": [],
+   "keywords": [
+    "供应商",
+    "采购",
+    "供应链",
+    "管理",
+    "级供应",
+    "库存",
+    "需求",
+    "复杂度"
+   ],
    "lang": "zh",
    "minutes": 35,
    "date": "2026-10-12",
@@ -163,7 +224,15 @@ window.ARCHIVE_MANIFEST = {
    "type": "html",
    "size": 97597,
    "added": 1791775843,
-   "hidden": false
+   "hidden": false,
+   "conv": {
+    "id": "ec2b0ec58c51",
+    "q": 1.0,
+    "ok": 0,
+    "u": "part",
+    "n": 59,
+    "c": 18177
+   }
   },
   {
    "id": "books/重资产到轻资产-读书笔记.html",
@@ -171,7 +240,16 @@ window.ARCHIVE_MANIFEST = {
    "category": "books",
    "title": "读书笔记｜供应链管理：重资产到轻资产的解决方案",
    "summary": "全书一条主线：垂直整合换来了控制力，也带来了两个改不掉的结构性缺陷——需求单一、竞争不充分。内部挖潜只能治标，外包才治本；而外包能否成功，取决于企业有没有三项能力：识别核心竞争力、模块化设计、选好管好供应商。",
-   "keywords": [],
+   "keywords": [
+    "供应商",
+    "外包",
+    "资产",
+    "垂直整合",
+    "心竞争力",
+    "核心竞争",
+    "成本",
+    "管理"
+   ],
    "lang": "zh",
    "minutes": 48,
    "date": "2026-10-11",
@@ -180,7 +258,15 @@ window.ARCHIVE_MANIFEST = {
    "type": "html",
    "size": 122659,
    "added": 1791689443,
-   "hidden": false
+   "hidden": false,
+   "conv": {
+    "id": "aa2037479e56",
+    "q": 1.0,
+    "ok": 0,
+    "u": "part",
+    "n": 67,
+    "c": 24637
+   }
   }
  ]
 };

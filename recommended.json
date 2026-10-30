@@ -1,11 +1,11 @@
 {
  "version": 1,
- "updated": "2026-10-26",
+ "updated": "2026-10-27",
  "groups": [
   {
    "id": "hot",
-   "zh": "热榜与趋势（平台热榜、热门社区、各领域头条）",
-   "en": "Hot lists & trends (platform charts, busy communities, headlines by field)",
+   "zh": "热榜与趋势（平台热榜、热门社区、各领域头条；全部榜单在“公共目录 → 热榜”）",
+   "en": "Hot lists & trends (platform charts, busy communities, headlines by field; all the lists are under Public → Hot lists)",
    "items": [
     {
      "id": "hot-github",
@@ -112,8 +112,8 @@
      "id": "hot-zhihu",
      "name": "知乎热榜",
      "name_en": "Zhihu hot questions",
-     "zh": "知乎当前的热门问题（站长开启后才会出现）。",
-     "en": "The hot questions on Zhihu right now (shown only when the site’s owner has turned it on).",
+     "zh": "知乎当前的热门问题，每个条目是一个问题，点开去知乎。",
+     "en": "The hot questions on Zhihu right now; each entry is a question.",
      "home": "https://www.zhihu.com/hot",
      "feed": "hot:zhihu",
      "lang": "zh",
@@ -131,8 +131,8 @@
      "id": "hot-weibo",
      "name": "微博热搜",
      "name_en": "Weibo hot searches",
-     "zh": "微博当前的热搜词（站长开启后才会出现）。",
-     "en": "The hot searches on Weibo right now (shown only when the site’s owner has turned it on).",
+     "zh": "微博当前的热搜词，每个条目是一个话题，点开去微博。",
+     "en": "The hot searches on Weibo right now; each entry is a topic.",
      "home": "https://s.weibo.com/top/summary",
      "feed": "hot:weibo",
      "lang": "zh",
@@ -360,9 +360,345 @@
    ]
   },
   {
+   "id": "podcasts-zh",
+   "zh": "中文播客（每个都能先点“试听”，再决定订阅）",
+   "en": "Podcasts in Chinese (press “Listen” first, subscribe after)",
+   "podcast": true,
+   "items": [
+    {
+     "id": "pod-zh-zuohu",
+     "name": "忽左忽右",
+     "name_en": "忽左忽右",
+     "zh": "以书和历史为线索的深度对谈，中文播客的标杆之一。",
+     "en": "Deep conversations led by books and history; one of the benchmarks of Chinese podcasts.",
+     "home": "https://podcasts.apple.com/cn/podcast/%E5%BF%BD%E5%B7%A6%E5%BF%BD%E5%8F%B3/id1493503146",
+     "feed": "https://feed.xyzfm.space/cv4bkgpuglwp",
+     "lang": "zh",
+     "tags": [
+      "人文",
+      "历史"
+     ],
+     "tags_en": [
+      "culture",
+      "history"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-zh-stovol",
+     "name": "随机波动StochasticVolatility",
+     "name_en": "随机波动StochasticVolatility",
+     "zh": "三位女性主持，谈文化、社会、性别与流行。",
+     "en": "Three women talk about culture, society, gender and pop.",
+     "home": "https://podcasts.apple.com/us/podcast/%E9%9A%8F%E6%9C%BA%E6%B3%A2%E5%8A%A8stochasticvolatility/id1504681387",
+     "feed": "https://feeds.fireside.fm/stovol/rss",
+     "lang": "zh",
+     "tags": [
+      "人文",
+      "文化"
+     ],
+     "tags_en": [
+      "culture",
+      "society"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-zh-yixi",
+     "name": "一席",
+     "name_en": "一席",
+     "zh": "一席演讲的音频版。",
+     "en": "The audio of the Yixi talks.",
+     "home": "https://podcasts.apple.com/cn/podcast/%E4%B8%80%E5%B8%AD/id676106704",
+     "feed": "https://feed.xyzfm.space/jq7xytwpykrg",
+     "lang": "zh",
+     "tags": [
+      "演讲",
+      "人文"
+     ],
+     "tags_en": [
+      "talks",
+      "culture"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-zh-wenhua",
+     "name": "文化有限",
+     "name_en": "文化有限",
+     "zh": "漫谈电影、书和社会现象，轻松。",
+     "en": "Easy talk on films, books and what is happening around us.",
+     "home": "https://podcasts.apple.com/cn/podcast/%E6%96%87%E5%8C%96%E6%9C%89%E9%99%90/id1482731836",
+     "feed": "https://s1.proxy.wavpub.com/weknownothing.xml",
+     "lang": "zh",
+     "tags": [
+      "文化",
+      "轻松"
+     ],
+     "tags_en": [
+      "culture",
+      "light"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-zh-ritan",
+     "name": "日谈公园",
+     "name_en": "日谈公园",
+     "zh": "多人圆桌，聊时事和热点。",
+     "en": "A round table of several people on the news and the talk of the day.",
+     "home": "https://podcasts.apple.com/cn/podcast/%E6%97%A5%E8%B0%88%E5%85%AC%E5%9B%AD/id1166949390",
+     "feed": "https://www.ximalaya.com/album/5574153.xml",
+     "lang": "zh",
+     "tags": [
+      "社会",
+      "轻松"
+     ],
+     "tags_en": [
+      "society",
+      "light"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-zh-storyfm",
+     "name": "故事FM",
+     "name_en": "故事FM",
+     "zh": "真人讲述的真实故事。",
+     "en": "True stories told by the people who lived them.",
+     "home": "https://podcasts.apple.com/cn/podcast/%E6%95%85%E4%BA%8Bfm/id1256399960",
+     "feed": "https://feeds.storyfm.cn/storyfm.xml",
+     "lang": "zh",
+     "tags": [
+      "故事"
+     ],
+     "tags_en": [
+      "stories"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-zh-sv101",
+     "name": "硅谷101",
+     "name_en": "硅谷101",
+     "zh": "硅谷和全球科技、AI、创投的深度报道。",
+     "en": "In-depth reports on Silicon Valley and global tech, AI and venture.",
+     "home": "https://podcasts.apple.com/cn/podcast/%E7%A1%85%E8%B0%B7101/id1498541229",
+     "feed": "https://feeds.fireside.fm/sv101/rss",
+     "lang": "zh",
+     "tags": [
+      "科技",
+      "商业"
+     ],
+     "tags_en": [
+      "tech",
+      "business"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-zh-whatsnext",
+     "name": "What's Next｜科技早知道",
+     "name_en": "What's Next｜科技早知道",
+     "zh": "声动活泼的每周科技与商业。",
+     "en": "A weekly show on tech and business.",
+     "home": "https://podcasts.apple.com/cn/podcast/whats-next-%E7%A7%91%E6%8A%80%E6%97%A9%E7%9F%A5%E9%81%93/id1494812579",
+     "feed": "https://feeds.fireside.fm/guiguzaozhidao/rss",
+     "lang": "zh",
+     "tags": [
+      "科技",
+      "商业"
+     ],
+     "tags_en": [
+      "tech",
+      "business"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-zh-zaokafei",
+     "name": "声动早咖啡",
+     "name_en": "声动早咖啡",
+     "zh": "每个工作日早上的新闻播客。",
+     "en": "A news podcast every weekday morning.",
+     "home": "https://podcasts.apple.com/cn/podcast/%E5%A3%B0%E5%8A%A8%E6%97%A9%E5%92%96%E5%95%A1/id1573189055",
+     "feed": "https://www.ximalaya.com/album/51076156.xml",
+     "lang": "zh",
+     "tags": [
+      "新闻"
+     ],
+     "tags_en": [
+      "news"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-zh-mianji",
+     "name": "面基",
+     "name_en": "面基",
+     "zh": "程序员、产品经理的对谈。",
+     "en": "Conversations among programmers and product managers.",
+     "home": "https://podcasts.apple.com/cn/podcast/%E9%9D%A2%E5%9F%BA/id1686741064",
+     "feed": "https://feed.xyzfm.space/6hpdgggtxpxb",
+     "lang": "zh",
+     "tags": [
+      "科技",
+      "技术"
+     ],
+     "tags_en": [
+      "tech",
+      "engineering"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-zh-banianti",
+     "name": "半拿铁 | 商业沉浮录",
+     "name_en": "半拿铁 | 商业沉浮录",
+     "zh": "用故事讲公司和行业的沉浮。",
+     "en": "The ups and downs of companies and industries, told as stories.",
+     "home": "https://podcasts.apple.com/cn/podcast/%E5%8D%8A%E6%8B%BF%E9%93%81-%E5%95%86%E4%B8%9A%E6%B2%89%E6%B5%AE%E5%BD%95/id1615939013",
+     "feed": "https://proxy.wavpub.com/caffebreve.xml",
+     "lang": "zh",
+     "tags": [
+      "商业"
+     ],
+     "tags_en": [
+      "business"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-zh-fengtouquan",
+     "name": "疯投圈",
+     "name_en": "疯投圈",
+     "zh": "创投圈的复盘与访谈。",
+     "en": "Reviews and interviews from the venture world.",
+     "home": "https://podcasts.apple.com/cn/podcast/%E7%96%AF%E6%8A%95%E5%9C%88/id1088178402",
+     "feed": "https://crazy.capital/feed",
+     "lang": "zh",
+     "tags": [
+      "商业",
+      "创投"
+     ],
+     "tags_en": [
+      "business",
+      "venture"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-zh-shangye",
+     "name": "商业就是这样",
+     "name_en": "商业就是这样",
+     "zh": "商业案例与观察。",
+     "en": "Business cases and observations.",
+     "home": "https://podcasts.apple.com/cn/podcast/%E5%95%86%E4%B8%9A%E5%B0%B1%E6%98%AF%E8%BF%99%E6%A0%B7/id1552904790",
+     "feed": "https://www.ximalaya.com/album/46587439.xml",
+     "lang": "zh",
+     "tags": [
+      "商业"
+     ],
+     "tags_en": [
+      "business"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-zh-zhangxiaojun",
+     "name": "张小珺Jùn｜商业访谈录",
+     "name_en": "张小珺Jùn｜商业访谈录",
+     "zh": "张小珺对创业者和研究者的长访谈。",
+     "en": "Long interviews with founders and researchers.",
+     "home": "https://podcasts.apple.com/cn/podcast/%E5%BC%A0%E5%B0%8F%E7%8F%BAj%C3%B9n-%E5%95%86%E4%B8%9A%E8%AE%BF%E8%B0%88%E5%BD%95/id1634356920",
+     "feed": "https://feed.xyzfm.space/dk4yh3pkpjp3",
+     "lang": "zh",
+     "tags": [
+      "商业",
+      "AI"
+     ],
+     "tags_en": [
+      "business",
+      "AI"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-zh-42zj",
+     "name": "42章经",
+     "name_en": "42章经",
+     "zh": "产品与创业的访谈。",
+     "en": "Interviews on product and startups.",
+     "home": "https://podcasts.apple.com/cn/podcast/42%E7%AB%A0%E7%BB%8F/id1700299886",
+     "feed": "https://feed.xyzfm.space/evgg6xle9rdc",
+     "lang": "zh",
+     "tags": [
+      "商业",
+      "产品"
+     ],
+     "tags_en": [
+      "business",
+      "product"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-zh-zhixing",
+     "name": "知行小酒馆",
+     "name_en": "知行小酒馆",
+     "zh": "有知有行：投资与生活。",
+     "en": "Investing and living, from Youzhiyouxing.",
+     "home": "https://podcasts.apple.com/cn/podcast/%E7%9F%A5%E8%A1%8C%E5%B0%8F%E9%85%92%E9%A6%86/id1559695855",
+     "feed": "https://feed.xyzfm.space/j8yp8gxkmgqr",
+     "lang": "zh",
+     "tags": [
+      "投资",
+      "理财"
+     ],
+     "tags_en": [
+      "investing",
+      "money"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    }
+   ]
+  },
+  {
    "id": "podcasts",
-   "zh": "播客（订阅后可以边听边读）",
-   "en": "Podcasts (listen while you read)",
+   "zh": "英文播客（练听力；每个都能先点“试听”）",
+   "en": "Podcasts in English (for listening practice; press “Listen” first)",
    "items": [
     {
      "id": "pod-ted-daily",
@@ -604,7 +940,8 @@
      "rank": 0,
      "full": false
     }
-   ]
+   ],
+   "podcast": true
   },
   {
    "id": "zh-tech",
