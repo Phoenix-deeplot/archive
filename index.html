@@ -1037,10 +1037,16 @@ body.has-player.pl-folded{--pl-h:0px}
 }
 @media (max-width:620px){
   .reader-bar{grid-template-columns:auto 1fr;grid-template-areas:"back right" "title title"}
-  .rb-center{display:none}                                  /* previous / next live in the contents panel on a phone */
+  .rb-center{display:none}                                  /* mobile reader navigation sits below the content */
   .rb-right{gap:6px}
   .rbtn{height:38px;padding:0 10px}
+  .reader-mobile-nav:not([hidden]){display:flex}
+  .reader-mobile-nav .rbtn{min-height:44px;min-width:96px;justify-content:center}
+  .reader-mobile-nav .rbtn .lbl{display:inline}
 }
+.reader-mobile-nav{display:none;align-items:center;justify-content:space-between;gap:8px;padding:6px 12px calc(6px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--rule);background:var(--bg)}
+.reader-mobile-nav .pos{flex:1;min-width:0}
+body.reader-focus .reader-mobile-nav{display:none!important}
 @media (max-width:420px){ #reader.can-edit #readerNew{display:none} }                              /* a note has the pen too: the "new tab" link gives way first */
 @media (max-width:340px){ .rbtn,.rbtn.ico{padding:0 6px} .rb-right{gap:4px} }
 .pending .ptype{font-weight:700;margin-right:6px}
@@ -1256,6 +1262,11 @@ body.drawer .player,body.drawer .pl-mini{z-index:18}
       <div class="rbody" id="rTocBody"></div>
       <div class="rfoot" id="rTocFoot"><button type="button" class="btn" id="rtPrev" data-i="prev">上一篇</button><button type="button" class="btn" id="rtNext" data-i="next">下一篇</button></div>
     </div>
+  </div>
+  <div class="reader-mobile-nav" id="readerMobileNav" hidden>
+    <button class="rbtn nav" type="button" id="readerMobilePrev"><svg class="icon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg><span class="lbl" data-i="prev">上一篇</span></button>
+    <span class="pos" id="readerMobilePos" aria-live="polite"></span>
+    <button class="rbtn nav" type="button" id="readerMobileNext"><span class="lbl" data-i="next">下一篇</span><svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
   </div>
 </div>
 
@@ -3314,6 +3325,9 @@ function syncReader(){
   const idx=state.visible.indexOf(state.readingId), n=state.visible.length;
   $('#readerPrev').disabled = idx<=0; $('#readerNext').disabled = idx<0 || idx>=n-1;
   $('#readerPos').textContent = idx>=0 ? `${idx+1} / ${n}` : '';
+  $('#readerMobileNav').hidden=idx<0 || n<2;
+  $('#readerMobilePrev').disabled=idx<=0; $('#readerMobileNext').disabled=idx<0 || idx>=n-1;
+  $('#readerMobilePos').textContent=$('#readerPos').textContent;
 }
 /* A link is read in the page: its text if it was kept, else the service reads the original page (once; the text is then kept in this browser). A page that cannot be read (a login,
    a bot check, scripts only ...) opens the original site, and the card says so for a week. */
@@ -3339,6 +3353,7 @@ function markNoread(it,e){
 }
 async function openLinkReading(it, push){
   const seq=++readSeq, id=it.id, u=httpUrl(it.url);
+  rememberReaderReturn();
   state.readingId=id; state.rkind='doc'; state.rpdf=false; state.toc=[]; state.tocCur='';
   $('#readerTitle').textContent=it.title; $('#readerProg').style.width='0%'; $('#readerNew').href=u;
   closePanels(); $('#readerToc').disabled=$('#readerMark').disabled=$('#readerSave').disabled=true;
@@ -3366,16 +3381,27 @@ async function prefetchTexts(){                                                 
   } finally{ prefetching=false; if(changed) render(); }
 }
 let prefetching=false;
-function openDirReader(did){                                                                   // an article of the public directory: read in the page too (nothing is kept unless it is saved)
+function dirReadable(d){
+  return !!d && (d.type==='article' || d.type==='note' || (d.type==='book' && !!httpUrl(d.url) && (d.tags||[]).some(x=>/^(在线书籍|小说|online books?|novels?)$/i.test(x))));
+}
+function dirReaderId(did){ return state.items.some(x=>x.id==='local:link:'+did) ? 'local:link:'+did : 'tmp:'+did; }
+function dirReaderOrder(){                                                                     // only articles actually shown in this public view, in their on-screen order
+  const byId=new Map((state.dirData&&state.dirData.items||[]).map(d=>[d.id,d])), seen=new Set(), out=[];
+  document.querySelectorAll('#dirReco [data-dopen],#grid [data-dopen]').forEach(a=>{
+    const did=a.dataset.dopen, d=byId.get(did); if(seen.has(did) || !dirReadable(d)) return;
+    seen.add(did); out.push(dirReaderId(did));
+  });
+  return out;
+}
+function openDirReader(did, push){                                                             // an article of the public directory: read in the page too (nothing is kept unless it is saved)
   const d=state.dirData && state.dirData.items.find(x=>x.id===did); if(!d) return;
   statSend('open','item',did); markDirRead(did);
   const saved=state.items.find(x=>x.id==='local:link:'+did);
-  if(saved){ openReader(saved.id); return; }
-  const online=d.type==='book' && !!httpUrl(d.url) && (d.tags||[]).some(x=>/^(在线书籍|小说|online books?|novels?)$/i.test(x));       // a book that is read online (public domain, open licence, an original novel) is read in the page
-  if(!(['article','note'].includes(d.type) || online) || !feedApi()){ window.open(d.url,'_blank','noopener,noreferrer'); return; }
+  if(saved) return openReader(saved.id,push);
+  if(!dirReadable(d) || !feedApi()){ window.open(d.url,'_blank','noopener,noreferrer'); return; }
   const id='tmp:'+did; let it=state.tmp.get(id);
   if(!it){ it={id, source:'tmp', type:'link', url:d.url, title:d.title, summary:d.summary, keywords:(d.tags||[]).slice(0,8), lang:d.lang, date:d.date, category:'notes', from:(state.shelfMap.get(d.shelf)||{}).name||hostOf(d.url)}; state.tmp.set(id,it); }
-  openReader(id);
+  return openReader(id,push);
 }
 async function openReader(id, push){
   const it=itemById(id); if(!it) return;
@@ -3391,6 +3417,7 @@ async function openReader(id, push){
     if(convReady(it)){ const m={...convPref(), [id]:'orig'}; LS.set('convView',m); return openReader(id,push); }                       // the readable page could not be read: the original PDF
     toast(t('openFail')+(e.message==='404'?t('notFound'):e.message)); return;
   }
+  rememberReaderReturn();
   state.readingId=id; state.rkind = (it.type==='md'||it.type==='txt'||it.type==='link'||convReady(it)) ? 'doc' : 'orig'; state.rpdf = it.type==='pdf' && !convReady(it); state.toc=[]; state.tocCur='';
   if(it.unread) markRead(id);
   $('#readerTitle').textContent=it.title; $('#readerProg').style.width='0%';
@@ -3409,6 +3436,8 @@ async function openReader(id, push){
   if(state.items.includes(it)){ state.lastRead[id]=Date.now(); LS.set('lastRead',state.lastRead); }
   if(push!==false) history.pushState({read:id},'','#read/'+encodeURIComponent(id));
 }
+let readerReturnY=0, readerBackPending=0;
+function rememberReaderReturn(){ if($('#reader').hidden) readerReturnY=window.scrollY; }
 function closeReader(fromPop){
   if($('#reader').hidden) return;
   const cur=itemById(state.readingId), back = !fromPop && cur && cur.back && itemById(cur.back) ? cur.back : '';
@@ -3417,11 +3446,18 @@ function closeReader(fromPop){
   $('#reader').hidden=true; document.body.classList.remove('reading','reader-focus'); $('#frame').removeAttribute('srcdoc'); $('#frame').src='about:blank';
   if(state.blobUrl){ URL.revokeObjectURL(state.blobUrl); state.blobUrl=null; }
   const id=state.readingId; state.readingId=null;
-  if(!fromPop && history.state && history.state.read) history.back();
+  if(!fromPop && history.state && history.state.read){ readerBackPending=Date.now(); history.back(); setTimeout(()=>{ if(Date.now()-readerBackPending>=1800) readerBackPending=0; },1900); }
   render();
-  const card=id && document.querySelector(`.card[data-id="${CSS.escape(id)}"]`); if(card) card.querySelector('.card-title a').focus();
+  const did=id && (id.startsWith('tmp:') ? id.slice(4) : id.startsWith('local:link:') ? id.slice(11) : '');
+  const card=id && (document.querySelector(`.card[data-id="${CSS.escape(id)}"]`) || (did && document.querySelector(`.card[data-did="${CSS.escape(did)}"]`)));
+  const link=card && card.querySelector('.card-title a'); if(link) link.focus({preventScroll:true});
+  window.scrollTo({top:readerReturnY,behavior:'auto'});
 }
-function step(d){ const i=state.visible.indexOf(state.readingId), n=state.visible[i+d]; if(n) openReader(n,false).then(()=>history.replaceState({read:n},'','#read/'+encodeURIComponent(n))); }
+function step(d){
+  const i=state.visible.indexOf(state.readingId), n=state.visible[i+d]; if(!n) return;
+  const opened=n.startsWith('tmp:') ? openDirReader(n.slice(4),false) : openReader(n,false);
+  Promise.resolve(opened).then(()=>{ if(state.readingId===n) history.replaceState({read:n},'','#read/'+encodeURIComponent(n)); });
+}
 /* ---- reader: colours and text size, contents, bookmarks ---- */
 function frameDoc(){ try{ const w=$('#frame').contentWindow, d=w.document; return d && d.body && d.documentElement ? {w,d} : null; }catch(e){ return null; } }       // null: another origin, or the browser's PDF viewer
 const scrollPct = ({w,d}) => { const max=d.documentElement.scrollHeight-w.innerHeight; return max>0 ? Math.min(100,w.scrollY/max*100) : 100; };
@@ -3539,7 +3575,7 @@ function readerSwipe(dir){                                                      
   if(panelsOpen()) return;
   const d=dir==='left'?1:-1, i=state.visible.indexOf(state.readingId), n=state.visible[i+d]; if(i<0) return;
   if(!n){ toast(t(d>0?'swipeLast':'swipeFirst')); return; }
-  step(d); const it=itemById(n); toast(`${i+d+1} / ${state.visible.length}${it?' · '+cut(it.title,40):''}`);
+  step(d); const it=itemById(n) || (n.startsWith('tmp:') && state.dirData && state.dirData.items.find(x=>x.id===n.slice(4))); toast(`${i+d+1} / ${state.visible.length}${it?' · '+cut(it.title,40):''}`);
 }
 watchSwipe(document,(dir,st)=>{                                                                  // on the shelf: right opens the left list, left closes it
   if(!$('#reader').hidden){ if(dir==='right' && !$('#rTocPanel').hidden && matchMedia('(max-width:620px)').matches) closePanels(); return; }          // in the reader: a swipe to the right sends the contents panel back
@@ -3574,12 +3610,16 @@ $('#frame').addEventListener('load',()=>{
 $('#readerBack').addEventListener('click',()=>closeReader());
 $('#readerPrev').addEventListener('click',()=>step(-1));
 $('#readerNext').addEventListener('click',()=>step(1));
+$('#readerMobilePrev').addEventListener('click',()=>step(-1));
+$('#readerMobileNext').addEventListener('click',()=>step(1));
 $('#readerOrig').addEventListener('click',()=>{ const it=itemById(state.readingId); if(!it || !convAvail(it)) return; const m={...convPref()}; if(convReady(it)) m[it.id]='orig'; else delete m[it.id]; LS.set('convView',m); openReader(it.id,false); });
 $('#readerStar').addEventListener('click',()=>state.readingId && toggleStar(state.readingId));
 window.addEventListener('popstate',e=>{
   if(NE.open){ neClose(true); return; }
   if(e.state && e.state.read){ openReader(e.state.read,false); return; }
+  const leavingReader=!$('#reader').hidden || !!readerBackPending; readerBackPending=0;
   closeReader(true);
+  if(leavingReader) return;                                                                     // browser Back from an article returns to the exact list and filters it came from
   const route=publicRouteFromPath();
   if(route){ publicRouteApply(route); render(); }
   else if(state.space==='dir'){ dirGoHome(); render(); }
@@ -6344,8 +6384,8 @@ function renderDir(){
   $('#dir').innerHTML = (openS?shelves:shelves.slice(0,DIR_SHELVES)).map(s=>`<button class="shelf-row" type="button" data-dshelf="${esc(s.id)}" aria-current="${s.id===state.dShelf}" title="${esc(s.name)}"><span>${esc(s.name)}</span><span class="n">${s.n}</span></button>`).join('')
     + (shelves.length>DIR_SHELVES ? `<button class="dir-more" type="button" data-fold="shelves" aria-expanded="${openS}">${esc(openS?t('dirLess'):t('dirMore',shelves.length-DIR_SHELVES))}</button>` : '');
   $('#dirCount').textContent=shelves.length;
-  if(hot){ renderHotPage(); return; }
-  if(listen){ renderListenPage(); return; }
+  if(hot){ if($('#reader').hidden) state.visible=[]; renderHotPage(); return; }
+  if(listen){ if($('#reader').hidden) state.visible=[]; renderListenPage(); return; }
 
   renderDirBar();
   const found=dirList(), byDate=(a,b)=>String(b.date||'').localeCompare(String(a.date||'')), key=state.dView==='hot' ? 'heat' : state.sort; let list=found.slice();
@@ -6390,6 +6430,7 @@ function renderDir(){
   state.dirColsUsed=rows ? 0 : dirCols();
   if(rows) grid.style.removeProperty('--cols'); else grid.style.setProperty('--cols',state.dirColsUsed);
   grid.innerHTML = flat.join('');
+  if($('#reader').hidden) state.visible=dirReaderOrder();                                           // freeze the reading order while the reader is open, even if its cards redraw
   if(infeed) initInfeedAds(grid);
   more.hidden = !latestVisible || list.length<=shown.length; $('#moreBtn').textContent = t('showMore')+` (${shown.length} / ${list.length})`;
   if(list.length || picks.length) empty.hidden=true;
