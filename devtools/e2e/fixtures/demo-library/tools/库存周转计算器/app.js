@@ -1,0 +1,1 @@
+const c=document.getElementById('c'),s=document.getElementById('s'),r=document.getElementById('r'),d=document.getElementById('d');function f(){const t=c.value/Math.max(1,s.value);r.textContent=t.toFixed(1);d.textContent=Math.round(365/t)}c.oninput=s.oninput=f;

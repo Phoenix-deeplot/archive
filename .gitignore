@@ -18,3 +18,8 @@ marked.LICENSE.md
 
 
 # vercel.json 不要放进忽略列表（vercel 命令行在没有 .vercelignore 时按本文件过滤上传）
+
+# browser tests: the demo build, logs of the rig, screenshots
+devtools/e2e/.demo/
+devtools/e2e/.rig/
+devtools/e2e/shots/
