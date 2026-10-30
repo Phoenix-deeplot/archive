@@ -6426,7 +6426,7 @@ function dirGoHome(){ state.dHot=false; state.dListen=false; state.dLanding=''; 
 function dirLandingHTML(items){
   if(!items.length || !['articles','watch'].includes(state.dLanding)) return '';
   const rows=state.view==='list', saved=new Set(state.items.filter(x=>x.type==='link').map(x=>x.id));
-  const title=state.dLanding==='articles' ? publicLabel('articles') : (state.lang==='zh'?'推荐视频':'Recommended videos');
+  const title=state.dLanding==='articles' ? (state.lang==='zh'?'精选文章':'Picked articles') : (state.lang==='zh'?'推荐视频':'Recommended videos');          // (the page is called 文章: the block over its first articles says they are picked)
   const cards=items.map(it=>rows?dirRowHTML(it,[],saved,true):dirCardHTML(it,[],saved,true)).join('');
   const grid=rows ? `<div class="grid dir-rows">${cards}</div>` : `<div class="grid dcards" style="--cols:${dirCols()}">${cards}</div>`;
   return `<section class="dr-sec dr-picks"><h2>${esc(title)}</h2>${grid}</section>`;

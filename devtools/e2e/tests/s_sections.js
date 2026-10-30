@@ -30,7 +30,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await open('picks/articles/');
   let v = await view();
   ok('/picks/articles/ opens the public space on the articles section (title, heading, the row of the side list that is on)', v.space === 'dir' && v.landing === 'articles' && v.path === '/picks/articles/' && v.title === '文章｜知树阅读' && v.h1 === '文章' && v.curLanding === 'articles' && /^文章/.test(v.cur), v);
-  ok('it opens with the recommended articles (at most six), then "更多文章" and the rest', v.picks >= 1 && v.picks <= 6 && v.picksTitle === '文章' && v.more === '更多文章' && v.cards > 0, v);
+  ok('it opens with the recommended articles (at most six), then "更多文章" and the rest', v.picks >= 1 && v.picks <= 6 && v.picksTitle === '精选文章' && v.more === '更多文章' && v.cards > 0, v);
   ok('nothing is shown twice (the recommended ones are not in the list below)', await J(`(()=>{ const a=[...document.querySelectorAll('#dirReco .dr-picks .card')].map(c=>c.dataset.did), b=[...document.querySelectorAll('#grid .card[data-did]')].map(c=>c.dataset.did); return a.length>0 && !a.some(x=>b.includes(x)) && new Set(a.concat(b)).size===a.length+b.length; })()`));
   await open('watch/');
   v = await view();
@@ -57,7 +57,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   ok('a click on "看什么" in the side list: the address is /watch/, the page was not reloaded, the section is shown', v.path === '/watch/' && v.landing === 'watch' && (await J(`window.__keep`)) === 1 && v.picksTitle === '推荐视频', v);
   await J(`document.querySelector('#cats [data-dlanding="articles"]').click()`); await sleep(700);
   v = await view();
-  ok('then "文章": /picks/articles/ with the recommended articles', v.path === '/picks/articles/' && v.picksTitle === '文章' && v.picks >= 1, v);
+  ok('then "文章": /picks/articles/ with the recommended articles', v.path === '/picks/articles/' && v.picksTitle === '精选文章' && v.picks >= 1, v);
   // (the back button of the browser: what it does to the page is what the page does with the address: a script cannot press it, so the same event is sent)
   await J(`history.replaceState({}, '', '/watch/'); window.dispatchEvent(new PopStateEvent('popstate',{state:{}}))`); await sleep(600);
   v = await view();
