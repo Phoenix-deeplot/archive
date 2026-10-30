@@ -1227,6 +1227,8 @@ body.dir-listen .ctl-box,body.dir-hot .ctl-box{display:none}
 </head>
 <script defer src="/_vercel/insights/script.js"></script>
 <body>
+<script>/* the new shell is the default: its classes are on before the first paint (the script at the end of the page keeps them right) */
+try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).replace(/"/g,'')==='2' : (window.__ZT_SHELL||'2')==='2'; if(_on){ document.body.classList.add('shell2'); if(matchMedia('(max-width:980px)').matches) document.body.classList.add('sh-phone'); } }catch(e){}</script>
 <!-- seo:body -->
 <!-- /seo:body -->
 <div class="drawer-back" id="drawerBack"></div>
@@ -3239,7 +3241,7 @@ function render(){
   const dirMode = dirOn();
   $('#spaceSwitch').hidden = !state.dirCfg;
   document.querySelectorAll('[data-space]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.space===(dirMode?'dir':'mine'))));
-  $('#noteBtn').hidden=dirMode; $('#noteFab').hidden=dirMode && LS.get('shell','1')!=='2';          // (the new shell writes a note from both spaces)
+  $('#noteBtn').hidden=dirMode; $('#noteFab').hidden=dirMode && shellSel()!=='2';          // (the new shell writes a note from both spaces)
   const addTxt=t(dirMode?'submit':'add'); $('#addLbl').textContent=addTxt; $('#addBtn').title=addTxt; $('#addBtn').setAttribute('aria-label',addTxt);
   syncSubscribe();
   if(dirMode){ $('#colRow').hidden=true; $('#colNav').hidden=true; $('#recoPane').hidden=true; $('#recoBanner').hidden=true; renderDir(); renderPublicAd(); syncReader(); return; }
@@ -7527,14 +7529,15 @@ document.querySelector('[data-lang="auto"]').addEventListener('click',()=>setLan
 $('#langBtn').addEventListener('click',()=>setLang(state.lang==='zh' ? 'en' : 'zh'));
 addEventListener('languagechange',()=>{ if(state.langAuto && sysLang()!==state.lang) setLang('auto'); });                 // (the system's language was changed while the page is open)
 document.querySelectorAll('[data-lf]').forEach(b=>b.addEventListener('click',()=>{ state.lf=b.dataset.lf; render(); }));
-function themeNow(){ return state.theme==='cloud' && LS.get('shell','1')!=='2' ? 'light' : state.theme; }                 // (the third theme is the new shell's: the old page shows it as the light one)
+function shellSel(){ return String(LS.get('shell', window.__ZT_SHELL || '2')); }                          // "2": the new shell (the default: a home-screen app on an iPhone cannot take a switch in the address), "1": the old page (?shell=1)
+function themeNow(){ return state.theme==='cloud' && shellSel()!=='2' ? 'light' : state.theme; }                 // (the third theme is the new shell's: the old page shows it as the light one)
 function themeEff(){ const t0=themeNow(); return t0==='auto' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : t0; }          // (what is on screen: the system's choice when none was made)
 function applyTheme(){
   if(LS.get('palette','')==='cloud'){ state.theme='cloud'; LS.set('theme','cloud'); LS.set('palette',''); }          // (an earlier preview kept the red palette apart: it is the theme "cloud" now)
   const h=document.documentElement, th=themeNow(); if(th==='auto') h.removeAttribute('data-theme'); else h.setAttribute('data-theme',th);
 }
 $('#themeBtn').addEventListener('click',()=>{
-  if(LS.get('shell','1')==='2') state.theme={light:'dark',dark:'cloud',cloud:'light'}[themeEff()];                      // (the new shell: three themes in a ring)
+  if(shellSel()==='2') state.theme={light:'dark',dark:'cloud',cloud:'light'}[themeEff()];                      // (the new shell: three themes in a ring)
   else state.theme=state.theme==='auto'?'light':state.theme==='light'?'dark':'auto';
   LS.set('theme',state.theme); applyTheme(); render();
 });
@@ -7557,12 +7560,12 @@ document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==
 $('#colRefresh').addEventListener('click',()=>refreshSubs({force:true,manual:true}));
 window.addEventListener('focus',()=>{ if($('#reader').hidden && !dlg.open && (state.mode==='server'||state.dir)) loadAll(); });
 
-/* ================= the new shell ("shell2", ?shell=2 switches it on and ?shell=1 off; kept in this browser) =================
+/* ================= the new shell ("shell2": the default; ?shell=1 brings the old page back and ?shell=2 the new one again; kept in this browser) =================
    A phone: a bottom bar [my shelf | + | discover], the sections of the side list as ONE strip under the search (a swipe moves to the next one), a filter panel (sort, language of the content, cards / rows, tags,
    the directory's own filters), a "+" sheet (add, follow, note, submit), and the side list becomes the settings (the language is in the top bar). Wide screens: the side list can be hidden,
    and sort / language / view sit beside the list. The elements are the same ones as before: only where they live changes (nothing is made twice). */
 { const q=new URLSearchParams(location.search).get('shell'); if(q==='1' || q==='2'){ LS.set('shell',q); const u=new URL(location.href); u.searchParams.delete('shell'); history.replaceState(history.state,'',u.pathname+u.search+u.hash); } }
-const SH_PHONE=matchMedia('(max-width:980px)'), shOn=()=>LS.get('shell','1')==='2';
+const SH_PHONE=matchMedia('(max-width:980px)'), shOn=()=>shellSel()==='2';
 function shMove(el, to, before){ if(el && to && el.parentElement!==to) to.insertBefore(el, before && before.parentElement===to ? before : null); }
 function shLayout(){
   const b=document.body, on=shOn(), phone=on && SH_PHONE.matches, shelf=on && !dirOn(), lab=$('.side-scroll>.dir-label');
