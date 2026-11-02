@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>小红书图片源文件：用一个网页过完一天</title>
+<meta name="viewport" content="width=1080">
+<style>
+/* 小红书 3:4，一张图 1080 × 1440。用 render.py 渲染成 PNG（地址后面加 #1 … #7 只显示一张；不加就把 7 张竖着排开预览）。
+   字体用系统里的 Noto Sans SC（没有就退到微软雅黑）。要改字：改下面 <script> 里的 DATA。 */
+:root{--teal:#1F7A6D;--teal-d:#0E4A42;--teal-l:#DDEFEB;--paper:#F5F2EA;--ink:#14211F;--mute:#5B6B68;--coral:#F2684A;--sun:#FFC85C;--card:#FFFFFF}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#888}
+body{font-family:"Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+.slide{position:relative;width:1080px;height:1440px;overflow:hidden;background:var(--paper);margin:0 auto 30px}
+body.one .slide{display:none;margin:0}
+body.one .slide.on{display:block}
+
+/* ---------- cover ---------- */
+.cover{background:radial-gradient(900px 700px at 85% 8%,#2FA08F 0,transparent 60%),radial-gradient(800px 800px at 0% 100%,#0B3B35 0,transparent 55%),linear-gradient(160deg,#1F7A6D 0,#0E4A42 100%);color:#fff}
+.cover .brand{position:absolute;left:64px;top:60px;display:flex;align-items:center;gap:18px;font-size:38px;font-weight:800;letter-spacing:.02em}
+.cover .brand img{width:76px;height:76px;border-radius:20px;background:#fff;padding:8px}
+.cover .tag{position:absolute;right:64px;top:70px;font-size:28px;font-weight:700;background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.35);padding:10px 24px;border-radius:999px}
+.cover h1{position:absolute;left:64px;top:190px;font-size:128px;line-height:1.14;font-weight:900;letter-spacing:-.01em}
+.cover h1 em{font-style:normal;color:var(--sun)}
+.cover .sub{position:absolute;left:68px;top:690px;font-size:40px;font-weight:700;line-height:1.5;opacity:.95}
+.cover .chips{position:absolute;left:64px;top:790px;width:560px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.chip{display:flex;align-items:center;gap:16px;background:rgba(255,255,255,.94);color:var(--ink);border-radius:28px;padding:22px 26px;font-size:40px;font-weight:800;box-shadow:0 14px 30px rgba(0,0,0,.18)}
+.chip i{font-style:normal;font-size:52px;line-height:1}
+.cover .foot{position:absolute;left:64px;bottom:56px;display:flex;gap:18px;flex-wrap:wrap;width:560px}
+.cover .foot span{font-size:30px;font-weight:700;padding:10px 22px;border-radius:999px;background:rgba(0,0,0,.22);border:2px solid rgba(255,255,255,.28)}
+.cover .cphone{position:absolute;right:-40px;top:640px;transform:rotate(6deg);transform-origin:top right}
+
+/* ---------- inner slide ---------- */
+.head{position:absolute;left:60px;right:60px;top:52px;display:flex;align-items:center;justify-content:space-between}
+.when{display:flex;align-items:center;gap:16px}
+.when b{background:var(--teal);color:#fff;font-size:30px;font-weight:800;padding:10px 26px;border-radius:999px}
+.when span{font-size:32px;font-weight:700;color:var(--mute)}
+.logo{display:flex;align-items:center;gap:12px;font-size:30px;font-weight:800;color:var(--teal-d)}
+.logo img{width:52px;height:52px;border-radius:14px;background:#fff;padding:5px;border:2px solid var(--teal-l)}
+.title{position:absolute;left:60px;top:150px;font-size:112px;font-weight:900;line-height:1.1;letter-spacing:-.01em;color:var(--teal-d)}
+.title i{font-style:normal;font-size:96px;margin-right:12px}
+.story{position:absolute;left:64px;top:300px;width:950px;font-size:40px;font-weight:600;line-height:1.55;color:var(--ink)}
+.steps{position:absolute;left:60px;top:420px;width:580px;display:flex;flex-direction:column;gap:22px}
+.step{position:relative;background:var(--card);border-radius:30px;padding:26px 22px 26px 98px;box-shadow:0 10px 26px rgba(14,74,66,.10);border:2px solid #E6EAE6}
+.step .n{position:absolute;left:24px;top:24px;width:56px;height:56px;border-radius:50%;background:var(--coral);color:#fff;font-size:32px;font-weight:900;display:grid;place-items:center}
+.step h3{font-size:34px;font-weight:900;line-height:1.3;color:var(--ink)}
+.step p{margin-top:6px;font-size:28px;font-weight:500;line-height:1.45;color:var(--mute)}
+.step b{color:var(--teal);font-weight:800}
+.tip{position:absolute;left:60px;right:60px;bottom:52px;background:var(--teal-d);color:#fff;border-radius:34px;padding:30px 40px;font-size:34px;font-weight:600;line-height:1.5;display:flex;gap:20px;align-items:flex-start}
+.tip i{font-style:normal;font-size:46px;line-height:1.1}
+.tip b{color:var(--sun);font-weight:800}
+.phone-wrap{position:absolute;right:50px;top:420px}
+
+/* ---------- the phone ---------- */
+.phone{width:380px;height:790px;border-radius:64px;background:#101A18;padding:16px;box-shadow:0 30px 60px rgba(14,74,66,.35)}
+.screen{position:relative;width:100%;height:100%;border-radius:50px;background:#F2F3F0;overflow:hidden;font-size:20px}
+.notch{position:absolute;left:50%;top:10px;margin-left:-48px;width:96px;height:26px;border-radius:20px;background:#101A18;z-index:5}
+.sbar{position:absolute;left:18px;right:18px;top:46px;display:flex;gap:10px;align-items:center}
+.sbar .search{flex:1;height:44px;border-radius:14px;background:#fff;border:2px solid #DDE1DF;display:flex;align-items:center;padding:0 14px;color:#9AA7AE;font-size:18px}
+.sbar .dot{width:40px;height:40px;border-radius:50%;background:#fff;border:2px solid #DDE1DF;display:grid;place-items:center;font-size:18px;font-weight:800}
+.tabs{position:absolute;left:18px;right:0;top:106px;display:flex;gap:10px;white-space:nowrap}
+.tabs span{padding:9px 18px;border-radius:999px;background:#fff;border:2px solid #DDE1DF;font-size:18px;font-weight:700;color:#1A2229}
+.tabs span.on{background:#14211F;color:#fff;border-color:#14211F}
+.pane{position:absolute;left:18px;right:18px;top:160px;bottom:96px;overflow:hidden}
+.seg2{display:inline-flex;border:2px solid #DDE1DF;border-radius:14px;overflow:hidden;background:#fff;margin-bottom:12px}
+.seg2 span{padding:8px 22px;font-size:19px;font-weight:800;color:#5A6670}
+.seg2 span.on{background:var(--teal);color:#fff}
+.chips2{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.chips2 span{padding:7px 14px;border-radius:999px;background:#fff;border:2px solid #DDE1DF;font-size:17px;font-weight:700}
+.chips2 span.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:2px solid #E3E6E4}
+.cv{flex:none;width:54px;height:54px;border-radius:12px;background:linear-gradient(135deg,#BFD9D3,#8DB8AF)}
+.cv.b{background:linear-gradient(135deg,#F2C9BC,#E59A85)}
+.cv.c{background:linear-gradient(135deg,#C9D3EA,#97A9D6)}
+.lines{flex:1;min-width:0}
+.lines i{display:block;height:13px;border-radius:7px;background:#CFD6D3;margin:6px 0;font-style:normal}
+.lines i.s{width:55%;height:10px;background:#E0E5E2}
+.play{flex:none;width:40px;height:40px;border-radius:50%;border:2px solid #CFD6D3;display:grid;place-items:center;font-size:16px;color:#14211F;background:#fff}
+.play.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.rank{flex:none;width:34px;text-align:center;font-size:24px;font-weight:900;color:#9AA7AE}
+.rank.t{color:var(--coral)}
+.heat{flex:none;font-size:16px;font-weight:800;color:var(--coral)}
+.pbar{position:absolute;left:12px;right:12px;bottom:92px;height:70px;border-radius:20px;background:#14211F;color:#fff;display:flex;align-items:center;gap:12px;padding:0 14px;z-index:3}
+.pbar .cv{width:44px;height:44px}
+.pbar .lines i{background:#4A5A57}
+.pbar .lines i.s{background:#34413F}
+.pbar b{font-size:18px;font-weight:800;border:2px solid #5A6A67;border-radius:999px;padding:3px 10px}
+.tb{position:absolute;left:0;right:0;bottom:0;height:84px;background:#fff;border-top:2px solid #DDE1DF;display:flex;align-items:center;justify-content:space-around;font-size:16px;font-weight:700;color:#5A6670}
+.tb u{text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tb u.on{color:var(--teal)}
+.tb u s{text-decoration:none;font-size:26px;line-height:1}
+.tb .plus{width:56px;height:44px;border-radius:14px;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:30px;font-weight:700}
+.big{height:150px;border-radius:20px;background:linear-gradient(135deg,#8DB8AF,#1F7A6D);margin-bottom:10px;position:relative}
+.big em{position:absolute;left:14px;bottom:12px;color:#fff;font-style:normal;font-size:18px;font-weight:800;background:rgba(0,0,0,.28);padding:3px 12px;border-radius:999px}
+.two{display:flex;gap:10px;margin-bottom:12px}
+.two div{flex:1;height:84px;border-radius:16px;background:linear-gradient(135deg,#F2C9BC,#E59A85)}
+.two div+div{background:linear-gradient(135deg,#C9D3EA,#97A9D6)}
+.h2{font-size:22px;font-weight:900;margin:6px 0 8px}
+.acts{display:flex;gap:18px;font-size:30px;color:#5A6670;margin-top:6px}
+.acts .on{color:var(--coral)}
+.focus{position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,#1E4E57 0,#0C1B22 62%,#070F13 100%)}
+.focus .c1,.focus .c2,.focus .c3{position:absolute;left:50%;top:42%;border-radius:50%;transform:translate(-50%,-50%)}
+.focus .c1{width:300px;height:300px;background:radial-gradient(circle,rgba(255,200,92,.55),rgba(255,200,92,0) 70%)}
+.focus .c2{width:210px;height:210px;background:radial-gradient(circle,rgba(242,104,74,.65),rgba(242,104,74,0) 70%)}
+.focus .c3{width:110px;height:110px;background:radial-gradient(circle,rgba(255,255,255,.9),rgba(255,255,255,0) 70%)}
+.focus .nm{position:absolute;left:0;right:0;top:62%;text-align:center;color:#C9D6D3;font-size:18px;letter-spacing:.2em}
+.focus .timer{position:absolute;left:0;right:0;bottom:70px;display:flex;justify-content:center;gap:10px}
+.focus .timer span{color:#E7EFEC;border:2px solid rgba(255,255,255,.3);border-radius:999px;padding:7px 16px;font-size:18px;font-weight:700}
+.focus .timer span.on{background:var(--sun);color:#14211F;border-color:var(--sun)}
+.focus .pat{position:absolute;left:0;right:0;top:100px;text-align:center;color:#9FB4B0;font-size:18px}
+
+/* ---------- real screenshots with numbered marks ---------- */
+.shotbox{position:absolute;left:0;right:0;top:34px;aspect-ratio:390/844;background:#F2F3F0}
+.shotbox img{display:block;width:100%;height:100%}
+.pin{position:absolute;border:4px solid var(--coral);border-radius:14px;box-shadow:0 0 0 3px rgba(255,255,255,.75),0 6px 14px rgba(242,104,74,.35)}
+.pin b{position:absolute;left:-20px;top:-22px;width:32px;height:32px;border-radius:50%;background:var(--coral);color:#fff;display:grid;place-items:center;font-size:22px;font-weight:900;box-shadow:0 3px 8px rgba(0,0,0,.25)}
+.real{position:absolute;right:50px;top:1214px;font-size:22px;font-weight:700;color:#8A9A97;width:380px;text-align:center}
+
+/* ---------- add to home screen ---------- */
+.os{position:absolute;left:60px;right:60px;top:290px;display:flex;flex-direction:column;gap:20px}
+.osc{background:#fff;border-radius:34px;border:2px solid #E6EAE6;box-shadow:0 10px 26px rgba(14,74,66,.10);padding:26px 36px 24px 36px;position:relative}
+.osc h3{font-size:46px;font-weight:900;display:flex;align-items:center;gap:16px}
+.osc h3 i{font-style:normal;font-size:56px}
+.osc ol{margin:12px 0 0 0;padding-left:0;list-style:none;counter-reset:s}
+.osc li{counter-increment:s;position:relative;padding-left:62px;font-size:34px;font-weight:600;line-height:1.5;margin-top:8px}
+.osc li::before{content:counter(s);position:absolute;left:0;top:6px;width:44px;height:44px;border-radius:50%;background:var(--coral);color:#fff;font-size:26px;font-weight:900;display:grid;place-items:center}
+.osc b{color:var(--teal);font-weight:800}
+.osc .warn{margin-top:14px;font-size:30px;font-weight:700;color:var(--coral)}
+.share{display:inline-grid;place-items:center;width:46px;height:46px;border:3px solid var(--teal);border-radius:12px;vertical-align:-10px;font-size:26px;color:var(--teal);font-weight:900}
+</style>
+</head>
+<body>
+<script>
+/* ---------- DATA: 要改字就改这里 ---------- */
+const LOGO = '../../../icons/zhishishu-icon.png';
+// the pictures in shots/ are real screenshots of books.zhitree.cn (a phone of 390 x 844, taken 2026-10-30; the songs and the lists change every day).
+// PIN: where the thing a step talks about is on that picture [x, y, width, height] in the 390 x 844 px of the phone.
+const PIN = {
+  listen: [[16,20,32,32],[292,319,36,36],[276,229,98,44]],
+  podcast: [[91,118,74,44],[166,175,57,40],[292,319,36,36]],
+  hot: [[114,162,104,40],[16,214,191,40],[164,345,104,26]],
+  discover: [[16,20,32,32],[16,230,358,150],[322,238,44,44]],
+  focus: []
+};
+const pinHTML = (r, n) => { const g = 3; return `<div class="pin" style="left:${(r[0]-g)/390*100}%;top:${(r[1]-g)/844*100}%;width:${(r[2]+2*g)/390*100}%;height:${(r[3]+2*g)/844*100}%"><b>${n}</b></div>`; };
+const SHOT = (name, bare) => `<div class="phone"><div class="screen"${name === 'focus' ? ' style="background:#180c20"' : ''}><div class="notch"></div><div class="shotbox"${name === 'focus' ? ' style="background:#180c20"' : ''}><img src="shots/${name}.jpg" alt="">${bare ? '' : PIN[name].map((r, i) => pinHTML(r, i + 1)).join('')}</div></div></div>`;
+
+const SCENES = [
+ {when:'早上 8:10', where:'通勤', icon:'🎧', title:'听音乐', story:'每天一批新歌，戴上耳机就能开始。', phone:SHOT('listen'),
+  steps:[['点左上角 ☰，选「发现世界」','再点「今日听什么」，不用注册'],['点一首歌的 ▶','每日推荐、华语 / 韩流 / 日系 / 欧美热歌'],['想连着听，点「播放全部」','底部出现播放条，一首接一首']],
+  tip:['💡','有的是 <b>30 秒试听</b>，有的是整首，那一行会标“试听”；喜欢的点 ↗ 去原平台听全曲。']},
+ {when:'中午 12:30', where:'通勤第二程', icon:'🎙️', title:'听播客', story:'听腻了歌，同一页切个开关就是播客。', phone:SHOT('podcast'),
+  steps:[['把「音乐」切到「播客」','就在「今日听什么」这一页'],['选一个榜单或分类','各国榜单、科技、英语学习、历史'],['点一集就播','倍速 0.75×–2×，可定时关闭']],
+  tip:['💡','有自己爱听的节目？贴它的 <b>RSS 地址</b>就能订阅；听到哪一集只记在你自己的浏览器里。']},
+ {when:'午休 12:50', where:'十分钟', icon:'🔥', title:'刷热榜', story:'不用开五个 App，六个栏目一页看完。', phone:SHOT('hot'),
+  steps:[['点「热榜」，再选一栏','☰ → 发现世界 → 热榜；综合热点、科技、财经…'],['再选这一栏的平台','右边是名次、标题、热度'],['点「订阅这个榜单」','会变成书架里的一个合集']],
+  tip:['💡','点开的内容尽量在页面里直接看；<b>平台不让显示的</b>才跳去原站。']},
+ {when:'晚上 21:00', where:'慢慢逛', icon:'🧭', title:'逛发现', story:'今天有什么值得看，一页给你理好。', phone:SHOT('discover'),
+  steps:[['点 ☰ →「发现世界」','再点「发现」：今日 3 件 → 今日听什么 → 编辑精选'],['点卡片就读','每张都写着为什么值得看'],['想留着的点<b>书签</b>','存进「我的书架」，不上传']],
+  tip:['💡','想追更的博客或节目，点<b>订阅</b>，新文章会出现在你自己的书架里。']},
+ {when:'睡前 / 学习', where:'安静一会儿', icon:'🌙', title:'专注模式', story:'屏幕只剩一个慢慢变化的图案，加上声音。', phone:SHOT('focus'),
+  steps:[['在「今日听什么」点「专注」','也可以点播放条上的 ◎'],['点一下屏幕换图案','呼吸 · 极光 · 暗'],['选一个<b>定时</b>','15 / 25 / 45 / 60 分钟，到点自己停']],
+  tip:['💡','它只放<b>整首歌或整集节目</b>（30 秒试听不算）；按 Esc 或点 × 退出，声音继续。']},
+];
+
+function inner(s, i) {
+  return `<section class="slide" id="s${i+2}">
+   <div class="head"><div class="when"><b>${s.when}</b><span>${s.where}</span></div><div class="logo"><img src="${LOGO}" alt="">知树阅读</div></div>
+   <div class="title"><i>${s.icon}</i>${s.title}</div>
+   <div class="story">${s.story}</div>
+   <div class="steps">${s.steps.map((x,k)=>`<div class="step"><div class="n">${k+1}</div><h3>${x[0]}</h3><p>${x[1]}</p></div>`).join('')}</div>
+   <div class="phone-wrap">${s.phone}</div>
+   <div class="tip"><i>${s.tip[0]}</i><div>${s.tip[1]}</div></div>
+  </section>`;
+}
+const COVER = `<section class="slide cover" id="s1">
+  <div class="brand"><img src="${LOGO}" alt="">知树阅读</div><div class="tag">免注册 · 免费</div>
+  <h1>不装 App<br><em>一个网页</em><br>过完一天</h1>
+  <div class="sub">从早上的通勤，到睡前的专注</div>
+  <div class="chips"><div class="chip"><i>🎧</i>听音乐</div><div class="chip"><i>🎙️</i>听播客</div><div class="chip"><i>🔥</i>刷热榜</div><div class="chip"><i>🧭</i>逛发现</div></div>
+  <div class="foot"><span>手机可添加到主屏幕</span><span>books.zhitree.cn</span></div>
+  <div class="cphone">${SHOT('listen', true)}</div>
+ </section>`;
+const HOME = `<section class="slide" id="s7">
+  <div class="head"><div class="when"><b>最后一步</b><span>像 App 一样，没网也能读</span></div><div class="logo"><img src="${LOGO}" alt="">知树阅读</div></div>
+  <div class="title"><i>📱</i>添加到主屏幕</div>
+  <div class="os">
+   <div class="osc"><h3><i>🍎</i>iPhone · Safari</h3><ol><li>用 <b>Safari</b> 打开 books.zhitree.cn</li><li>点底部的分享 <span class="share">⬆</span></li><li>下滑，点<b>「添加到主屏幕」</b>→ 添加</li></ol><div class="warn">⚠ iPhone 一定要装：不装，Safari 约 7 天不用会清掉你存的东西</div></div>
+   <div class="osc"><h3><i>🤖</i>安卓 · Chrome</h3><ol><li>打开网站，点页面里的<b>「安装到主屏幕」</b></li><li>或：右上角三点菜单 → <b>添加到主屏幕 / 安装应用</b></li></ol></div>
+   <div class="osc"><h3><i>💻</i>电脑 · Chrome / Edge</h3><ol><li>地址栏最右边的<b>「安装」</b>小图标 → 安装</li></ol></div>
+  </div>
+  <div class="tip"><i>💡</i><div>在<b>微信里打开</b>的页面装不了：点右上角「···」→「在浏览器打开」，再按上面做。</div></div>
+ </section>`;
+
+document.body.insertAdjacentHTML('beforeend', COVER + SCENES.map(inner).join('') + HOME);
+const n = parseInt((location.hash || '').slice(1), 10);
+if (n >= 1 && n <= 7) { document.body.classList.add('one'); document.getElementById('s' + n).classList.add('on'); }
+</script>
+</body>
+</html>
