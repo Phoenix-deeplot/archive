@@ -7,6 +7,7 @@ python -X utf8 devtools/e2e/make_demo.py            build the demo from this fol
 powershell -File devtools/e2e/rig.ps1                start the demo (8820), the fake services (8840–8850) and two browsers (9444, 9445)
 node devtools/e2e/tests/s_listen.js                  run one test (it prints PASS / FAIL lines and "N passed, M failed")
 powershell -File devtools/e2e/run_all.ps1            all of them, about 25 minutes (start it detached; the result is in .rig/all.out)
+python -X utf8 devtools/e2e/books_preview.py         put the real picked books (shelf-directory's registry/books.json) into the demo directory, to look at them (a test that writes its own directory replaces them)
 python -X utf8 devtools/e2e/dup_funcs.py             the page is ONE script: a function declared twice silently overrides the first (run it after every edit of index.html)
 python -X utf8 devtools/e2e/syntax_check.py          the script of the page parses
 ```
