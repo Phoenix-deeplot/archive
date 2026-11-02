@@ -921,6 +921,17 @@ body.has-player .fab{bottom:calc(var(--pl-h) + 16px + env(safe-area-inset-bottom
 .emb-box iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
 .emb-sub{margin:4px 0 0;color:var(--muted);font-size:13px}
 .emb-body{margin:12px 0 0;white-space:pre-line;color:var(--muted);font-size:14px;line-height:1.7;max-height:8em;overflow:auto}
+#bookDlg{width:min(720px,calc(100vw - 16px))}
+.bo-sum{margin:0 0 10px;line-height:1.75}
+.bo-facts{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.bo-facts span{border:1px solid var(--rule);border-radius:999px;padding:1px 10px;font-size:12px;color:var(--muted)}
+.bo-h{margin:6px 0 8px;font-size:14px}
+.bo-chs{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:6px;max-height:min(38vh,300px);overflow:auto;padding:2px}
+.bo-ch{display:block;width:100%;min-height:36px;padding:6px 9px;border:1px solid var(--rule);border-radius:6px;background:var(--surface);color:var(--ink);font:inherit;font-size:13px;text-align:left;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bo-ch:hover,.bo-ch:focus-visible{border-color:var(--accent);outline:none}
+.bo-ch[aria-current="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);font-weight:600}
+.bo-note{margin:10px 0 0;color:var(--muted);font-size:13px;line-height:1.6}
+.xmeta .lic{border:1px solid var(--rule);border-radius:4px;padding:0 5px;font-size:11px}
 body.has-player .rc-act{bottom:calc(var(--pl-h) + 34px + env(safe-area-inset-bottom,0px))}          /* the bar of the recommended page sticks above the player (and the tab on its edge), not under it */
 body.has-player.pl-folded .rc-act{bottom:calc(78px + env(safe-area-inset-bottom,0px))}              /* ... or above the round button of a folded one */
 /* the bar folds: a tab on its top edge (or a swipe down) turns it into a round button in the corner (the cover and play / pause, nothing that closes); the cover unfolds it again */
@@ -1493,6 +1504,19 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     <div class="dlg-head"><h2 id="embedTitle"></h2><p class="emb-sub" id="embedSub"></p></div>
     <div class="dlg-body"><div class="emb-box" id="embedBox"></div><p class="emb-body" id="embedBody" hidden></p></div>
     <div class="dlg-foot"><a class="btn" id="embedOrig" target="_blank" rel="noopener noreferrer"></a><button class="btn primary" type="button" id="embedDone"></button></div>
+  </div>
+</dialog>
+<dialog id="bookDlg" aria-labelledby="bookTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h2 id="bookTitle"></h2><p class="emb-sub" id="bookSub"></p></div>
+    <div class="dlg-body">
+      <p class="bo-sum" id="bookSum"></p>
+      <div class="bo-facts" id="bookFacts"></div>
+      <h3 class="bo-h" data-i="bookChapters">章节</h3>
+      <div class="bo-chs" id="bookChs"></div>
+      <p class="bo-note" data-i="bookNote"></p>
+    </div>
+    <div class="dlg-foot"><a class="btn" id="bookOrig" target="_blank" rel="noopener noreferrer" data-i="bookOrig">打开原站</a><button class="btn" type="button" id="bookClose" data-i="close">关闭</button><button class="btn primary" type="button" id="bookStart"></button></div>
   </div>
 </dialog>
 <nav class="tabbar" id="tabbar" aria-label="Main">
@@ -2267,6 +2291,10 @@ const state = {
 const $ = s => document.querySelector(s);
 Object.assign(I18N.zh,{themeTop:'主题', thLabel:'主题', thClassic:'经典', thCloud:'云红', setTitle:'设置', viewIsCards:'卡片', viewIsList:'列表'});
 Object.assign(I18N.en,{themeTop:'Theme', thLabel:'Theme', thClassic:'Classic', thCloud:'Cloud red', setTitle:'Settings', viewIsCards:'Cards', viewIsList:'List'});
+Object.assign(I18N.zh,{bookChN:n=>`${n} 章`, bookStart:'从头开始读', bookContinue:n=>`继续读：${n}`, bookOrig:'打开原站', bookChapters:'章节', bookLic:'授权', bookNote:'点一章就在这里读；阅读页顶上的“上一篇 / 下一篇”翻章，字号和颜色在“Aa”里调；关掉阅读页会回到这张章节表。',
+  'lic_public-domain':'公有领域', lic_cc0:'CC0', 'lic_cc-by':'CC BY', 'lic_cc-by-sa':'CC BY-SA', 'lic_cc-by-nc':'CC BY-NC', 'lic_cc-by-nc-sa':'CC BY-NC-SA', 'lic_free-to-read':'免费阅读'});
+Object.assign(I18N.en,{bookChN:n=>n===1?'1 chapter':`${n} chapters`, bookStart:'Start reading', bookContinue:n=>`Continue: ${n}`, bookOrig:'Open the original', bookChapters:'Chapters', bookLic:'Licence', bookNote:'Tap a chapter to read it here; “Previous / Next” at the top of the reader turns the chapters, and the text size and colours are under “Aa”. Closing the reader brings you back to this list.',
+  'lic_public-domain':'Public domain', lic_cc0:'CC0', 'lic_cc-by':'CC BY', 'lic_cc-by-sa':'CC BY-SA', 'lic_cc-by-nc':'CC BY-NC', 'lic_cc-by-nc-sa':'CC BY-NC-SA', 'lic_free-to-read':'Free to read'});
 Object.assign(I18N.zh,{trBtn:'翻译', trTip:'翻译这一页（文字会发到翻译服务）', trCycle:'点一下切换：双语 → 译文 → 原文', trBoth:'双语', trOnly:'译文', trOrig:'原文', trBusy:(a,b)=>`翻译中 ${a}/${b}`, trNone:'这一页没有可以翻译的文字', trSame:'这一页已经是你界面的语言了', trCut:'文章很长，只翻译了前 3 万字', trFailed:m=>`翻译没有成功：${m}`,
   trGo:'翻译这一页（双语对照）', trAskTitle:'翻译这一页？', trAsk:'点“翻译”，这一页的文字会发送到翻译服务（DeepL 或阿里云）去翻译；不会发送你是谁，服务端也不保存原文。译文只存在这个浏览器里。', trYes:'翻译', trNo:'取消'});
 Object.assign(I18N.en,{trBtn:'Translate', trTip:'Translate this page (its text goes to a translation service)', trCycle:'Click to switch: both → translation → original', trBoth:'Both', trOnly:'Translation', trOrig:'Original', trBusy:(a,b)=>`Translating ${a}/${b}`, trNone:'There is no text to translate on this page', trSame:'This page is in the language of your interface already', trCut:'A long article: only the first 30,000 characters were translated', trFailed:m=>`The translation did not work: ${m}`,
@@ -3542,7 +3570,8 @@ async function openLinkReading(it, push){
   fr.srcdoc=docShell(it.title,`<h1>${esc(it.title)}</h1><p>${esc(t('readLoading'))}</p><p><a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t('readOpenOrig'))}</a></p>`,hostOf(u),true);
   if(push!==false) history.pushState({read:id},'','#read/'+encodeURIComponent(id));
   try{
-    const d=await fetchLinkText(it); await storeText(it,d);
+    let d; try{ d=await fetchLinkText(it); }catch(e){ if(!it.bookOf || e.reason!=='unreachable' || readSeq!==seq) throw e; await new Promise(r=>setTimeout(r,1200)); d=await fetchLinkText(it); }          // (a chapter of a book: the wiki is asked once more when the first try could not connect)
+    await storeText(it,d);
     if(readSeq===seq && state.readingId===id) await openReader(id,false);                     // the same page again, now with its text
   }catch(e){
     markNoread(it,e);
@@ -3568,13 +3597,14 @@ function dirReaderId(did){ return state.items.some(x=>x.id==='local:link:'+did) 
 function dirReaderOrder(){                                                                     // only articles actually shown in this public view, in their on-screen order
   const byId=new Map((state.dirData&&state.dirData.items||[]).map(d=>[d.id,d])), seen=new Set(), out=[];
   document.querySelectorAll('#dirReco [data-dopen],#grid [data-dopen]').forEach(a=>{
-    const did=a.dataset.dopen, d=byId.get(did); if(seen.has(did) || !dirReadable(d)) return;
+    const did=a.dataset.dopen, d=byId.get(did); if(seen.has(did) || !dirReadable(d) || bookChs(d)) return;           // (a book with chapters has its own order: its chapters)
     seen.add(did); out.push(dirReaderId(did));
   });
   return out;
 }
 function openDirReader(did, push){                                                             // an article of the public directory: read in the page too (nothing is kept unless it is saved)
   const d=state.dirData && state.dirData.items.find(x=>x.id===did); if(!d) return;
+  if(bookChs(d) && feedApi()) return openBook(did);                                          // a picked book: its window, then its chapters
   statSend('open','item',did); markDirRead(did);
   const saved=state.items.find(x=>x.id==='local:link:'+did);
   if(saved) return openReader(saved.id,push);
@@ -3583,6 +3613,47 @@ function openDirReader(did, push){                                              
   if(!it){ it={id, source:'tmp', type:'link', url:d.url, title:d.title, summary:d.summary, keywords:(d.tags||[]).slice(0,8), lang:d.lang, date:d.date, category:'notes', from:(state.shelfMap.get(d.shelf)||{}).name||hostOf(d.url)}; state.tmp.set(id,it); }
   return openReader(id,push);
 }
+/* ===== the picked books of the directory ("精选图书"): a book with chapters (ch = {s: site, p: prefix, n: [names]}; chapter i is https://<s>/wiki/<p><n[i]>) opens in a window with its chapters.
+   A chapter is read in the reader like any article (nothing is kept unless the book is saved); the reader's previous / next walk the chapters of that book, closing the reader brings the window back,
+   and this browser remembers the chapter you got to. A book without chapters is read in the reader (it is one page) or opened on its own site, as any other item of the directory. ===== */
+const LIC_NAMES=new Set(['public-domain','cc0','cc-by','cc-by-sa','cc-by-nc','cc-by-nc-sa','free-to-read']);
+const licName = l => LIC_NAMES.has(l) ? t('lic_'+l) : '';
+const bookChs = d => d && d.type==='book' && d.ch && typeof d.ch.s==='string' && Array.isArray(d.ch.n) && d.ch.n.length ? d.ch : null;
+const chName = n => String(n).replace(/第0+(?=\d)/,'第');                                    // (第001回 is read as 第1回)
+const bookChUrl = (ch,i) => `${/^(localhost|127\.0\.0\.1)(:\d+)?$/.test(ch.s)?'http':'https'}://${ch.s}/wiki/${encodeURIComponent((String(ch.p||'')+ch.n[i]).replace(/ /g,'_')).replace(/%2F/g,'/')}`;       // (a wiki writes a space as _; a site on this computer is http: for the test rig)
+const bookPos = did => { const p=+((LS.get('bookPos',{})||{})[did]); return p>0 ? p : 0; };
+function bookItem(d,i){                                                                           // chapter i as an article to read
+  const ch=bookChs(d), id=`tmp:${d.id}~${i}`; let it=state.tmp.get(id);
+  if(!it){ it={id, source:'tmp', type:'link', url:bookChUrl(ch,i), title:`${d.title} · ${chName(ch.n[i])}`, summary:'', keywords:(d.tags||[]).slice(0,8), lang:d.lang, date:'', category:'notes', from:d.author||(state.shelfMap.get(d.shelf)||{}).name||hostOf(d.url), bookOf:d.id}; state.tmp.set(id,it); }
+  return it;
+}
+function openBookChapter(did, i, push){
+  const d=state.dirData && state.dirData.items.find(x=>x.id===did), ch=bookChs(d); if(!ch || !(i>=0 && i<ch.n.length) || !httpUrl(bookChUrl(ch,i))) return;
+  state.visible=ch.n.map((_,k)=>bookItem(d,k).id);                                                // previous / next walk the chapters of this book
+  const m=LS.get('bookPos',{})||{}; m[did]=i; LS.set('bookPos',m);
+  return openReader(`tmp:${did}~${i}`,push);
+}
+function openBook(did, quiet){
+  const d=state.dirData && state.dirData.items.find(x=>x.id===did); if(!d) return;
+  const ch=bookChs(d); if(!ch){ window.open(d.url,'_blank','noopener,noreferrer'); return; }
+  if(!quiet){ statSend('open','item',did); markDirRead(did); }
+  const sh=state.shelfMap.get(d.shelf)||{}, pos=Math.min(bookPos(did),ch.n.length-1), dlg=$('#bookDlg'), skip=/^(在线书籍|online books?)$/i;
+  $('#bookTitle').textContent=d.title;
+  $('#bookSub').textContent=[d.author, sh.name||hostOf(d.url), t('bookChN',ch.n.length)].filter(Boolean).join(' · ');
+  $('#bookSum').textContent=d.summary||'';
+  $('#bookFacts').innerHTML=[licName(d.license) ? `<span title="${esc(t('bookLic'))}">${esc(licName(d.license))}</span>` : '', ...(d.tags||[]).filter(x=>!skip.test(x)).slice(0,5).map(x=>`<span>${esc(x)}</span>`)].join('');
+  $('#bookChs').innerHTML=ch.n.map((n,i)=>`<button class="bo-ch" type="button" data-bo-ch="${i}"${i===pos?' aria-current="true"':''} title="${esc(chName(n))}">${esc(chName(n))}</button>`).join('');
+  $('#bookOrig').href=httpUrl(d.url)||'#';
+  const go=$('#bookStart'); go.textContent=pos>0 ? t('bookContinue',chName(ch.n[pos])) : t('bookStart'); go.dataset.boGo=String(pos);
+  dlg.dataset.did=did; if(!dlg.open) dlg.showModal();
+  const cur=dlg.querySelector('.bo-ch[aria-current="true"]'); if(cur && pos>0) cur.scrollIntoView({block:'nearest'});
+}
+$('#bookDlg').addEventListener('click',e=>{
+  const dlg=$('#bookDlg'); if(e.target===dlg){ dlg.close(); return; }
+  const b=e.target.closest('[data-bo-ch]'), g=e.target.closest('#bookStart'), i=b ? +b.dataset.boCh : g ? +g.dataset.boGo : -1; if(i<0) return;
+  const did=dlg.dataset.did; dlg.close(); openBookChapter(did,i);
+});
+$('#bookClose').addEventListener('click',()=>$('#bookDlg').close());
 async function openReader(id, push){
   const it=itemById(id); if(!it) return;
   if(it.type==='link' && !hasText(it)){
@@ -3620,7 +3691,7 @@ let readerReturnY=0, readerBackPending=0;
 function rememberReaderReturn(){ if($('#reader').hidden) readerReturnY=window.scrollY; }
 function closeReader(fromPop){
   if($('#reader').hidden) return;
-  const cur=itemById(state.readingId), back = !fromPop && cur && cur.back && itemById(cur.back) ? cur.back : '';
+  const cur=itemById(state.readingId), back = !fromPop && cur && cur.back && itemById(cur.back) ? cur.back : '', bookBack = cur && cur.bookOf || '';
   if(back){ cur.back=''; closePanels(); openReader(back,false); return; }                      // a story opened from a card: back is the card (see richLinkClick)
   closePanels(); $('#frame').classList.remove('inv'); $('#tint').style.display='none';
   $('#reader').hidden=true; document.body.classList.remove('reading','reader-focus'); $('#frame').removeAttribute('srcdoc'); $('#frame').src='about:blank';
@@ -3628,14 +3699,16 @@ function closeReader(fromPop){
   const id=state.readingId; state.readingId=null;
   if(!fromPop && history.state && history.state.read){ readerBackPending=Date.now(); history.back(); setTimeout(()=>{ if(Date.now()-readerBackPending>=1800) readerBackPending=0; },1900); }
   render();
-  const did=id && (id.startsWith('tmp:') ? id.slice(4) : id.startsWith('local:link:') ? id.slice(11) : '');
+  const did=id && (id.startsWith('tmp:') ? id.slice(4).replace(/~\d+$/,'') : id.startsWith('local:link:') ? id.slice(11) : '');
   const card=id && (document.querySelector(`.card[data-id="${CSS.escape(id)}"]`) || (did && document.querySelector(`.card[data-did="${CSS.escape(did)}"]`)));
   const link=card && card.querySelector('.card-title a'); if(link) link.focus({preventScroll:true});
   window.scrollTo({top:readerReturnY,behavior:'auto'});
+  if(bookBack) openBook(bookBack,true);                                                          // a chapter of a book: closing it returns to the chapters
 }
 function step(d){
   const i=state.visible.indexOf(state.readingId), n=state.visible[i+d]; if(!n) return;
-  const opened=n.startsWith('tmp:') ? openDirReader(n.slice(4),false) : openReader(n,false);
+  const bk=/^tmp:(.+)~(\d+)$/.exec(n);
+  const opened=bk ? openBookChapter(bk[1],+bk[2],false) : n.startsWith('tmp:') ? openDirReader(n.slice(4),false) : openReader(n,false);
   Promise.resolve(opened).then(()=>{ if(state.readingId===n) history.replaceState({read:n},'','#read/'+encodeURIComponent(n)); });
 }
 /* ---- reader: colours and text size, contents, bookmarks ---- */
@@ -5821,9 +5894,10 @@ function dirDay(it){                                                            
 const zhSub = it => state.lang==='zh' && it.title_zh && it.lang!=='zh' && it.title_zh!==it.title ? `<p class="tz" lang="zh">${esc(it.title_zh)}</p>` : '';          // a Chinese page, a title in another language: its Chinese in small grey type (made when the directory is built, if the owner set a translation key)
 const dirLangMark = it => { const l=it.lang; return !l || l===state.lang || l==='mixed' ? '' : l==='en' ? 'EN' : l==='zh' ? '中文' : String(l).toUpperCase(); };       // (only a language other than the page's own)
 function shelfLook(it){ const sh=state.shelfMap.get(it.shelf)||{}, pal=PALETTES[hashStr(sh.id||it.shelf||'-')%PALETTES.length]; return {pal, g:glyphOf(sh.name||hostOf(it.url)||'#')}; }      // the colour of a program stays the same on every card
+const coverLook = it => it.type==='book' && it.license ? {pal:PALETTES[hashStr(it.id)%PALETTES.length], g:glyphOf(String(it.title).replace(/^(the|a|an)\s+/i,''))} : shelfLook(it);          // a picked book has a colour and a letter of its own (else the whole shelf of books would look like one cover)
 const srcMark = it => { const L=shelfLook(it); return `<i class="mono-sm" aria-hidden="true" style="background:${L.pal[2]};color:${L.pal[0]}">${esc(L.g)}</i>`; };
 function dirCoverArt(it, mode){                                                                  // generated: the program's colour, a pattern of its own per article, the program's letter (the rank on a hot list) as the mark
-  const L=shelfLook(it), [bg,mid,ink]=L.pal, hero=mode==='hero', thumb=mode==='thumb', tall=mode==='tall', W=hero?640:thumb?120:320, H=hero?400:thumb?84:tall?240:200, r=rng(hashStr(it.id)), mark=it.rank>0 ? String(it.rank) : L.g;
+  const L=coverLook(it), [bg,mid,ink]=L.pal, hero=mode==='hero', thumb=mode==='thumb', tall=mode==='tall', W=hero?640:thumb?120:320, H=hero?400:thumb?84:tall?240:200, r=rng(hashStr(it.id)), mark=it.rank>0 ? String(it.rank) : L.g;
   const g=hero ? coverPattern(r,bg,mid,W,H) : coverPattern(r,mid,ink,W,H), font="'Noto Serif SC','Songti SC',Georgia,serif", big=mark.length>1;           // (the hero is dark, so its lines are light)
   const stamp = tall ? `<text x="${W/2}" y="${H/2+(big?42:56)}" text-anchor="middle" font-family="${font}" font-weight="900" font-size="${big?120:160}" fill="${ink}" opacity=".88">${esc(mark)}</text>`
     : hero ? `<text x="${W-24}" y="${H-18}" text-anchor="end" font-family="${font}" font-weight="900" font-size="${big?200:300}" fill="${bg}" opacity=".16">${esc(mark)}</text>`
@@ -5854,7 +5928,7 @@ function dirStatsHTML(it, live){                                                
 }
 function dirMetaLine(it, sh){
   const lm=dirLangMark(it), day=dirDay(it), tn=it.type!=='article' ? `<span class="tag ${TYPE_COLOR[it.type]}">${esc(t('ty_'+it.type))}</span>` : '';
-  return tn + srcMark(it) + (sh ? `<button class="shelf-link" type="button" data-dshelf="${esc(sh.id)}" title="${esc(sh.name)}">${esc(sh.name)}</button>` : `<span>${esc(hostOf(it.url))}</span>`) + (lm ? `<span class="lm">${esc(lm)}</span>` : '') + (it.author ? `<span class="au">${esc(it.author)}</span>` : '') + (it.pages ? `<span>${esc(t('pages',it.pages))}</span>` : '') + (day ? `<span>${esc(day)}</span>` : '');
+  return tn + srcMark(it) + (sh ? `<button class="shelf-link" type="button" data-dshelf="${esc(sh.id)}" title="${esc(sh.name)}">${esc(sh.name)}</button>` : `<span>${esc(hostOf(it.url))}</span>`) + (lm ? `<span class="lm">${esc(lm)}</span>` : '') + (it.author ? `<span class="au">${esc(it.author)}</span>` : '') + (it.pages ? `<span>${esc(t('pages',it.pages))}</span>` : '') + (bookChs(it) ? `<span>${esc(t('bookChN',it.ch.n.length))}</span>` : '') + (licName(it.license) ? `<span class="lic" title="${esc(t('bookLic'))}">${esc(licName(it.license))}</span>` : '') + (day ? `<span>${esc(day)}</span>` : '');
 }
 const REL='nofollow ugc noopener noreferrer';
 function dirSaveBtn(it, saved){ const on=saved.has('local:link:'+it.id), tip=t(on?'savedTip':'saveToShelf'); return `<button class="ibtn bm" type="button" data-d="save" aria-pressed="${on}" title="${esc(tip)}" aria-label="${esc(tip)}">${ICON.bookmark}</button>`; }
@@ -5864,7 +5938,7 @@ function dirQuote(it){                                                          
   return a.length>110 ? a.slice(0,110).join('').replace(/[\s，,、；;：:.。]+$/,'')+'…' : a.join('');
 }
 function dirXCoverHTML(it, rec){                                                                       // the cover of a card: a picture, the summary on the program's colour, or the rank / the letter; always the same shape
-  const L=shelfLook(it), [bg,mid,ink]=L.pal, h=hashStr(it.id), q=dirQuote(it);
+  const L=coverLook(it), [bg,mid,ink]=L.pal, h=hashStr(it.id), q=dirQuote(it);
   const open=`<a class="xcover%CLS%" style="%STYLE%" href="${esc(it.url)}" target="_blank" rel="${REL}" aria-label="${esc(it.title)}" data-dopen="${esc(it.id)}">`, tail=`${whyHTML(it,rec)}${it.type!=='article'?`<span class="ftype">${esc(t('ty_'+it.type))}</span>`:''}${it.audio?dirPlayMark():''}</a>`;
   const fill=(cls,style,inner)=>open.replace('%CLS%',cls).replace('%STYLE%',style)+inner+tail;
   if(it.image) return fill('', '', `<img src="${esc(it.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fb="x">`);
@@ -6507,6 +6581,7 @@ function dirOpenClick(e){                                                       
   const dop=e.target.closest('a[data-dopen]'); if(!dop) return false;
   const di=state.dirData && state.dirData.items.find(x=>x.id===dop.dataset.dopen);                  // an episode: it plays here
   if(di && di.audio && e.button===0 && !(e.metaKey||e.ctrlKey||e.shiftKey)){ e.preventDefault(); dirPlay(di); return true; }
+  if(di && bookChs(di) && feedApi() && e.button===0 && !(e.metaKey||e.ctrlKey||e.shiftKey)){ e.preventDefault(); openBook(di.id); return true; }          // a picked book: its chapters in a window
   const sh=di && state.shelfMap.get(di.shelf);                                                      // a video / a song / a hot-list row / a README ... is shown in the page (richOpen), a modified click goes to the original
   if(di && e.button===0 && !(e.metaKey||e.ctrlKey||e.shiftKey) && richOpen({title:di.title, url:di.url, img:di.image, body:di.summary, from:(sh||{}).name||hostOf(di.url), lang:di.lang, hot:!!(sh && sh.hot), date:di.date})){
     e.preventDefault(); statSend('open','item',di.id); markDirRead(di.id); return true;
