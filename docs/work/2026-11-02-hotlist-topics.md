@@ -19,10 +19,10 @@
 | 任务 | 负责 | 分支 / worktree | 会改的文件 | 不许碰 |
 |---|---|---|---|---|
 | 热榜布局、分类呈现、日/周切换与 E2E 验收 | Codex | `codex/hotlist-topics` · `E:\Ztree\wt\codex-hotlist-topics`（my-archive） | `index.html`、`devtools/e2e/tests/s_hotpage.js` 及必要的热榜测试 | 书架/发现/阅读器、无关翻译词典、未跟踪用户文件、线上配置 |
-| 热榜分类、事件源聚合、历史快照接口与数据库迁移 | 第二实现代理（当前会话未连接 Claude；确认后再分派） | `claude/hotlist-topics` · `E:\Ztree\wt\claude-hotlist-topics`（shelf-directory） | `hotapi.py`、`api/hot.py`、新增事件 API、`registry/hot.json`、新增迁移与热榜测试；必要时最小修改 `vercel.json` | `my-archive` 文件、现有 `ops` 业务表及用户内容数据、密钥/线上环境变量 |
+| 热榜分类、事件源聚合、历史快照接口与数据库迁移 | Codex 子代理 | `codex/hotlist-topics-api` · `E:\Ztree\wt\codex-hotlist-topics-api`（shelf-directory） | `hotapi.py`、`api/hot.py`、新增事件 API、`registry/hot.json`、新增迁移与热榜测试；必要时最小修改 `vercel.json` | `my-archive` 文件、现有 `ops` 业务表及用户内容数据、密钥/线上环境变量 |
 | 来源可用性与条款复核 | 只读审阅 | 不改文件 | 无 | 不提交、不修改工作区 |
 
-注：两个仓库必须各自在自己的 `master` 上有规划记录，再各自建立隔离 worktree。当前会话没有 Claude 执行端；若用户要求严格由 Claude 做后端分支，需待其在确认后接手。Codex 不会冒充 Claude。
+注：两个仓库必须各自在自己的 `master` 上有规划记录，再各自建立隔离 worktree。当前会话没有 Claude 执行端，因此后端由 Codex 子代理负责独立分支；不冒充 Claude。
 
 ### 接口约定
 
@@ -76,9 +76,9 @@
 
 ## 3. 进度
 
-### 第二实现代理
+### Codex 子代理
 
-- 尚未分派；等待用户确认计划与当前会话可用的协作方式。
+- 用户已确认功能规划；后端任务待建立独立 worktree 后分派。
 
 ### Codex
 
