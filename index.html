@@ -3554,7 +3554,8 @@ async function openLinkReading(it, push){
   fr.srcdoc=docShell(it.title,`<h1>${esc(it.title)}</h1><p>${esc(t('readLoading'))}</p><p><a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t('readOpenOrig'))}</a></p>`,hostOf(u),true);
   if(push!==false) history.pushState({read:id},'','#read/'+encodeURIComponent(id));
   try{
-    const d=await fetchLinkText(it); await storeText(it,d);
+    let d; try{ d=await fetchLinkText(it); }catch(e){ if(!it.bookOf || e.reason!=='unreachable' || readSeq!==seq) throw e; await new Promise(r=>setTimeout(r,1200)); d=await fetchLinkText(it); }          // (a chapter of a book: the wiki is asked once more when the first try could not connect)
+    await storeText(it,d);
     if(readSeq===seq && state.readingId===id) await openReader(id,false);                     // the same page again, now with its text
   }catch(e){
     markNoread(it,e);
