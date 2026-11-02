@@ -4,7 +4,7 @@ const fs = require('fs');
 const O = require('./paths').DIST + '/';
 const DIRF = O + 'dir/directory.json';
 const dir0 = JSON.parse(fs.readFileSync(DIRF, 'utf8'));
-const SVC = 'http://127.0.0.1:8840';
+const SVC = 'http://127.0.0.1:' + (process.env.E2E_HOT_PORT || '8840');
 const shelf = (id, name, kind, lang, tags, n, extra) => ({ id, name, description: name + ' 的简介', home: 'http://127.0.0.1:8841/blog/', kind, lang, license: '', tags, n, updated: '2026-10-20', feed: kind === 'feed' ? 'http://127.0.0.1:8841/blog/feed.xml?d=' + id : '', status: 'ok', ...extra });
 const item = (id, title, shelfId, date, type, url, tags, lang, extra) => ({ id, title, summary: title + '的摘要', url, image: '', date, type, lang: lang || 'zh', tags, shelf: shelfId, ...extra });
 const SHELVES = [

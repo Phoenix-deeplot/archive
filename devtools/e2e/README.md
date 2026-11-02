@@ -11,7 +11,7 @@ python -X utf8 devtools/e2e/dup_funcs.py             the page is ONE script: a f
 python -X utf8 devtools/e2e/syntax_check.py          the script of the page parses
 ```
 
-- **Ports** are fixed in the tests: 8820, 8840–8843, 8850, 9444, 9445 (the range 8800–8899 and 9440–9449 belongs to Claude, see `AGENTS.md`). Two agents cannot run the rig at the same time on one machine until the tests take the ports from the environment.
+- **Ports** default to 8820, 8840–8843, 8850, 9444 and 9445. The rig accepts `E2E_APP_PORT`, `E2E_HOT_PORT`, `E2E_FEED_PORT`, `E2E_TEXT_PORT`, `E2E_POD_PORT`, `E2E_READ_PORT`, `E2E_CDP_PORT` and `E2E_CDP2_PORT`; `run_branch.ps1` defaults to the Codex range (8920, 8940–8943, 8950, 9450–9451) so it can run beside Claude's rig. Two agents must still use separate values.
 - `E2E_SRC` (the folder under test), `E2E_DIST` (the demo to open), `E2E_SHOTS` (where screenshots go), `SHELF_DIRECTORY` (the folder of the directory service, for the fake `/api/listen`): see `paths.js`.
 - **Fixtures**: `fixtures/demo-library` (a made-up library; the guide of the project is added to it), `fixtures/site.demo.json`, `fixtures/directory.base.json` (the made-up public directory; `dir_fixture.js` writes the one most tests use into the demo and a test may change it: listen, focus and more leave it changed, so they run last).
 - **The services** (`services/`) are plain Python: `sync_dev.py` (the directory service: sync store, hot lists, `/api/listen` as `shelf-directory/listen.py` answers, switchable with `/__listen?mode=ok|down|junk|empty|real`), `feed_site.py` (a made-up blog; written again, its titles are "<name> 第 N 篇"), `feed_site_text.py`, `podcast_site.py` (episodes that really play), `read_site.py`.

@@ -8,6 +8,7 @@ for the tests to reach its inside: window.__zt (every name of HOOKS that the pag
 Run it again after every change of the page.
 """
 import argparse
+import json
 import os
 import shutil
 import subprocess
@@ -22,6 +23,24 @@ HOOKS = ('state idb LS bkBuild bkOpen bkPlan bkApply zipOpen zipBuild loadAll ad
          'loadHeat heatAvailable dirList markDirRead subscribeNow dirMeta openNote neSave neClose NE neDeriveTitle neTags syncRecord neDocFit neDomToMd neGet neRaw neParse neFix neNorm renderCheck openSubmit '
          'guideItem dirWhy dirProfile pl plAudio plPlay plEnqueue plToggle plStop plRestore plRender plFold richOpen richFromItem embedOf cardData postData withForm focusOpen readerFocus fcDlg '
          'shLayout shStep shPanels').split()
+
+
+def test_ports():
+    return {'8820': os.environ.get('E2E_APP_PORT', '8820'), '8840': os.environ.get('E2E_HOT_PORT', '8840'),
+            '8841': os.environ.get('E2E_FEED_PORT', '8841'), '8842': os.environ.get('E2E_TEXT_PORT', '8842'),
+            '8843': os.environ.get('E2E_POD_PORT', '8843'), '8850': os.environ.get('E2E_READ_PORT', '8850')}
+
+
+def remap_urls(value, ports):
+    if isinstance(value, dict):
+        return {k: remap_urls(v, ports) for k, v in value.items()}
+    if isinstance(value, list):
+        return [remap_urls(v, ports) for v in value]
+    if isinstance(value, str):
+        for old, new in ports.items():
+            value = value.replace('127.0.0.1:' + old, '127.0.0.1:' + new)
+        return value
+    return value
 
 
 def main():
@@ -44,13 +63,19 @@ def main():
     guide = os.path.join(src, 'library', 'notes', 'guide')
     if os.path.isdir(guide):
         shutil.copytree(guide, os.path.join(out, 'library', 'notes', 'guide'))
-    shutil.copy2(os.path.join(HERE, 'fixtures', 'site.demo.json'), os.path.join(out, 'site.json'))
+    site_demo = json.load(open(os.path.join(HERE, 'fixtures', 'site.demo.json'), encoding='utf-8'))
+    site_demo = remap_urls(site_demo, test_ports())
+    with open(os.path.join(out, 'site.json'), 'w', encoding='utf-8') as f:
+        json.dump(site_demo, f, ensure_ascii=False)
     r = subprocess.run([sys.executable, '-X', 'utf8', 'build_index.py', '--keep-dates', '--seo', '--site-url', a.site_url, '--out', 'dist'], cwd=out, capture_output=True, text=True, encoding='utf-8', errors='replace')
     if r.returncode != 0:
         sys.exit('the build failed:\n' + r.stdout[-1500:] + r.stderr[-1500:])
     dist = os.path.join(out, 'dist')
     os.makedirs(os.path.join(dist, 'dir'), exist_ok=True)
-    shutil.copy2(os.path.join(HERE, 'fixtures', 'directory.base.json'), os.path.join(dist, 'dir', 'directory.json'))
+    directory_demo = json.load(open(os.path.join(HERE, 'fixtures', 'directory.base.json'), encoding='utf-8'))
+    directory_demo = remap_urls(directory_demo, test_ports())
+    with open(os.path.join(dist, 'dir', 'directory.json'), 'w', encoding='utf-8') as f:
+        json.dump(directory_demo, f, ensure_ascii=False)
     end = '\n})();\n</script>'
     hook = ("\nwindow.__zt={}; %s.forEach(function(n){ try{ window.__zt[n]=eval(n); }catch(e){} });" % repr(HOOKS))
     n = 0
