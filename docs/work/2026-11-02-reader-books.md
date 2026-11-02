@@ -1,6 +1,6 @@
 # 阅读体验：读书模式、翻页、精选图书卡片、按需翻译（2026-11-02）
 
-状态：**已确认（2026-11-02，用户：“建议可以”）**，按下面做 R1–R4；用户 11-02 补充：①**目录（章节标题 / 文章目录）也要能翻译**；②系列 / 合集以后在运营后台里设置，现在不做；③新增一块“共享内容缓存”（见 R0，设计待用户确认后才开工，不确认就不做）。
+状态：**已确认（2026-11-02，用户：“建议可以”）**，按下面做 R1–R4；用户 11-02 补充：①**目录（章节标题 / 文章目录）也要能翻译**；②系列 / 合集以后在运营后台里设置，现在不做；③新增一块“共享内容缓存”（R0，先做）：用户 11-02 定了——精品书长期存 PostgreSQL，临时 / 冷门 / 变化快的放 Redis，具体按浏览习惯由 Claude 设计；先只存图书和书单，以后用户会爬取或手动添加书。
 
 ## 1. 任务清单（用户）
 
@@ -23,12 +23,13 @@
 
 | 步 | 内容 | my-archive 分支 · worktree | shelf-directory 分支 · worktree |
 |---|---|---|---|
-| R1 读书模式 | 章节面板、章末“下一章”、预读和缓存、记住位置、读书排版选项、手机点中间显示/隐藏工具栏、书章里关掉侧滑换章 | `claude/reader-book-mode` · `E:\Ztree\wt\claude-reader-book-mode` | `claude/books-titles` · `E:\Ztree\wt\claude-books-titles`（章节标题） |
+| R0 共享内容缓存 | 读过一次的章存到云端（Redis 热层 + PostgreSQL 长期层），再读的人直接取；本机再缓存一份；精选图书先做实验 | `claude/book-content-ui` · `E:\Ztree\wt\claude-book-content-ui` | `claude/book-content` · `E:\Ztree\wt\claude-book-content` |
+| R1 读书模式 | 章节面板、章末“下一章”、预读、记住位置、读书排版选项、手机点中间显示/隐藏工具栏、书章里关掉侧滑换章 | `claude/reader-book-mode` · `E:\Ztree\wt\claude-reader-book-mode` | `claude/books-titles` · `E:\Ztree\wt\claude-books-titles`（章节标题） |
 | R2 翻页模式 | `Aa` 里“滚动 / 翻页”开关；点左右两侧、滑动、← → / 空格翻页；页码；章末进下一章；宽屏双页；改字号不丢位置 | `claude/reader-paged` · `E:\Ztree\wt\claude-reader-paged` | 无 |
 | R3 精选图书卡片 | 书封（有封面图用图，没有就生成带书名和作者的文字书封）、卡片显示书名 / 作者 / 2–3 行摘要 /“试读 · 继续阅读”；列表模式小封面 + 书名 + 作者 + 摘要 + 章数 | `claude/books-cards` · `E:\Ztree\wt\claude-books-cards` | 无 |
 | R4 按需翻译 | “翻译本屏 / 翻译本章”；按段落缓存；手机浮动小按钮（只在能翻译且能站内读时出现）；书的窗口里“翻译简介” | `claude/reader-translate` · `E:\Ztree\wt\claude-reader-translate` | 无（服务端不改） |
 
-顺序固定 R1 → R2 → R3 → R4；R1 里 shelf-directory 的书单标题和页面同批合并。每步的分支都从**上一步合并后的 master** 开。
+顺序固定 R0 → R1 → R2 → R3 → R4；R1 里 shelf-directory 的书单标题和页面同批合并。每步的分支都从**上一步合并后的 master** 开。
 
 ### 会改的文件
 
@@ -41,6 +42,30 @@
 - 页面是一个大函数：改完跑重名函数检查和语法检查。
 
 ### 接口约定
+
+#### 共享内容缓存（R0，shelf-directory ↔ 页面）
+
+读取顺序：**本机 → 云端（CDN / Redis / PostgreSQL）→ 原站**。读到的内容再按下面的规则存回去。
+
+`GET /api/book?b=<书编号>&c=<章序号>`（只有一页的书 `c=0`）。服务端按 `registry/books.json` 自己拼章节地址，**不接受访客给的网址**，所以它不是通用代理，也存不进别的内容。
+
+```json
+成功：{"ok": true, "b": "hongloumeng", "c": 0, "title": "…", "content": "<清理过的安全 HTML>", "lang": "zh", "license": "public-domain",
+       "source": "https://zh.wikisource.org/wiki/…", "by": "维基文库", "tier": "hot" | "durable" | "source", "v": 1}
+失败：{"ok": false, "error": "nocache" | "unknown" | "unreadable" | "limit" | "busy", "message": "给读者看的一句话"}
+```
+
+- **授权闸门**：只有 `license` 是 `public-domain`、`cc0`、`cc-by`、`cc-by-sa` 的书才存到云端；别的（`cc-by-nc*`、`free-to-read`，以及书单里没写授权的）返回 `nocache`，页面退回现在的 `/api/feed read`，**只缓存在读者自己的浏览器里**。书单条目可选 `"share": false` 强制不共享。以后爬取或手动添加的书必须写 `license`，没写的不会进云端。
+- **两层存储**（书单条目可选 `"keep": true`，“精品，长期保存”；现有 54 本都写 `true`，以后新加的默认 `false`）：
+  - 热层 **Redis**：所有被读过的可共享章都在这里，`keep` 的存 14 天（过期了还能从 PostgreSQL 补回），其他的存 30 天后消失。
+  - 长期层 **PostgreSQL**：`keep: true` 的书，第一次从原站读到就写进来，不过期；其他的书，**同一章被读满 5 次**（`BOOK_PROMOTE_READS`）也自动升到这里。冷门、变化快的内容不占长期层。
+  - 读：CDN → Redis → PostgreSQL（命中就回填 Redis）→ 原站。没配 PostgreSQL 就只有 Redis；Redis 也没配就只靠 CDN 和本机，照样能读。
+- **CDN**：成功的响应带 `Cache-Control: public, s-maxage=86400, stale-while-revalidate=604800` 和 `Vary: Origin`，同一章被很多人读时连数据库都不用查；出错一律 `no-store`。
+- **防护**：同一章第一次被很多人同时读时，只放一个去原站（锁 30 秒），其余稍等再取；读原站每个访客 10 分钟最多 30 次（命中缓存的不算）；单章正文最大 150 KB；缓存键带正文提取的版本 `v`，改了提取方法就自动重读。
+- **PostgreSQL 表**：`library.book_chapters(book_id, ch, parser, title, html, lang, license, source_url, bytes, reads, fetched_at, last_read_at, PRIMARY KEY (book_id, ch, parser))`，迁移文件 `migrations/006_library_book_chapters.sql`；连接沿用 `OPS_DATABASE_URL` / `POSTGRES_URL`；这个服务只读写这一张表。**迁移要用户自己在数据库里执行**，我不要也不看数据库口令。
+- **和别的数据的分工**：共享内容（章节正文）→ 这里；个人数据（读到哪、书签）→ 现有同步码；编辑数据（系列、合集、封面、排序）→ 以后放运营后台 `ops` 库。缓存键是“书编号 + 章序号”，以后书单搬进运营后台也不用重存。
+- **页面**：`bookLoad()` 依次试：本机（Cache API `zt-book-chapters`，最近 60 章）→ `/api/book`（地址由 `submit_api` 推出，和 `/api/feed` 一样）→ `/api/feed read`；章节页脚显示来源、授权和“阅读原文”。
+- **预热（可选）**：`python books_tool.py warm [--only 书编号]` 对 `/api/book` 礼貌地逐章请求，让第一批读者也秒开。
 
 #### 书单：章节标题（R1，shelf-directory ↔ 页面）
 
@@ -57,7 +82,7 @@
 #### 本机保存（R1–R4，页面内）
 
 - **阅读位置**：`archive.progress['bk:<书的目录编号>'] = {i: 章序号, pct: 章内百分比, at: 时间}`。沿用现有 `progress`，所以现有的同步码会把它带到别的设备；旧的 `archive.bookPos`（只有章序号）读到时迁移。
-- **章节正文缓存**：浏览器 Cache API，名字 `zt-book-chapters`，键是章节地址，最近读的约 30 章，超出时丢最旧的；下次打开同一章不再请求，也方便离线。
+- **章节正文缓存**：R0 做，浏览器 Cache API，名字 `zt-book-chapters`，键是章节地址，最近读的 60 章，超出时丢最旧的；下次打开同一章不再请求，也方便离线。
 - **阅读设置**（`archive.reader`）新增，默认值都等于现在的样子：`ff` 字体（`follow` / `serif` / `sans` / `kai`）、`pg` 段距（`s` / `m` / `l`）、`ind` 首行缩进（布尔）、`jus` 两端对齐（布尔）、`mode` 滚动或翻页（`scroll` / `paged`，R2）。
 - **翻译缓存**（R4）：浏览器里按“目标语言 + 段落文字的哈希”一段一条；服务端的缓存（Upstash 90 天）不变。
 
@@ -69,11 +94,17 @@
 
 ### 各步怎么算做完
 
+**R0 共享内容缓存**
+- shelf-directory：`bookapi.py` + `api/book.py`（读取顺序、授权闸门、两层存储和升层、锁、限流、响应头）；存储做成可替换的一层（内存版用于测试、Redis 版沿用 `syncapi` 的封装、PostgreSQL 版用 `psycopg`）；`migrations/006_library_book_chapters.sql` 和 migrations/README；`books_tool.py warm`；`registry/books.json` 现有条目补 `keep: true`；`check_book` 认 `keep` / `share`；`SHELF-SPEC.md`、README、`.env.example`。
+- 测试：`tests/test_bookapi.py`——未知书 / 章、越界章号、授权闸门（nocache）、第一次读走原站并写入两层、第二次不再读原站、Redis 过期后从 PostgreSQL 补回、冷门章读满 5 次升层、没配 PostgreSQL / Redis 时的退化、同时读的锁、读原站限流、超大正文、缓存键带版本、CORS 和响应头、出错不被 CDN 缓存、地址不接受访客输入；整个 `tests.test_*` 不退步。PostgreSQL 版只能用假游标测逻辑（本机没有驱动和库口令）；另附 `python bookapi.py check-db`，由用户在自己的环境里跑，确认真实库能写能读。
+- 页面：`bookLoad()` 三层读取、章节页脚的来源和授权、`/api/book` 不可用或 `nocache` 时退回；`devtools/e2e/tests/s_bookcache.js`：第一次读请求了原站；清掉浏览器数据再打开同一章，原站日志**没有**新请求（云端命中）；不清数据再打开，连 `/api/book` 都没有请求（本机命中）；不可共享的书走 `/api/feed read` 且不上云；云端出错退回；章节页脚显示来源和授权；R1 之前的页面测试不退步。
+- 预览：8820 端口 + 本机假服务，演示“同一章第二个访客秒开”。上线要用户自己：执行迁移、设好 `OPS_DATABASE_URL` / Redis 变量、推送并 `vercel --prod`。
+
 **R1 读书模式**
 - 书的章节：顶栏显示“书名 · 章名 · n/N”；`章节` 面板（手机右侧抽屉，≥1200px 宽屏可固定在左侧）列出全部章节，当前章高亮、读过的有标记，点一章跳转；有 `ch.t` 时显示标题。
 - 章末一个明显的“上一章 / 下一章：标题 ›”；←/→ 键和手机底栏照旧；书章里**不再**用侧滑换章（避免误触），普通文章仍然可以。
 - 记住章内位置：关掉再开，回到上次的位置；书的窗口和卡片显示“继续阅读 第 12 回 · 45%”；整本进度 = (章序号 + 章内比例) / 总章数。
-- 预读和缓存按上面的约定；断网时读过的章还能打开。
+- 预读（读到 60% 或停 20 秒后读下一章一次，走 R0 的 `bookLoad`）；断网时读过的章还能打开。
 - 读书排版选项（字体、段距、首行缩进、两端对齐）在 `Aa` 里；默认不变，对所有文本阅读都生效但不改变现有外观。
 - 手机点正文中间显示 / 隐藏工具栏（只在书章里）。
 - 测试：`s_bookreader.js`（章节面板、跳转、章末按钮、预读只发一次、缓存命中、位置恢复、迁移 `bookPos`、没有 `ch.t` 时正常、手机宽度、英文）；`s_books.js`、`s_readerui`、`s_reader_usability`、`s_mobile`、`s_shell`、`s_dir`、`s_first`、`s_translate` 不退步；shelf-directory 全部测试 + `tests/test_books.py` 新增 `ch.t` 的校验。
@@ -110,6 +141,8 @@
 
 - **阅读器是全站共用的**：所有新行为用 `bookOf` 门控；每步都跑普通文章的阅读测试。
 - **翻页最容易出问题**：分栏排版在不同浏览器的表现、改字号后的定位、选中文字和链接、iOS 的手势。所以放第二步、默认关、能退回滚动，每一步都要手机宽度的测试，并请你在真机上看。
+- **版权**：云端只存授权允许转载的书；`license` 必须写；不确定的一律不存云端。这是对“目录不存全文”原则的一个有限例外，只对精选图书里授权明确的书。
+- **PostgreSQL 无法在本机真实验证**：没有驱动和库口令；用假游标测逻辑，真库由用户迁移后用 `check-db` 验证；在那之前代码对“没配数据库”做退化，不会影响读书。
 - **服务端有限流**：读页面每个访客 10 分钟约 40 次，预读只一次、出错就停；翻译每人每天约 3 万字，所以翻译改成“按屏”，并按段缓存。
 - **章节标题的批量读取**要礼貌：一次 50 页、有间隔、带自己的 User-Agent，读不到就留空，不凑数。
 - **同步**：`bk:` 键沿用现有 `progress` 的同步，不新增同步结构；合并两台设备时取较新的 `at`。
