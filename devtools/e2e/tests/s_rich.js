@@ -23,7 +23,7 @@ const get = p => fetch(SVC + p).then(r => r.json());
     await c.goto(BASE, 2800);
   };
   const toDir = async () => { await J(`document.querySelector('[data-space="dir"]').click()`); await sleep(1800); };
-  const openHot = async () => { await J(`document.querySelector('#cats [data-dhot]').click()`); await sleep(500); };
+  const openHot = async () => { await J(`document.querySelector('#cats [data-dhot]').click()`); await sleep(500); await waitFor(`document.querySelector('#dirReco [data-hot-view="boards"]')`); await J(`document.querySelector('#dirReco [data-hot-view="boards"]').click()`); await sleep(350); };          // (the hot page opens on the mixed feed of today's picks; the platforms are under "boards")
   const clickTab = async (sel, text) => { await J(`[...document.querySelectorAll(${JSON.stringify(sel)})].find(b=>b.textContent.startsWith(${JSON.stringify(text)})).click()`); await sleep(350); };
   const plat = async (col, name) => { await clickTab('#dirReco .hot-col', col); await clickTab('#dirReco .hot-plat', name); await waitFor(`document.querySelector('#dirReco .hot-head h2').textContent.startsWith(${JSON.stringify(name)}) && document.querySelectorAll('#dirReco .hot-row').length>0`); };
   const frame = () => J(`(()=>{ try{ const d=document.querySelector('#frame').contentDocument; return d && d.body ? d.body.innerText : ''; }catch(e){ return ''; } })()`);

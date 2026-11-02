@@ -1,6 +1,6 @@
 # 热榜发现流改版（2026-11-02）
 
-状态：待用户预览；未合并、未部署
+状态：已合并进 master（2026-11-02，用户说“合并全部分支”）；未推送、未部署
 
 ## 1. 任务清单（用户）
 
@@ -72,6 +72,6 @@
 
 ## 4. 合并记录
 
-- 合并顺序：用户预览确认后再定。
-- 合并后的测试结果：未执行。
-- 删除的分支和 worktree：未执行。
+- 合并顺序（Claude 执行，2026-11-02）：先把 master 并进 `codex/hotlist-discovery`（没有冲突），再 `--no-ff` 合进 master（3237bd3）；之后合 `claude/promo-2026-10`（7a814b7）；`codex/reader-usability` 早就在 master 里，只删分支。
+- 合并后的测试结果：热榜 `s_hotpage` 54、`s_hot` 9、`s_rich` 48、`s_dir` 128、`s_mobile` 39、`s_books` 19、`s_translate` 22、`s_shell` 76 等全部通过；重名函数和语法检查通过。合并时发现两处和新热榜页不合：① `s_rich.js` 进热榜后没切到“榜单”视图，已补；② 平台标签页上的“看实时热榜 ›”带着平台跳过来时，新热榜页停在“今日精选流”，没显示那个平台的榜，已改为带着平台跳转时切到“榜单”视图（`state.hot.view='boards'`）。
+- 删除的分支和 worktree：`codex/hotlist-discovery`（`E:\Ztree\wt\codex-hotlist-discovery`）、`codex/reader-usability`（`C:\Users\Wu\.codex\worktrees\reader-usability\my-archive`）、`claude/promo-2026-10`（`E:\Ztree\wt\claude-promo`）都已删。`E:\Ztree\wt` 现在是空的。
