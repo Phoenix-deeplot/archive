@@ -17,6 +17,11 @@ import statapi  # noqa: E402
 import hotapi  # noqa: E402
 import hotdetail  # noqa: E402
 import listen  # noqa: E402
+import translate  # noqa: E402
+try:
+    import translateapi  # noqa: E402
+except ImportError:                                                       # (a directory without the translation service: the demo has no translate button)
+    translateapi = None
 
 agg.ALLOW_LOCAL = True
 ENV = {'ALLOW_LOCAL_ORIGIN': '1', 'IP_SALT': 'dev'}
@@ -28,6 +33,8 @@ for k in syncapi.LIMITS:                                                # the te
 syncapi.CREATE_LIMIT = (10**6, 86400)
 for k in feedapi.LIMITS:
     feedapi.LIMITS[k] = (10**6, feedapi.LIMITS[k][1])
+TRANS_STORE = syncapi.MemoryStore()                                     # the translation service: its counters and its cache
+TRANS = {'mode': 'ok', 'calls': []}                                     # mode: ok | off (not set up) | limit (a reader's day is 1000 characters) | quota | fail
 STAT_STORE = syncapi.MemoryStore()                                      # the anonymous counters (a store of their own: /__peek only knows the sync keys)
 LISTEN = {'mode': 'ok', 'asked': 0, 'log': [], 'delay': 0, 'fail': set()}
 POD = 'http://127.0.0.1:' + os.environ.get('E2E_POD_PORT', '8843')
@@ -265,6 +272,25 @@ class H(BaseHTTPRequestHandler):
             return self.json(HOT['asked'])
         if p.path == '/__detail_asked':
             return self.json(DETAIL_ASKED)
+        if p.path == '/api/translate' and translateapi:
+            env = {'ALLOW_LOCAL_ORIGIN': '1', 'IP_SALT': 'dev', **({} if TRANS['mode'] == 'off' else {'DEEPL_API_KEY': 'fake:fx'}), **({'TRANSLATE_DAY_CHARS': '1000'} if TRANS['mode'] == 'limit' else {})}
+
+            def fake(texts, to, src, env_):
+                TRANS['calls'].append({'to': to, 'n': len(texts), 'chars': sum(len(x) for x in texts), 'first': texts[0] if texts else ''})
+                if TRANS['mode'] in ('quota', 'fail'):
+                    raise translate.Unavailable(TRANS['mode'])
+                return 'deepl', ['译:' + x if to == 'zh' else 'EN:' + x for x in texts]
+            return translateapi.respond(self, env, method, TRANS_STORE, translator=fake)
+        if p.path == '/__trans':                                             # ?mode=ok|off|limit|quota|fail  &reset=1 (forget the counters, the cache and the log)
+            q = parse_qs(p.query)
+            if q.get('reset', ['0'])[0] == '1':
+                TRANS_STORE.d.clear()
+                TRANS_STORE.exp.clear()
+                TRANS['calls'].clear()
+            TRANS['mode'] = q.get('mode', ['ok'])[0]
+            return self.json({'ok': True, 'mode': TRANS['mode']})
+        if p.path == '/__trans_log':
+            return self.json(TRANS['calls'])
         if p.path == '/api/stat':
             if method == 'POST':
                 n = int(self.headers.get('Content-Length') or 0)

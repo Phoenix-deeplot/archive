@@ -48,20 +48,19 @@
 
 #### 书（C ↔ D）
 
-`registry/books.json`（人工维护的精选书单）：
+`registry/books.json`（人工维护的精选书单；**实际做成的格式**，和最初草案不同的地方：章节只记名字，不记地址；没有 `audio`）：
 
 ```json
 [{"id": "hongloumeng", "title": "红楼梦", "author": "曹雪芹", "lang": "zh", "kind": "novel",
-  "summary": "一两句话的介绍", "image": "https://…（https，可空）", "tags": ["小说", "古典"],
-  "license": "public-domain", "source": "zh.wikisource.org",
+  "tags": ["小说", "古典"], "summary": "一两句话的介绍", "license": "public-domain", "source": "zh.wikisource.org",
   "read": "https://zh.wikisource.org/wiki/紅樓夢",
-  "chapters": {"from": "wikisource", "prefix": "紅樓夢/"}     // 或 [{"t": "第一回", "u": "https://…"}]
-  "audio": {"feed": "https://librivox.org/rss/47", "from": "librivox"}}]  // 可空
+  "ch": {"s": "zh.wikisource.org", "p": "紅樓夢/", "n": ["第001回", "第002回"]}}]   // ch 可空；"readable": true 表示 read 本身就是正文页
 ```
 
-- 构建时（每日 Action）：`chapters.from` 为 `wikisource` / `standardebooks` 的自动读出章节列表（最多 200 章，读不到就只留 `read`）；有 `audio.feed` 的不在构建时读声音，只记订阅源地址。
-- 进 `directory.json` 的条目：`type: "book"`，`shelf: "books"`（书架名“精选图书”），新增可选字段 `toc: [{"t","u"}]`（章节标题和地址，已有的 `toc` 字符串数组仍然兼容）、`audio_feed`（有声书订阅源）、`license`。这些字段缺了页面也照常工作。
-- 页面：精选图书页列出书卡片（封面、书名、作者、领域标签、“中文 / English”）；点“阅读”打开章节目录，再点章节在站内阅读器里读（走现有的 `feed` 接口读页面，上一章 / 下一章沿用阅读器的前后翻）。**有声书第一批不做**（`audio` / `audio_feed` 字段先留着）。
+- `kind`：`novel story poetry classic magazine journal textbook essay library`；`license`：`public-domain cc0 cc-by cc-by-sa cc-by-nc cc-by-nc-sa free-to-read`（只收谁都能免费读的）；`lang`：`zh` / `en`。校验在 `aggregate.check_book`，不合格的条目跳过并在日志里说明。
+- 章节：`books_tool.py fill` 去 Wikisource 把 `ch.n` 补全（最多 300 章）；章节地址 = `https://<s>/wiki/<p><n>`，名字里的空格写成 `_`（页面和 `books_tool.py` 都这样拼）。`books_tool.py check` 逐个打开 `read` 地址。
+- 进 `directory.json` 的条目：`type: "book"`，`shelf: "books"`（书架“精选图书”，`featured`，`rights: licensed`），带 `author`、`license`、可选 `ch`；有 `ch` 或 `readable` 的带标签 `在线书籍`。**没有 `toc` 数组、没有 `audio_feed`**（有声书不做）。这些字段缺了页面也照常工作。
+- 页面：书卡片上有章数和授权；点有 `ch` 的书弹出“书的窗口”（简介、授权、标签、章节按钮、“从头开始读 / 继续读：某章”、“打开原站”）；点一章在阅读器里读（走现有的 `/api/feed` 读页面），上一篇 / 下一篇翻章，关掉阅读页回到窗口；本机记住读到哪一章（`bookPos`）。只有 `readable` 的书直接进阅读器；别的书在原站打开。**有声书第一批不做。**
 
 ### 首批书目（已按用户的话改：不做有声书；有趣、不同领域、杂志期刊也收）
 
@@ -103,10 +102,17 @@
 
 ### claude
 
+- A 翻译服务（shelf-directory，分支 `claude/translate-api`）：做完，`tests/test_translateapi.py` 23 个、相邻模块 177 个测试通过。DeepL 优先、阿里云接上（签名用标准库）、每人每天 / 整站每月字数、缓存 90 天、没有 Redis 就不翻译。待合并，**密钥要你自己设**。
+- B 阅读页翻译按钮（my-archive，分支 `claude/translate-ui`）：做完，`s_translate.js` 22 个通过；阅读相关的 `s_readerui`、`s_focus`、`s_text`、`s_notes`、`s_notes_doc`、`s_rich`、`s_mobile`、`s_reader_usability` 通过。手机上放在“Aa”面板里（栏放不下）。待合并。
+- **C（书单数据，shelf-directory 分支 `claude/books-data`，已提交）**：`registry/books.json` 54 本（小说 17、教材 10、经典 9、故事 6、杂志 5、书库 3、期刊 2、散文 1、诗 1；中文 26、英文 28）；其中 29 本带章节（维基文库）、9 本是单页可读；`books_tool.py`（fill / check）；`aggregate.py` 的 `check_book` / `load_books` 和书架 `books`；`tests/test_books.py`（11 个）；shelf-directory 全部 632 个测试通过；SHELF-SPEC.md、README（B6b）已写。地址检查：3 个没通过脚本检查——费曼讲义（Cloudflare 拦，浏览器里也被拦）和 Aeon（连不上）已拿掉，补了 Light and Matter（免费物理教材）；SICP 的 403 只是挡脚本，浏览器里能开，保留。
+- **D（页面，my-archive 分支 `claude/books-ui`，已提交）**：书的窗口和章节阅读（`openBook` / `openBookChapter` / `bookChs`，字符串走 `Object.assign(I18N…)`）、卡片上的章数和授权、每本书自己的封面颜色和字；`devtools/e2e/tests/s_books.js`（19 项，假站点在 `services/read_site.py` 的 `/wiki/Tale/…`）；`devtools/e2e/books_preview.py`（把真实书单放进演示用的目录，预览用）。真实站点上已验证：红楼梦 120 回、第一回 8 千字；英文章节地址要用 `_`（用 `%20` 服务端读不了），已改。
+- 还没做：合并和上线。线上要等 shelf-directory 推送并重新构建后才有“精选图书”书架；翻译要你在 Vercel / GitHub 里设好 key 和 Upstash 才会出现按钮。
+
 ### codex
 
 ## 4. 合并记录
 
-- 合并顺序：
-- 合并后的测试结果：
-- 删除的分支和 worktree：
+- 合并顺序（2026-11-02，都是 `--no-ff`，没推送、没部署）：shelf-directory 先 `claude/books-data`（39902b3）再 `claude/translate-api`（37d7ecf）；my-archive 先 `claude/translate-ui`（792bcf5）再 `claude/books-ui`（d442175）。每个分支合并前先并进了最新的 master；books-ui 并 master 时 `index.html` 的字符串行和本文件的进度各冲突一处，两边都留。
+- 合并后的测试结果：shelf-directory 全部 655 个测试通过（其中 `test_feedapi` 的 `test_nothing_is_stored_and_nothing_secret_is_asked_for` 偶尔因为比较两次响应的 `Date` 头跨过一秒而失败，是旧测试的时间问题，重跑通过）；页面在 master 上：`s_dir` 128、`s_first` 29、`s_sections` 20、`s_readerui` 23、`s_shell` 76、`s_mobile` 39（清掉计数库后）、`s_lang` 13、`s_tips` 16、`s_rich` 48、`s_text` 27、`s_notes` 61、`s_translate` 22、`s_books` 19，全部通过；重名函数和语法检查通过。
+- 删除的分支和 worktree：`claude/books-data`、`claude/translate-api`（shelf-directory）、`claude/books-ui`、`claude/translate-ui`（my-archive）和它们的 worktree 已删。`claude/promo-2026-10` 没动（宣传材料，等用户说）。
+- 另：shelf-directory 主文件夹里有别人没提交的 `README.md` 改动（一份旧版 README 加了十几行），为了能合并，把它放进了 `git stash`（`stash@{0}`），合并后恢复时和新 README 冲突，所以仍留在 stash 里，没丢；工作区 README 是合并后的版本。
