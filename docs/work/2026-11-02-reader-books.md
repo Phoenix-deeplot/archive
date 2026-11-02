@@ -166,8 +166,16 @@
   - 合并后的测试结果：shelf-directory 全部 685 个测试通过；页面在 master 上：`s_bookcache` 12、`s_books` 19、`s_translate` 22、`s_dir` 128、`s_first` 29、`s_sections` 20、`s_readerui` 23、`s_shell` 76、`s_mobile` 39（清掉计数库后）、`s_lang` 13、`s_rich` 48、`s_hotpage` 54、`s_text` 27、`s_notes` 61，全部通过；重名函数和语法检查通过。
   - 删除的分支和 worktree：`claude/book-content`、`claude/book-content-ui` 和 `E:\\Ztree\\wt\\claude-book-content*` 都已删。
   - 上线要用户做：在数据库里执行 `migrations/006_library_book_chapters.sql`，自己的终端里设好 `OPS_DATABASE_URL` 后运行 `python bookapi.py check-db`；推送 shelf-directory 并部署（`api/book.py` 才会出现）；my-archive `vercel --prod`；可选 `python books_tool.py warm` 预热。
-- **R1 读书模式（做完，待预览）**：my-archive 分支 `claude/reader-book-mode`、shelf-directory 分支 `claude/books-titles`。
+- **R1 读书模式（已合并，2026-11-02）**：my-archive 分支 `claude/reader-book-mode`、shelf-directory 分支 `claude/books-titles`。
   - 页面：书章的章节面板（目录面板第一个标签，整本书的章名和标题、当前章高亮、读完的打 ✓、第几章和全书约百分之几）；章末“上一章 / 下一章：标题”大按钮；“上一章 / 下一章”文字在书里改成章；读到 60% 或停 20 秒预读下一章一次；位置记在 `progress['bk:<书>']`（章、章内百分比、读完的章）并随同步码走，旧的 `bookPos` 照读；书的窗口显示“继续读：第 12 回 · 45%”、已读约百分之几、读完的章打 ✓，卡片写“读到 第 12 回”；“Aa”新增字体 / 段距 / 首行缩进 / 两端对齐（默认值和以前完全一样，只写不是默认值的变量）；手机上点正文中间显示 / 隐藏工具栏，书里关掉左右滑动换章。`devtools/e2e/tests/s_bookreader.js` 24 项。
   - 书单：`ch.t`（可选，每章一个标题，`aggregate.check_book` 校验、不合格只丢 `t`），`books_tool.py titles` 读标题；已写入 9 本中文书共 786 个标题（红楼梦 120、西游记 101、三国 124、水浒 103、儒林外史 56、镜花缘 100、庄子 33、史记 130、山海经 19）；`tests/test_books.py` 新增解析器和命令的测试。
   - 和规划不同的两处：①“≥1200px 宽屏固定在左侧”的章节栏**没做**，章节面板在所有宽度都是右侧抽屉，固定栏放到 R2（和双页版面一起做版面）；②卡片上只写“读到 第 N 回”，“试读 / 继续阅读”按钮留给 R3。
 - R2–R4：未开始。
+
+## 4b. R1 合并记录
+
+- **R1（2026-11-02，`--no-ff`，没推送、没部署）**：
+  - 合并顺序：shelf-directory `claude/book-content-cli`（数据库诊断和 `load`，用户确认 `check-db` 已经没问题；48af5b8）→ `claude/books-titles`（1855cd4）；my-archive `claude/reader-book-mode`（d852cdc）。三个分支合并前都已并入最新的 master（只多了 Codex 的热榜分类规划文档），没有冲突。合并后在 shelf-directory 里又离线构建了一次 `docs/`（295e614：`directory.json` 带上 9 本书的 `ch.t`），线上要等用户推送并重新部署。
+  - 合并后的测试结果：shelf-directory 全部 710 个测试通过；页面在 master 上：`s_bookreader` 24、`s_bookcache` 12、`s_books` 19、`s_translate` 22、`s_dir` 128、`s_first` 29、`s_sections` 20、`s_readerui` 23、`s_shell` 76、`s_mobile` 39（清掉计数库后）、`s_reader_usability` 12、`s_lang` 13、`s_rich` 48、`s_hotpage` 54、`s_text` 27、`s_notes` 61，全部通过；重名函数和语法检查通过。
+  - 删除的分支和 worktree：`claude/book-content-cli`、`claude/books-titles`、`claude/reader-book-mode` 和它们的 worktree 都已删（`E:\\Ztree\\wt\\claude-book-content-cli` 剩一个空文件夹被用户的终端占着，关掉那个终端后手动删）。
+  - 没做完、留给后面的：R2 翻页模式（含宽屏固定章节栏、双页）、R3 精选图书卡片 / 列表（含“试读 / 继续阅读”按钮、文字书封）、R4 按需翻译（本屏 / 本章、按段缓存、手机浮动按钮、翻译目录）。
