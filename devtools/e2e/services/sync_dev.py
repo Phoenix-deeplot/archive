@@ -37,7 +37,7 @@ TRANS_STORE = syncapi.MemoryStore()                                     # the tr
 TRANS = {'mode': 'ok', 'calls': []}                                     # mode: ok | off (not set up) | limit (a reader's day is 1000 characters) | quota | fail
 STAT_STORE = syncapi.MemoryStore()                                      # the anonymous counters (a store of their own: /__peek only knows the sync keys)
 LISTEN = {'mode': 'ok', 'asked': 0, 'log': [], 'delay': 0, 'fail': set()}
-POD = 'http://127.0.0.1:8843'
+POD = 'http://127.0.0.1:' + os.environ.get('E2E_POD_PORT', '8843')
 WORDS = ['Delta', 'Alpha', 'Echo', 'Charlie', 'Bravo', 'Foxtrot', 'Hotel', 'Golf', 'India', 'Juliet', 'Kilo', 'Lima', 'Mike', 'November', 'Oscar', 'Papa', 'Quebec', 'Romeo', 'Sierra', 'Tango', 'Uniform', 'Victor', 'Whiskey', 'Xray', 'Yankee', 'Zulu']
 
 
