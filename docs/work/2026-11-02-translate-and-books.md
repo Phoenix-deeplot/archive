@@ -102,9 +102,11 @@
 
 ### claude
 
+- A 翻译服务（shelf-directory，分支 `claude/translate-api`）：做完，`tests/test_translateapi.py` 23 个、相邻模块 177 个测试通过。DeepL 优先、阿里云接上（签名用标准库）、每人每天 / 整站每月字数、缓存 90 天、没有 Redis 就不翻译。待合并，**密钥要你自己设**。
+- B 阅读页翻译按钮（my-archive，分支 `claude/translate-ui`）：做完，`s_translate.js` 22 个通过；阅读相关的 `s_readerui`、`s_focus`、`s_text`、`s_notes`、`s_notes_doc`、`s_rich`、`s_mobile`、`s_reader_usability` 通过。手机上放在“Aa”面板里（栏放不下）。待合并。
 - **C（书单数据，shelf-directory 分支 `claude/books-data`，已提交）**：`registry/books.json` 54 本（小说 17、教材 10、经典 9、故事 6、杂志 5、书库 3、期刊 2、散文 1、诗 1；中文 26、英文 28）；其中 29 本带章节（维基文库）、9 本是单页可读；`books_tool.py`（fill / check）；`aggregate.py` 的 `check_book` / `load_books` 和书架 `books`；`tests/test_books.py`（11 个）；shelf-directory 全部 632 个测试通过；SHELF-SPEC.md、README（B6b）已写。地址检查：3 个没通过脚本检查——费曼讲义（Cloudflare 拦，浏览器里也被拦）和 Aeon（连不上）已拿掉，补了 Light and Matter（免费物理教材）；SICP 的 403 只是挡脚本，浏览器里能开，保留。
 - **D（页面，my-archive 分支 `claude/books-ui`，已提交）**：书的窗口和章节阅读（`openBook` / `openBookChapter` / `bookChs`，字符串走 `Object.assign(I18N…)`）、卡片上的章数和授权、每本书自己的封面颜色和字；`devtools/e2e/tests/s_books.js`（19 项，假站点在 `services/read_site.py` 的 `/wiki/Tale/…`）；`devtools/e2e/books_preview.py`（把真实书单放进演示用的目录，预览用）。真实站点上已验证：红楼梦 120 回、第一回 8 千字；英文章节地址要用 `_`（用 `%20` 服务端读不了），已改。
-- 还没做：合并（等用户说“合并”）；线上要等 shelf-directory 推送并重新构建后才有书架。
+- 还没做：合并和上线。线上要等 shelf-directory 推送并重新构建后才有“精选图书”书架；翻译要你在 Vercel / GitHub 里设好 key 和 Upstash 才会出现按钮。
 
 ### codex
 
