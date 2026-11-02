@@ -55,7 +55,7 @@ const addBooks = () => {
   let st = await get('/__book_state');
   ok('the first reader of a chapter makes the server read the original (once) and the page shows it', a.tier === 'source' && /first chapter, and the lamps/.test(a.text) && (await siteLog()).filter(l => l.path === '/wiki/Tale/Chapter_1').length === 1, [a.tier, await siteLog()]);
   ok('the copy is kept in the hot layer and, as the book is a kept one, in the long-term layer', st.hot.includes('bk:1:tale:0') && st.durable.includes('tale:0'), st);
-  ok('the foot of the chapter says the licence and where it comes from, with the way to the original', /授权：公有领域 · 来源：127\.0\.0\.1/.test(a.text) && /阅读原文/.test(a.text), a.text.slice(-200));
+  ok('the foot of the chapter says the licence, where it is from, where THIS reading came from (the original, just now), and the way to the original', /授权：公有领域 · 来源：127\.0\.0\.1 · 这一章来自：刚从原站读取/.test(a.text) && /阅读原文/.test(a.text), a.text.slice(-200));
   await c.shot(P.SHOTS + '/bookcache_foot.png');
   await back();
 
@@ -63,14 +63,14 @@ const addBooks = () => {
   asked.book.length = 0; asked.feed.length = 0;
   await fresh(false);                                                                                 // (the page is loaded again; what this browser keeps stays)
   const b = await openChapter('The Tale', 0);
-  ok('the same chapter again in this browser: from this browser (no request to /api/book, none to /api/feed, none to the site)', b.tier === 'local' && asked.book.length === 0 && asked.feed.length === 0 && (await siteLog()).filter(l => l.path === '/wiki/Tale/Chapter_1').length === 1, [b.tier, asked, await siteLog()]);
+  ok('the same chapter again in this browser: from this browser (no request to /api/book, none to /api/feed, none to the site; the foot says so)', b.tier === 'local' && /这一章来自：这个浏览器里的副本/.test(b.text) && asked.book.length === 0 && asked.feed.length === 0 && (await siteLog()).filter(l => l.path === '/wiki/Tale/Chapter_1').length === 1, [b.tier, asked, await siteLog()]);
   await back();
 
   // ------------------------------------------------ another reader (a browser that has nothing): the server's copy, the original is not asked
   asked.book.length = 0; asked.feed.length = 0;
   await fresh(true);
   const d = await openChapter('The Tale', 0);
-  ok('another reader gets the server\'s copy: one request to /api/book, none to /api/feed, and the original site is not asked again', d.tier === 'hot' && asked.book.length === 1 && asked.feed.length === 0 && (await siteLog()).filter(l => l.path === '/wiki/Tale/Chapter_1').length === 1 && /first chapter, and the lamps/.test(d.text), [d.tier, asked, await siteLog()]);
+  ok('another reader gets the server\'s copy: one request to /api/book, none to /api/feed, and the original site is not asked again (the foot says so)', d.tier === 'hot' && /这一章来自：服务器上的副本/.test(d.text) && asked.book.length === 1 && asked.feed.length === 0 && (await siteLog()).filter(l => l.path === '/wiki/Tale/Chapter_1').length === 1 && /first chapter, and the lamps/.test(d.text), [d.tier, asked, await siteLog()]);
   await back();
 
   // ------------------------------------------------ Redis forgot it: the long-term layer answers
