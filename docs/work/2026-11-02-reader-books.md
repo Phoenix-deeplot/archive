@@ -152,7 +152,7 @@
 
 ### claude
 
-- **R0 共享内容缓存（做完，待预览）**：shelf-directory 分支 `claude/book-content`（`bookapi.py` + `api/book.py`、`migrations/006_library_book_chapters.sql`、`books_tool.py warm`、书单条目加 `keep: true`、目录行加 `bid`、README B6c / SHELF-SPEC / `.env.example`；`tests/test_bookapi.py` 30 个，全部 685 个测试通过）；my-archive 分支 `claude/book-content-ui`（`bookFetch`：本机 Cache API → `/api/book` → `/api/feed`；章节页脚写授权和来源；`devtools/e2e/tests/s_bookcache.js` 12 项）。设计上和规划不同的一处：**升层看的是“到过函数的读取次数”**（CDN 会挡掉一小时内的重复读取，所以 `BOOK_PROMOTE_READS` 默认 3 = 至少在三个不同的小时被读到），不是总阅读数。PostgreSQL 这层只能用假游标测逻辑，真实数据库要用户执行迁移后用 `python bookapi.py check-db` 验证。
+- **R0 共享内容缓存（已合并，2026-11-02）**：shelf-directory 分支 `claude/book-content`（`bookapi.py` + `api/book.py`、`migrations/006_library_book_chapters.sql`、`books_tool.py warm`、书单条目加 `keep: true`、目录行加 `bid`、README B6c / SHELF-SPEC / `.env.example`；`tests/test_bookapi.py` 30 个，全部 685 个测试通过）；my-archive 分支 `claude/book-content-ui`（`bookFetch`：本机 Cache API → `/api/book` → `/api/feed`；章节页脚写授权和来源；`devtools/e2e/tests/s_bookcache.js` 12 项）。设计上和规划不同的一处：**升层看的是“到过函数的读取次数”**（CDN 会挡掉一小时内的重复读取，所以 `BOOK_PROMOTE_READS` 默认 3 = 至少在三个不同的小时被读到），不是总阅读数。PostgreSQL 这层只能用假游标测逻辑，真实数据库要用户执行迁移后用 `python bookapi.py check-db` 验证。
 - R1–R4：未开工。
 
 ### codex
@@ -161,6 +161,9 @@
 
 ## 4. 合并记录
 
-- 合并顺序：
-- 合并后的测试结果：
-- 删除的分支和 worktree：
+- **R0（2026-11-02，`--no-ff`，没推送、没部署）**：
+  - 合并顺序：shelf-directory `claude/book-content`（e66d00a）→ my-archive `claude/book-content-ui`（84e4b41）；两个分支合并前都已包含最新的 master，没有冲突。合并后在 shelf-directory 里又用现有快照离线构建了一次 `docs/`（ca3f37d：目录行带上 `bid`，只改了 `docs/directory.json`），线上要等用户推送并重新部署。
+  - 合并后的测试结果：shelf-directory 全部 685 个测试通过；页面在 master 上：`s_bookcache` 12、`s_books` 19、`s_translate` 22、`s_dir` 128、`s_first` 29、`s_sections` 20、`s_readerui` 23、`s_shell` 76、`s_mobile` 39（清掉计数库后）、`s_lang` 13、`s_rich` 48、`s_hotpage` 54、`s_text` 27、`s_notes` 61，全部通过；重名函数和语法检查通过。
+  - 删除的分支和 worktree：`claude/book-content`、`claude/book-content-ui` 和 `E:\\Ztree\\wt\\claude-book-content*` 都已删。
+  - 上线要用户做：在数据库里执行 `migrations/006_library_book_chapters.sql`，自己的终端里设好 `OPS_DATABASE_URL` 后运行 `python bookapi.py check-db`；推送 shelf-directory 并部署（`api/book.py` 才会出现）；my-archive `vercel --prod`；可选 `python books_tool.py warm` 预热。
+- R1–R4：未开始。
