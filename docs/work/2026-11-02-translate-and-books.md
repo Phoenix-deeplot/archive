@@ -112,6 +112,7 @@
 
 ## 4. 合并记录
 
-- 合并顺序：
-- 合并后的测试结果：
-- 删除的分支和 worktree：
+- 合并顺序（2026-11-02，都是 `--no-ff`，没推送、没部署）：shelf-directory 先 `claude/books-data`（39902b3）再 `claude/translate-api`（37d7ecf）；my-archive 先 `claude/translate-ui`（792bcf5）再 `claude/books-ui`（d442175）。每个分支合并前先并进了最新的 master；books-ui 并 master 时 `index.html` 的字符串行和本文件的进度各冲突一处，两边都留。
+- 合并后的测试结果：shelf-directory 全部 655 个测试通过（其中 `test_feedapi` 的 `test_nothing_is_stored_and_nothing_secret_is_asked_for` 偶尔因为比较两次响应的 `Date` 头跨过一秒而失败，是旧测试的时间问题，重跑通过）；页面在 master 上：`s_dir` 128、`s_first` 29、`s_sections` 20、`s_readerui` 23、`s_shell` 76、`s_mobile` 39（清掉计数库后）、`s_lang` 13、`s_tips` 16、`s_rich` 48、`s_text` 27、`s_notes` 61、`s_translate` 22、`s_books` 19，全部通过；重名函数和语法检查通过。
+- 删除的分支和 worktree：`claude/books-data`、`claude/translate-api`（shelf-directory）、`claude/books-ui`、`claude/translate-ui`（my-archive）和它们的 worktree 已删。`claude/promo-2026-10` 没动（宣传材料，等用户说）。
+- 另：shelf-directory 主文件夹里有别人没提交的 `README.md` 改动（一份旧版 README 加了十几行），为了能合并，把它放进了 `git stash`（`stash@{0}`），合并后恢复时和新 README 冲突，所以仍留在 stash 里，没丢；工作区 README 是合并后的版本。
