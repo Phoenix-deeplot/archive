@@ -2337,9 +2337,9 @@ const state = {
 const $ = s => document.querySelector(s);
 Object.assign(I18N.zh,{themeTop:'主题', thLabel:'主题', thClassic:'经典', thCloud:'云红', setTitle:'设置', viewIsCards:'卡片', viewIsList:'列表'});
 Object.assign(I18N.en,{themeTop:'Theme', thLabel:'Theme', thClassic:'Classic', thCloud:'Cloud red', setTitle:'Settings', viewIsCards:'Cards', viewIsList:'List'});
-Object.assign(I18N.zh,{bookChN:n=>`${n} 章`, bookStart:'从头开始读', bookContinue:n=>`继续读：${n}`, bookOrig:'打开原站', bookChapters:'章节', bookLic:'授权', bookNote:'点一章就在这里读；阅读页顶上的“上一篇 / 下一篇”翻章，字号和颜色在“Aa”里调；关掉阅读页会回到这张章节表。',
+Object.assign(I18N.zh,{bookLicLine:(l,h)=>`授权：${l} · 来源：${h}`, bookChN:n=>`${n} 章`, bookStart:'从头开始读', bookContinue:n=>`继续读：${n}`, bookOrig:'打开原站', bookChapters:'章节', bookLic:'授权', bookNote:'点一章就在这里读；阅读页顶上的“上一篇 / 下一篇”翻章，字号和颜色在“Aa”里调；关掉阅读页会回到这张章节表。',
   'lic_public-domain':'公有领域', lic_cc0:'CC0', 'lic_cc-by':'CC BY', 'lic_cc-by-sa':'CC BY-SA', 'lic_cc-by-nc':'CC BY-NC', 'lic_cc-by-nc-sa':'CC BY-NC-SA', 'lic_free-to-read':'免费阅读'});
-Object.assign(I18N.en,{bookChN:n=>n===1?'1 chapter':`${n} chapters`, bookStart:'Start reading', bookContinue:n=>`Continue: ${n}`, bookOrig:'Open the original', bookChapters:'Chapters', bookLic:'Licence', bookNote:'Tap a chapter to read it here; “Previous / Next” at the top of the reader turns the chapters, and the text size and colours are under “Aa”. Closing the reader brings you back to this list.',
+Object.assign(I18N.en,{bookLicLine:(l,h)=>`Licence: ${l} · From ${h}`, bookChN:n=>n===1?'1 chapter':`${n} chapters`, bookStart:'Start reading', bookContinue:n=>`Continue: ${n}`, bookOrig:'Open the original', bookChapters:'Chapters', bookLic:'Licence', bookNote:'Tap a chapter to read it here; “Previous / Next” at the top of the reader turns the chapters, and the text size and colours are under “Aa”. Closing the reader brings you back to this list.',
   'lic_public-domain':'Public domain', lic_cc0:'CC0', 'lic_cc-by':'CC BY', 'lic_cc-by-sa':'CC BY-SA', 'lic_cc-by-nc':'CC BY-NC', 'lic_cc-by-nc-sa':'CC BY-NC-SA', 'lic_free-to-read':'Free to read'});
 Object.assign(I18N.zh,{trBtn:'翻译', trTip:'翻译这一页（文字会发到翻译服务）', trCycle:'点一下切换：双语 → 译文 → 原文', trBoth:'双语', trOnly:'译文', trOrig:'原文', trBusy:(a,b)=>`翻译中 ${a}/${b}`, trNone:'这一页没有可以翻译的文字', trSame:'这一页已经是你界面的语言了', trCut:'文章很长，只翻译了前 3 万字', trFailed:m=>`翻译没有成功：${m}`,
   trGo:'翻译这一页（双语对照）', trAskTitle:'翻译这一页？', trAsk:'点“翻译”，这一页的文字会发送到翻译服务（DeepL 或阿里云）去翻译；不会发送你是谁，服务端也不保存原文。译文只存在这个浏览器里。', trYes:'翻译', trNo:'取消'});
@@ -2853,6 +2853,10 @@ const MAX_SUBS=30, FEED_KEEP_LOCAL=60, REFRESH_MS=3*3600*1000, REFRESH_CHUNK=10;
 let subBusy=false;
 function feedApi(){
   const d=state.dirData, own=String((d&&d.feed_api)||''), s=String((d&&d.submit_api)||''), a=own || (/\/submit\/?$/.test(s) ? s.replace(/\/submit\/?$/,'/feed') : '');
+  return /^https:\/\//.test(a) || /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//.test(a) ? a : '';
+}
+function bookApi(){                                                                              // the shared copy of the chapters of the picked books: the directory's /api/book, found as /api/feed is
+  const d=state.dirData, sub=String((d&&d.submit_api)||''), a=/\/submit\/?$/.test(sub) ? sub.replace(/\/submit\/?$/,'/book') : '';
   return /^https:\/\//.test(a) || /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//.test(a) ? a : '';
 }
 const subCols = () => state.cols.filter(c=>c.feed);
@@ -3427,6 +3431,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font
 @media (max-width:620px){.doc{padding:28px 18px 96px}}
 @media print{body{background:#fff;color:#000}.doc{max-width:none;padding:0}a{color:#000}img,pre,table,blockquote{break-inside:avoid}.doc-src{display:none}}
 .doc-src{margin:2.4em 0 0;padding-top:1em;border-top:1px solid var(--rule);font-size:14px;color:var(--muted)}
+.doc-lic{margin:2.4em 0 0;padding-top:1em;border-top:1px solid var(--rule);font-size:13px;color:var(--muted)}
+.doc-lic+.doc-src{margin-top:.3em;padding-top:0;border-top:0}
 .doc figure{margin:0 0 1.1em}.doc figcaption{font-size:.88em;color:var(--muted)}
 .doc-meta{font-size:13.5px;color:var(--muted);margin:0 0 6px}
 .hc-img img{width:100%;max-height:60vh;object-fit:cover}
@@ -3514,7 +3520,7 @@ function feedBody(it){
   root.querySelectorAll('img').forEach(im=>{ if(!/^https:\/\//i.test(im.getAttribute('src')||'')) im.remove(); else { im.setAttribute('loading','lazy'); im.setAttribute('referrerpolicy','no-referrer'); } });
   root.querySelectorAll('table').forEach(tb=>{ const w=doc.createElement('div'); w.className='tbl'; tb.replaceWith(w); w.appendChild(tb); });
   const u=httpUrl(it.url);
-  return `${it.bare?'':`<h1>${esc(it.title)}</h1>`}${root.innerHTML}${it.contentCut?`<p class="note">${esc(t('contentCut'))}</p>`:''}<p class="doc-src">${u?`<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t('readOriginal'))} · ${esc(hostOf(u))}</a>`:''}</p>`;
+  return `${it.bare?'':`<h1>${esc(it.title)}</h1>`}${root.innerHTML}${it.contentCut?`<p class="note">${esc(t('contentCut'))}</p>`:''}${it.lic && licName(it.lic) && u ? `<p class="doc-lic">${esc(t('bookLicLine',licName(it.lic),hostOf(u)))}</p>` : ''}<p class="doc-src">${u?`<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t('readOriginal'))} · ${esc(hostOf(u))}</a>`:''}</p>`;
 }
 async function rawData(it){
   if(it.source==='folder'){ const f=await it.handle.getFile(); return it.type==='pdf' ? f : await f.text(); }
@@ -3586,8 +3592,33 @@ function syncReader(){
 /* A link is read in the page: its text if it was kept, else the service reads the original page (once; the text is then kept in this browser). A page that cannot be read (a login,
    a bot check, scripts only ...) opens the original site, and the card says so for a week. */
 let readSeq=0;
+/* A chapter of a picked book is looked for in three places, the nearest first: the copy this browser kept (Cache API, the last BOOK_CACHE_KEEP chapters, also when offline); the copy the server keeps for everybody
+   (GET /api/book: asked only for the books that the server may keep; a book that it says it does not keep, "nocache", is not asked again in this visit); the original page, read through /api/feed as any article.
+   What comes from the server or from the original is kept in this browser; it.bkTier says where a chapter came from (local, hot, durable, source, feed). */
+const BOOK_CACHE='zt-book-chapters', BOOK_CACHE_KEEP=60, bookNoShare=new Set();
+const bookCacheKey = url => 'https://book.cache/'+encodeURIComponent(url);
+async function bookCacheGet(url){ try{ const c=await caches.open(BOOK_CACHE), r=await c.match(bookCacheKey(url)); return r ? await r.json() : null; }catch(e){ return null; } }
+async function bookCachePut(url,d){ try{ const c=await caches.open(BOOK_CACHE), k=bookCacheKey(url); await c.delete(k); await c.put(k,new Response(JSON.stringify(d))); const ks=await c.keys(); for(let i=0;i<ks.length-BOOK_CACHE_KEEP;i++) await c.delete(ks[i]); }catch(e){} }
+async function bookFetch(it){
+  const loc=await bookCacheGet(it.url); if(loc && loc.content){ it.bkTier='local'; return loc; }
+  const api=bookApi(), bk=it.bk;
+  if(api && bk && bk.b && !bookNoShare.has(bk.b)){
+    const ctl=new AbortController(), timer=setTimeout(()=>ctl.abort(),20000);
+    try{
+      const r=await fetch(`${api}?b=${encodeURIComponent(bk.b)}&c=${bk.c}`,{signal:ctl.signal}), d=await r.json().catch(()=>null);
+      if(d && d.ok && d.content){ const out={ok:true, title:d.title, content:d.content, content_cut:!!d.cut, lang:d.lang, url:d.source}; it.bkTier=d.tier; bookCachePut(it.url,out); return out; }
+      if(d && d.error==='nocache') bookNoShare.add(bk.b);
+    }catch(e){ /* the server is not there or slow: the original page, as before */ }
+    finally{ clearTimeout(timer); }
+  }
+  const d=await callFeed({action:'read',url:it.url},28000);
+  if(!d.ok){ const e=new Error((state.lang==='zh'?d.message:d.message_en)||d.message||'?'); e.reason=d.reason||''; throw e; }
+  it.bkTier='feed'; bookCachePut(it.url,{ok:true, title:d.title, content:d.content, content_cut:!!(d.content_cut||d.cut), lang:d.lang, url:d.url});
+  return d;
+}
 async function fetchLinkText(it){
   if(it.loader) return it.loader(it);                                                         // a row of a hot list: its text comes from the hot-list service (see richOpen)
+  if(it.bk) return bookFetch(it);                                                             // a chapter of a picked book: this browser, then the copy on the server, then the original page
   const d=await callFeed({action:'read',url:it.url},28000);
   if(!d.ok){ const e=new Error((state.lang==='zh'?d.message:d.message_en)||d.message||'?'); e.reason=d.reason||''; throw e; }
   return d;
@@ -3656,7 +3687,7 @@ function openDirReader(did, push){                                              
   if(saved) return openReader(saved.id,push);
   if(!dirReadable(d) || !feedApi()){ window.open(d.url,'_blank','noopener,noreferrer'); return; }
   const id='tmp:'+did; let it=state.tmp.get(id);
-  if(!it){ it={id, source:'tmp', type:'link', url:d.url, title:d.title, summary:d.summary, keywords:(d.tags||[]).slice(0,8), lang:d.lang, date:d.date, category:'notes', from:(state.shelfMap.get(d.shelf)||{}).name||hostOf(d.url)}; state.tmp.set(id,it); }
+  if(!it){ it={id, source:'tmp', type:'link', url:d.url, title:d.title, summary:d.summary, keywords:(d.tags||[]).slice(0,8), lang:d.lang, date:d.date, category:'notes', from:(state.shelfMap.get(d.shelf)||{}).name||hostOf(d.url), ...(d.type==='book' && d.bid ? {bk:{b:d.bid, c:0}, lic:d.license||''} : {})}; state.tmp.set(id,it); }
   return openReader(id,push);
 }
 /* ===== the picked books of the directory ("精选图书"): a book with chapters (ch = {s: site, p: prefix, n: [names]}; chapter i is https://<s>/wiki/<p><n[i]>) opens in a window with its chapters.
@@ -3670,7 +3701,7 @@ const bookChUrl = (ch,i) => `${/^(localhost|127\.0\.0\.1)(:\d+)?$/.test(ch.s)?'h
 const bookPos = did => { const p=+((LS.get('bookPos',{})||{})[did]); return p>0 ? p : 0; };
 function bookItem(d,i){                                                                           // chapter i as an article to read
   const ch=bookChs(d), id=`tmp:${d.id}~${i}`; let it=state.tmp.get(id);
-  if(!it){ it={id, source:'tmp', type:'link', url:bookChUrl(ch,i), title:`${d.title} · ${chName(ch.n[i])}`, summary:'', keywords:(d.tags||[]).slice(0,8), lang:d.lang, date:'', category:'notes', from:d.author||(state.shelfMap.get(d.shelf)||{}).name||hostOf(d.url), bookOf:d.id}; state.tmp.set(id,it); }
+  if(!it){ it={id, source:'tmp', type:'link', url:bookChUrl(ch,i), title:`${d.title} · ${chName(ch.n[i])}`, summary:'', keywords:(d.tags||[]).slice(0,8), lang:d.lang, date:'', category:'notes', from:d.author||(state.shelfMap.get(d.shelf)||{}).name||hostOf(d.url), bookOf:d.id, bk:{b:d.bid||'', c:i}, lic:d.license||''}; state.tmp.set(id,it); }
   return it;
 }
 function openBookChapter(did, i, push){

@@ -152,7 +152,8 @@
 
 ### claude
 
-（未开工，等确认。）
+- **R0 共享内容缓存（做完，待预览）**：shelf-directory 分支 `claude/book-content`（`bookapi.py` + `api/book.py`、`migrations/006_library_book_chapters.sql`、`books_tool.py warm`、书单条目加 `keep: true`、目录行加 `bid`、README B6c / SHELF-SPEC / `.env.example`；`tests/test_bookapi.py` 30 个，全部 685 个测试通过）；my-archive 分支 `claude/book-content-ui`（`bookFetch`：本机 Cache API → `/api/book` → `/api/feed`；章节页脚写授权和来源；`devtools/e2e/tests/s_bookcache.js` 12 项）。设计上和规划不同的一处：**升层看的是“到过函数的读取次数”**（CDN 会挡掉一小时内的重复读取，所以 `BOOK_PROMOTE_READS` 默认 3 = 至少在三个不同的小时被读到），不是总阅读数。PostgreSQL 这层只能用假游标测逻辑，真实数据库要用户执行迁移后用 `python bookapi.py check-db` 验证。
+- R1–R4：未开工。
 
 ### codex
 

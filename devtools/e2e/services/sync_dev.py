@@ -24,6 +24,10 @@ except ImportError:                                                       # (a d
     translateapi = None
 
 agg.ALLOW_LOCAL = True
+try:
+    import bookapi
+except ImportError:                                                       # (a directory without the shared copy of the books: the page reads them through /api/feed)
+    bookapi = None
 ENV = {'ALLOW_LOCAL_ORIGIN': '1', 'IP_SALT': 'dev'}
 STORE = syncapi.MemoryStore()
 COUNT = {'sync': 0, 'actions': {}}
@@ -35,6 +39,29 @@ for k in feedapi.LIMITS:
     feedapi.LIMITS[k] = (10**6, feedapi.LIMITS[k][1])
 TRANS_STORE = syncapi.MemoryStore()                                     # the translation service: its counters and its cache
 TRANS = {'mode': 'ok', 'calls': []}                                     # mode: ok | off (not set up) | limit (a reader's day is 1000 characters) | quota | fail
+BOOK = {'mode': 'ok', 'asked': 0}                                    # mode: ok | down (the server answers 503) | junk (it answers something that is not JSON)
+BOOK_STORE = syncapi.MemoryStore()                                      # the shared copy of the picked books' chapters: Redis (this) and PostgreSQL (below)
+
+
+class BookDurable:
+    """The long-term layer in a dict: what bookapi.Durable does in PostgreSQL."""
+    rows = {}
+
+    def get(self, b, c):
+        return self.rows.get((b, c))
+
+    def put(self, b, c, rec, license):
+        self.rows[(b, c)] = rec
+        return True
+
+
+if bookapi and not os.environ.get('E2E_REAL_BOOKS'):                    # (E2E_REAL_BOOKS=1: the real list of the directory folder, read from the real sites: for looking at the real books, not for the tests)
+    # the books of the tests: chapters on the fake site of read_site.py (http, 127.0.0.1:8850); "closed" may not be kept on a server
+    _chs = {'s': '127.0.0.1:' + os.environ.get('E2E_READ_PORT', '8850'), 'p': 'Tale/', 'n': ['Chapter 1', 'Chapter 2', 'Chapter 3']}
+    BOOKS = {'tale': {'id': 'tale', 'license': 'public-domain', 'keep': True, 'ch': _chs, 'source': 'fake.example'},
+             'closed': {'id': 'closed', 'license': 'cc-by-nc', 'ch': _chs, 'source': 'fake.example'}}
+    bookapi.catalog = lambda: BOOKS
+    bookapi.chapter_url = lambda ch, name: 'http://%s/wiki/%s' % (ch['s'], __import__('urllib.parse').parse.quote((ch['p'] + name).replace(' ', '_'), safe="/:()',;!*~"))
 STAT_STORE = syncapi.MemoryStore()                                      # the anonymous counters (a store of their own: /__peek only knows the sync keys)
 LISTEN = {'mode': 'ok', 'asked': 0, 'log': [], 'delay': 0, 'fail': set()}
 POD = 'http://127.0.0.1:' + os.environ.get('E2E_POD_PORT', '8843')
@@ -272,6 +299,30 @@ class H(BaseHTTPRequestHandler):
             return self.json(HOT['asked'])
         if p.path == '/__detail_asked':
             return self.json(DETAIL_ASKED)
+        if p.path == '/api/book' and bookapi:
+            BOOK['asked'] += 1
+            if BOOK['mode'] == 'down':
+                return self.reply(503, {'ok': False, 'error': 'down'})
+            if BOOK['mode'] == 'junk':
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/html')
+                self.cors()
+                self.send_header('Content-Length', '6')
+                self.end_headers()
+                self.wfile.write(b'<html>')
+                return
+            return bookapi.respond(self, ENV, method, BOOK_STORE, BookDurable())
+        if p.path == '/__book_reset':                                        # forget the copies (Redis and the long-term layer) and the counters; ?hot=1: only what Redis holds; ?mode=down|junk|ok
+            q = parse_qs(p.query)
+            BOOK_STORE.d.clear()
+            BOOK_STORE.exp.clear()
+            if q.get('hot', ['0'])[0] != '1':
+                BookDurable.rows.clear()
+            BOOK['mode'], BOOK['asked'] = q.get('mode', ['ok'])[0], 0
+            bookapi._LOCAL_USED.clear()
+            return self.json({'ok': True})
+        if p.path == '/__book_state':                                        # what is kept where
+            return self.json({'hot': sorted(k for k in BOOK_STORE.d if k.startswith('bk:1:')), 'durable': sorted('%s:%d' % k for k in BookDurable.rows), 'asked': BOOK['asked']})
         if p.path == '/api/translate' and translateapi:
             env = {'ALLOW_LOCAL_ORIGIN': '1', 'IP_SALT': 'dev', **({} if TRANS['mode'] == 'off' else {'DEEPL_API_KEY': 'fake:fx'}), **({'TRANSLATE_DAY_CHARS': '1000'} if TRANS['mode'] == 'limit' else {})}
 
