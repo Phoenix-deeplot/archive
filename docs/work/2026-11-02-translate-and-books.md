@@ -103,6 +103,10 @@
 
 ### claude
 
+- A 翻译服务（shelf-directory，分支 `claude/translate-api`）：做完，`tests/test_translateapi.py` 23 个、相邻模块 177 个测试通过。DeepL 优先、阿里云接上（签名用标准库）、每人每天 / 整站每月字数、缓存 90 天、没有 Redis 就不翻译。待合并，**密钥要你自己设**。
+- B 阅读页翻译按钮（my-archive，分支 `claude/translate-ui`）：做完，`s_translate.js` 22 个通过；阅读相关的 `s_readerui`、`s_focus`、`s_text`、`s_notes`、`s_notes_doc`、`s_rich`、`s_mobile`、`s_reader_usability` 通过。手机上放在“Aa”面板里（栏放不下）。待合并。
+- C、D 精选图书：下一步。
+
 ### codex
 
 ## 4. 合并记录
