@@ -67,7 +67,7 @@ const addBooks = () => {
   await J(`document.querySelector('#readerBack').click()`); await sleep(700);
   const d2 = await dlg();
   ok('closing the reader brings the window back with the place marked and "continue" on the button', !(await rd()).open && d2.open && d2.cur === 2 && d2.start === '继续读：Chapter 3', d2);
-  ok('this browser remembers the chapter', (await J(`LS.get('bookPos',{})['tale0001']`)) === 2);
+  ok('this browser remembers the chapter (in the progress, as the place in the book: the sync carries it)', (await J(`state.progress['bk:tale0001'].i`)) === 2);
   await J(`document.querySelector('#bookStart').click()`); await sleep(3000);
   await J(`document.querySelector('#readerPrev').click()`); await sleep(3000);
   const r4 = await rd();

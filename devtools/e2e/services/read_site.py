@@ -30,8 +30,8 @@ PAGES = {
     '/x403': ('text/html; charset=utf-8', 'forbidden', 0),
     # a book on a wiki-like site (the picked books of the directory: https://<site>/wiki/<prefix><chapter>)
     '/wiki/Tale': ('text/html; charset=utf-8', article('The Tale', 'The index of a made-up book.', 2), 0),
-    '/wiki/Tale/Chapter_1': ('text/html; charset=utf-8', article('Chapter 1', 'It was the first chapter, and the lamps were lit early in the town.', 5), 0),
-    '/wiki/Tale/Chapter_2': ('text/html; charset=utf-8', article('Chapter 2', 'It was the second chapter, and the travellers reached the river at noon.', 5), 0),
+    '/wiki/Tale/Chapter_1': ('text/html; charset=utf-8', article('Chapter 1', 'It was the first chapter, and the lamps were lit early in the town.', 40), 0),
+    '/wiki/Tale/Chapter_2': ('text/html; charset=utf-8', article('Chapter 2', 'It was the second chapter, and the travellers reached the river at noon.', 60), 0),
     '/wiki/Tale/Chapter_3': ('text/html; charset=utf-8', article('Chapter 3', 'It was the third chapter, and the bridge, at last, was found.', 5), 0),
 }
 POSTS = [(1, '库存周转率怎么看', '/a/1', 'Wed, 14 Oct 2026 08:00:00 GMT'), (2, 'Lead time in one picture', '/a/2', 'Tue, 13 Oct 2026 08:00:00 GMT'), (3, 'Members only', '/wall', 'Mon, 12 Oct 2026 08:00:00 GMT'),
