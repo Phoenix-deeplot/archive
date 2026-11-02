@@ -1058,6 +1058,8 @@ body.has-player.pl-folded{--pl-h:0px}
 body.reader-focus .reader-mobile-nav{display:none!important}
 @media (max-width:420px){ #reader.can-edit #readerNew{display:none} }                              /* a note has the pen too: the "new tab" link gives way first */
 @media (max-width:340px){ .rbtn,.rbtn.ico{padding:0 6px} .rb-right{gap:4px} }
+@media (max-width:620px){ #readerTrans{display:none!important} #rSetTrans{min-height:44px} }          /* (the bar of a phone is full: the translate row is in the "Aa" panel) */
+@media (min-width:621px){ #rowTrans{display:none!important} }
 .pending .ptype{font-weight:700;margin-right:6px}
 .warn{color:var(--c-tools);font-size:13px;margin:6px 0 0}
 .col-row{display:flex;align-items:center;gap:8px;margin:0 0 14px}
@@ -1373,6 +1375,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
       <button class="rbtn ico" type="button" id="readerPlay" hidden><svg class="icon fill" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg><span class="lbl" data-i="plListen">播放这一集</span></button>
       <button class="rbtn ico" type="button" id="readerOrig" hidden><svg class="icon" viewBox="0 0 24 24"><path d="M7 4h7l4 4v12H7zM14 4v4h4M10 13h5M10 16h5"/></svg><span class="lbl" id="readerOrigLbl"></span></button>
       <button class="rbtn ico" type="button" id="readerFocus" data-i-aria="focusReadTip"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg><span class="lbl" data-i="focusRead">专注阅读</span></button>
+      <button class="rbtn ico" type="button" id="readerTrans" hidden data-i-aria="trTip"><svg class="icon" viewBox="0 0 24 24"><path d="M4 5h9M8.5 3v2M6 5c.4 3.8 3 6.6 7 8M12 5c-.6 3.6-3.4 6.6-7.5 8.5M13 20l4-9 4 9M14.5 17h5"/></svg><span class="lbl" id="readerTransLbl" data-i="trBtn">翻译</span></button>
       <button class="rbtn ico" type="button" id="readerToc" aria-expanded="false"><svg class="icon" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span class="lbl" data-i="tocTab">目录</span></button>
       <button class="rbtn ico" type="button" id="readerSet" aria-expanded="false"><span class="aa" aria-hidden="true">Aa</span><span class="lbl" data-i="readerSet">阅读设置</span></button>
       <button class="rbtn ico" type="button" id="readerSave" aria-expanded="false"><svg class="icon" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"/></svg><span class="lbl" data-i="readerSave">保存</span></button>
@@ -1398,6 +1401,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
       <div class="rrow col"><span data-i="readerColor">颜色</span><div class="themes" id="rThemes">
         <button type="button" data-th="follow" data-i="thFollow">跟随系统</button><button type="button" data-th="light" data-i="thLight">浅色</button><button type="button" data-th="dark" data-i="thDark">深色</button><button type="button" data-th="sepia" data-i="thSepia">米黄</button><button type="button" data-th="green" data-i="thGreen">护眼绿</button></div></div>
       <div class="rrow col"><span data-i="focusRead">专注阅读</span><div class="themes"><button type="button" id="rSetFocus" data-i="focusReadGo">收起所有按钮，只留正文，边读边听</button></div></div>
+      <div class="rrow col" id="rowTrans" hidden><span data-i="trBtn">翻译</span><div class="themes"><button type="button" id="rSetTrans" data-i="trGo">翻译这一页（双语对照）</button></div></div>
       <p class="rnote" id="rOrigNote" data-i="origNote" hidden></p>
     </div>
     <div class="rpanel" id="rSavePanel" hidden>
@@ -1454,6 +1458,14 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
       <p class="sub-hint" id="colStorage"></p>
     </div>
     <div class="dlg-foot"><button class="btn" type="button" id="colClose" data-i="close">关闭</button></div>
+  </div>
+</dialog>
+
+<dialog id="trDlg" aria-labelledby="trDlgTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h2 id="trDlgTitle" data-i="trAskTitle">翻译这一页？</h2></div>
+    <div class="dlg-body"><p data-i="trAsk">点“翻译”，这一页的文字会发送到翻译服务（DeepL 或阿里云）去翻译；不会发送你是谁，服务端也不保存原文。译文只存在这个浏览器里。</p></div>
+    <div class="dlg-foot"><button class="btn" type="button" id="trNo" data-i="trNo">取消</button><button class="btn primary" type="button" id="trYes" data-i="trYes">翻译</button></div>
   </div>
 </dialog>
 
@@ -2255,6 +2267,10 @@ const state = {
 const $ = s => document.querySelector(s);
 Object.assign(I18N.zh,{themeTop:'主题', thLabel:'主题', thClassic:'经典', thCloud:'云红', setTitle:'设置', viewIsCards:'卡片', viewIsList:'列表'});
 Object.assign(I18N.en,{themeTop:'Theme', thLabel:'Theme', thClassic:'Classic', thCloud:'Cloud red', setTitle:'Settings', viewIsCards:'Cards', viewIsList:'List'});
+Object.assign(I18N.zh,{trBtn:'翻译', trTip:'翻译这一页（文字会发到翻译服务）', trCycle:'点一下切换：双语 → 译文 → 原文', trBoth:'双语', trOnly:'译文', trOrig:'原文', trBusy:(a,b)=>`翻译中 ${a}/${b}`, trNone:'这一页没有可以翻译的文字', trSame:'这一页已经是你界面的语言了', trCut:'文章很长，只翻译了前 3 万字', trFailed:m=>`翻译没有成功：${m}`,
+  trGo:'翻译这一页（双语对照）', trAskTitle:'翻译这一页？', trAsk:'点“翻译”，这一页的文字会发送到翻译服务（DeepL 或阿里云）去翻译；不会发送你是谁，服务端也不保存原文。译文只存在这个浏览器里。', trYes:'翻译', trNo:'取消'});
+Object.assign(I18N.en,{trBtn:'Translate', trTip:'Translate this page (its text goes to a translation service)', trCycle:'Click to switch: both → translation → original', trBoth:'Both', trOnly:'Translation', trOrig:'Original', trBusy:(a,b)=>`Translating ${a}/${b}`, trNone:'There is no text to translate on this page', trSame:'This page is in the language of your interface already', trCut:'A long article: only the first 30,000 characters were translated', trFailed:m=>`The translation did not work: ${m}`,
+  trGo:'Translate this page (side by side)', trAskTitle:'Translate this page?', trAsk:'“Translate” sends the text of this page to a translation service (DeepL or Aliyun). Nothing about who you are is sent, and the server does not keep the text. The translation is kept only in this browser.', trYes:'Translate', trNo:'Cancel'});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const catName = c => (['all','featured','books','tools','notes','hidden'].includes(c)? t(c) : c);
@@ -3662,7 +3678,7 @@ function togglePanel(which){
 function buildToc(){
   state.toc=[]; const fd=frameDoc(); if(!fd || state.rpdf) return;
   [...fd.d.querySelectorAll('h1,h2,h3,h4')].filter(h=>!h.closest('details.toc,nav')).forEach((h,i)=>{
-    const text=(h.textContent||'').replace(/\s+/g,' ').trim(); if(!text || state.toc.length>=300) return;
+    const text=((h.querySelector(':scope > .zt-src')||h).textContent||'').replace(/\s+/g,' ').trim(); if(!text || state.toc.length>=300) return;          // (a translation under a heading is not the heading)
     if(!h.id) h.id='rh-'+i;
     state.toc.push({id:h.id, text, level:+h.tagName[1]});
   });
@@ -3772,6 +3788,103 @@ $('#frame').addEventListener('load',()=>{
     w.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if(document.body.classList.contains('reader-focus')) readerFocus(false); else if(panelsOpen()) closePanels(); else closeReader(); } });
   }catch(e){ /* cross-origin or PDF viewer: progress unavailable */ }
 });
+/* ================= translate the page in the reader =================
+   The button asks the directory's /api/translate (DeepL or Aliyun; every reader has an allowance a day) for the paragraphs of the page that is shown (a page of this origin) and puts each translation under its paragraph;
+   a click then goes round: both, the translation alone, the original. It asks the reader once (the text goes to a translation service), sends nothing before the click, and keeps the answer in this browser
+   (the Cache Storage), so the same page is not paid for twice. The button is there only where the service says it is set up. */
+const TR_BLOCKS='p,li,h1,h2,h3,h4,h5,h6,blockquote,figcaption,td,th,dt,dd', TR_MAX=30000, TR_CHUNK=1400, TR_BATCH=6000, TR_PER=40;
+const TR_CSS='.zt-tr{display:block;margin:.35em 0 .9em;padding:.1em .8em;border-left:3px solid var(--accent,#1F7A6D);color:var(--muted,#5A6670);font-size:.95em;line-height:1.7;font-weight:400}h1>.zt-tr,h2>.zt-tr,h3>.zt-tr,h4>.zt-tr,h5>.zt-tr,h6>.zt-tr{font-size:.7em;font-weight:600}li>.zt-tr,td>.zt-tr,th>.zt-tr{margin:.2em 0 .3em}html.zt-only .zt-src{display:none}html.zt-only .zt-tr{border-left:0;padding-left:0;color:inherit;font-size:inherit;margin:0}html.zt-orig .zt-tr{display:none}';
+const TR={mode:'off', busy:false, seq:0, done:0, total:0};
+let trInfo=null;
+function transApi(){ const s=String((state.dirData&&state.dirData.submit_api)||''), a=/\/submit\/?$/.test(s) ? s.replace(/\/submit\/?$/,'/translate') : ''; return /^https:\/\//.test(a) || /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//.test(a) ? a : ''; }
+async function trAvailable(){                                                                       // is it set up there? (asked now and then, not at every page)
+  const api=transApi(); if(!api) return false;
+  if(trInfo && trInfo.api===api && Date.now()-trInfo.at<600000) return trInfo.ok;
+  let ok=false; try{ const r=await fetch(api,{credentials:'omit'}), d=await r.json(); ok=!!(d && d.ok && d.configured); }catch(e){}
+  trInfo={api, ok, at:Date.now()}; return ok;
+}
+const trTarget = () => state.lang==='zh' ? 'zh' : 'en';
+const trText = el => el.textContent.replace(/\s+/g,' ').trim();
+function trBlocks(d){ return [...d.querySelectorAll(TR_BLOCKS)].filter(el=>!el.closest('pre,code,nav,details.toc,.zt-tr,script,style,noscript') && !el.querySelector(TR_BLOCKS) && el.textContent.trim().length>1 && /\p{L}/u.test(el.textContent)); }
+function trSplit(s){                                                                                // a paragraph over TR_CHUNK goes in pieces, cut at the end of a sentence where there is one
+  const out=[];
+  while(s.length>TR_CHUNK){ const m=[...s.slice(0,TR_CHUNK).matchAll(/[。！？!?]|\.(?=\s)/g)]; let cut=m.length ? m[m.length-1].index+1 : -1; if(cut<TR_CHUNK*0.4) cut=TR_CHUNK; out.push(s.slice(0,cut).trim()); s=s.slice(cut).trim(); }
+  if(s) out.push(s); return out;
+}
+async function trSha(s){ const b=await crypto.subtle.digest('SHA-1', new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''); }
+async function trCacheGet(key){ try{ const c=await caches.open('zt-translate'), r=await c.match('https://translate.cache/'+key); return r ? await r.json() : null; }catch(e){ return null; } }
+async function trCachePut(key,list){ try{ const c=await caches.open('zt-translate'); await c.put('https://translate.cache/'+key, new Response(JSON.stringify(list))); const ks=await c.keys(); if(ks.length>60) await c.delete(ks[0]); }catch(e){} }
+async function trCall(api,to,texts){
+  const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to,from:'auto',texts}),credentials:'omit'});
+  const d=await r.json().catch(()=>null);
+  if(!d || !d.ok){ const e=new Error((d && (state.lang==='zh' ? d.message : d.message_en || d.message)) || 'HTTP '+r.status); e.code=(d&&d.error)||''; throw e; }
+  if(!Array.isArray(d.texts) || d.texts.length!==texts.length) throw new Error('?');
+  return d.texts.map(x=>String(x||''));
+}
+function trLabel(){
+  const b=$('#readerTrans'), l=$('#readerTransLbl'), txt=TR.busy ? t('trBusy',TR.done,TR.total) : TR.mode==='off' ? t('trBtn') : t({both:'trBoth',only:'trOnly',orig:'trOrig'}[TR.mode]);
+  l.textContent=txt; b.classList.toggle('on',TR.mode!=='off'); $('#rSetTrans').textContent = TR.busy ? txt : TR.mode==='off' ? t('trGo') : txt+' · '+t('trCycle'); const tip=TR.mode==='off' ? t('trTip') : t('trCycle'); b.title=tip; b.setAttribute('aria-label',tip+' · '+txt); b.setAttribute('aria-busy',String(TR.busy));
+}
+function trSetMode(d,mode){ TR.mode=mode; d.documentElement.classList.toggle('zt-only',mode==='only'); d.documentElement.classList.toggle('zt-orig',mode==='orig'); trLabel(); }
+function trPut(d,el,zh){                                                                            // the paragraph keeps its own words in a span; the translation is a block after it
+  if(el.querySelector(':scope > .zt-tr')) return;
+  const src=d.createElement('span'); src.className='zt-src'; while(el.firstChild) src.appendChild(el.firstChild); el.appendChild(src);
+  const tr=d.createElement('div'); tr.className='zt-tr'; tr.setAttribute('lang',trTarget()==='zh' ? 'zh-CN' : 'en'); tr.textContent=zh; el.appendChild(tr);
+}
+function trConsent(){                                                                               // once: the text goes to a translation service
+  if(LS.get('trOk',0)) return Promise.resolve(true);
+  return new Promise(res=>{ const dlg=$('#trDlg'), done=v=>{ dlg.close(); res(v); };
+    $('#trYes').onclick=()=>{ LS.set('trOk',1); done(true); }; $('#trNo').onclick=()=>done(false); dlg.oncancel=()=>res(false); dlg.showModal(); });
+}
+async function trRun(fd){
+  const d=fd.d, to=trTarget(), blocks=trBlocks(d);
+  if(!blocks.length) return toast(t('trNone'));
+  const all=blocks.map(trText); let total=0, n=0;
+  for(; n<all.length; n++){ total+=all[n].length; if(total>TR_MAX && n>0) break; }
+  const cut=n<all.length; blocks.length=n; const texts=all.slice(0,n);                              // (a very long page: its first TR_MAX characters)
+  const sample=texts.join(' ').slice(0,2000), cjk=(sample.match(/[\u4e00-\u9fff]/g)||[]).length, lat=(sample.match(/[A-Za-z]/g)||[]).length;
+  if((to==='zh' && cjk>lat) || (to==='en' && lat>cjk*3)) return toast(t('trSame'));
+  if(!await trConsent()) return;
+  const api=transApi(), id=state.readingId, seq=++TR.seq, pieces=[], at=[];
+  texts.forEach((x,i)=>{ at[i]=[]; trSplit(x).forEach(p=>{ at[i].push(pieces.length); pieces.push(p); }); });
+  const key=to+'/'+await trSha(to+'\n'+pieces.join('\n')), got=new Array(pieces.length).fill(null), have=new Set();
+  const alive=()=>seq===TR.seq && state.readingId===id && (frameDoc()||{}).d===d;
+  const flush=()=>{ blocks.forEach((el,i)=>{ if(have.has(i) || !at[i].every(j=>got[j]!==null)) return; have.add(i); const zh=at[i].map(j=>got[j]).join(' ').trim(); if(zh) trPut(d,el,zh); }); TR.done=have.size; trLabel(); };
+  TR.busy=true; TR.done=0; TR.total=n; if(!d.getElementById('zt-style')){ const st=d.createElement('style'); st.id='zt-style'; st.textContent=TR_CSS; d.head.appendChild(st); } trLabel();
+  let failed=null;
+  try{
+    const cached=await trCacheGet(key);
+    if(cached && cached.length===pieces.length){ cached.forEach((x,k)=>{ got[k]=String(x||''); }); flush(); }
+    else{
+      for(let k=0; k<pieces.length;){
+        const idx=[]; let chars=0;
+        while(k<pieces.length && idx.length<TR_PER && (!idx.length || chars+pieces[k].length<=TR_BATCH)){ idx.push(k); chars+=pieces[k].length; k++; }
+        const out=await trCall(api,to,idx.map(j=>pieces[j]));
+        if(!alive()) return;
+        idx.forEach((j,m)=>{ got[j]=out[m]; }); flush();
+      }
+      await trCachePut(key,got);
+    }
+  }catch(e){ failed=e; }
+  if(seq!==TR.seq) return;
+  TR.busy=false;
+  if(have.size){ trSetMode(d,'both'); buildToc(); if(!$('#rTocPanel').hidden) renderTocPanel(); } else trSetMode(d,'off');
+  if(failed) toast(t('trFailed',failed.message)); else if(cut) toast(t('trCut'));
+}
+async function trOnLoad(){                                                                          // a new page in the reader: nothing is translated yet; is the button wanted?
+  TR.seq++; TR.mode='off'; TR.busy=false; trLabel();
+  const ok=await trAvailable(), fd=frameDoc();
+  $('#readerTrans').hidden=!(ok && fd && !state.rpdf && state.rkind==='doc' && trBlocks(fd.d).length>0); $('#rowTrans').hidden=$('#readerTrans').hidden;
+}
+$('#frame').addEventListener('load',trOnLoad);
+async function trClick(){
+  if(TR.busy) return;
+  const fd=frameDoc(); if(!fd || state.rpdf || state.rkind!=='doc') return toast(t('trNone'));
+  if(TR.mode!=='off') return trSetMode(fd.d,{both:'only',only:'orig',orig:'both'}[TR.mode]);
+  await trRun(fd);
+}
+$('#readerTrans').addEventListener('click',trClick);
+$('#rSetTrans').addEventListener('click',()=>{ closePanels(); trClick(); });
 $('#readerBack').addEventListener('click',()=>closeReader());
 $('#readerPrev').addEventListener('click',()=>step(-1));
 $('#readerNext').addEventListener('click',()=>step(1));
