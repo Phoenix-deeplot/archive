@@ -125,7 +125,7 @@ def listen_group(gid, mode, lang='zh'):
     return {**{k: x[k] for k in ('id', 'name', 'name_en', 'kind', 'type', 'net')}, 'sub': '来源：' + ' · '.join(names), 'sub_en': 'From ' + ' · '.join(names), 'items': items}
 
 
-HOT = {'down': False, 'fail': set(), 'delay': 0, 'asked': []}              # down: the hot-list service answers 503; fail: platforms whose list cannot be read; delay: ms before a list is answered; asked: the platforms asked for
+HOT = {'down': False, 'fail': set(), 'delay': 0, 'asked': [], 'events': 'ok'}  # events: ok | empty | fail; deterministic event-response control for the browser tests
 NUMS = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二']
 
 
@@ -275,6 +275,23 @@ class H(BaseHTTPRequestHandler):
             return self.json(LISTEN['asked'])
         if p.path == '/__listen_log':
             return self.json(LISTEN['log'])
+        if p.path == '/api/hot/events':
+            if HOT['down'] or HOT['events'] == 'fail':
+                return self.reply(503, {'ok': False, 'error': 'events_down'})
+            if HOT['delay']:
+                time.sleep(HOT['delay'] / 1000)
+            if HOT['events'] == 'empty':
+                return self.reply(200, {'ok': True, 'updated': int(time.time()), 'events': []})
+            lang = parse_qs(p.query).get('lang', ['zh'])[0]
+            now = int(time.time())
+            events = [
+                {'id': 'iran-israel', 'title': '伊以局势持续发展' if lang != 'en' else 'Iran–Israel tensions continue', 'category': 'world', 'last_updated': now - 90, 'source_count': 3, 'trend': 'rising', 'items': [
+                    {'title': '外交与安全局势最新进展', 'url': 'https://example.org/world/iran-israel', 'source': 'Example World Desk', 'published_at': now - 120, 'excerpt': '多家来源持续更新相关报道，事件仍在发展中。'},
+                    {'title': 'Regional situation update', 'url': 'https://example.net/world/iran-israel', 'source': 'Example Global News', 'published_at': now - 240, 'excerpt': 'A second source reports new developments.'}]},
+                {'id': 'ai-news', 'title': 'AI 模型与产品更新' if lang != 'en' else 'New AI model and product updates', 'category': 'ai', 'last_updated': now - 300, 'source_count': 2, 'trend': 'steady', 'items': [
+                    {'title': '模型能力与产品发布动态', 'url': 'https://example.org/technology/ai-update', 'source': 'Example Tech', 'published_at': now - 360, 'excerpt': '官方发布与行业报道持续跟进。'}]}
+            ]
+            return self.reply(200, {'ok': True, 'updated': now, 'events': events})
         if p.path == '/api/hot':
             if HOT['down']:
                 return self.reply(503, {'ok': False, 'error': 'down'})
@@ -291,6 +308,7 @@ class H(BaseHTTPRequestHandler):
             HOT['fail'] = {x for x in q.get('fail', [''])[0].split(',') if x}
             HOT['delay'] = int(q.get('delay', ['0'])[0] or 0)
             HOT['real'] = q.get('real', ['0'])[0] == '1'
+            HOT['events'] = q.get('events', ['ok'])[0]
             DETAIL_ASKED.clear()
             if q.get('reset'):
                 HOT['asked'].clear()
