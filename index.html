@@ -983,6 +983,24 @@ body.has-player .fab{bottom:calc(var(--pl-h) + 16px + env(safe-area-inset-bottom
 .toc-i.done::after{content:"✓";margin-left:auto;color:var(--accent);font-size:12px;flex:none}
 .bk-head{margin:6px 12px 8px;font-size:13px;color:var(--muted);line-height:1.5}
 .xmeta .rd{color:var(--accent)}
+/* the picked books (a licence in the entry): a cover drawn like a book when there is no picture, the author under the title, three lines of the summary, a button to read */
+.xcover.bk{display:flex;align-items:center;justify-content:center;background:var(--tb)}
+.bk-book{--bb:#24365C;--bf:#E4E9F2;--bm:#8FA3C7;position:relative;display:flex;flex-direction:column;justify-content:space-between;height:86%;aspect-ratio:3/4;container-type:inline-size;padding:9% 9% 8% 15%;border-radius:3px 7px 7px 3px;background:var(--bb);color:var(--bf);box-shadow:0 8px 18px rgba(0,0,0,.28),inset 3px 0 0 rgba(255,255,255,.16),inset 7px 0 6px -4px rgba(0,0,0,.4);overflow:hidden;text-align:left}
+.bk-book::before{content:"";position:absolute;left:8%;top:0;bottom:0;width:1px;background:rgba(255,255,255,.22)}
+.bk-book::after{content:"";position:absolute;inset:5% 5% 5% 11%;border:1px solid var(--bm);opacity:.5;border-radius:2px;pointer-events:none}
+.bk-t{position:relative;z-index:1;font-family:var(--serif);font-weight:900;line-height:1.28;letter-spacing:.03em;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;overflow:hidden;overflow-wrap:anywhere}
+.bk-book.s1 .bk-t{font-size:max(12px,34cqw)}.bk-book.s2 .bk-t{font-size:max(11px,25cqw)}.bk-book.s3 .bk-t{font-size:max(10px,19cqw)}.bk-book.s4 .bk-t{font-size:max(8px,14.5cqw)}
+.bk-a{position:relative;z-index:1;font-size:max(9px,11cqw);line-height:1.3;opacity:.85;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.xcard.bkcard .sum{-webkit-line-clamp:3}
+.xcard.bkcard .xmeta .au{display:none}
+.bk-by{margin:-3px 0 6px;font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bk-go{flex:none;display:inline-flex;align-items:center;min-height:32px;margin-right:6px;padding:0 12px;border:1px solid var(--accent);border-radius:999px;background:transparent;color:var(--accent);font:600 13px/1 var(--sans);cursor:pointer}
+.bk-go:hover,.bk-go:focus-visible{background:var(--accent);color:var(--surface,#fff);outline:none}
+.row-thumb.bk{display:flex;align-items:center;justify-content:center;width:62px;height:84px;background:var(--tb)}
+.row-thumb.bk .bk-book{width:100%;height:100%;aspect-ratio:auto;border-radius:2px 4px 4px 2px;box-shadow:none;padding:9% 7% 8% 14%}
+.row-thumb.bk .bk-a{display:none}
+.row-thumb.bk .bk-book .bk-t{-webkit-line-clamp:6}
+.drow.bkrow .sum{-webkit-line-clamp:1}
 .bo-note{margin:10px 0 0;color:var(--muted);font-size:13px;line-height:1.6}
 .xmeta .lic{border:1px solid var(--rule);border-radius:4px;padding:0 5px;font-size:11px}
 body.has-player .rc-act{bottom:calc(var(--pl-h) + 34px + env(safe-area-inset-bottom,0px))}          /* the bar of the recommended page sticks above the player (and the tab on its edge), not under it */
@@ -2356,10 +2374,10 @@ Object.assign(I18N.zh,{trBtn:'翻译', trTip:'翻译这一页（文字会发到�
   trGo:'翻译这一页（双语对照）', trAskTitle:'翻译这一页？', trAsk:'点“翻译”，这一页的文字会发送到翻译服务（DeepL 或阿里云）去翻译；不会发送你是谁，服务端也不保存原文。译文只存在这个浏览器里。', trYes:'翻译', trNo:'取消'});
 Object.assign(I18N.en,{trBtn:'Translate', trTip:'Translate this page (its text goes to a translation service)', trCycle:'Click to switch: both → translation → original', trBoth:'Both', trOnly:'Translation', trOrig:'Original', trBusy:(a,b)=>`Translating ${a}/${b}`, trNone:'There is no text to translate on this page', trSame:'This page is in the language of your interface already', trCut:'A long article: only the first 30,000 characters were translated', trFailed:m=>`The translation did not work: ${m}`,
   trGo:'Translate this page (side by side)', trAskTitle:'Translate this page?', trAsk:'“Translate” sends the text of this page to a translation service (DeepL or Aliyun). Nothing about who you are is sent, and the server does not keep the text. The translation is kept only in this browser.', trYes:'Translate', trNo:'Cancel'});
-Object.assign(I18N.zh,{bkTab:'章节', bkPos:(i,n,p)=>`第 ${i} / ${n} 章 · 全书约 ${p}%`, bkPrev:'上一章', bkNext:'下一章', bkLast:'已经是最后一章', prevCh:'上一章', nextCh:'下一章', bkReadAt:n=>`读到 ${n}`,
+Object.assign(I18N.zh,{bkTrialBtn:'试读', bkContinueBtn:'继续阅读', bkTab:'章节', bkPos:(i,n,p)=>`第 ${i} / ${n} 章 · 全书约 ${p}%`, bkPrev:'上一章', bkNext:'下一章', bkLast:'已经是最后一章', prevCh:'上一章', nextCh:'下一章', bkReadAt:n=>`读到 ${n}`,
   bookContinue:(n,p)=>p?`继续读：${n} · ${p}%`:`继续读：${n}`, bookRead:p=>`已读约 ${p}%`,
   ffLabel:'字体', ffFollow:'默认', ffSerif:'宋体', ffSans:'黑体', ffKai:'楷体', pgLabel:'段距', indLabel:'首行缩进', jusLabel:'两端对齐', optOff:'关', optOn:'开'});
-Object.assign(I18N.en,{bkTab:'Chapters', bkPos:(i,n,p)=>`Chapter ${i} of ${n} · about ${p}% of the book`, bkPrev:'Previous chapter', bkNext:'Next chapter', bkLast:'This is the last chapter', prevCh:'Previous chapter', nextCh:'Next chapter', bkReadAt:n=>`At ${n}`,
+Object.assign(I18N.en,{bkTrialBtn:'Read a sample', bkContinueBtn:'Continue', bkTab:'Chapters', bkPos:(i,n,p)=>`Chapter ${i} of ${n} · about ${p}% of the book`, bkPrev:'Previous chapter', bkNext:'Next chapter', bkLast:'This is the last chapter', prevCh:'Previous chapter', nextCh:'Next chapter', bkReadAt:n=>`At ${n}`,
   bookContinue:(n,p)=>p?`Continue: ${n} · ${p}%`:`Continue: ${n}`, bookRead:p=>`about ${p}% read`,
   ffLabel:'Font', ffFollow:'Default', ffSerif:'Serif', ffSans:'Sans', ffKai:'Kai', pgLabel:'Paragraph spacing', indLabel:'First-line indent', jusLabel:'Justify', optOff:'Off', optOn:'On'});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
@@ -3777,6 +3795,24 @@ async function bookPrefetch(it){                                                
   const nx=bookItem(d,n); if(bookPre.has(nx.id) || hasText(nx)) return; bookPre.add(nx.id);
   try{ const r=await bookFetch(nx); await storeText(nx,r); }catch(e){ /* it is read when it is opened */ }
 }
+const isPickedBook = it => !!it && it.type==='book' && !!it.license;                                // a book of the picked list (it has a licence): the card of such a book is its own
+function bookCoverInner(it){                                                                       // a book drawn as a book: its colour, the title big (the size by its length), the author at the foot
+  const [bg,mid,ink]=coverLook(it).pal, n=[...String(it.title||'')].length, size=n<=4?'s1':n<=8?'s2':n<=14?'s3':'s4';
+  return `<span class="bk-book ${size}" style="--bb:${ink};--bf:${bg};--bm:${mid}"><span class="bk-t">${esc(it.title)}</span>${it.author?`<span class="bk-a">${esc(it.author)}</span>`:''}</span>`;
+}
+const bookCanRead = it => !!feedApi() && !!httpUrl(it.url) && (!!bookChs(it) || dirReadable(it));    // read in the page: chapters, or one page that the service can read
+function bookGoHTML(it){                                                                           // "试读" (the first chapter) or "继续阅读" (where the reader was): straight into the book, no window
+  if(!bookCanRead(it)) return '';
+  const lbl=t(bookStarted(bookPlace(it.id)) ? 'bkContinueBtn' : 'bkTrialBtn');
+  return `<button class="bk-go" type="button" data-bk-go="${esc(it.id)}" title="${esc(lbl)}">${esc(lbl)}</button>`;
+}
+function bookGo(did){
+  const d=state.dirData && state.dirData.items.find(x=>x.id===did); if(!d || !bookCanRead(d)) return;
+  const ch=bookChs(d); if(!ch) return openDirReader(did);
+  statSend('open','item',did); markDirRead(did);
+  const p=bookPlace(did); return openBookChapter(did, bookStarted(p) ? Math.min(p.i,ch.n.length-1) : 0);
+}
+document.addEventListener('click',e=>{ const b=e.target.closest && e.target.closest('[data-bk-go]'); if(!b) return; e.preventDefault(); e.stopPropagation(); bookGo(b.dataset.bkGo); },true);
 const bookReadAt = it => { const p=bookPlace(it.id); return bookStarted(p) && p.i<it.ch.n.length ? `<span class="rd">${esc(t('bkReadAt',chName(it.ch.n[p.i])))}</span>` : ''; };
 function openBook(did, quiet){
   const d=state.dirData && state.dirData.items.find(x=>x.id===did); if(!d) return;
@@ -6109,6 +6145,7 @@ function dirXCoverHTML(it, rec){                                                
   const open=`<a class="xcover%CLS%" style="%STYLE%" href="${esc(it.url)}" target="_blank" rel="${REL}" aria-label="${esc(it.title)}" data-dopen="${esc(it.id)}">`, tail=`${whyHTML(it,rec)}${it.type!=='article'?`<span class="ftype">${esc(t('ty_'+it.type))}</span>`:''}${it.audio?dirPlayMark():''}</a>`;
   const fill=(cls,style,inner)=>open.replace('%CLS%',cls).replace('%STYLE%',style)+inner+tail;
   if(it.image) return fill('', '', `<img src="${esc(it.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fb="x">`);
+  if(isPickedBook(it)) return fill(' bk', `--tb:${bg}`, bookCoverInner(it));
   if(q){ const n=[...q].length, fs=n<=30 ? 22 : n<=60 ? 18 : 16, lc=n<=30 ? 4 : n<=60 ? 5 : 6, lp=n<=30 ? 3 : 5;               // (the size and the lines of the text by its length: it always fits the cover)
     return fill(' xtext', `--tb:${bg};--ti:${ink};--fs:${fs}px;--lc:${lc};--lp:${lp}`, `<svg class="xpat" viewBox="0 0 320 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${coverPattern(rng(h),mid,ink,320,240)}</svg><q class="xquote">${esc(q)}</q>`); }
   return fill('', '', dirCoverArt(it,'tall'));
@@ -6131,23 +6168,23 @@ function dirSideHTML(it, saved){                                                
   </article>`;
 }
 function dirRowHTML(it, tk, saved, rec){                                                               // a light row: a small cover, the title, the summary, one line of facts, the bookmark
-  const sh=state.shelfMap.get(it.shelf), sum=dirSummary(it);
-  return `<article class="card drow${state.dirRead[it.id]?' is-read':''}" data-did="${esc(it.id)}">
-    <a class="row-thumb" href="${esc(it.url)}" target="_blank" rel="${REL}" aria-label="${esc(it.title)}" data-dopen="${esc(it.id)}">${it.image ? `<img src="${esc(it.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fb="thumb">` : dirCoverArt(it,'thumb')}${it.audio?dirPlayMark():''}</a>
+  const pk=isPickedBook(it) && !it.image, sh=state.shelfMap.get(it.shelf), sum=dirSummary(it);
+  return `<article class="card drow${pk?' bkrow':''}${state.dirRead[it.id]?' is-read':''}" data-did="${esc(it.id)}">
+    <a class="row-thumb${pk?' bk':''}"${pk?` style="--tb:${coverLook(it).pal[0]}"`:''} href="${esc(it.url)}" target="_blank" rel="${REL}" aria-label="${esc(it.title)}" data-dopen="${esc(it.id)}">${pk ? bookCoverInner(it) : it.image ? `<img src="${esc(it.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fb="thumb">` : dirCoverArt(it,'thumb')}${it.audio?dirPlayMark():''}</a>
     <div class="row-main"><h3 class="card-title"><a href="${esc(it.url)}" target="_blank" rel="${REL}" data-dopen="${esc(it.id)}">${hl(it.title,tk)}</a></h3>${zhSub(it)}${sum?`<p class="sum">${hl(sum,tk)}</p>`:''}<p class="xmeta">${whyHTML(it,rec)}${dirMetaLine(it,sh)}${dirStatsHTML(it,true)}</p></div>
     ${dirSaveBtn(it,saved)}
   </article>`;
 }
 function dirCardHTML(it, tk, saved, rec){                                                              // a card of the grid: the cover, the title, the summary (when the cover does not carry it), source, numbers, bookmark
-  const sh=state.shelfMap.get(it.shelf), sum=dirSummary(it), onCover=!!dirQuote(it), chips=dirTagChips(it,2), on=saved.has('local:link:'+it.id), tip=t(on?'savedTip':'saveToShelf');
-  return `<article class="card xcard${state.dirRead[it.id]?' is-read':''}" data-did="${esc(it.id)}">
+  const pk=isPickedBook(it), sh=state.shelfMap.get(it.shelf), sum=dirSummary(it), onCover=!!dirQuote(it) && !pk, chips=dirTagChips(it,2), on=saved.has('local:link:'+it.id), tip=t(on?'savedTip':'saveToShelf');
+  return `<article class="card xcard${pk?' bkcard':''}${state.dirRead[it.id]?' is-read':''}" data-did="${esc(it.id)}">
     ${dirXCoverHTML(it,rec)}
     <div class="xbody">
-      <h3 class="card-title"><a href="${esc(it.url)}" target="_blank" rel="${REL}" data-dopen="${esc(it.id)}">${hl(it.title,tk)}</a></h3>${zhSub(it)}
+      <h3 class="card-title"><a href="${esc(it.url)}" target="_blank" rel="${REL}" data-dopen="${esc(it.id)}">${hl(it.title,tk)}</a></h3>${zhSub(it)}${pk && it.author ? `<p class="bk-by">${esc(it.author)}</p>` : ''}
       ${sum && !onCover ? `<p class="sum">${hl(sum,tk)}</p>` : ''}
       ${chips?`<div class="chips">${chips}</div>`:''}
       <p class="xmeta">${dirMetaLine(it,sh)}</p>
-      <div class="card-foot">${dirStatsHTML(it,true)}<span class="acts"><button class="ibtn" type="button" data-d="save" aria-pressed="${on}" title="${esc(tip)}" aria-label="${esc(tip)}">${ICON.bookmark}</button></span></div>
+      <div class="card-foot">${dirStatsHTML(it,true)}<span class="acts">${pk ? bookGoHTML(it) : ''}<button class="ibtn" type="button" data-d="save" aria-pressed="${on}" title="${esc(tip)}" aria-label="${esc(tip)}">${ICON.bookmark}</button></span></div>
     </div>
   </article>`;
 }

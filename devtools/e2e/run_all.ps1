@@ -16,7 +16,7 @@ function Rig {                                                          # (the b
 }
 Log ('start ' + (Get-Date))
 Rig
-$all = 's_read', 's_lang', 's_starter', 's_mobile', 's_reco', 's_readerui', 's_backup', 's_text', 's_sync', 's_notes', 's_notes_doc', 's_first', 's_dir', 's_hot', 's_hotpage', 's_rich', 's_tips', 's_player', 's_player2', 's_listen', 's_focus', 's_more', 's_books', 's_bookcache', 's_bookreader'
+$all = 's_read', 's_lang', 's_starter', 's_mobile', 's_reco', 's_readerui', 's_backup', 's_text', 's_sync', 's_notes', 's_notes_doc', 's_first', 's_dir', 's_hot', 's_hotpage', 's_rich', 's_tips', 's_player', 's_player2', 's_listen', 's_focus', 's_more', 's_books', 's_bookcache', 's_bookreader', 's_bookcards'
 $list = if ($Only.Count) { $Only } else { $all }
 foreach ($f in $list) {
     $o = node "tests\$f.js" 2>&1
