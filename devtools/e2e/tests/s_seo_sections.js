@@ -12,6 +12,7 @@ const dist = path.join(out, 'dist');
 const read = p => { try { return fs.readFileSync(path.join(dist, p), 'utf8'); } catch (e) { return null; } };
 const S = [['discover', '发现', true], ['hot', '热榜', true], ['listen', '今日听什么', true], ['picks/books', '精选图书', false], ['picks/articles', '精选文章', true], ['watch', '看什么', true]];
 const sitemap = read('sitemap.xml') || '', urls = (read('urls.txt') || '').split('\n');
+ok('sitemap URL fields are readable on separate, indented lines', /\n  <url>\n    <loc>https:\/\/example\.test\//.test(sitemap) && /\n    <lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>\n  <\/url>/.test(sitemap) && !/<url><loc>/.test(sitemap), sitemap.slice(0, 500));
 
 for (const [rel, label, indexed] of S) {
   const h = read(rel + '/index.html');
