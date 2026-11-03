@@ -979,10 +979,39 @@ body.has-player .fab{bottom:calc(var(--pl-h) + 16px + env(safe-area-inset-bottom
 .bo-ch b{font-weight:600}.bo-ch span{color:var(--muted);margin-left:.5em;font-size:12.5px}
 .bo-ch.done::after{content:"✓";float:right;color:var(--accent);font-size:12px}
 .bo-chs.has-t{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
-.toc-i.bk{display:flex;gap:8px;align-items:baseline}.toc-i.bk b{flex:none;font-weight:600}.toc-i.bk span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:13px}
+.toc-i.bk{display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline}.toc-i.bk b{flex:none;font-weight:600}.toc-i.bk span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:13px}
 .toc-i.done::after{content:"✓";margin-left:auto;color:var(--accent);font-size:12px;flex:none}
 .bk-head{margin:6px 12px 8px;font-size:13px;color:var(--muted);line-height:1.5}
+.toc-i .trl{display:block;flex-basis:100%;margin-top:2px;font-style:normal;font-size:12.5px;line-height:1.4;color:var(--accent);font-weight:400}
+#trMenu{padding:8px}
+.tr-act{display:block;width:100%;min-height:44px;padding:10px 12px;border:0;border-radius:8px;background:none;color:var(--ink);font:inherit;font-size:14.5px;text-align:left;cursor:pointer}
+.tr-act:hover,.tr-act:focus-visible{background:var(--bg);outline:none}
+.tr-act[hidden]{display:none}
+#trMenu .rnote{margin:6px 12px 4px}
+.tr-fab{display:none;position:absolute;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:4;width:48px;height:48px;border-radius:50%;border:1px solid var(--rule);background:var(--surface);color:var(--ink);box-shadow:0 4px 14px rgba(0,0,0,.22);align-items:center;justify-content:center;cursor:pointer}
+.tr-fab .icon{width:22px;height:22px}
+@media (max-width:620px){.tr-fab:not([hidden]){display:flex}body.reader-focus .tr-fab{display:none!important}#trMenu{top:auto;bottom:10px}}
+.bo-tr{margin:0 0 10px;padding:8px 12px;border-left:3px solid var(--accent);color:var(--muted);font-size:14px;line-height:1.7;white-space:pre-line}
+.bo-trbtn{margin:0 0 10px;font-size:13px}
 .xmeta .rd{color:var(--accent)}
+/* the picked books (a licence in the entry): a cover drawn like a book when there is no picture, the author under the title, three lines of the summary, a button to read */
+.xcover.bk{display:flex;align-items:center;justify-content:center;background:var(--tb)}
+.bk-book{--bb:#24365C;--bf:#E4E9F2;--bm:#8FA3C7;position:relative;display:flex;flex-direction:column;justify-content:space-between;height:86%;aspect-ratio:3/4;container-type:inline-size;padding:9% 9% 8% 15%;border-radius:3px 7px 7px 3px;background:var(--bb);color:var(--bf);box-shadow:0 8px 18px rgba(0,0,0,.28),inset 3px 0 0 rgba(255,255,255,.16),inset 7px 0 6px -4px rgba(0,0,0,.4);overflow:hidden;text-align:left}
+.bk-book::before{content:"";position:absolute;left:8%;top:0;bottom:0;width:1px;background:rgba(255,255,255,.22)}
+.bk-book::after{content:"";position:absolute;inset:5% 5% 5% 11%;border:1px solid var(--bm);opacity:.5;border-radius:2px;pointer-events:none}
+.bk-t{position:relative;z-index:1;font-family:var(--serif);font-weight:900;line-height:1.28;letter-spacing:.03em;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;overflow:hidden;overflow-wrap:anywhere}
+.bk-book.s1 .bk-t{font-size:max(12px,34cqw)}.bk-book.s2 .bk-t{font-size:max(11px,25cqw)}.bk-book.s3 .bk-t{font-size:max(10px,19cqw)}.bk-book.s4 .bk-t{font-size:max(8px,14.5cqw)}
+.bk-a{position:relative;z-index:1;font-size:max(9px,11cqw);line-height:1.3;opacity:.85;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.xcard.bkcard .sum{-webkit-line-clamp:3}
+.xcard.bkcard .xmeta .au{display:none}
+.bk-by{margin:-3px 0 6px;font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bk-go{flex:none;display:inline-flex;align-items:center;min-height:32px;margin-right:6px;padding:0 12px;border:1px solid var(--accent);border-radius:999px;background:transparent;color:var(--accent);font:600 13px/1 var(--sans);cursor:pointer}
+.bk-go:hover,.bk-go:focus-visible{background:var(--accent);color:var(--surface,#fff);outline:none}
+.row-thumb.bk{display:flex;align-items:center;justify-content:center;width:62px;height:84px;background:var(--tb)}
+.row-thumb.bk .bk-book{width:100%;height:100%;aspect-ratio:auto;border-radius:2px 4px 4px 2px;box-shadow:none;padding:9% 7% 8% 14%}
+.row-thumb.bk .bk-a{display:none}
+.row-thumb.bk .bk-book .bk-t{-webkit-line-clamp:6}
+.drow.bkrow .sum{-webkit-line-clamp:1}
 .bo-note{margin:10px 0 0;color:var(--muted);font-size:13px;line-height:1.6}
 .xmeta .lic{border:1px solid var(--rule);border-radius:4px;padding:0 5px;font-size:11px}
 body.has-player .rc-act{bottom:calc(var(--pl-h) + 34px + env(safe-area-inset-bottom,0px))}          /* the bar of the recommended page sticks above the player (and the tab on its edge), not under it */
@@ -1476,6 +1505,14 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
       <div class="rrow col"><span data-i="saveThis">保存这一篇</span><div class="themes"><button type="button" id="rSaveHtml" data-i="saveHtml">下载网页（HTML）</button><button type="button" id="rPrint" data-i="savePdf">打印 / 存为 PDF</button></div></div>
       <p class="rnote" id="rSaveNote" data-i="saveOrigNote" hidden></p>
     </div>
+    <div class="rpanel" id="trMenu" hidden>
+      <button type="button" class="tr-act" data-tr="screen" data-i="trMenuScreen">翻译本屏</button>
+      <button type="button" class="tr-act" data-tr="all" data-i="trMenuAll">翻译本章</button>
+      <button type="button" class="tr-act" data-tr="toc" data-i="trMenuToc">翻译目录</button>
+      <button type="button" class="tr-act" data-tr="cycle" id="trMenuCycle" hidden></button>
+      <p class="rnote" id="trLeft" hidden></p>
+    </div>
+    <button type="button" class="tr-fab" id="trFab" hidden data-i-aria="trTip"></button>
     <div class="rpanel rside" id="rTocPanel" hidden role="complementary" aria-label="目录">
       <div class="rtabs" role="tablist"><button type="button" role="tab" data-tab="chs" aria-selected="false" data-i="bkTab" hidden>章节</button><button type="button" role="tab" data-tab="toc" aria-selected="true" data-i="tocTab">目录</button><button type="button" role="tab" data-tab="marks" aria-selected="false" data-i="marksTab">书签</button></div>
       <div class="rbody" id="rTocBody"></div>
@@ -1568,6 +1605,8 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     <div class="dlg-head"><h2 id="bookTitle"></h2><p class="emb-sub" id="bookSub"></p></div>
     <div class="dlg-body">
       <p class="bo-sum" id="bookSum"></p>
+      <p class="bo-tr" id="bookTr" hidden></p>
+      <button type="button" class="link-btn bo-trbtn" id="bookTrBtn" hidden data-i="bookTrBtn">翻译简介</button>
       <div class="bo-facts" id="bookFacts"></div>
       <h3 class="bo-h" data-i="bookChapters">章节</h3>
       <div class="bo-chs" id="bookChs"></div>
@@ -2356,12 +2395,14 @@ Object.assign(I18N.zh,{trBtn:'翻译', trTip:'翻译这一页（文字会发到�
   trGo:'翻译这一页（双语对照）', trAskTitle:'翻译这一页？', trAsk:'点“翻译”，这一页的文字会发送到翻译服务（DeepL 或阿里云）去翻译；不会发送你是谁，服务端也不保存原文。译文只存在这个浏览器里。', trYes:'翻译', trNo:'取消'});
 Object.assign(I18N.en,{trBtn:'Translate', trTip:'Translate this page (its text goes to a translation service)', trCycle:'Click to switch: both → translation → original', trBoth:'Both', trOnly:'Translation', trOrig:'Original', trBusy:(a,b)=>`Translating ${a}/${b}`, trNone:'There is no text to translate on this page', trSame:'This page is in the language of your interface already', trCut:'A long article: only the first 30,000 characters were translated', trFailed:m=>`The translation did not work: ${m}`,
   trGo:'Translate this page (side by side)', trAskTitle:'Translate this page?', trAsk:'“Translate” sends the text of this page to a translation service (DeepL or Aliyun). Nothing about who you are is sent, and the server does not keep the text. The translation is kept only in this browser.', trYes:'Translate', trNo:'Cancel'});
-Object.assign(I18N.zh,{bkTab:'章节', bkPos:(i,n,p)=>`第 ${i} / ${n} 章 · 全书约 ${p}%`, bkPrev:'上一章', bkNext:'下一章', bkLast:'已经是最后一章', prevCh:'上一章', nextCh:'下一章', bkReadAt:n=>`读到 ${n}`,
+Object.assign(I18N.zh,{bkTrialBtn:'试读', bkContinueBtn:'继续阅读', bkTab:'章节', bkPos:(i,n,p)=>`第 ${i} / ${n} 章 · 全书约 ${p}%`, bkPrev:'上一章', bkNext:'下一章', bkLast:'已经是最后一章', prevCh:'上一章', nextCh:'下一章', bkReadAt:n=>`读到 ${n}`,
   bookContinue:(n,p)=>p?`继续读：${n} · ${p}%`:`继续读：${n}`, bookRead:p=>`已读约 ${p}%`,
   ffLabel:'字体', ffFollow:'默认', ffSerif:'宋体', ffSans:'黑体', ffKai:'楷体', pgLabel:'段距', indLabel:'首行缩进', jusLabel:'两端对齐', optOff:'关', optOn:'开'});
-Object.assign(I18N.en,{bkTab:'Chapters', bkPos:(i,n,p)=>`Chapter ${i} of ${n} · about ${p}% of the book`, bkPrev:'Previous chapter', bkNext:'Next chapter', bkLast:'This is the last chapter', prevCh:'Previous chapter', nextCh:'Next chapter', bkReadAt:n=>`At ${n}`,
+Object.assign(I18N.en,{bkTrialBtn:'Read a sample', bkContinueBtn:'Continue', bkTab:'Chapters', bkPos:(i,n,p)=>`Chapter ${i} of ${n} · about ${p}% of the book`, bkPrev:'Previous chapter', bkNext:'Next chapter', bkLast:'This is the last chapter', prevCh:'Previous chapter', nextCh:'Next chapter', bkReadAt:n=>`At ${n}`,
   bookContinue:(n,p)=>p?`Continue: ${n} · ${p}%`:`Continue: ${n}`, bookRead:p=>`about ${p}% read`,
   ffLabel:'Font', ffFollow:'Default', ffSerif:'Serif', ffSans:'Sans', ffKai:'Kai', pgLabel:'Paragraph spacing', indLabel:'First-line indent', jusLabel:'Justify', optOff:'Off', optOn:'On'});
+Object.assign(I18N.zh,{trMenuScreen:'翻译本屏', trMenuAll:'翻译本章', trMenuToc:'翻译目录', trMenuCycle:x=>`正在显示：${x}（点一下切换）`, trLeft:n=>`今天还可以翻译约 ${n} 字`, trAllDone:'这一页已经翻译完了', trTocNone:'这里没有可以翻译的目录', trTocDone:'目录翻译好了', bookTrBtn:'翻译简介'});
+Object.assign(I18N.en,{trMenuScreen:'Translate this screen', trMenuAll:'Translate this chapter', trMenuToc:'Translate the contents', trMenuCycle:x=>`Showing: ${x} (click to switch)`, trLeft:n=>`About ${n} characters left to translate today`, trAllDone:'This page is translated already', trTocNone:'There are no contents to translate here', trTocDone:'The contents are translated', bookTrBtn:'Translate the summary'});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const catName = c => (['all','featured','books','tools','notes','hidden'].includes(c)? t(c) : c);
@@ -3777,6 +3818,24 @@ async function bookPrefetch(it){                                                
   const nx=bookItem(d,n); if(bookPre.has(nx.id) || hasText(nx)) return; bookPre.add(nx.id);
   try{ const r=await bookFetch(nx); await storeText(nx,r); }catch(e){ /* it is read when it is opened */ }
 }
+const isPickedBook = it => !!it && it.type==='book' && !!it.license;                                // a book of the picked list (it has a licence): the card of such a book is its own
+function bookCoverInner(it){                                                                       // a book drawn as a book: its colour, the title big (the size by its length), the author at the foot
+  const [bg,mid,ink]=coverLook(it).pal, n=[...String(it.title||'')].length, size=n<=4?'s1':n<=8?'s2':n<=14?'s3':'s4';
+  return `<span class="bk-book ${size}" style="--bb:${ink};--bf:${bg};--bm:${mid}"><span class="bk-t">${esc(it.title)}</span>${it.author?`<span class="bk-a">${esc(it.author)}</span>`:''}</span>`;
+}
+const bookCanRead = it => !!feedApi() && !!httpUrl(it.url) && (!!bookChs(it) || dirReadable(it));    // read in the page: chapters, or one page that the service can read
+function bookGoHTML(it){                                                                           // "试读" (the first chapter) or "继续阅读" (where the reader was): straight into the book, no window
+  if(!bookCanRead(it)) return '';
+  const lbl=t(bookStarted(bookPlace(it.id)) ? 'bkContinueBtn' : 'bkTrialBtn');
+  return `<button class="bk-go" type="button" data-bk-go="${esc(it.id)}" title="${esc(lbl)}">${esc(lbl)}</button>`;
+}
+function bookGo(did){
+  const d=state.dirData && state.dirData.items.find(x=>x.id===did); if(!d || !bookCanRead(d)) return;
+  const ch=bookChs(d); if(!ch) return openDirReader(did);
+  statSend('open','item',did); markDirRead(did);
+  const p=bookPlace(did); return openBookChapter(did, bookStarted(p) ? Math.min(p.i,ch.n.length-1) : 0);
+}
+document.addEventListener('click',e=>{ const b=e.target.closest && e.target.closest('[data-bk-go]'); if(!b) return; e.preventDefault(); e.stopPropagation(); bookGo(b.dataset.bkGo); },true);
 const bookReadAt = it => { const p=bookPlace(it.id); return bookStarted(p) && p.i<it.ch.n.length ? `<span class="rd">${esc(t('bkReadAt',chName(it.ch.n[p.i])))}</span>` : ''; };
 function openBook(did, quiet){
   const d=state.dirData && state.dirData.items.find(x=>x.id===did); if(!d) return;
@@ -3794,6 +3853,7 @@ function openBook(did, quiet){
   const go=$('#bookStart'); go.textContent=started ? t('bookContinue',chName(ch.n[pos]),pos===pl.i&&pct>3?pct:0) : t('bookStart'); go.dataset.boGo=String(pos);
   dlg.dataset.did=did; if(!dlg.open) dlg.showModal();
   const cur=dlg.querySelector('.bo-ch[aria-current="true"]'); if(cur && pos>0) cur.scrollIntoView({block:'nearest'});
+  bookIntroButton(d);                                                                              // (a button to translate the name and the summary, when the service is there)
 }
 $('#bookDlg').addEventListener('click',e=>{
   const dlg=$('#bookDlg'); if(e.target===dlg){ dlg.close(); return; }
@@ -3883,7 +3943,7 @@ function syncSave(){ const doc=state.rkind==='doc'; $('#rSaveHtml').hidden=!doc;
 const saveName = () => { const it=itemById(state.readingId); return String((it&&it.title)||'article').replace(/[\\/:*?"<>|\u0000-\u001f]+/g,' ').replace(/\s+/g,' ').trim().slice(0,80)||'article'; };
 $('#rSaveHtml').addEventListener('click',()=>{ const fd=frameDoc(); if(!fd) return toast(t('printFail')); bkDownload(new Blob(['<!DOCTYPE html>\n'+fd.d.documentElement.outerHTML],{type:'text/html;charset=utf-8'}), saveName()+'.html'); closePanels(); });
 $('#rPrint').addEventListener('click',()=>{ const fd=frameDoc(); if(!fd) return toast(t('printFail')); closePanels(); try{ fd.w.focus(); fd.w.print(); }catch(e){ toast(t('printFail')); } });
-const PANELS={set:['#rSetPanel','#readerSet'], toc:['#rTocPanel','#readerToc'], save:['#rSavePanel','#readerSave']};
+const PANELS={set:['#rSetPanel','#readerSet'], toc:['#rTocPanel','#readerToc'], save:['#rSavePanel','#readerSave'], tr:['#trMenu','#readerTrans']};
 const panelsOpen = () => Object.values(PANELS).some(p=>!$(p[0]).hidden);
 function closePanels(){ Object.values(PANELS).forEach(([p,b])=>{ $(p).hidden=true; $(b).setAttribute('aria-expanded','false'); }); $('#rBack').hidden=true; }
 function closePopovers(){ ['set','save'].forEach(k=>{ $(PANELS[k][0]).hidden=true; $(PANELS[k][1]).setAttribute('aria-expanded','false'); }); if($('#rTocPanel').hidden) $('#rBack').hidden=true; }      // (the contents panel stays while one reads)
@@ -3892,7 +3952,7 @@ function togglePanel(which){
   closePanels(); if(!open) return;
   panel.hidden=false; $(bs).setAttribute('aria-expanded','true');
   $('#rBack').hidden=false; $('#rBack').classList.toggle('dim',which==='toc');                // on a phone: what is left of the page catches the tap that closes it
-  if(which==='set') syncSettings(); else if(which==='toc') renderTocPanel(); else syncSave();
+  if(which==='set') syncSettings(); else if(which==='toc') renderTocPanel(); else if(which==='tr') trMenuSync(); else syncSave();
 }
 /* contents: the headings of the document (same origin only); marks: places the reader saved */
 function buildToc(){
@@ -3915,10 +3975,10 @@ function renderTocPanel(){
   if(tocTab==='chs' && book){
     const pl=bookPlace(book.did), done=new Set(pl.done), {ch}=book;
     body.innerHTML=`<p class="bk-head">${esc(book.d.title)} · ${esc(t('bkPos',book.i+1,ch.n.length,bookOverall(book.did,ch)))}</p>`
-      + ch.n.map((n,k)=>`<button class="toc-i bk${k===book.i?' on':''}${done.has(k)?' done':''}" type="button" data-bch="${k}" title="${esc(chLabel(ch,k))}"><b>${esc(chName(n))}</b>${bookT(ch,k)?`<span>${esc(bookT(ch,k))}</span>`:''}</button>`).join('');
+      + ch.n.map((n,k)=>`<button class="toc-i bk${k===book.i?' on':''}${done.has(k)?' done':''}" type="button" data-bch="${k}" title="${esc(chLabel(ch,k))}"><b>${esc(chName(n))}</b>${bookT(ch,k)?`<span>${esc(bookT(ch,k))}</span>`:''}${trTocLine(bookT(ch,k))}</button>`).join('');
     const on=body.querySelector('.on'); if(on) on.scrollIntoView({block:'center'});
   } else if(tocTab==='toc'){
-    body.innerHTML = state.toc.length ? state.toc.map(x=>`<button class="toc-i l${x.level}${x.id===state.tocCur?' on':''}" type="button" data-h="${esc(x.id)}">${esc(x.text)}</button>`).join('') : `<p class="empty">${esc(t('tocEmpty'))}</p>`;
+    body.innerHTML = state.toc.length ? state.toc.map(x=>`<button class="toc-i l${x.level}${x.id===state.tocCur?' on':''}" type="button" data-h="${esc(x.id)}">${esc(x.text)}${trTocLine(x.text)}</button>`).join('') : `<p class="empty">${esc(t('tocEmpty'))}</p>`;
   } else {
     const list=(state.marks[id]||[]);
     body.innerHTML = `<button class="btn add-mark" type="button" data-add="1">${esc(t('markAddHere'))}</button>` + (list.length ? list.map((m,i)=>`<div class="mark-i"><button class="toc-i" type="button" data-mark="${i}">${esc(m.label||Math.round(m.pct)+'%')}<small>${Math.round(m.pct)}% · ${esc(today(m.at))}</small></button><button class="x" type="button" data-del="${i}" aria-label="${esc(t('remove'))}">×</button></div>`).join('') : `<p class="empty">${esc(t('marksEmpty'))}</p>`);
@@ -4034,7 +4094,7 @@ $('#frame').addEventListener('load',()=>{
    (the Cache Storage), so the same page is not paid for twice. The button is there only where the service says it is set up. */
 const TR_BLOCKS='p,li,h1,h2,h3,h4,h5,h6,blockquote,figcaption,td,th,dt,dd', TR_MAX=30000, TR_CHUNK=1400, TR_BATCH=6000, TR_PER=40;
 const TR_CSS='.zt-tr{display:block;margin:.35em 0 .9em;padding:.1em .8em;border-left:3px solid var(--accent,#1F7A6D);color:var(--muted,#5A6670);font-size:.95em;line-height:1.7;font-weight:400}h1>.zt-tr,h2>.zt-tr,h3>.zt-tr,h4>.zt-tr,h5>.zt-tr,h6>.zt-tr{font-size:.7em;font-weight:600}li>.zt-tr,td>.zt-tr,th>.zt-tr{margin:.2em 0 .3em}html.zt-only .zt-src{display:none}html.zt-only .zt-tr{border-left:0;padding-left:0;color:inherit;font-size:inherit;margin:0}html.zt-orig .zt-tr{display:none}';
-const TR={mode:'off', busy:false, seq:0, done:0, total:0};
+const TR={mode:'off', busy:false, seq:0, done:0, total:0, left:null};
 let trInfo=null;
 function transApi(){ const s=String((state.dirData&&state.dirData.submit_api)||''), a=/\/submit\/?$/.test(s) ? s.replace(/\/submit\/?$/,'/translate') : ''; return /^https:\/\//.test(a) || /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//.test(a) ? a : ''; }
 async function trAvailable(){                                                                       // is it set up there? (asked now and then, not at every page)
@@ -4045,22 +4105,44 @@ async function trAvailable(){                                                   
 }
 const trTarget = () => state.lang==='zh' ? 'zh' : 'en';
 const trText = el => el.textContent.replace(/\s+/g,' ').trim();
-function trBlocks(d){ return [...d.querySelectorAll(TR_BLOCKS)].filter(el=>!el.closest('pre,code,nav,details.toc,.zt-tr,script,style,noscript') && !el.querySelector(TR_BLOCKS) && el.textContent.trim().length>1 && /\p{L}/u.test(el.textContent)); }
+function trBlocks(d){ return [...d.querySelectorAll(TR_BLOCKS)].filter(el=>!el.closest('pre,code,nav,details.toc,.zt-tr,script,style,noscript,.doc-meta,.doc-src,.doc-lic') && !el.querySelector(TR_BLOCKS) && el.textContent.trim().length>1 && /\p{L}/u.test(el.textContent)); }
 function trSplit(s){                                                                                // a paragraph over TR_CHUNK goes in pieces, cut at the end of a sentence where there is one
   const out=[];
   while(s.length>TR_CHUNK){ const m=[...s.slice(0,TR_CHUNK).matchAll(/[。！？!?]|\.(?=\s)/g)]; let cut=m.length ? m[m.length-1].index+1 : -1; if(cut<TR_CHUNK*0.4) cut=TR_CHUNK; out.push(s.slice(0,cut).trim()); s=s.slice(cut).trim(); }
   if(s) out.push(s); return out;
 }
 async function trSha(s){ const b=await crypto.subtle.digest('SHA-1', new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''); }
-async function trCacheGet(key){ try{ const c=await caches.open('zt-translate'), r=await c.match('https://translate.cache/'+key); return r ? await r.json() : null; }catch(e){ return null; } }
-async function trCachePut(key,list){ try{ const c=await caches.open('zt-translate'); await c.put('https://translate.cache/'+key, new Response(JSON.stringify(list))); const ks=await c.keys(); if(ks.length>60) await c.delete(ks[0]); }catch(e){} }
+const TR_PCACHE='zt-translate-p', TR_PKEEP=6000;                                                    // what is translated is kept paragraph by paragraph (the text and the language are the key): a paragraph that comes again, in this page or in another, is not paid for again
+const trPKey = (to,sha) => 'https://translate.cache/p/'+to+'/'+sha;
+async function trCacheGetMany(to,shas){ try{ const c=await caches.open(TR_PCACHE); return await Promise.all(shas.map(async s=>{ const r=await c.match(trPKey(to,s)); return r ? await r.text() : null; })); }catch(e){ return shas.map(()=>null); } }
+async function trCachePutMany(to,pairs){ try{ const c=await caches.open(TR_PCACHE); await Promise.all(pairs.map(([s,x])=>c.put(trPKey(to,s),new Response(x)))); const ks=await c.keys(); if(ks.length>TR_PKEEP) for(let i=0;i<ks.length-TR_PKEEP+300;i++) await c.delete(ks[i]); }catch(e){} }
 async function trCall(api,to,texts){
   const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to,from:'auto',texts}),credentials:'omit'});
   const d=await r.json().catch(()=>null);
   if(!d || !d.ok){ const e=new Error((d && (state.lang==='zh' ? d.message : d.message_en || d.message)) || 'HTTP '+r.status); e.code=(d&&d.error)||''; throw e; }
   if(!Array.isArray(d.texts) || d.texts.length!==texts.length) throw new Error('?');
+  if(d.left && typeof d.left.day==='number') TR.left=d.left.day;                                      // (what is left of today's allowance, told in the menu)
   return d.texts.map(x=>String(x||''));
 }
+/* Short lines (the titles of the contents, the name and summary of a book): asked for together, kept in memory for this visit (language + text -> translation), in this browser's paragraph cache and by the service. */
+const trMem=new Map();
+const trIsTarget = (to,text) => { const sample=String(text).slice(0,2000), cjk=(sample.match(/[一-鿿]/g)||[]).length, lat=(sample.match(/[A-Za-z]/g)||[]).length; return (to==='zh' && cjk>lat) || (to==='en' && lat>cjk*3); };
+async function trLines(texts){                                                                      // -> a translation for each ('' for a line that is in the language already)
+  const to=trTarget(), api=transApi(), out=texts.map(()=>''), need=[];
+  texts.forEach((x,i)=>{ const k=to+'\n'+x, m=trMem.get(k); if(m!==undefined) out[i]=m; else if(!x || trIsTarget(to,x)) trMem.set(k,''); else need.push(i); });
+  if(!need.length) return out;
+  const shas=await Promise.all(need.map(i=>trSha(to+'\n'+texts[i]))), hit=await trCacheGetMany(to,shas), miss=[];
+  need.forEach((i,k)=>{ if(hit[k]!==null){ out[i]=hit[k]; trMem.set(to+'\n'+texts[i],hit[k]); } else miss.push(k); });
+  for(let q=0;q<miss.length;){
+    const idx=[]; let chars=0;
+    while(q<miss.length && idx.length<TR_PER && (!idx.length || chars+texts[need[miss[q]]].length<=TR_BATCH)){ idx.push(miss[q]); chars+=texts[need[miss[q]]].length; q++; }
+    const got=await trCall(api,to,idx.map(k=>texts[need[k]]));
+    idx.forEach((k,m)=>{ out[need[k]]=got[m]; trMem.set(to+'\n'+texts[need[k]],got[m]); });
+    await trCachePutMany(to,idx.map((k,m)=>[shas[k],got[m]]));
+  }
+  return out;
+}
+const trTocLine = text => { const m = text && TR.mode!=='orig' ? trMem.get(trTarget()+'\n'+text) : ''; return m ? `<em class="trl" lang="${trTarget()==='zh'?'zh-CN':'en'}">${esc(m)}</em>` : ''; };       // the translation of a title, under it, in the contents
 function trLabel(){
   const b=$('#readerTrans'), l=$('#readerTransLbl'), txt=TR.busy ? t('trBusy',TR.done,TR.total) : TR.mode==='off' ? t('trBtn') : t({both:'trBoth',only:'trOnly',orig:'trOrig'}[TR.mode]);
   l.textContent=txt; b.classList.toggle('on',TR.mode!=='off'); $('#rSetTrans').textContent = TR.busy ? txt : TR.mode==='off' ? t('trGo') : txt+' · '+t('trCycle'); const tip=TR.mode==='off' ? t('trTip') : t('trCycle'); b.title=tip; b.setAttribute('aria-label',tip+' · '+txt); b.setAttribute('aria-busy',String(TR.busy));
@@ -4076,54 +4158,91 @@ function trConsent(){                                                           
   return new Promise(res=>{ const dlg=$('#trDlg'), done=v=>{ dlg.close(); res(v); };
     $('#trYes').onclick=()=>{ LS.set('trOk',1); done(true); }; $('#trNo').onclick=()=>done(false); dlg.oncancel=()=>res(false); dlg.showModal(); });
 }
-async function trRun(fd){
-  const d=fd.d, to=trTarget(), blocks=trBlocks(d);
-  if(!blocks.length) return toast(t('trNone'));
+async function trRun(fd, scope){                                                                   // scope: 'all' (the page, as far as TR_MAX goes) or 'screen' (what is on the screen, a little before and one more screen after)
+  const d=fd.d, to=trTarget(), todo=trBlocks(d).filter(el=>!el.querySelector(':scope > .zt-tr'));    // (what has its translation under it already is not asked for again)
+  let blocks=todo;
+  if(scope==='screen'){ const H=d.defaultView.innerHeight; blocks=todo.filter(el=>{ const r=el.getBoundingClientRect(); return r.bottom>-H*0.5 && r.top<H*2; }); }
+  if(!blocks.length) return toast(t(trBlocks(d).length ? 'trAllDone' : 'trNone'));
   const all=blocks.map(trText); let total=0, n=0;
   for(; n<all.length; n++){ total+=all[n].length; if(total>TR_MAX && n>0) break; }
-  const cut=n<all.length; blocks.length=n; const texts=all.slice(0,n);                              // (a very long page: its first TR_MAX characters)
-  const sample=texts.join(' ').slice(0,2000), cjk=(sample.match(/[\u4e00-\u9fff]/g)||[]).length, lat=(sample.match(/[A-Za-z]/g)||[]).length;
-  if((to==='zh' && cjk>lat) || (to==='en' && lat>cjk*3)) return toast(t('trSame'));
+  const cut=n<all.length; blocks.length=n; const texts=all.slice(0,n);                              // (a very long page: its first TR_MAX characters; another click goes on with the rest)
+  const sample=texts.join(' ').slice(0,2000);
+  if(trIsTarget(to,sample)) return toast(t('trSame'));
   if(!await trConsent()) return;
   const api=transApi(), id=state.readingId, seq=++TR.seq, pieces=[], at=[];
   texts.forEach((x,i)=>{ at[i]=[]; trSplit(x).forEach(p=>{ at[i].push(pieces.length); pieces.push(p); }); });
-  const key=to+'/'+await trSha(to+'\n'+pieces.join('\n')), got=new Array(pieces.length).fill(null), have=new Set();
+  const got=new Array(pieces.length).fill(null), have=new Set();
   const alive=()=>seq===TR.seq && state.readingId===id && (frameDoc()||{}).d===d;
   const flush=()=>{ blocks.forEach((el,i)=>{ if(have.has(i) || !at[i].every(j=>got[j]!==null)) return; have.add(i); const zh=at[i].map(j=>got[j]).join(' ').trim(); if(zh) trPut(d,el,zh); }); TR.done=have.size; trLabel(); };
   TR.busy=true; TR.done=0; TR.total=n; if(!d.getElementById('zt-style')){ const st=d.createElement('style'); st.id='zt-style'; st.textContent=TR_CSS; d.head.appendChild(st); } trLabel();
   let failed=null;
   try{
-    const cached=await trCacheGet(key);
-    if(cached && cached.length===pieces.length){ cached.forEach((x,k)=>{ got[k]=String(x||''); }); flush(); }
-    else{
-      for(let k=0; k<pieces.length;){
-        const idx=[]; let chars=0;
-        while(k<pieces.length && idx.length<TR_PER && (!idx.length || chars+pieces[k].length<=TR_BATCH)){ idx.push(k); chars+=pieces[k].length; k++; }
-        const out=await trCall(api,to,idx.map(j=>pieces[j]));
-        if(!alive()) return;
-        idx.forEach((j,m)=>{ got[j]=out[m]; }); flush();
-      }
-      await trCachePut(key,got);
+    const shas=await Promise.all(pieces.map(p=>trSha(to+'\n'+p))), hit=await trCacheGetMany(to,shas);
+    hit.forEach((x,k)=>{ if(x!==null) got[k]=x; }); flush();                                          // (what this browser has translated already is not asked for)
+    const miss=[]; got.forEach((x,k)=>{ if(x===null) miss.push(k); });
+    for(let q=0; q<miss.length;){
+      const idx=[]; let chars=0;
+      while(q<miss.length && idx.length<TR_PER && (!idx.length || chars+pieces[miss[q]].length<=TR_BATCH)){ idx.push(miss[q]); chars+=pieces[miss[q]].length; q++; }
+      const out=await trCall(api,to,idx.map(j=>pieces[j]));
+      if(!alive()) return;
+      idx.forEach((j,m)=>{ got[j]=out[m]; }); await trCachePutMany(to,idx.map((j,m)=>[shas[j],out[m]])); flush();
     }
   }catch(e){ failed=e; }
   if(seq!==TR.seq) return;
   TR.busy=false;
-  if(have.size){ trSetMode(d,'both'); buildToc(); if(!$('#rTocPanel').hidden) renderTocPanel(); } else trSetMode(d,'off');
+  if(have.size){ trSetMode(d, TR.mode==='off' ? 'both' : TR.mode); buildToc(); if(!$('#rTocPanel').hidden) renderTocPanel(); } else if(TR.mode==='off') trSetMode(d,'off'); else trLabel();
   if(failed) toast(t('trFailed',failed.message)); else if(cut) toast(t('trCut'));
+  if(!failed && have.size && scope==='all' && bookOfReading()) trToc(false);                         // the contents of a book come with its chapter
 }
 async function trOnLoad(){                                                                          // a new page in the reader: nothing is translated yet; is the button wanted?
   TR.seq++; TR.mode='off'; TR.busy=false; trLabel();
-  const ok=await trAvailable(), fd=frameDoc();
-  $('#readerTrans').hidden=!(ok && fd && !state.rpdf && state.rkind==='doc' && trBlocks(fd.d).length>0); $('#rowTrans').hidden=$('#readerTrans').hidden;
+  const ok=await trAvailable(), fd=frameDoc(), can=!!(ok && fd && !state.rpdf && state.rkind==='doc' && trBlocks(fd.d).length>0);
+  $('#readerTrans').hidden=!can; $('#rowTrans').hidden=$('#readerTrans').hidden;
+  $('#trFab').hidden=!(can && bookOfReading());                                                       // (a phone, a chapter of a book: a small round button at the corner of the page)
 }
 $('#frame').addEventListener('load',trOnLoad);
+$('#trFab').innerHTML=$('#readerTrans').querySelector('svg').outerHTML;
+function trMenuSync(){                                                                              // the menu of a chapter of a book: this screen, this chapter, the contents; what is shown now; what is left of the day
+  const book=bookOfReading(), cyc=$('#trMenuCycle'), left=$('#trLeft');
+  cyc.hidden=TR.mode==='off'; if(!cyc.hidden) cyc.textContent=t('trMenuCycle',t({both:'trBoth',only:'trOnly',orig:'trOrig'}[TR.mode]));
+  $('#trMenu [data-tr="toc"]').hidden = book ? !book.ch.t : !state.toc.length;
+  left.hidden = typeof TR.left!=='number'; if(!left.hidden) left.textContent=t('trLeft',TR.left);
+}
+async function trStart(scope){ const fd=frameDoc(); if(!fd || state.rpdf || state.rkind!=='doc') return toast(t('trNone')); if(TR.busy) return; await trRun(fd,scope); }
+async function trToc(explicit){                                                                     // the titles of the contents: the chapters of a book (the ones that have a title), or the headings of the page
+  const book=bookOfReading(), to=trTarget(), lines=[...new Set(book ? book.ch.n.map((_,i)=>bookT(book.ch,i)).filter(Boolean) : state.toc.map(x=>x.text))];
+  if(!lines.length){ if(explicit) toast(t('trTocNone')); return; }
+  if(lines.every(x=>trIsTarget(to,x))){ if(explicit) toast(t('trSame')); return; }
+  if(!await trConsent()) return;
+  try{ await trLines(lines); }catch(e){ toast(t('trFailed',e.message)); return; }
+  if($('#rTocPanel').hidden && explicit) togglePanel('toc'); else if(!$('#rTocPanel').hidden) renderTocPanel();
+  if(explicit) toast(t('trTocDone'));
+}
+$('#trMenu').addEventListener('click',e=>{
+  const b=e.target.closest('[data-tr]'); if(!b) return; const k=b.dataset.tr; closePanels();
+  if(k==='cycle'){ const fd=frameDoc(); if(fd && TR.mode!=='off') trSetMode(fd.d,{both:'only',only:'orig',orig:'both'}[TR.mode]); if(!$('#rTocPanel').hidden) renderTocPanel(); return; }
+  if(k==='toc') return trToc(true);
+  trStart(k);
+});
+$('#trFab').addEventListener('click',()=>togglePanel('tr'));
 async function trClick(){
   if(TR.busy) return;
   const fd=frameDoc(); if(!fd || state.rpdf || state.rkind!=='doc') return toast(t('trNone'));
+  if(bookOfReading()) return togglePanel('tr');                                                     // a chapter of a book: a small menu (this screen, this chapter, the contents) instead of the whole page at once
   if(TR.mode!=='off') return trSetMode(fd.d,{both:'only',only:'orig',orig:'both'}[TR.mode]);
-  await trRun(fd);
+  await trRun(fd,'all');
 }
 $('#readerTrans').addEventListener('click',trClick);
+/* the window of a book: its name and summary, translated when the reader asks (the cards of the books are never translated by themselves) */
+async function bookIntroButton(d){
+  const btn=$('#bookTrBtn'), tr=$('#bookTr'); tr.hidden=true; tr.textContent=''; btn.hidden=true;
+  const ok=await trAvailable(); if(!ok || $('#bookDlg').dataset.did!==d.id) return;
+  const to=trTarget(); btn.hidden=![d.title,d.summary].some(x=>x && !trIsTarget(to,x));
+}
+$('#bookTrBtn').addEventListener('click',async()=>{
+  const did=$('#bookDlg').dataset.did, d=state.dirData && state.dirData.items.find(x=>x.id===did); if(!d || !await trConsent()) return;
+  try{ const out=await trLines([d.title,d.summary||'']); const tr=$('#bookTr'); tr.textContent=out.filter(Boolean).join('\n'); tr.hidden=!tr.textContent; if(tr.hidden) toast(t('trSame')); else $('#bookTrBtn').hidden=true; }catch(e){ toast(t('trFailed',e.message)); }
+});
 $('#rSetTrans').addEventListener('click',()=>{ closePanels(); trClick(); });
 $('#readerBack').addEventListener('click',()=>closeReader());
 $('#readerPrev').addEventListener('click',()=>step(-1));
@@ -6109,6 +6228,7 @@ function dirXCoverHTML(it, rec){                                                
   const open=`<a class="xcover%CLS%" style="%STYLE%" href="${esc(it.url)}" target="_blank" rel="${REL}" aria-label="${esc(it.title)}" data-dopen="${esc(it.id)}">`, tail=`${whyHTML(it,rec)}${it.type!=='article'?`<span class="ftype">${esc(t('ty_'+it.type))}</span>`:''}${it.audio?dirPlayMark():''}</a>`;
   const fill=(cls,style,inner)=>open.replace('%CLS%',cls).replace('%STYLE%',style)+inner+tail;
   if(it.image) return fill('', '', `<img src="${esc(it.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fb="x">`);
+  if(isPickedBook(it)) return fill(' bk', `--tb:${bg}`, bookCoverInner(it));
   if(q){ const n=[...q].length, fs=n<=30 ? 22 : n<=60 ? 18 : 16, lc=n<=30 ? 4 : n<=60 ? 5 : 6, lp=n<=30 ? 3 : 5;               // (the size and the lines of the text by its length: it always fits the cover)
     return fill(' xtext', `--tb:${bg};--ti:${ink};--fs:${fs}px;--lc:${lc};--lp:${lp}`, `<svg class="xpat" viewBox="0 0 320 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${coverPattern(rng(h),mid,ink,320,240)}</svg><q class="xquote">${esc(q)}</q>`); }
   return fill('', '', dirCoverArt(it,'tall'));
@@ -6131,23 +6251,23 @@ function dirSideHTML(it, saved){                                                
   </article>`;
 }
 function dirRowHTML(it, tk, saved, rec){                                                               // a light row: a small cover, the title, the summary, one line of facts, the bookmark
-  const sh=state.shelfMap.get(it.shelf), sum=dirSummary(it);
-  return `<article class="card drow${state.dirRead[it.id]?' is-read':''}" data-did="${esc(it.id)}">
-    <a class="row-thumb" href="${esc(it.url)}" target="_blank" rel="${REL}" aria-label="${esc(it.title)}" data-dopen="${esc(it.id)}">${it.image ? `<img src="${esc(it.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fb="thumb">` : dirCoverArt(it,'thumb')}${it.audio?dirPlayMark():''}</a>
+  const pk=isPickedBook(it) && !it.image, sh=state.shelfMap.get(it.shelf), sum=dirSummary(it);
+  return `<article class="card drow${pk?' bkrow':''}${state.dirRead[it.id]?' is-read':''}" data-did="${esc(it.id)}">
+    <a class="row-thumb${pk?' bk':''}"${pk?` style="--tb:${coverLook(it).pal[0]}"`:''} href="${esc(it.url)}" target="_blank" rel="${REL}" aria-label="${esc(it.title)}" data-dopen="${esc(it.id)}">${pk ? bookCoverInner(it) : it.image ? `<img src="${esc(it.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fb="thumb">` : dirCoverArt(it,'thumb')}${it.audio?dirPlayMark():''}</a>
     <div class="row-main"><h3 class="card-title"><a href="${esc(it.url)}" target="_blank" rel="${REL}" data-dopen="${esc(it.id)}">${hl(it.title,tk)}</a></h3>${zhSub(it)}${sum?`<p class="sum">${hl(sum,tk)}</p>`:''}<p class="xmeta">${whyHTML(it,rec)}${dirMetaLine(it,sh)}${dirStatsHTML(it,true)}</p></div>
     ${dirSaveBtn(it,saved)}
   </article>`;
 }
 function dirCardHTML(it, tk, saved, rec){                                                              // a card of the grid: the cover, the title, the summary (when the cover does not carry it), source, numbers, bookmark
-  const sh=state.shelfMap.get(it.shelf), sum=dirSummary(it), onCover=!!dirQuote(it), chips=dirTagChips(it,2), on=saved.has('local:link:'+it.id), tip=t(on?'savedTip':'saveToShelf');
-  return `<article class="card xcard${state.dirRead[it.id]?' is-read':''}" data-did="${esc(it.id)}">
+  const pk=isPickedBook(it), sh=state.shelfMap.get(it.shelf), sum=dirSummary(it), onCover=!!dirQuote(it) && !pk, chips=dirTagChips(it,2), on=saved.has('local:link:'+it.id), tip=t(on?'savedTip':'saveToShelf');
+  return `<article class="card xcard${pk?' bkcard':''}${state.dirRead[it.id]?' is-read':''}" data-did="${esc(it.id)}">
     ${dirXCoverHTML(it,rec)}
     <div class="xbody">
-      <h3 class="card-title"><a href="${esc(it.url)}" target="_blank" rel="${REL}" data-dopen="${esc(it.id)}">${hl(it.title,tk)}</a></h3>${zhSub(it)}
+      <h3 class="card-title"><a href="${esc(it.url)}" target="_blank" rel="${REL}" data-dopen="${esc(it.id)}">${hl(it.title,tk)}</a></h3>${zhSub(it)}${pk && it.author ? `<p class="bk-by">${esc(it.author)}</p>` : ''}
       ${sum && !onCover ? `<p class="sum">${hl(sum,tk)}</p>` : ''}
       ${chips?`<div class="chips">${chips}</div>`:''}
       <p class="xmeta">${dirMetaLine(it,sh)}</p>
-      <div class="card-foot">${dirStatsHTML(it,true)}<span class="acts"><button class="ibtn" type="button" data-d="save" aria-pressed="${on}" title="${esc(tip)}" aria-label="${esc(tip)}">${ICON.bookmark}</button></span></div>
+      <div class="card-foot">${dirStatsHTML(it,true)}<span class="acts">${pk ? bookGoHTML(it) : ''}<button class="ibtn" type="button" data-d="save" aria-pressed="${on}" title="${esc(tip)}" aria-label="${esc(tip)}">${ICON.bookmark}</button></span></div>
     </div>
   </article>`;
 }
