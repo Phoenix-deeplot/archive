@@ -79,10 +79,10 @@ const get = p => fetch(SVC + p).then(r => r.json());
   }
   await get('/__hot?events=empty');
   await J(`state.hot.events=[];state.hot.eventsAt=0;document.querySelector('#dirReco [data-hot-view="events"]').click()`);
-  await waitFor(`document.querySelector('#dirReco .hot-state')`);
+  await waitFor(`/暂时没有|No developing stories/.test((document.querySelector('#dirReco .hot-state')||{}).textContent||'')`);          // (the state of loading is a .hot-state too: wait for the answer)
   ok('an empty events response has a calm empty state rather than a broken card grid', /暂时没有|No developing stories/.test(await J(`document.querySelector('#dirReco .hot-state').textContent`)));
   await get('/__hot?events=fail');
-  await J(`state.hot.events=[];state.hot.eventsAt=0;hotEventsEnsure(true)`);
+  await J(`state.hot.events=[];state.hot.eventsAt=0;window.__zt.hotEventsEnsure(true)`);
   await waitFor(`document.querySelector('#dirReco [data-hot-events-retry]')`);
   ok('an event API failure gives a localized retry action', /暂时不可用|temporarily unavailable/.test(await J(`document.querySelector('#dirReco .hot-state').textContent`)));
   await get('/__hot?events=ok'); await J(`document.querySelector('#dirReco [data-hot-events-retry]').click()`);
