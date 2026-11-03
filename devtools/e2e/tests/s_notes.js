@@ -116,9 +116,9 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
 
   // the reader and the pen in it
   await J(`[...document.querySelectorAll('#grid .card')].find(x=>x.querySelector('.card-title a').textContent==='我的购物').querySelector('.card-title a').click()`); await sleep(1500);
-  ok('the reader of a note has the pen', await J(`!document.querySelector('#readerEdit').hidden`));
+  ok('the reader of a note has no pen (only reading things are there; the pen is on the card)', await J(`!document.querySelector('#readerEdit')`));
   ok('the reader shows the first line as the heading, once', await J(`(()=>{ const d=document.querySelector('#frame').contentDocument; return d.querySelectorAll('h1').length===1; })()`));
-  await J(`document.querySelector('#readerEdit').click()`); await sleep(700);
+  await J(`window.__zt.openNote(state.readingId)`); await sleep(700);                                        // (the editor opens from the card; here it is opened as the pen of the reader did)
   const over = await J(`(()=>{ const r=document.querySelector('#noteEd').getBoundingClientRect(), e=document.elementFromPoint(r.left+r.width/2, r.top+r.height/2); return !!(e && e.closest('#noteEd')); })()`);
   ok('the editor covers the reader', over);
   await J(`(()=>{ const ta=document.querySelector('#neText'); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); })()`);

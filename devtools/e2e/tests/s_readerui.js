@@ -83,11 +83,11 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await J(`document.querySelector('#readerToc').click()`); await sleep(400);
   await J(`document.querySelector('#rTocBody .toc-i').click()`); await sleep(500);
   ok('choosing a heading closes it (as before)', await hidden('#rTocPanel'));
-  // the settings panel
-  await J(`document.querySelector('#readerSet').click()`); await sleep(300);
-  ok('the settings panel is open with the backdrop', !(await hidden('#rSetPanel')) && await J(`getComputedStyle(document.querySelector('#rBack')).display`) === 'block');
-  await tap(200, 650);
-  ok('a tap on the blank part closes the settings panel', await hidden('#rSetPanel'));
+  // no settings panel: the size of the letters is the bar at the foot, the colour is the eye-care button
+  ok('phone: there is no "Aa" button and no settings panel; the bar of the letters is at the foot, the eye-care button in the top bar', await J(`!document.querySelector('#readerSet') && !document.querySelector('#rSetPanel') && getComputedStyle(document.querySelector('#rBook')).display!=='none' && getComputedStyle(document.querySelector('#readerEye')).display!=='none'`));
+  await J(`document.querySelector('#rbFsP').click()`); await sleep(400);
+  ok('phone: A+ at the foot makes the letters bigger', await J(`/--fs:\\s*18\\.7px/.test(document.querySelector('#frame').contentDocument.documentElement.getAttribute('style')||'')`));
+  await J(`document.querySelector('#rbFsM').click()`); await sleep(300);
   await closeReader();
 
   // ------------------------------------------------ a PDF and a page shown as it is
@@ -95,6 +95,11 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   ok('a PDF: the Save button is off (the browser\'s own viewer saves it)', await J(`document.querySelector('#readerSave').disabled`));
   await closeReader();
   await openById('local:h');
+  const ob = await J(`({eye:getComputedStyle(document.querySelector('#readerEye')).display!=='none', newTab:getComputedStyle(document.querySelector('#readerNew')).display!=='none', aa:!!document.querySelector('#readerSet'), bar:getComputedStyle(document.querySelector('#rBook')).display!=='none'})`);
+  ok('a page shown as it is: the eye-care button and "new tab" (the page is somebody else\'s), no Aa and no bar of letters', ob.eye && ob.newTab && !ob.aa && !ob.bar, ob);
+  const cols = [];
+  for (let k = 0; k < 4; k++) { await J(`document.querySelector('#readerEye').click()`); await sleep(250); cols.push(await J(`[getComputedStyle(document.querySelector('#tint')).display==='block' ? document.querySelector('#tint').style.background : '', document.querySelector('#frame').classList.contains('inv')]`)); }
+  ok('the eye-care button colours it too: a sepia tint, a green tint, the colours inverted (dark), and back to as it was', cols[0][0] !== '' && cols[1][0] !== '' && cols[0][0] !== cols[1][0] && cols[2][1] === true && cols[3][0] === '' && cols[3][1] === false, cols);
   await J(`document.querySelector('#readerSave').click()`); await sleep(300);
   const orig = await J(`({html:document.querySelector('#rSaveHtml').hidden, print:document.querySelector('#rPrint').hidden, note:!document.querySelector('#rSaveNote').hidden && document.querySelector('#rSaveNote').textContent})`);
   ok('a page shown as it is: only "打印 / 存为 PDF", with a note why', orig.html && !orig.print && /只能用/.test(orig.note), orig);

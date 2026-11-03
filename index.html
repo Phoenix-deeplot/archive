@@ -512,13 +512,12 @@ dialog.focus:focus{outline:none}
 body.fc-on{overflow:hidden}                                       /* (the page under the pattern does not scroll, and shows no scroll bar) */
 .rf-pill{display:none}
 body.reader-focus .reader-bar,body.reader-focus .reader-prog,body.reader-focus #player,body.reader-focus #plMini{display:none}
-@media(max-width:620px){#readerFocus{display:none}}                     /* (the bar of a phone has no room for one more button: there it is in the settings panel) */
+@media(max-width:620px){#readerFocus{display:none}}                     /* (the bar of a phone has no room for one more button: there a tap in the middle of the page takes the bars away) */
 body.reader-focus.has-player .reader{bottom:0}
 body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-area-inset-right));bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:60;gap:2px;padding:4px;border:1px solid var(--rule);border-radius:999px;background:var(--surface);box-shadow:0 6px 18px rgba(0,0,0,.22);opacity:.5;transition:opacity .2s ease}
 .rf-pill:hover,.rf-pill:focus-within{opacity:1}
 .rf-pill button{width:44px;height:44px;border:0;border-radius:50%;background:none;color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0}
 .rf-pill .icon{width:20px;height:20px}
-#rSetFocus{min-height:44px}
 /* the hot lists: six columns; the platforms of the chosen column beside the list (above it on a phone) */
 .hot-cols{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none}
 .hot-cols::-webkit-scrollbar,.hot-plats::-webkit-scrollbar{display:none}
@@ -548,53 +547,66 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .hot-side a{color:var(--accent)}
 .hot-state{margin:0;padding:34px 14px;text-align:center;color:var(--muted)}
 .hot-state .btn{margin-top:10px}
-.hot-intro{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 18px;margin:2px 0 14px;padding:20px 22px;border:1px solid var(--rule);border-radius:16px;background:linear-gradient(125deg,color-mix(in srgb,var(--accent) 12%,var(--surface)),var(--surface) 62%)}
+.hot-intro{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 18px;margin:0 0 10px;padding:0 0 10px;border:0;border-bottom:1px solid var(--rule);border-radius:0;background:none}
 .hot-intro-copy{max-width:760px}
 .hot-kicker{margin:0 0 5px;color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
-.hot-intro h2{margin:0;font:700 25px/1.25 var(--serif);color:var(--ink)}
-.hot-intro p{margin:7px 0 0;color:var(--muted);font-size:14px;line-height:1.55}
+.hot-intro h2{margin:0;font:700 21px/1.25 var(--serif);color:var(--ink)}
+.hot-intro p{margin:4px 0 0;color:var(--muted);font-size:13px;line-height:1.45}
 .hot-updated{flex:0 0 auto;color:var(--muted);font-size:12.5px}
 .hot-modebar{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
 .hot-mode{min-height:40px;padding:7px 14px;border:1px solid var(--rule);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
 .hot-mode[aria-selected="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg);font-weight:650}
-.hot-mix-title{margin:0 0 10px;font:700 18px/1.35 var(--serif);color:var(--ink)}
-.hot-mix-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:20px}
-.hot-mix-card{position:relative;min-width:0;min-height:184px;overflow:hidden;padding:16px 16px 14px;border:1px solid var(--rule);border-radius:14px;background:var(--surface);box-shadow:0 2px 8px rgba(20,36,32,.045)}
-.hot-mix-card::after{position:absolute;right:8px;bottom:-26px;color:color-mix(in srgb,var(--accent) 10%,transparent);font:800 96px/.9 var(--sans);content:attr(data-rank);pointer-events:none}
-.hot-mix-card[data-featured="true"]{background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 10%,var(--surface)),var(--surface) 72%)}
-.hot-mix-source{position:relative;z-index:1;display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:12px;color:var(--muted);font-size:12px}
-.hot-mix-source strong{color:var(--accent);font-weight:700}
-.hot-mix-rank{padding:2px 7px;border-radius:999px;background:color-mix(in srgb,var(--heat) 14%,var(--surface));color:var(--heat);font-weight:700;white-space:nowrap}
-.hot-mix-link{position:relative;z-index:1;display:block;color:var(--ink);text-decoration:none}
-.hot-mix-link:hover{color:var(--accent)}
-.hot-mix-link strong{display:-webkit-box;overflow:hidden;-webkit-line-clamp:3;-webkit-box-orient:vertical;font-size:16px;line-height:1.45}
-.hot-mix-note{position:relative;z-index:1;display:-webkit-box;overflow:hidden;margin:7px 0 0;color:var(--muted);font-size:13px;line-height:1.5;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.hot-mix-foot{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:5px 10px;margin-top:12px;color:var(--muted);font-size:11.5px}
-.hot-mix-list{display:grid;gap:8px}
-.hot-mix-row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:start;gap:4px 10px;padding:12px 14px;border:1px solid var(--rule);border-radius:12px;background:var(--surface)}
-.hot-mix-row .hot-mix-num{grid-column:1;grid-row:1 / span 2;padding-top:2px;color:var(--heat);font-size:16px;font-weight:800;text-align:center;font-variant-numeric:tabular-nums}
-.hot-mix-row .hot-mix-source{grid-column:2 / 4;margin:0 0 2px}
-.hot-mix-row .hot-mix-link{grid-column:2;grid-row:2}
-.hot-mix-row .hot-mix-link strong{display:-webkit-box;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:15px}
-.hot-mix-row .hot-mix-foot{grid-column:3;grid-row:2;justify-content:flex-end;margin:0;text-align:right}
-.hot-mix-row .hot-mix-note{grid-column:2 / 4;margin:1px 0 0}
-.hot-mix-status{margin:10px 0 14px;color:var(--muted);font-size:13px}
-.hot-mix-retry{margin-top:8px}
+.hot-cat-select{display:none;width:100%;min-height:44px;border:1px solid var(--rule);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;padding:7px 10px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.hot-period{display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--rule);border-radius:9px;background:var(--bg)}
+.hot-period button{min-height:32px;padding:4px 10px;border:0;border-radius:6px;background:transparent;color:var(--muted);font:inherit;font-size:12px;cursor:pointer;white-space:nowrap}
+.hot-period button[aria-pressed="true"]{background:var(--ink);color:var(--bg);font-weight:650}
+.hot-history-note{margin:0;padding:24px 14px;text-align:center;color:var(--muted);line-height:1.55}
+.hot-focus{margin:0 0 16px}
+.hot-focus-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 8px}
+.hot-focus-head h3{margin:0;font:700 16px/1.3 var(--serif);color:var(--ink)}
+.hot-focus-head p{margin:3px 0 0;color:var(--muted);font-size:12px}
+.hot-focus-head button{border:0;background:none;color:var(--accent);font:inherit;font-size:12px;cursor:pointer}
+.hot-focus-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.hot-focus-card{display:block;min-width:0;padding:12px 13px;border:1px solid var(--rule);border-radius:12px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 8%,var(--surface)),var(--surface) 72%);color:var(--ink);text-decoration:none}
+.hot-focus-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.hot-focus-card .hot-event-category{margin-bottom:7px}
+.hot-focus-rank{display:inline-flex;margin-right:6px;color:#b67a22;font-size:12px;font-weight:800;font-variant-numeric:tabular-nums}
+.hot-focus-card strong{display:-webkit-box;overflow:hidden;font:700 15px/1.4 var(--serif);-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.hot-focus-card p{display:-webkit-box;overflow:hidden;margin:5px 0 7px;color:var(--muted);font-size:12px;line-height:1.45;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.hot-focus-meta{color:var(--muted);font-size:11px}
+.hot-events{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.hot-event{min-width:0;padding:15px 16px;border:1px solid var(--rule);border-radius:13px;background:var(--surface)}
+.hot-event-head,.hot-event-meta,.hot-event-sources{display:flex;flex-wrap:wrap;align-items:center;gap:6px 9px}
+.hot-event-head{justify-content:space-between;margin-bottom:9px}
+.hot-event-category{display:inline-flex;padding:3px 8px;border-radius:999px;background:color-mix(in srgb,var(--accent) 12%,var(--surface));color:var(--accent);font-size:11.5px;font-weight:700}
+.hot-event-trend{color:var(--heat);font-size:11.5px;font-weight:650}
+.hot-event-title{display:block;color:var(--ink);font:700 17px/1.45 var(--serif);text-decoration:none;overflow-wrap:anywhere}
+.hot-event-title:hover{color:var(--accent)}
+.hot-event-summary{display:-webkit-box;overflow:hidden;margin:7px 0 11px;color:var(--muted);font-size:13px;line-height:1.55;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.hot-event-meta,.hot-event-sources{color:var(--muted);font-size:11.5px}
+.hot-event-sources{margin-top:8px;padding-top:8px;border-top:1px solid var(--rule)}
+.hot-event-sources a{color:var(--accent);text-decoration:none}
+.hot-event-sources a:hover{text-decoration:underline}
+.hot-feedback{margin:10px 0 14px;color:var(--muted);font-size:13px}
 @media (max-width:760px){
-  .hot-intro{align-items:flex-start;padding:16px;border-radius:13px}
-  .hot-intro h2{font-size:22px}
-  .hot-updated{width:100%}
+  .hot-intro{align-items:flex-start;margin-bottom:8px;padding-bottom:8px}
+  .hot-intro h2{font-size:19px}
+  .hot-updated{width:auto;margin-left:auto;text-align:right}
   .hot-modebar{position:sticky;top:0;z-index:4;padding:5px 0;background:var(--bg)}
   .hot-mode{min-height:44px}
-  .hot-mix-grid{grid-template-columns:1fr;gap:8px;margin-bottom:16px}
-  .hot-mix-card{min-height:0;padding:14px}
-  .hot-mix-card[data-featured="true"]{min-height:168px}
-  .hot-mix-row{grid-template-columns:28px minmax(0,1fr);padding:11px 12px}
-  .hot-mix-row .hot-mix-source{grid-column:2;grid-row:1}
-  .hot-mix-row .hot-mix-num{grid-column:1;grid-row:1 / span 3}
-  .hot-mix-row .hot-mix-link{grid-column:2;grid-row:2}
-  .hot-mix-row .hot-mix-foot{grid-column:2;grid-row:3;justify-content:flex-start;text-align:left;margin-top:4px}
-  .hot-mix-row .hot-mix-note{grid-column:2;grid-row:4}
+  .hot-cols{display:none}
+  .hot-cat-select{display:block;margin:0 0 8px}
+  .hot-period{width:100%;justify-content:stretch}
+  .hot-period button{flex:1;min-height:38px}
+  .hot-events{grid-template-columns:minmax(0,1fr);gap:8px}
+  .hot-event{padding:13px}
+  .hot-event-title{font-size:16px}
+  .hot-focus{margin-bottom:12px}
+  .hot-focus-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .hot-focus-card{padding:10px}
+  .hot-focus-card strong{font-size:13px}
+  .hot-focus-card p{font-size:11px}
   .hot-main{grid-template-columns:minmax(0,1fr);gap:10px}
   .hot-plats{position:static;flex-direction:row;overflow-x:auto;overflow-y:visible;max-height:none;gap:6px;padding:0 0 4px;scrollbar-width:none}
   .hot-plat{flex:0 0 auto;white-space:nowrap;border:1px solid var(--rule);border-radius:999px;padding:7px 14px;min-height:40px}
@@ -712,8 +724,7 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .rvote[hidden]{display:none}
 .rvote button{display:inline-flex;align-items:center;gap:5px;height:38px;padding:0 13px;border:0;border-radius:999px;background:transparent;color:var(--ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
 .rvote button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
-.rvote .icon{width:19px;height:19px}
-@media (max-width:760px){
+.rvote .icon{width:19px;height:19px}@media (max-width:760px){
   .dir-pick{position:fixed;left:0;right:0;top:auto;bottom:0;width:auto;max-height:78vh;z-index:40;border-radius:16px 16px 0 0;padding-bottom:env(safe-area-inset-bottom,0px)}
   body.dp-open .dp-back{display:block;position:fixed;inset:0;z-index:39;background:rgba(10,14,18,.4)}
   body.dp-open{overflow:hidden}
@@ -985,6 +996,29 @@ body.has-player .fab{bottom:calc(var(--pl-h) + 16px + env(safe-area-inset-bottom
 .rpin{display:none;float:right;margin:-2px 0 0 8px;padding:2px 10px;border:1px solid var(--rule);border-radius:999px;background:none;color:var(--muted);font-size:12px;cursor:pointer}
 .rpin[aria-pressed="true"]{color:var(--accent);border-color:var(--accent)}
 @media (min-width:1200px){.rpin{display:inline-block}#reader.toc-pin .rpanel.rside{left:0;right:auto;width:300px;border-width:0 1px 0 0;box-shadow:none}#reader.toc-pin #frame{left:300px;width:calc(100% - 300px)}}
+#reader.bookmode #readerSave,#reader.bookmode #readerMobileNav,#reader.readmode #readerNew{display:none!important}          /* (a book: no saving, and its chapters are gone to from the foot of the page; any text: the original is at the foot of it, not a button) */
+#readerEye{position:relative}
+#readerEye .eye{display:none;position:absolute;top:5px;right:5px;width:10px;height:10px;border-radius:50%;border:1.5px solid var(--ink);background:var(--ec,transparent)}
+#readerEye[data-th="sepia"] .eye,#readerEye[data-th="green"] .eye,#readerEye[data-th="dark"] .eye{display:block}
+#readerEye[data-th="sepia"]{--ec:#F4ECD8}#readerEye[data-th="green"]{--ec:#CCE8CF}#readerEye[data-th="dark"]{--ec:#1F262B}
+.rbook{position:absolute;left:16px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:4;display:flex;align-items:center;gap:2px;padding:4px;border:1px solid var(--rule);border-radius:999px;background:var(--surface);color:var(--ink);box-shadow:0 6px 18px rgba(0,0,0,.14);opacity:.66;transition:opacity .2s ease}
+.rbook[hidden]{display:none}
+.rbook:hover,.rbook:focus-within{opacity:1}
+.rbook button{min-width:40px;height:40px;border:0;border-radius:999px;background:none;color:var(--ink);font:600 15px/1 var(--sans);cursor:pointer;padding:0 8px;display:grid;place-items:center}
+.rbook button:hover:not(:disabled){background:var(--code)}.rbook button:disabled{opacity:.35;cursor:default}
+.rbook output{min-width:64px;padding:0 6px;text-align:center;font:13px/1 var(--sans);color:var(--muted);font-variant-numeric:tabular-nums}
+.rbook .icon{width:20px;height:20px}
+.rbook .rb-ch{display:none}
+@media (max-width:620px){.rbook{left:12px}#reader.bookmode .rbook .rb-ch{display:grid}.rbook button{min-width:38px;height:38px}.rbook output{min-width:56px}#reader:not(.bookmode) .rbook output{display:none}}          /* (a phone: the bar is at the left, like / dislike of an article keep the middle, the round translate button the right; an article has only A− A+ there, its percent is on the line at the top) */
+#reader.toc-pin .rbook{left:316px}
+@media (max-width:980px){body.pl-folded .rbook{bottom:calc(76px + env(safe-area-inset-bottom,0px))}}          /* (the small player of the page is at the bottom left when something is playing: the bar stands on it) */
+body.reader-focus .rbook{display:none}
+.redge{display:none;position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:52px;height:112px;border:0;border-radius:14px;background:none;color:var(--muted);cursor:pointer;align-items:center;justify-content:center;opacity:.55;transition:opacity .15s ease,background .15s ease}
+.redge:hover,.redge:focus-visible{opacity:1;background:var(--code)}
+.redge.l{left:var(--redge,12px)}.redge.r{right:var(--redge,12px)}
+.redge .icon{width:30px;height:30px}
+@media (hover:hover) and (pointer:fine){#reader.pgd .redge{display:flex}}
+#reader.toc-pin .redge.l{left:calc(300px + var(--redge,12px))}
 .toc-i .trl{display:block;flex-basis:100%;margin-top:2px;font-style:normal;font-size:12.5px;line-height:1.4;color:var(--accent);font-weight:400}
 #trMenu{padding:8px}
 .tr-act{display:block;width:100%;min-height:44px;padding:10px 12px;border:0;border-radius:8px;background:none;color:var(--ink);font:inherit;font-size:14.5px;text-align:left;cursor:pointer}
@@ -1152,10 +1186,8 @@ body.has-player.pl-folded{--pl-h:0px}
 .reader-mobile-nav{display:none;align-items:center;justify-content:space-between;gap:8px;padding:6px 12px calc(6px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--rule);background:var(--bg)}
 .reader-mobile-nav .pos{flex:1;min-width:0}
 body.reader-focus .reader-mobile-nav{display:none!important}
-@media (max-width:420px){ #reader.can-edit #readerNew{display:none} }                              /* a note has the pen too: the "new tab" link gives way first */
 @media (max-width:340px){ .rbtn,.rbtn.ico{padding:0 6px} .rb-right{gap:4px} }
-@media (max-width:620px){ #readerTrans{display:none!important} #rSetTrans{min-height:44px} }          /* (the bar of a phone is full: the translate row is in the "Aa" panel) */
-@media (min-width:621px){ #rowTrans{display:none!important} }
+@media (max-width:620px){ #readerTrans{display:none!important} }          /* (the bar of a phone is full: the round button at the corner of the page translates) */
 .pending .ptype{font-weight:700;margin-right:6px}
 .warn{color:var(--c-tools);font-size:13px;margin:6px 0 0}
 .col-row{display:flex;align-items:center;gap:8px;margin:0 0 14px}
@@ -1473,12 +1505,9 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
       <button class="rbtn ico" type="button" id="readerFocus" data-i-aria="focusReadTip"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg><span class="lbl" data-i="focusRead">专注阅读</span></button>
       <button class="rbtn ico" type="button" id="readerTrans" hidden data-i-aria="trTip"><svg class="icon" viewBox="0 0 24 24"><path d="M4 5h9M8.5 3v2M6 5c.4 3.8 3 6.6 7 8M12 5c-.6 3.6-3.4 6.6-7.5 8.5M13 20l4-9 4 9M14.5 17h5"/></svg><span class="lbl" id="readerTransLbl" data-i="trBtn">翻译</span></button>
       <button class="rbtn ico" type="button" id="readerToc" aria-expanded="false"><svg class="icon" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span class="lbl" data-i="tocTab">目录</span></button>
-      <button class="rbtn ico" type="button" id="readerSet" aria-expanded="false"><span class="aa" aria-hidden="true">Aa</span><span class="lbl" data-i="readerSet">阅读设置</span></button>
       <button class="rbtn ico" type="button" id="readerSave" aria-expanded="false"><svg class="icon" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"/></svg><span class="lbl" data-i="readerSave">保存</span></button>
-      <button class="rbtn ico" type="button" id="readerEdit" hidden><svg class="icon" viewBox="0 0 24 24"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19zM14.5 6.5l3 3"/></svg><span class="lbl" data-i="editNote">编辑笔记</span></button>
-      <button class="rbtn ico" type="button" id="readerMark"><svg class="icon" viewBox="0 0 24 24"><path d="M6.5 4h11a1 1 0 0 1 1 1v15l-6.5-4-6.5 4V5a1 1 0 0 1 1-1z"/></svg><span class="lbl" data-i="readerMark">加书签</span></button>
-      <button class="rbtn" type="button" id="readerStar" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg><span class="lbl" id="readerStarLbl"></span></button>
       <a class="rbtn" id="readerNew" target="_blank" rel="noopener"><svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span class="lbl" data-i="newTab">新标签打开</span></a>
+      <button class="rbtn ico" type="button" id="readerEye"><svg class="icon" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.6"/></svg><span class="eye" aria-hidden="true"></span><span class="lbl" data-i="eyeLbl">护眼</span></button>
     </div>
   </div>
   <div class="reader-prog"><span id="readerProg"></span></div>
@@ -1486,26 +1515,18 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     <iframe id="frame" title="Reader"></iframe>
     <div class="tint" id="tint" aria-hidden="true"></div>
     <div class="rback" id="rBack" hidden></div>
+    <button type="button" class="redge l" id="rEdgeL" data-i-aria="pgPrev"><svg class="icon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <button type="button" class="redge r" id="rEdgeR" data-i-aria="pgNext"><svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="rbook" id="rBook" hidden role="group" data-i-aria="rbarTip">
+      <button type="button" class="rb-ch" id="rbPrev" data-i-aria="prevCh"><svg class="icon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <button type="button" id="rbFsM" data-i-aria="fsSmaller">A−</button>
+      <output id="rbInfo" aria-live="polite"></output>
+      <button type="button" id="rbFsP" data-i-aria="fsBigger">A+</button>
+      <button type="button" class="rb-ch" id="rbNext" data-i-aria="nextCh"><svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
     <div class="rvote" id="rVote" hidden>
       <button type="button" id="rLike" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span id="rLikeN"></span></button>
       <button type="button" id="rDislike" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24"><path d="M7 13V4H4v9zM7 13l4 7c1.5 0 2.5-1 2.5-2.5V15H19a1.5 1.5 0 0 0 1.5-1.7l-1-7A2 2 0 0 0 17.5 4.5H7"/></svg><span id="rDislikeN"></span></button>
-    </div>
-    <div class="rpanel" id="rSetPanel" hidden>
-      <div class="rrow" id="rowFs"><span data-i="fontSize">字号</span><div class="seg2"><button type="button" data-fs="-10">A−</button><output id="fsVal">100%</output><button type="button" data-fs="10">A+</button></div></div>
-      <div class="rrow" id="rowLh"><span data-i="lineHeight">行距</span><div class="seg2" data-key="lh"><button type="button" data-v="s" data-i="lhS">紧</button><button type="button" data-v="m" data-i="lhM">中</button><button type="button" data-v="l" data-i="lhL">松</button></div></div>
-      <div class="rrow" id="rowW"><span data-i="pageWidth">版面宽度</span><div class="seg2" data-key="w"><button type="button" data-v="n" data-i="wN">窄</button><button type="button" data-v="m" data-i="wM">中</button><button type="button" data-v="w" data-i="wW">宽</button></div></div>
-      <div class="rrow" id="rowFf"><span data-i="ffLabel">字体</span><div class="seg2" data-key="ff"><button type="button" data-v="follow" data-i="ffFollow">默认</button><button type="button" data-v="serif" data-i="ffSerif">宋体</button><button type="button" data-v="sans" data-i="ffSans">黑体</button><button type="button" data-v="kai" data-i="ffKai">楷体</button></div></div>
-      <div class="rrow" id="rowPg"><span data-i="pgLabel">段距</span><div class="seg2" data-key="pg"><button type="button" data-v="s" data-i="lhS">紧</button><button type="button" data-v="m" data-i="lhM">中</button><button type="button" data-v="l" data-i="lhL">松</button></div></div>
-      <div class="rrow" id="rowInd"><span data-i="indLabel">首行缩进</span><div class="seg2" data-key="ind"><button type="button" data-v="off" data-i="optOff">关</button><button type="button" data-v="on" data-i="optOn">开</button></div></div>
-      <div class="rrow" id="rowJus"><span data-i="jusLabel">两端对齐</span><div class="seg2" data-key="jus"><button type="button" data-v="off" data-i="optOff">关</button><button type="button" data-v="on" data-i="optOn">开</button></div></div>
-      <div class="rrow" id="rowMode" hidden><span data-i="modeLabel">阅读方式</span><div class="seg2" data-key="mode"><button type="button" data-v="scroll" data-i="modeScroll">滚动</button><button type="button" data-v="paged" data-i="modePaged">翻页</button></div></div>
-      <div class="rrow" id="rowDbl" hidden><span data-i="dblLabel">双页（宽屏）</span><div class="seg2" data-key="dbl"><button type="button" data-v="on" data-i="optOn">开</button><button type="button" data-v="off" data-i="optOff">关</button></div></div>
-      <p class="rnote" id="rModeNote" hidden data-i="modeNote">这一章有表格或大图，用滚动阅读。</p>
-      <div class="rrow col"><span data-i="readerColor">颜色</span><div class="themes" id="rThemes">
-        <button type="button" data-th="follow" data-i="thFollow">跟随系统</button><button type="button" data-th="light" data-i="thLight">浅色</button><button type="button" data-th="dark" data-i="thDark">深色</button><button type="button" data-th="sepia" data-i="thSepia">米黄</button><button type="button" data-th="green" data-i="thGreen">护眼绿</button></div></div>
-      <div class="rrow col"><span data-i="focusRead">专注阅读</span><div class="themes"><button type="button" id="rSetFocus" data-i="focusReadGo">收起所有按钮，只留正文，边读边听</button></div></div>
-      <div class="rrow col" id="rowTrans" hidden><span data-i="trBtn">翻译</span><div class="themes"><button type="button" id="rSetTrans" data-i="trGo">翻译这一页（双语对照）</button></div></div>
-      <p class="rnote" id="rOrigNote" data-i="origNote" hidden></p>
     </div>
     <div class="rpanel" id="rSavePanel" hidden>
       <div class="rrow col"><span data-i="saveThis">保存这一篇</span><div class="themes"><button type="button" id="rSaveHtml" data-i="saveHtml">下载网页（HTML）</button><button type="button" id="rPrint" data-i="savePdf">打印 / 存为 PDF</button></div></div>
@@ -1520,7 +1541,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     </div>
     <button type="button" class="tr-fab" id="trFab" hidden data-i-aria="trTip"></button>
     <div class="rpanel rside" id="rTocPanel" hidden role="complementary" aria-label="目录">
-      <div class="rtabs" role="tablist"><button type="button" role="tab" data-tab="chs" aria-selected="false" data-i="bkTab" hidden>章节</button><button type="button" role="tab" data-tab="toc" aria-selected="true" data-i="tocTab">目录</button><button type="button" role="tab" data-tab="marks" aria-selected="false" data-i="marksTab">书签</button></div>
+      <div class="rtabs" role="tablist"><button type="button" role="tab" data-tab="chs" aria-selected="false" data-i="bkTab" hidden>章节</button><button type="button" role="tab" data-tab="toc" aria-selected="true" data-i="tocTab">目录</button></div>
       <div class="rbody" id="rTocBody"></div>
       <div class="rfoot" id="rTocFoot"><button type="button" class="btn" id="rtPrev" data-i="prev">上一篇</button><button type="button" class="btn" id="rtNext" data-i="next">下一篇</button></div>
     </div>
@@ -2093,7 +2114,7 @@ const I18N = {
     postRights:'我是作者，同意把这篇文章公开发布在目录里（可随时要求下架）', submitSend:'提交', submitDone:'已提交，审核通过后会出现在目录里。',
     submitNet:'连不上提交服务，请稍后再试。', skippedDup:'没有添加（内容重复）', publishTip:'公开到公共空间（提交给站长审核）', publishAgain:'已提交过，点击可再次提交',
     publishDone:'已经在公共目录里了，不需要再提交',
-    tocTab:'目录', marksTab:'书签', readerSet:'阅读设置', readerMark:'加书签', tocEmpty:'这一篇没有可用的目录。', marksEmpty:'还没有书签。', markAddHere:'＋ 在当前位置加书签', markAdded:'已在这里加了书签。', markGone:'已删除书签。', markNone:'这个文件不能加书签。',
+    tocTab:'目录', tocEmpty:'这一篇没有可用的目录。',
     fontSize:'字号', lineHeight:'行距', pageWidth:'版面宽度', readerColor:'颜色', lhS:'紧', lhM:'中', lhL:'松', wN:'窄', wM:'中', wW:'宽',
     thFollow:'跟随系统', thLight:'浅色', thDark:'深色', thSepia:'米黄', thGreen:'护眼绿', origNote:'这一篇按原样显示，只能换颜色；字号请用浏览器的缩放。',
     installApp:'安装到主屏幕', installHint:'安装方法：点“分享”→“添加到主屏幕”。',
@@ -2304,7 +2325,7 @@ const I18N = {
     emptyHidden:'<h2>Nothing hidden</h2><p>Items you hide appear here, ready to be restored.</p>',
     emptySearch:q=>`<h2>No cards match “${q}”</h2><p>Try a shorter keyword, or <button class="btn" type="button" data-clear style="margin-left:6px">clear filters</button></p>`,
     staticNote:'Static mode: featured, pinned and hidden marks are saved in this browser only.',
-    tocTab:'Contents', marksTab:'Bookmarks', readerSet:'Reading settings', readerMark:'Bookmark', tocEmpty:'This one has no contents to show.', marksEmpty:'No bookmarks yet.', markAddHere:'+ Bookmark this place', markAdded:'Bookmark added.', markGone:'Bookmark removed.', markNone:'Bookmarks are not available for this file.',
+    tocTab:'Contents', tocEmpty:'This one has no contents to show.',
     fontSize:'Text size', lineHeight:'Line spacing', pageWidth:'Page width', readerColor:'Colour', lhS:'Tight', lhM:'Normal', lhL:'Loose', wN:'Narrow', wM:'Normal', wW:'Wide',
     thFollow:'Follow system', thLight:'Light', thDark:'Dark', thSepia:'Sepia', thGreen:'Green (easy on the eyes)', origNote:'This one is shown as it is, so only the colour can change; use the browser zoom for the size.',
     installApp:'Install the app', installHint:'To install: Share → Add to Home Screen.',
@@ -2378,7 +2399,7 @@ const LINK_LANG = (function(){
 const state = {
   lang: LINK_LANG || (['zh','en'].includes(LS.get('lang','')) ? LS.get('lang','') : sysLang()), langAuto: !LINK_LANG && !['zh','en'].includes(LS.get('lang','')),                // (no choice made: the system's language, and it follows the system)
   theme: LS.get('theme','auto'), view: LS.get('view','grid'), sort: LS.get('sort','recent'),
-  rs: Object.assign({fs:100, lh:'m', w:'m', th:'follow', ff:'follow', pg:'m', ind:'off', jus:'off', mode:'scroll', dbl:'on'}, LS.get('reader',{})),        // reader settings: font scale %, line height s/m/l, width n/m/w, colours follow|light|dark|sepia|green, font follow|serif|sans|kai, paragraph spacing s/m/l, first-line indent off|on, justified off|on
+  rs: Object.assign({fs:100, th:'follow'}, LS.get('reader',{})),        // reader settings: the size of the letters (a %) and the colour (follow | sepia | green | dark; the eye-care button goes round them); what older versions kept (line height, width, font ...) is not read
   marks: LS.get('marks',{}),                                                           // bookmarks (a place in a document): {id:[{pct,label,at}]}
   cols: LS.get('cols',[]), col: LS.get('col','all'),                                   // collections of the files added in this browser: [{id,name,at}]; which part of the shelf is shown: all | site | folder | loose | <collection id>
   cat:'all', q:'', lf:'all', loaded:false,
@@ -2409,8 +2430,8 @@ Object.assign(I18N.en,{bkTrialBtn:'Read a sample', bkContinueBtn:'Continue', bkT
   ffLabel:'Font', ffFollow:'Default', ffSerif:'Serif', ffSans:'Sans', ffKai:'Kai', pgLabel:'Paragraph spacing', indLabel:'First-line indent', jusLabel:'Justify', optOff:'Off', optOn:'On'});
 Object.assign(I18N.zh,{trMenuScreen:'翻译本屏', trMenuAll:'翻译本章', trMenuToc:'翻译目录', trMenuCycle:x=>`正在显示：${x}（点一下切换）`, trLeft:n=>`今天还可以翻译约 ${n} 字`, trAllDone:'这一页已经翻译完了', trTocNone:'这里没有可以翻译的目录', trTocDone:'目录翻译好了', bookTrBtn:'翻译简介'});
 Object.assign(I18N.en,{trMenuScreen:'Translate this screen', trMenuAll:'Translate this chapter', trMenuToc:'Translate the contents', trMenuCycle:x=>`Showing: ${x} (click to switch)`, trLeft:n=>`About ${n} characters left to translate today`, trAllDone:'This page is translated already', trTocNone:'There are no contents to translate here', trTocDone:'The contents are translated', bookTrBtn:'Translate the summary'});
-Object.assign(I18N.zh,{modeLabel:'阅读方式', modeScroll:'滚动', modePaged:'翻页', dblLabel:'双页（宽屏）', modeNote:'这一章有表格或大图，用滚动阅读。', pinTip:'固定在左边', unpinTip:'取消固定'});
-Object.assign(I18N.en,{modeLabel:'Reading', modeScroll:'Scroll', modePaged:'Pages', dblLabel:'Two pages (wide screen)', modeNote:'This chapter has a table or a big picture: it is scrolled.', pinTip:'Pin at the left', unpinTip:'Unpin'});
+Object.assign(I18N.zh,{pinTip:'固定在左边', unpinTip:'取消固定', eyeLbl:'护眼', eye_follow:'跟随系统', eye_sepia:'米黄', eye_green:'护眼绿', eye_dark:'深色', eyeTip:x=>`护眼：现在是“${x}”，点一下换下一种`, eyeNow:x=>`护眼：${x}`, fsNow:n=>`字号 ${n}%`, pgPrev:'上一页', pgNext:'下一页', fsSmaller:'缩小字号', fsBigger:'放大字号', rbarTip:'字号和页码'});
+Object.assign(I18N.en,{pinTip:'Pin at the left', unpinTip:'Unpin', eyeLbl:'Eye care', eye_follow:'Follow system', eye_sepia:'Sepia', eye_green:'Green', eye_dark:'Dark', eyeTip:x=>`Eye care: now "${x}", click for the next`, eyeNow:x=>`Eye care: ${x}`, fsNow:n=>`Text size ${n}%`, pgPrev:'Previous page', pgNext:'Next page', fsSmaller:'Smaller text', fsBigger:'Bigger text', rbarTip:'Text size and page'});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const catName = c => (['all','featured','books','tools','notes','hidden'].includes(c)? t(c) : c);
@@ -3545,10 +3566,12 @@ details.toc a{text-decoration:none;color:var(--ink)}
 .bk-end .bk-last{color:var(--muted);text-align:center}
 @media (max-width:560px){.bk-end{flex-direction:column-reverse}.bk-end a.next{text-align:left}}
 `;
-/* what the reader settings mean for a Markdown / TXT document (the page is ours, so size, spacing, width and colours are native); a page shown as it is gets only a colour change (see applyReader) */
-const LH={s:1.65, m:1.85, l:2.1}, WD={n:'36em', m:'44em', w:'60em'};
-const FF={serif:'var(--serif)', sans:'var(--sans)', kai:"'Kaiti SC','STKaiti','KaiTi','楷体',var(--serif)"}, PG={s:'.55em', l:'1.7em'};
-const docVars = () => `--fs:${(17*state.rs.fs/100).toFixed(1)}px;--lh:${LH[state.rs.lh]||1.85};--w:${WD[state.rs.w]||'44em'}${FF[state.rs.ff]?`;--ff:${FF[state.rs.ff]}`:''}${PG[state.rs.pg]?`;--pg:${PG[state.rs.pg]}`:''}${state.rs.ind==='on'?';--ind:2em':''}${state.rs.jus==='on'?';--jus:justify':''}`;
+/* the looks of a text in the reader are not the reader's to set: they are the best that is known (a line of about 36 Chinese characters or 66 Latin ones, 1.8 / 1.65 lines high, letters of 19 px on a PC and 17 px on a phone);
+   the reader changes the size of the letters and the colour of the page, nothing else. A book is indented at the first line and justified, any other text is not (its paragraphs are set apart). A page shown as it is gets only the colour (see applyReader). */
+const bookIs = () => { const it=itemById(state.readingId); return !!(it && it.bookOf); };                // a chapter of a picked book is on the screen
+function readCJK(){ const it=itemById(state.readingId), l=String((it&&it.lang)||''); return l ? !/^(en|fr|de|es|it|pt|nl|ru|la)\b/i.test(l) : /[\u3400-\u9fff]/.test(((it&&it.title)||'')+((it&&it.summary)||'')); }
+const docVars = () => { const cjk=readCJK(), px=(matchMedia('(max-width:620px)').matches?17:19)*state.rs.fs/100;
+  return `--fs:${px.toFixed(1)}px;--lh:${cjk?1.8:1.65};--w:${cjk?'36em':'34em'}${bookIs()?`;--pg:${cjk?'.5em':'.45em'};--ind:${cjk?'2em':'1.5em'};--jus:${cjk?'justify':'start'}`:''}`; };
 const docTheme = () => state.rs.th!=='follow' ? state.rs.th : themeNow()!=='auto' ? themeNow() : '';
 const STRICT = `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https: data:; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com"><meta name="referrer" content="no-referrer">`;
 function docShell(title, bodyHTML, meta, strict){                                  // strict: somebody else's text; the document itself allows no script and sends no referrer
@@ -3650,13 +3673,9 @@ async function urlFor(it){
 }
 function syncReader(){
   if(!state.readingId) return; const it=itemById(state.readingId); if(!it) return;
-  const real=state.items.includes(it); $('#readerStar').hidden=!real; $('#readerPlay').hidden=!plAudioOf(it);                            // a directory article that is not saved has no star, bookmark or place of its own
-  $('#readerEdit').hidden=!(real && it.source==='local' && it.type==='md'); $('#reader').classList.toggle('can-edit',!$('#readerEdit').hidden);
+  $('#readerPlay').hidden=!plAudioOf(it);
   const co=$('#readerOrig'); co.hidden=!convAvail(it); if(!co.hidden){ const lb=t(convReady(it)?'viewOrig':'viewRead'); $('#readerOrigLbl').textContent=lb; co.title=lb; co.setAttribute('aria-label',lb); }          // a PDF with a readable page: switch between the two
   syncVote();
-  const on=isFeatured(it), b=$('#readerStar');
-  b.classList.toggle('on',on); b.setAttribute('aria-pressed',String(on));
-  $('#readerStarLbl').textContent = on?t('unstar'):t('star'); b.title = on?t('unstarTip'):t('starTip'); b.setAttribute('aria-label',b.title);
   const idx=state.visible.indexOf(state.readingId), n=state.visible.length;
   $('#readerPrev').disabled = idx<=0; $('#readerNext').disabled = idx<0 || idx>=n-1;
   $('#readerPos').textContent = idx>=0 ? `${idx+1} / ${n}` : '';
@@ -3665,6 +3684,7 @@ function syncReader(){
   $('#readerMobilePos').textContent=$('#readerPos').textContent;
   const bookNow=!!it.bookOf;                                                                                  // (in a book the buttons are about chapters)
   [['#readerPrev .lbl','prev'],['#readerNext .lbl','next'],['#readerMobilePrev .lbl','prev'],['#readerMobileNext .lbl','next']].forEach(([sel,k])=>{ const el=$(sel); if(el) el.textContent=t(bookNow?k+'Ch':k); });
+  const docNow=state.rkind==='doc'; $('#reader').classList.toggle('bookmode',bookNow); $('#reader').classList.toggle('readmode',docNow); $('#rBook').hidden=!docNow; eyeSync(); rbSync();          // (a text: the bar at the foot and the eye-care button; a picked book: no saving either, and its chapters are gone to from the bar)
   pinSync();
 }
 /* A link is read in the page: its text if it was kept, else the service reads the original page (once; the text is then kept in this browser). A page that cannot be read (a login,
@@ -3719,10 +3739,10 @@ async function openLinkReading(it, push){
   rememberReaderReturn();
   state.readingId=id; state.rkind='doc'; state.rpdf=false; state.toc=[]; state.tocCur='';
   $('#readerTitle').textContent=it.title; $('#readerProg').style.width='0%'; $('#readerNew').href=u;
-  closePanels(); $('#readerToc').disabled=$('#readerMark').disabled=$('#readerSave').disabled=true;
+  closePanels(); $('#readerToc').disabled=$('#readerSave').disabled=true;
   syncReader(); $('#reader').hidden=false; document.body.classList.add('reading');
   const fr=$('#frame'); fr.removeAttribute('src');
-  fr.srcdoc=docShell(it.title,`<h1>${esc(it.title)}</h1><p>${esc(t('readLoading'))}</p><p><a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t('readOpenOrig'))}</a></p>`,hostOf(u),true);
+  fr.srcdoc=docShell(it.title,`<h1 data-ph>${esc(it.title)}</h1><p>${esc(t('readLoading'))}</p><p><a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t('readOpenOrig'))}</a></p>`,hostOf(u),true);
   if(push!==false) history.pushState({read:id},'','#read/'+encodeURIComponent(id));
   try{
     let d; try{ d=await fetchLinkText(it); }catch(e){ if(!it.bookOf || e.reason!=='unreachable' || readSeq!==seq) throw e; await new Promise(r=>setTimeout(r,1200)); d=await fetchLinkText(it); }          // (a chapter of a book: the wiki is asked once more when the first try could not connect)
@@ -3730,7 +3750,7 @@ async function openLinkReading(it, push){
     if(readSeq===seq && state.readingId===id) await openReader(id,false);                     // the same page again, now with its text
   }catch(e){
     markNoread(it,e);
-    if(readSeq===seq && state.readingId===id) fr.srcdoc=docShell(it.title,`<h1>${esc(it.title)}</h1><p class="note">${esc(t('readFail',e.message))}</p><p><a class="open-pdf" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t('openOriginal'))}</a></p>`,hostOf(u),true);
+    if(readSeq===seq && state.readingId===id) fr.srcdoc=docShell(it.title,`<h1 data-ph>${esc(it.title)}</h1><p class="note">${esc(t('readFail',e.message))}</p><p><a class="open-pdf" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(t('openOriginal'))}</a></p>`,hostOf(u),true);
   }
 }
 async function prefetchTexts(){                                                              // the newest few articles of the subscriptions whose feed carries no text: read ahead, quietly
@@ -3787,7 +3807,7 @@ function bookPlace(did){
 }
 function bookSave(did, i, pct){
   const p=bookPlace(did), done=new Set(p.done); if(pct>=90) done.add(i);
-  state.progress['bk:'+did]={i, pct:Math.round(pct*10)/10, at:Date.now(), done:[...done].sort((a,b)=>a-b).slice(0,400)};
+  state.progress['bk:'+did]={i, pct:Math.round(pct*100)/100, at:Date.now(), done:[...done].sort((a,b)=>a-b).slice(0,400)};
   LS.set('progress',state.progress);
 }
 const bookOverall = (did, ch) => { const p=bookPlace(did); return Math.max(0,Math.min(100,Math.round((p.i+p.pct/100)/ch.n.length*100))); };          // how much of the whole book, by chapters
@@ -3889,7 +3909,7 @@ async function openReader(id, push){
   if(it.unread) markRead(id);
   $('#readerTitle').textContent=it.title; $('#readerProg').style.width='0%';
   $('#readerNew').href = directHref(it) || url;
-  closePanels(); $('#readerToc').disabled = $('#readerSave').disabled = state.rpdf; $('#readerMark').disabled = state.rpdf || !state.items.includes(it);       // a PDF is shown by the browser itself: no contents to read; a directory article that is not saved has no place to remember
+  closePanels(); $('#readerToc').disabled = $('#readerSave').disabled = state.rpdf;       // a PDF is shown by the browser itself: no contents to read
   syncReader();
   $('#reader').hidden=false; document.body.classList.add('reading');
   const fr=$('#frame');
@@ -3941,33 +3961,25 @@ function applyReader(){
   } else if(th==='dark') fr.classList.add('inv');
   else if(th==='sepia' || th==='green'){ tint.style.background = th==='sepia' ? '#F4ECD8' : '#CCE8CF'; tint.style.display='block'; }
 }
-function syncSettings(){
-  const rs=state.rs, doc=state.rkind==='doc';
-  ['#rowFs','#rowLh','#rowW','#rowFf','#rowPg','#rowInd','#rowJus'].forEach(s=>{ $(s).hidden=!doc; }); $('#rOrigNote').hidden=doc;
-  const book=doc && !!bookOfReading(); $('#rowMode').hidden=!book; $('#rowDbl').hidden=!(book && rs.mode==='paged' && innerWidth>=1100); $('#rModeNote').hidden=!(book && PGD.note);
-  $('#fsVal').textContent=rs.fs+'%';
-  document.querySelectorAll('#rSetPanel .seg2[data-key] button').forEach(b=>b.setAttribute('aria-pressed',String(rs[b.parentElement.dataset.key]===b.dataset.v)));
-  document.querySelectorAll('#rThemes button').forEach(b=>b.setAttribute('aria-pressed',String(rs.th===b.dataset.th)));
-}
-function saveReader(){ LS.set('reader',state.rs); applyReader(); syncSettings(); }
+function saveReader(){ LS.set('reader',state.rs); applyReader(); eyeSync(); rbSync(); }
 function syncSave(){ const doc=state.rkind==='doc'; $('#rSaveHtml').hidden=!doc; $('#rSaveNote').hidden=doc; }          // a page shown as it is can only be printed; a PDF is the browser's own (the button is off then)
 const saveName = () => { const it=itemById(state.readingId); return String((it&&it.title)||'article').replace(/[\\/:*?"<>|\u0000-\u001f]+/g,' ').replace(/\s+/g,' ').trim().slice(0,80)||'article'; };
 $('#rSaveHtml').addEventListener('click',()=>{ const fd=frameDoc(); if(!fd) return toast(t('printFail')); bkDownload(new Blob(['<!DOCTYPE html>\n'+fd.d.documentElement.outerHTML],{type:'text/html;charset=utf-8'}), saveName()+'.html'); closePanels(); });
 $('#rPrint').addEventListener('click',()=>{ const fd=frameDoc(); if(!fd) return toast(t('printFail')); closePanels(); try{ fd.w.focus(); fd.w.print(); }catch(e){ toast(t('printFail')); } });
-const PANELS={set:['#rSetPanel','#readerSet'], toc:['#rTocPanel','#readerToc'], save:['#rSavePanel','#readerSave'], tr:['#trMenu','#readerTrans']};
+const PANELS={toc:['#rTocPanel','#readerToc'], save:['#rSavePanel','#readerSave'], tr:['#trMenu','#readerTrans']};
 const tocDocked = () => matchMedia('(min-width:1200px)').matches && !!LS.get('tocPin',0);                  // the contents / chapters panel stays at the left of the page (a wide screen, when the reader pinned it)
 const panelsOpen = () => Object.values(PANELS).some(p=>!$(p[0]).hidden && !(p[0]==='#rTocPanel' && tocDocked()));
 const pinSync = () => $('#reader').classList.toggle('toc-pin', tocDocked() && !$('#rTocPanel').hidden);
 window.addEventListener('resize',pinSync);
 function closePanels(){ Object.values(PANELS).forEach(([p,b])=>{ if(p==='#rTocPanel' && tocDocked()) return; $(p).hidden=true; $(b).setAttribute('aria-expanded','false'); }); $('#rBack').hidden=true; pinSync(); }
-function closePopovers(){ ['set','save'].forEach(k=>{ $(PANELS[k][0]).hidden=true; $(PANELS[k][1]).setAttribute('aria-expanded','false'); }); if($('#rTocPanel').hidden) $('#rBack').hidden=true; }      // (the contents panel stays while one reads)
+function closePopovers(){ ['save'].forEach(k=>{ $(PANELS[k][0]).hidden=true; $(PANELS[k][1]).setAttribute('aria-expanded','false'); }); if($('#rTocPanel').hidden) $('#rBack').hidden=true; }      // (the contents panel stays while one reads)
 function togglePanel(which){
   const [ps,bs]=PANELS[which], panel=$(ps), open=panel.hidden;
   if(which==='toc' && tocDocked()){ closePanels(); panel.hidden=!open; $(bs).setAttribute('aria-expanded',String(open)); $('#rBack').hidden=true; if(open) renderTocPanel(); pinSync(); return; }          // (docked: the button shows or hides it)
   closePanels(); if(!open) return;
   panel.hidden=false; $(bs).setAttribute('aria-expanded','true');
   $('#rBack').hidden=false; $('#rBack').classList.toggle('dim',which==='toc');                // on a phone: what is left of the page catches the tap that closes it
-  if(which==='set') syncSettings(); else if(which==='toc') renderTocPanel(); else if(which==='tr') trMenuSync(); else syncSave();
+  if(which==='toc') renderTocPanel(); else if(which==='tr') trMenuSync(); else syncSave();
 }
 /* contents: the headings of the document (same origin only); marks: places the reader saved */
 function buildToc(){
@@ -3993,60 +4005,42 @@ function renderTocPanel(){
     body.innerHTML=`<p class="bk-head"><button type="button" class="rpin" data-pin aria-pressed="${!!LS.get('tocPin',0)}">${esc(t(LS.get('tocPin',0)?'unpinTip':'pinTip'))}</button>${esc(book.d.title)} · ${esc(t('bkPos',book.i+1,ch.n.length,bookOverall(book.did,ch)))}</p>`
       + ch.n.map((n,k)=>`<button class="toc-i bk${k===book.i?' on':''}${done.has(k)?' done':''}" type="button" data-bch="${k}" title="${esc(chLabel(ch,k))}"><b>${esc(chName(n))}</b>${bookT(ch,k)?`<span>${esc(bookT(ch,k))}</span>`:''}${trTocLine(bookT(ch,k))}</button>`).join('');
     const on=body.querySelector('.on'); if(on) on.scrollIntoView({block:'center'});
-  } else if(tocTab==='toc'){
-    body.innerHTML = state.toc.length ? state.toc.map(x=>`<button class="toc-i l${x.level}${x.id===state.tocCur?' on':''}" type="button" data-h="${esc(x.id)}">${esc(x.text)}${trTocLine(x.text)}</button>`).join('') : `<p class="empty">${esc(t('tocEmpty'))}</p>`;
   } else {
-    const list=(state.marks[id]||[]);
-    body.innerHTML = `<button class="btn add-mark" type="button" data-add="1">${esc(t('markAddHere'))}</button>` + (list.length ? list.map((m,i)=>`<div class="mark-i"><button class="toc-i" type="button" data-mark="${i}">${esc(m.label||Math.round(m.pct)+'%')}<small>${Math.round(m.pct)}% · ${esc(today(m.at))}</small></button><button class="x" type="button" data-del="${i}" aria-label="${esc(t('remove'))}">×</button></div>`).join('') : `<p class="empty">${esc(t('marksEmpty'))}</p>`);
+    body.innerHTML = state.toc.length ? state.toc.map(x=>`<button class="toc-i l${x.level}${x.id===state.tocCur?' on':''}" type="button" data-h="${esc(x.id)}">${esc(x.text)}${trTocLine(x.text)}</button>`).join('') : `<p class="empty">${esc(t('tocEmpty'))}</p>`;
   }
   const idx=state.visible.indexOf(id); $('#rtPrev').disabled=idx<=0; $('#rtNext').disabled=idx<0||idx>=state.visible.length-1;
   $('#rtPrev').textContent=t(book?'prevCh':'prev'); $('#rtNext').textContent=t(book?'nextCh':'next');
 }
-function addMark(){
-  const fd=frameDoc(), id=state.readingId; if(!fd || !id || state.rpdf){ toast(t('markNone')); return; }
-  const pct=Math.round(scrollPct(fd)*10)/10, h=currentHeading(fd), list=(state.marks[id]||[]).filter(m=>Math.abs(m.pct-pct)>0.5);      // a second mark at the same place replaces the first
-  list.push({pct, label:h?h.text:'', at:Date.now()}); list.sort((a,b)=>a.pct-b.pct); state.marks[id]=list.slice(0,50); LS.set('marks',state.marks);
-  toast(t('markAdded')); if(!$('#rTocPanel').hidden && tocTab==='marks') renderTocPanel();
-}
 function goPct(pct, smooth){ const fd=frameDoc(); if(!fd) return; if(PGD.on) return pagedGoPct(fd,pct); const max=fd.d.documentElement.scrollHeight-fd.w.innerHeight; fd.w.scrollTo({top:max*pct/100, behavior:smooth?'smooth':'auto'}); }
-$('#readerSet').addEventListener('click',()=>togglePanel('set'));
 $('#readerToc').addEventListener('click',()=>togglePanel('toc'));
-$('#readerMark').addEventListener('click',addMark);
 $('#readerSave').addEventListener('click',()=>togglePanel('save'));
 $('#rBack').addEventListener('click',closePanels);
 $('#drawerBack').addEventListener('click',()=>document.body.classList.remove('drawer'));
-$('#rSetPanel').addEventListener('click',e=>{
-  const b=e.target.closest('button'); if(!b) return; const rs=state.rs;
-  if(b.dataset.fs) rs.fs=Math.max(70,Math.min(200,rs.fs+(+b.dataset.fs)));
-  else if(b.dataset.v) rs[b.parentElement.dataset.key]=b.dataset.v;
-  else if(b.dataset.th) rs.th=b.dataset.th;
-  else return;
-  saveReader();
-});
 $('#rTocPanel').addEventListener('click',e=>{
   const tab=e.target.closest('.rtabs button'); if(tab){ tocTab=tab.dataset.tab; renderTocPanel(); return; }
   const fd=frameDoc(), narrow=matchMedia('(max-width:620px)').matches;
   const pin=e.target.closest('[data-pin]'); if(pin){ LS.set('tocPin',LS.get('tocPin',0)?0:1); $('#rBack').hidden=tocDocked(); $('#rBack').classList.add('dim'); pinSync(); renderTocPanel(); return; }
   const bc=e.target.closest('[data-bch]'); if(bc){ const b=bookOfReading(); if(b) goBookChapter(b.did,+bc.dataset.bch); closePanels(); return; }
   const h=e.target.closest('[data-h]'); if(h && fd){ const el=fd.d.getElementById(h.dataset.h); if(el){ if(PGD.on) pagedToEl(el); else el.scrollIntoView({behavior:'smooth',block:'start'}); } if(narrow) closePanels(); return; }
-  const mk=e.target.closest('[data-mark]'); if(mk){ const m=(state.marks[state.readingId]||[])[+mk.dataset.mark]; if(m) goPct(m.pct,true); if(narrow) closePanels(); return; }
-  const del=e.target.closest('[data-del]'); if(del){ (state.marks[state.readingId]||[]).splice(+del.dataset.del,1); LS.set('marks',state.marks); toast(t('markGone')); renderTocPanel(); return; }
-  if(e.target.closest('[data-add]')){ addMark(); renderTocPanel(); }
 });
-/* ================= paged reading of a chapter of a book (an option of "Aa": scroll or pages; the default is to scroll) =================
-   The text of the chapter is set in columns that are as wide as the screen (two of them side by side on a wide screen) and as high as the screen: a page is a column, a turn of the page moves the document
-   sideways by the width of the screen. It is only for a chapter of a book (a page with a table, a big picture, code ... is too difficult for columns and is scrolled as before). The place is a place in the text (how many
-   characters come before the top of the page), so that a change of the size of the letters or of the window keeps the reader where he is; it is the same figure (a percent) that the scrolling saves. */
-const PGD={on:false, page:0, pages:1, cols:1, stride:1, note:false, pct:0};
-const PG_CSS=`html.paged{height:100%;overflow:hidden}
-html.paged body{height:100%;margin:0}
+/* ================= paged reading of a chapter of a picked book =================
+   A book is read in pages, on a phone and on a PC; there is nothing to set but the size of the letters (the bar at the foot of the page). The text of the chapter is set in columns that are as wide as the screen and as high as
+   the text area: a page is a column, a turn moves the document sideways by the width of the screen (a short slide). On a wide screen the page is a column of about 36 characters in the middle of the screen (a sheet on a desk) with an
+   arrow at each side; on a phone it takes the whole width and follows the finger. A chapter with a table, a code, a video or a lot of pictures is scrolled (columns do not hold them). The place is a place in the text
+   (how many characters come before the top of the page), so that a change of the size of the letters or of the window keeps the reader where he is; it is the same figure (a percent) that scrolling saves. */
+const PGD={on:false, page:0, pages:1, stride:1, pct:0, anim:0, wide:false, hold:false};
+const PG_CSS=`html.paged{height:100%;overflow:hidden;background:var(--desk,var(--bg));--desk:#EFEFEA}
+html.paged[data-theme="dark"]{--desk:#0E1215}html.paged[data-theme="sepia"]{--desk:#E7DDC4}html.paged[data-theme="green"]{--desk:#BBD9BF}
+@media (prefers-color-scheme:dark){html.paged:not([data-theme]){--desk:#0E1215}}
+html.paged body{height:100%;margin:0;background:transparent}
+html.paged.wide::before{content:"";position:fixed;z-index:-1;top:0;bottom:0;left:calc(var(--pm) - 44px);width:calc(100vw - 2*var(--pm) + 88px);background:var(--bg);box-shadow:0 0 0 1px var(--rule),0 10px 34px rgba(0,0,0,.07)}
 html.paged .doc{box-sizing:border-box;width:calc(100vw - 2*var(--pm));max-width:none;height:calc(100vh - var(--pt) - var(--pb));margin:var(--pt) var(--pm) var(--pb);padding:0;column-width:var(--pcw);column-gap:calc(2*var(--pm));column-fill:auto}
 html.paged .doc h1,html.paged .doc h2,html.paged .doc h3{break-after:avoid}
 html.paged .doc img{max-height:calc(100vh - var(--pt) - var(--pb) - 24px);width:auto;object-fit:contain}
-html.paged .doc .bk-end{break-before:column}
-html.paged .pgnum{position:fixed;left:0;right:0;bottom:10px;text-align:center;font:13px/1 var(--sans);color:var(--muted);pointer-events:none}`;
-const pagedWanted = () => state.rkind==='doc' && !state.rpdf && state.rs.mode==='paged' && !!bookOfReading();
-const pagedSuitable = d => !d.querySelector('table,pre,iframe,video,object') && d.querySelectorAll('.doc img').length<=3;
+html.paged .doc .bk-end{display:none}`;
+const pagedWanted = () => state.rkind==='doc' && !state.rpdf && !!bookOfReading();
+const pagedSuitable = d => !d.querySelector('[data-ph],table,pre,iframe,video,object') && d.querySelectorAll('.doc img').length<=3;          // ([data-ph]: the page that stands in while a chapter is read, or says that it could not be: it is not the chapter, and its place is not the reader's)
+const reducedMotion = () => matchMedia('(prefers-reduced-motion:reduce)').matches;
 function pagedText(d){                                                                             // the text nodes of the chapter in their order (not the translations, not the way on at the end): where each begins
   const doc=d.querySelector('.doc'), list=[]; let total=0; if(!doc) return {list,total};
   const wk=d.createTreeWalker(doc,NodeFilter.SHOW_TEXT,{acceptNode:n=>!n.nodeValue.trim() || (n.parentElement && n.parentElement.closest('.zt-tr,.bk-end,.doc-src,.doc-lic,script,style')) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT});
@@ -4061,64 +4055,128 @@ function pagedCharPct(fd){                                                      
   if(r){ const k=list.findIndex(x=>x[0]===r.startContainer); if(k>=0) return Math.min(100,(list[k][1]+r.startOffset)/total*100); }
   return PGD.pages>1 ? PGD.page/(PGD.pages-1)*100 : 0;
 }
-function pagedGoPct(fd,pct,last){                                                                  // to the page that has this place of the text at its top
+function pagedGoPct(fd,pct,last,anchor){                                                           // to the page that has this place of the text (anchor: the place stays the one asked for, not the top of the page that holds it, so that many changes of the letters do not drift)
   const {w,d}=fd, root=d.documentElement, {list,total}=pagedText(d);
-  if(last || pct>=99.5 || !total){ pagedTo(fd,last||pct>=99.5 ? PGD.pages-1 : 0); return; }
-  const at=Math.max(0,Math.min(total-1,Math.round(pct/100*total)));
+  if(last || pct>=99.5 || !total){ pagedTo(fd,last||pct>=99.5 ? PGD.pages-1 : 0); if(anchor) PGD.pct=pct; return; }
+  const at=Math.max(0,Math.min(total-1,Math.round(pct/100*total+total*0.00005)));                   // (the saved figure is rounded to a hundredth of a percent: a little forward, so that the first letter of a page does not fall on the page before it)
   let k=list.length-1; while(k>0 && list[k][1]>at) k--;
   const r=d.createRange(); try{ r.setStart(list[k][0],Math.min(list[k][0].nodeValue.length-1,Math.max(0,at-list[k][1]))); r.collapse(true); }catch(e){ return pagedTo(fd,0); }
-  const rc=r.getBoundingClientRect(); pagedTo(fd,Math.floor((rc.left+root.scrollLeft+1)/PGD.stride));
+  const rc=r.getBoundingClientRect(); pagedTo(fd,Math.floor((rc.left+root.scrollLeft+1)/PGD.stride)); if(anchor) PGD.pct=pct;
 }
-function pagedTo(fd,n){                                                                            // show page n
-  const {w,d}=fd; n=Math.max(0,Math.min(PGD.pages-1,n)); PGD.page=n; d.documentElement.scrollLeft=n*PGD.stride;
-  const num=d.querySelector('.pgnum'); if(num) num.textContent=`${n+1} / ${PGD.pages}`;
+function pagedMove(root,to,ms,done){                                                               // the document slides to a place (ease out), or is put there at once
+  if(PGD.anim){ cancelAnimationFrame(PGD.anim); PGD.anim=0; }
+  const from=root.scrollLeft;
+  if(!ms || Math.abs(to-from)<2){ root.scrollLeft=to; if(done) done(); return; }
+  const t0=performance.now();
+  const f=now=>{ const k=Math.min(1,(now-t0)/ms), e=1-Math.pow(1-k,3); root.scrollLeft=from+(to-from)*e; if(k<1) PGD.anim=requestAnimationFrame(f); else { PGD.anim=0; root.scrollLeft=to; if(done) done(); } };
+  PGD.anim=requestAnimationFrame(f);
+}
+function pagedTo(fd,n,anim){                                                                       // show page n (anim: slide to it)
+  const root=fd.d.documentElement; n=Math.max(0,Math.min(PGD.pages-1,n)); PGD.page=n; rbSync();
+  pagedMove(root,n*PGD.stride,anim && !reducedMotion() ? 230 : 0,()=>pagedSettled(fd));
+}
+function pagedSettled(fd){                                                                         // the page has come to rest: the place, the progress, the contents
+  if(!PGD.on) return;
   const pct=pagedCharPct(fd); PGD.pct=pct; $('#readerProg').style.width=pct+'%';                  // (the place is kept here: a change of the letters or of the window moves the text before the page is set again)
-  const b=bookOfReading(); if(b){ bookSave(b.did,b.i,pct); if(pct>=60) bookPrefetch(b.it); }
+  const b=bookOfReading(); if(b && !PGD.hold){ bookSave(b.did,b.i,pct); if(pct>=60) bookPrefetch(b.it); }
   const cur=currentHeading(fd); if((cur?cur.id:'')!==state.tocCur){ state.tocCur=cur?cur.id:''; if(!$('#rTocPanel').hidden && tocTab==='toc') renderTocPanel(); }
 }
 function pagedLayout(fd){                                                                          // set the columns for the size of the window now
-  const {w,d}=fd, root=d.documentElement, W=w.innerWidth, wide=W>=1100 && state.rs.dbl!=='off', m=Math.round(Math.max(16,Math.min(56,W*0.06))), cw=wide ? (W-4*m)/2 : W-2*m;
+  const {w,d}=fd, root=d.documentElement, W=w.innerWidth, wide=W>=900, fsPx=parseFloat(w.getComputedStyle(d.body).fontSize)||17, wem=parseFloat(root.style.getPropertyValue('--w'))||36;
+  let cw = wide ? Math.min(W-96,Math.round(wem*fsPx)) : W-2*Math.round(Math.max(16,Math.min(28,W*0.055)));
+  const m=Math.floor((W-cw)/2); cw=W-2*m;
   if(!d.getElementById('zt-paged')){ const st=d.createElement('style'); st.id='zt-paged'; st.textContent=PG_CSS; d.head.appendChild(st); }
-  if(!d.querySelector('.pgnum')){ const p=d.createElement('div'); p.className='pgnum'; d.body.appendChild(p); }
-  root.style.setProperty('--pm',m+'px'); root.style.setProperty('--pt','30px'); root.style.setProperty('--pb','44px'); root.style.setProperty('--pcw',cw+'px');
-  root.classList.add('paged'); PGD.on=true; PGD.cols=wide?2:1; PGD.stride=W; w.scrollTo(0,0);
-  PGD.pages=Math.max(1,Math.ceil((root.scrollWidth-2)/W));
+  root.style.setProperty('--pm',m+'px'); root.style.setProperty('--pt',(wide?44:26)+'px'); root.style.setProperty('--pb','72px'); root.style.setProperty('--pcw',cw+'px');
+  root.classList.add('paged'); root.classList.toggle('wide',wide); PGD.on=true; PGD.wide=wide; PGD.stride=W; w.scrollTo(0,0);
+  $('#reader').classList.add('pgd'); $('#reader').style.setProperty('--redge',Math.max(8,m-72)+'px');                  // (the arrows of a PC stand in the margin beside the page)
+  let sp=d.getElementById('zt-pgsp'); if(!sp){ sp=d.createElement('div'); sp.id='zt-pgsp'; sp.style.cssText='position:absolute;top:0;left:0;height:1px;visibility:hidden;pointer-events:none'; d.body.appendChild(sp); }
+  sp.style.width='1px';                                                                                // (the last column ends before the end of its page, by the margin: the document is made as wide as whole pages, so that the last page is as the others)
+  PGD.pages=Math.max(1,Math.ceil((root.scrollWidth+m-2)/W)); sp.style.width=PGD.pages*W+'px';
 }
-function pagedApply(fd,keepPct){                                                                   // paged or scrolled, as the reader wants and as the chapter allows; the place is kept
-  fd=fd||frameDoc(); if(!fd) return; const {w,d}=fd, root=d.documentElement, want=pagedWanted(), ok=want && pagedSuitable(d);
-  PGD.note = want && !ok;
+function pagedApply(fd,keepPct){                                                                   // paged, unless the chapter cannot be; the place is kept
+  fd=fd||frameDoc(); if(!fd) return; const {w,d}=fd, root=d.documentElement, ok=pagedWanted() && pagedSuitable(d);
   if(ok){
-    const pct = keepPct!==undefined ? keepPct : PGD.on ? PGD.pct : scrollPct(fd);
-    pagedLayout(fd); pagedGoPct(fd,pct);
+    const pct = keepPct!==undefined ? keepPct : PGD.on ? PGD.pct : 0;                                // (a document that is not paged yet is a new one: the place is put right after, by the load of the frame)
+    pagedLayout(fd); pagedGoPct(fd,pct,false,PGD.on);
   } else if(PGD.on){
-    const pct=PGD.pct; root.classList.remove('paged'); PGD.on=false; const num=d.querySelector('.pgnum'); if(num) num.remove();
+    const pct=PGD.pct; root.classList.remove('paged','wide'); PGD.on=false; $('#reader').classList.remove('pgd'); const sp=d.getElementById('zt-pgsp'); if(sp) sp.remove();
     root.scrollLeft=0; const max=root.scrollHeight-w.innerHeight; w.scrollTo(0,max*pct/100);
   }
-  syncSettings();
+  rbSync();
 }
 function pagedStep(dir){                                                                           // a page on; at the end of the chapter, the next one; at the beginning, the end of the one before
   const fd=frameDoc(); if(!fd || !PGD.on) return; const n=PGD.page+dir;
-  if(n>=0 && n<PGD.pages) return pagedTo(fd,n);
+  if(n>=0 && n<PGD.pages) return pagedTo(fd,n,true);
   const b=bookOfReading(); if(!b) return;
   if(dir>0){ if(b.i<b.ch.n.length-1) step(1); else toast(t('bkLast')); }
   else if(b.i>0){ state.pgJump='last'; step(-1); }
 }
-function pagedToEl(el){ const fd=frameDoc(); if(!fd || !PGD.on) return; const r=el.getBoundingClientRect(); pagedTo(fd,Math.floor((r.left+fd.d.documentElement.scrollLeft+1)/PGD.stride)); }
-function pagedWatch(fd){                                                                           // what the reader does in the page: keys, the wheel, the size of the window, the letters that come late (the taps and the swipes are in the frame code)
+function pagedToEl(el){ const fd=frameDoc(); if(!fd || !PGD.on) return; const r=el.getBoundingClientRect(); pagedTo(fd,Math.floor((r.left+fd.d.documentElement.scrollLeft+1)/PGD.stride),true); }
+function pagedTouch(fd){                                                                           // a finger on the page: the page follows it, and on letting go goes on or comes back (a pull at the end of the chapter goes on to the next one)
+  const {w,d}=fd, root=d.documentElement; let s=null, swallow=0;
+  const doc=()=>d.querySelector('.doc'), rubber=px=>{ const e=doc(); if(e) e.style.transform=px ? `translateX(${px}px)` : ''; };
+  d.addEventListener('touchstart',e=>{
+    s=null; if(!PGD.on || e.touches.length!==1 || panelsOpen()) return;
+    const p=e.touches[0]; if(p.clientX<SW_EDGE || p.clientX>w.innerWidth-SW_EDGE) return;                    // (the system's back gesture)
+    if(window.visualViewport && window.visualViewport.scale>1.02) return;
+    const sel=w.getSelection && w.getSelection(); if(sel && String(sel).length) return;
+    if(PGD.anim){ cancelAnimationFrame(PGD.anim); PGD.anim=0; }
+    s={x:p.clientX,y:p.clientY,base:root.scrollLeft,drag:false,pts:[[performance.now(),p.clientX]]};
+  },{passive:true});
+  d.addEventListener('touchmove',e=>{
+    if(!s) return; if(e.touches.length>1){ s=null; rubber(0); return; }
+    const p=e.touches[0], dx=p.clientX-s.x, dy=p.clientY-s.y;
+    if(!s.drag){ if(Math.abs(dx)<10 && Math.abs(dy)<10) return; if(Math.abs(dx)>Math.abs(dy)*1.3) s.drag=true; else { s=null; return; } }
+    e.preventDefault();
+    s.pts.push([performance.now(),p.clientX]); if(s.pts.length>8) s.pts.shift();                         // (the last few places of the finger: how fast it goes is told from them)
+    const max=(PGD.pages-1)*PGD.stride, want=s.base-dx, got=Math.max(0,Math.min(max,want));
+    root.scrollLeft=got; rubber(want===got ? 0 : -(want-got)/3);                                            // (the end of the chapter: the text is pulled a little, and held)
+  },{passive:false});
+  const done=e=>{
+    if(!s) return; const st=s; s=null; if(!st.drag) return; swallow=Date.now();
+    const last=st.pts[st.pts.length-1], p=e.changedTouches && e.changedTouches[0], dx=p ? p.clientX-st.x : last[1]-st.x, W=w.innerWidth;
+    const old=st.pts.find(q=>last[0]-q[0]<=120)||st.pts[0], v=(last[1]-old[1])/Math.max(10,last[0]-old[0]); let dir=0;          // (px per ms over the last 120 ms)
+    if(Math.abs(v)>0.45 && Math.abs(dx)>24) dir=v<0?1:-1; else if(Math.abs(dx)>W*0.18) dir=dx<0?1:-1;           // (a quick flick, or a long enough pull)
+    const e0=doc(); if(e0){ e0.style.transition='transform .2s ease'; e0.style.transform=''; setTimeout(()=>{ e0.style.transition=''; },240); }
+    const n=PGD.page+dir;
+    if(!dir || n<0 || n>=PGD.pages){ pagedTo(fd,PGD.page,true); if(dir) pagedStep(dir); } else pagedTo(fd,n,true);
+  };
+  d.addEventListener('touchend',done,{passive:true});
+  d.addEventListener('touchcancel',e=>{ if(s && s.drag){ s=null; rubber(0); pagedTo(fd,PGD.page,true); } else s=null; },{passive:true});
+  d.addEventListener('click',e=>{ if(Date.now()-swallow<350){ e.stopPropagation(); e.preventDefault(); } },true);          // (the tap that ends a drag is not a tap at the side)
+}
+function pagedWatch(fd){                                                                           // what the reader does in the page: a finger, keys, the wheel, the size of the window, the letters that come late (the taps are in the frame code)
   const {w,d}=fd; let wheelAt=0, wheelSeen=0, resizeTimer=0, lateTimer=0;
   const late=()=>{ clearTimeout(lateTimer); lateTimer=setTimeout(()=>{ if(PGD.on && frameDoc() && frameDoc().d===d) pagedApply(frameDoc()); },150); };      // (letters or pictures that come late move the text: the pages are counted again, the place is kept)
   if(d.fonts && d.fonts.ready) d.fonts.ready.then(late);
   d.addEventListener('load',e=>{ if(e.target && e.target.tagName==='IMG') late(); },true);
+  pagedTouch(fd);
   w.addEventListener('keydown',e=>{
     if(!PGD.on || e.altKey || e.ctrlKey || e.metaKey) return; const k=e.key;
     if(k==='ArrowRight' || k==='PageDown' || (k===' ' && !e.shiftKey)){ e.preventDefault(); pagedStep(1); }
     else if(k==='ArrowLeft' || k==='PageUp' || (k===' ' && e.shiftKey)){ e.preventDefault(); pagedStep(-1); }
-    else if(k==='Home'){ e.preventDefault(); pagedTo(fd,0); } else if(k==='End'){ e.preventDefault(); pagedTo(fd,PGD.pages-1); }
+    else if(k==='Home'){ e.preventDefault(); pagedTo(fd,0,true); } else if(k==='End'){ e.preventDefault(); pagedTo(fd,PGD.pages-1,true); }
   });
   d.addEventListener('wheel',e=>{ if(!PGD.on || e.ctrlKey) return; e.preventDefault(); const now=Date.now(), idle=now-wheelSeen>160; wheelSeen=now;       // (one turn for one push: the long tail of a trackpad is the same push)
     if(!idle || now-wheelAt<250 || Math.abs(e.deltaY)+Math.abs(e.deltaX)<4) return; wheelAt=now; pagedStep((Math.abs(e.deltaY)>=Math.abs(e.deltaX)?e.deltaY:e.deltaX)>0?1:-1); },{passive:false});
   w.addEventListener('resize',()=>{ if(!PGD.on) return; clearTimeout(resizeTimer); resizeTimer=setTimeout(()=>{ if(frameDoc() && PGD.on) pagedApply(frameDoc()); },120); });
 }
+/* ---- a picked book: the bar at the foot (size of the letters, where one is), the arrows of a PC, the colour of the eyes ---- */
+function rbSync(){                                                                                 // the bar at the foot of a book: the page (or how far, when scrolled) and the chapters that can be gone to
+  const out=$('#rbInfo'); if(!out) return; const fd=frameDoc();
+  out.textContent = !fd ? '' : PGD.on ? `${PGD.page+1} / ${PGD.pages}` : Math.round(scrollPct(fd))+'%';
+  $('#rbPrev').disabled=$('#readerPrev').disabled; $('#rbNext').disabled=$('#readerNext').disabled;
+}
+$('#rBook').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  if(b.id==='rbFsM' || b.id==='rbFsP'){ state.rs.fs=Math.max(70,Math.min(200,state.rs.fs+(b.id==='rbFsP'?10:-10))); saveReader(); toast(t('fsNow',state.rs.fs)); }
+  else if(b.id==='rbPrev'){ closePanels(); step(-1); } else if(b.id==='rbNext'){ closePanels(); step(1); }
+});
+$('#rEdgeL').addEventListener('click',()=>pagedStep(-1));
+$('#rEdgeR').addEventListener('click',()=>pagedStep(1));
+const EYE=['follow','sepia','green','dark'];                                                       // the colours of the eye-care button, one after the other
+function eyeSync(){ const k=EYE.includes(state.rs.th)?state.rs.th:'follow', b=$('#readerEye'); b.dataset.th=k; b.title=t('eyeTip',t('eye_'+k)); b.setAttribute('aria-label',b.title); }
+$('#readerEye').addEventListener('click',()=>{ const k=EYE.includes(state.rs.th)?state.rs.th:'follow'; state.rs.th=EYE[(EYE.indexOf(k)+1)%EYE.length]; saveReader(); toast(t('eyeNow',t('eye_'+state.rs.th))); });
 /* ================= touch gestures: a swipe to the left / right ================= */
 const SW_MIN=64, SW_RATIO=1.8, SW_MS=700, SW_EDGE=20;
 function hScrollable(el, win){                                                                   // something that scrolls sideways (a wide table, a code block) keeps its swipes
@@ -4164,36 +4222,39 @@ $('#frame').addEventListener('load',()=>{
   const id=state.readingId; if(!id) return;
   try{
     const fd=frameDoc(); if(!fd) return; const {w,d}=fd;
-    PGD.on=false;                                                                                        // (a new document: nothing is paged yet)
+    const it00=itemById(id), bk00=it00 && it00.bookOf && it00.bk ? it00 : null, bp00=bk00 ? bookPlace(bk00.bookOf) : null;
+    const saved=bk00 ? (bp00.i===bk00.bk.c ? bp00.pct : 0) : (state.progress[id]||{}).pct||0;            // (where the reader was: read before anything is laid out, which would write the place of the first page over it)
+    PGD.on=false; PGD.hold=true; $('#reader').classList.remove('pgd');                                   // (a new document: nothing is paged yet, and the place is not saved until the reader is put back where he was)
     applyReader(); buildToc(); if(!$('#rTocPanel').hidden) renderTocPanel();
     const reveal = state.ftOpen && state.ftOpen.id===id ? state.ftOpen : null; state.ftOpen=null;
     if(reveal) setTimeout(()=>ftReveal(fd,reveal),80);
     const it0=itemById(id), bk=it0 && it0.bookOf && it0.bk ? it0 : null;                                  // a chapter of a book: its own place, its own ways on
-    watchSwipe(d,bk ? dir=>{ if(PGD.on && !panelsOpen()) pagedStep(dir==='left'?1:-1); } : readerSwipe); d.documentElement.style.overscrollBehaviorX='none'; d.documentElement.style.touchAction='pan-y pinch-zoom'; if(!d.__rich){ d.__rich=1; d.addEventListener('click',richLinkClick); }
+    watchSwipe(d,bk ? ()=>{} : readerSwipe); d.documentElement.style.overscrollBehaviorX='none'; d.documentElement.style.touchAction='pan-y pinch-zoom'; if(!d.__rich){ d.__rich=1; d.addEventListener('click',richLinkClick); }
     if(bk){
       d.addEventListener('click',e=>{ const a=e.target.closest && e.target.closest('a[data-bk]'); if(a){ e.preventDefault(); e.stopPropagation(); step(a.dataset.bk==='next'?1:-1); } },true);          // the buttons at the end of a chapter
-      d.addEventListener('click',e=>{                                                                    // a tap: at the sides (pages) the page turns; in the middle (a phone) the bars come or go (a swipe no longer changes the chapter in a scroll: it is easy to do by mistake)
-        if(panelsOpen() || (e.target.closest && e.target.closest('a,button,input,select,textarea'))) return;
-        const sel=w.getSelection && w.getSelection(); if(sel && String(sel).length) return;
-        const x=e.clientX/w.innerWidth, coarse=matchMedia('(pointer:coarse)').matches, mid=()=>readerFocus(!document.body.classList.contains('reader-focus'));
-        if(PGD.on){ if(x<.3) pagedStep(-1); else if(x>.7) pagedStep(1); else if(coarse) mid(); }
-        else if(coarse && x>.28 && x<.72) mid();
-      });
       pagedWatch(fd);
       setTimeout(()=>{ if(state.readingId===id) bookPrefetch(bk); },20000);
     }
+    if(state.rkind==='doc') d.addEventListener('click',e=>{                                           // a tap: at the sides (a book in pages) the page turns; in the middle (a phone) the bars come or go
+      if(panelsOpen() || (e.target.closest && e.target.closest('a,button,input,select,textarea'))) return;
+      const sel=w.getSelection && w.getSelection(); if(sel && String(sel).length) return;
+      const x=e.clientX/w.innerWidth, coarse=matchMedia('(pointer:coarse)').matches, mid=()=>readerFocus(!document.body.classList.contains('reader-focus'));
+      if(!coarse) return;                                                                            // (a PC turns the page with the arrows, the keys and the wheel: a click on the text does nothing)
+      if(PGD.on){ if(x<.3) pagedStep(-1); else if(x>.7) pagedStep(1); else mid(); }
+      else if(x>.28 && x<.72) mid();
+    });
     if(!bk && matchMedia('(pointer:coarse)').matches && state.visible.length>1 && !LS.get('swipeHint',0)){ LS.set('swipeHint',1); toast(t('swipeHint')); }
-    const bp=bk ? bookPlace(bk.bookOf) : null, saved=bk ? (bp.i===bk.bk.c ? bp.pct : 0) : (state.progress[id]||{}).pct||0;
     const toLast=state.pgJump==='last'; state.pgJump='';                                                // (back from the first page of a chapter: the end of the one before)
+    PGD.hold=false;
     if(PGD.on) pagedGoPct(fd, toLast ? 100 : saved, toLast);
     else if(!reveal && saved>3 && saved<95) setTimeout(()=>{ const max=d.documentElement.scrollHeight-w.innerHeight; w.scrollTo(0,max*saved/100); },120);
     let tick=false;
     w.addEventListener('scroll',()=>{ if(PGD.on || tick) return; tick=true; requestAnimationFrame(()=>{ tick=false;
       const pct=scrollPct(fd);
-      $('#readerProg').style.width=pct+'%';
+      $('#readerProg').style.width=pct+'%'; rbSync();
       if(bk){ bookSave(bk.bookOf,bk.bk.c,pct); if(pct>=60) bookPrefetch(bk); } else if(!id.startsWith('tmp:')){ state.progress[id]={pct,at:Date.now()}; LS.set('progress',state.progress); }
       const cur=currentHeading(fd); if((cur?cur.id:'')!==state.tocCur){ state.tocCur=cur?cur.id:''; if(!$('#rTocPanel').hidden && tocTab==='toc') renderTocPanel(); }
-      if(!$('#rSetPanel').hidden || !$('#rSavePanel').hidden) closePopovers(); }); },{passive:true});
+      if(!$('#rSavePanel').hidden) closePopovers(); }); },{passive:true});
     w.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if(document.body.classList.contains('reader-focus')) readerFocus(false); else if(panelsOpen()) closePanels(); else closeReader(); } });
   }catch(e){ /* cross-origin or PDF viewer: progress unavailable */ }
 });
@@ -4254,7 +4315,7 @@ async function trLines(texts){                                                  
 const trTocLine = text => { const m = text && TR.mode!=='orig' ? trMem.get(trTarget()+'\n'+text) : ''; return m ? `<em class="trl" lang="${trTarget()==='zh'?'zh-CN':'en'}">${esc(m)}</em>` : ''; };       // the translation of a title, under it, in the contents
 function trLabel(){
   const b=$('#readerTrans'), l=$('#readerTransLbl'), txt=TR.busy ? t('trBusy',TR.done,TR.total) : TR.mode==='off' ? t('trBtn') : t({both:'trBoth',only:'trOnly',orig:'trOrig'}[TR.mode]);
-  l.textContent=txt; b.classList.toggle('on',TR.mode!=='off'); $('#rSetTrans').textContent = TR.busy ? txt : TR.mode==='off' ? t('trGo') : txt+' · '+t('trCycle'); const tip=TR.mode==='off' ? t('trTip') : t('trCycle'); b.title=tip; b.setAttribute('aria-label',tip+' · '+txt); b.setAttribute('aria-busy',String(TR.busy));
+  l.textContent=txt; b.classList.toggle('on',TR.mode!=='off'); const tip=TR.mode==='off' ? t('trTip') : t('trCycle'); b.title=tip; b.setAttribute('aria-label',tip+' · '+txt); b.setAttribute('aria-busy',String(TR.busy));
 }
 function trSetMode(d,mode){ TR.mode=mode; d.documentElement.classList.toggle('zt-only',mode==='only'); d.documentElement.classList.toggle('zt-orig',mode==='orig'); trLabel(); if(PGD.on){ const fd=frameDoc(); if(fd && fd.d===d) pagedApply(fd); } }          // (the translation changes how much there is on a page)
 function trPut(d,el,zh){                                                                            // the paragraph keeps its own words in a span; the translation is a block after it
@@ -4270,7 +4331,7 @@ function trConsent(){                                                           
 async function trRun(fd, scope){                                                                   // scope: 'all' (the page, as far as TR_MAX goes) or 'screen' (what is on the screen, a little before and one more screen after)
   const d=fd.d, to=trTarget(), todo=trBlocks(d).filter(el=>!el.querySelector(':scope > .zt-tr'));    // (what has its translation under it already is not asked for again)
   let blocks=todo;
-  if(scope==='screen'){ const H=d.defaultView.innerHeight; blocks=todo.filter(el=>{ const r=el.getBoundingClientRect(); return r.bottom>-H*0.5 && r.top<H*2; }); }
+  if(scope==='screen'){ const H=d.defaultView.innerHeight, W=d.defaultView.innerWidth; blocks=todo.filter(el=>{ const r=el.getBoundingClientRect(); return PGD.on ? r.right>-W*0.5 && r.left<W*2 : r.bottom>-H*0.5 && r.top<H*2; }); }          // (in pages: this page, a little of the one before and the next one)
   if(!blocks.length) return toast(t(trBlocks(d).length ? 'trAllDone' : 'trNone'));
   const all=blocks.map(trText); let total=0, n=0;
   for(; n<all.length; n++){ total+=all[n].length; if(total>TR_MAX && n>0) break; }
@@ -4306,8 +4367,8 @@ async function trRun(fd, scope){                                                
 async function trOnLoad(){                                                                          // a new page in the reader: nothing is translated yet; is the button wanted?
   TR.seq++; TR.mode='off'; TR.busy=false; trLabel();
   const ok=await trAvailable(), fd=frameDoc(), can=!!(ok && fd && !state.rpdf && state.rkind==='doc' && trBlocks(fd.d).length>0);
-  $('#readerTrans').hidden=!can; $('#rowTrans').hidden=$('#readerTrans').hidden;
-  $('#trFab').hidden=!(can && bookOfReading());                                                       // (a phone, a chapter of a book: a small round button at the corner of the page)
+  $('#readerTrans').hidden=!can;
+  $('#trFab').hidden=!can;                                                                            // (a phone: a small round button at the corner of the page)
 }
 $('#frame').addEventListener('load',trOnLoad);
 $('#trFab').innerHTML=$('#readerTrans').querySelector('svg').outerHTML;
@@ -4333,7 +4394,7 @@ $('#trMenu').addEventListener('click',e=>{
   if(k==='toc') return trToc(true);
   trStart(k);
 });
-$('#trFab').addEventListener('click',()=>togglePanel('tr'));
+$('#trFab').addEventListener('click',()=>trClick());                                                  // (a book: the menu; any other text: the whole page, then the cycle of views, as the button of a PC)
 async function trClick(){
   if(TR.busy) return;
   const fd=frameDoc(); if(!fd || state.rpdf || state.rkind!=='doc') return toast(t('trNone'));
@@ -4352,14 +4413,12 @@ $('#bookTrBtn').addEventListener('click',async()=>{
   const did=$('#bookDlg').dataset.did, d=state.dirData && state.dirData.items.find(x=>x.id===did); if(!d || !await trConsent()) return;
   try{ const out=await trLines([d.title,d.summary||'']); const tr=$('#bookTr'); tr.textContent=out.filter(Boolean).join('\n'); tr.hidden=!tr.textContent; if(tr.hidden) toast(t('trSame')); else $('#bookTrBtn').hidden=true; }catch(e){ toast(t('trFailed',e.message)); }
 });
-$('#rSetTrans').addEventListener('click',()=>{ closePanels(); trClick(); });
 $('#readerBack').addEventListener('click',()=>closeReader());
 $('#readerPrev').addEventListener('click',()=>step(-1));
 $('#readerNext').addEventListener('click',()=>step(1));
 $('#readerMobilePrev').addEventListener('click',()=>step(-1));
 $('#readerMobileNext').addEventListener('click',()=>step(1));
 $('#readerOrig').addEventListener('click',()=>{ const it=itemById(state.readingId); if(!it || !convAvail(it)) return; const m={...convPref()}; if(convReady(it)) m[it.id]='orig'; else delete m[it.id]; LS.set('convView',m); openReader(it.id,false); });
-$('#readerStar').addEventListener('click',()=>state.readingId && toggleStar(state.readingId));
 window.addEventListener('popstate',e=>{
   if(NE.open){ neClose(true); return; }
   if(e.state && e.state.read){ openReader(e.state.read,false); return; }
@@ -4927,7 +4986,7 @@ function readerFocus(on){                                                       
   if(on){ if(LS.get('focusAuto',1)) focusEnsure(); $('#rfToggle').focus({preventScroll:true}); }                   // (the sound starts by itself, unless the reader paused it last time)
   else $('#readerFocus').focus({preventScroll:true});
 }
-['#readerFocus','#rSetFocus'].forEach(q=>$(q).addEventListener('click',()=>readerFocus(true)));
+$('#readerFocus').addEventListener('click',()=>readerFocus(true));
 $('#rfPill').addEventListener('click',e=>{
   const b=e.target.closest('[data-rf]'); if(!b) return; const k=b.dataset.rf;
   if(k==='toggle'){ if(plPlaying()){ plToggle(); LS.set('focusAuto',0); } else { LS.set('focusAuto',1); focusEnsure(); } }                // (what the reader chose last is what happens next time)
@@ -5946,7 +6005,7 @@ state.ls={scene:String(LS.get('lsScene','')||'')};
 state.lp={idx:null, idxAt:0, busy:false, err:'', data:new Map(), pending:new Map(), g:String(LS.get('lpG','daily')||'daily'), mode:'music', g_music:String(LS.get('lpG_music','daily')||'daily'), g_podcast:String(LS.get('lpG_podcast','pod-hot')||'pod-hot'), show:'', shown:30, more:false, pods:null, podsKey:'', io:null,
   sort:(k=>['rank','new','dur','title','artist'].includes(k)?k:'rank')(LS.get('lpSort','rank'))};
 state.dListen=false;                    // today's listening: what the service said, when it was asked, the scene that is shown
-state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), view:LS.get('hotView','mix')==='boards'?'boards':'mix', mixBusy:false, mixRows:[], mixRun:0, region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
+state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), view:LS.get('hotView','boards')==='events'?'events':'boards', period:LS.get('hotPeriod','day')==='week'?'week':'day', events:[], eventsAt:0, eventsBusy:false, eventsErr:'', eventsRun:0, region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
 const PUBLIC_ROUTES={discover:'/discover/',hot:'/hot/',listen:'/listen/',books:'/picks/books/',articles:'/picks/articles/',watch:'/watch/'};
 const publicRouteFromPath=()=>Object.keys(PUBLIC_ROUTES).find(k=>PUBLIC_ROUTES[k]===location.pathname)||'';
 const publicLabel=k=>({discover:['发现','Discover'],hot:['热榜','Trending'],listen:['今日听什么','Listen today'],books:['精选图书','Book picks'],articles:['精选文章','Article picks'],watch:['看什么','What to watch']}[k]||[])[state.lang==='zh'?0:1]||'';
@@ -6842,67 +6901,25 @@ function richLinkClick(e){                                                      
 
 /* ---- the hot lists (热榜): the service (hotapi.py) says which columns and platforms it has; a platform's list is asked when it is shown, kept 3 minutes here */
 const HOT_TTL=180000;
-const HOT_MIX_PER_COLUMN=2, HOT_MIX_LIMIT=30, HOT_MIX_ITEMS=18;
+const HOT_EVENTS_TTL=300000;
 const HOT_UI_COPY={
-  zh:{mix:'今日精选',boards:n=>`浏览平台榜单${n?` · ${n}`:''}`,hero:'今天有什么值得看',intro:'把各平台当前榜单放在一起看。先看榜内名次和更新时间，并分散来源；不同平台的热度数值不直接比较。',featured:'今日焦点',more:'继续发现',loading:'正在汇总各平台榜单……',partial:'部分榜单暂时读不到，已先展示可用内容。',retry:'重试汇总',empty:'暂时没有可展示的热榜内容。',rank:n=>`榜内第 ${n} 名`,newest:'最新',siteRead:'可在站内打开',openSite:'打开原站'},
-  en:{mix:'Today’s picks',boards:n=>`Browse platform charts${n?` · ${n}`:''}`,hero:'What’s worth a look today',intro:'A mixed view of current platform charts, ordered by each chart’s own rank and freshness with source variety. Heat numbers are not compared across platforms.',featured:'Today’s highlights',more:'More to discover',loading:'Gathering charts…',partial:'Some charts are unavailable; showing what loaded.',retry:'Retry charts',empty:'No hot-list items are available right now.',rank:n=>`#${n} on chart`,newest:'Latest',siteRead:'Read here',openSite:'Open source'}
+  zh:{boards:n=>`平台榜单${n?` · ${n}`:''}`,events:'热点追踪',focus:'今日精选排名',focusSub:'今日焦点 · 从持续更新的多源事件中优先呈现',focusMore:'完整热点追踪 ›',hero:'按兴趣浏览平台热榜',intro:'榜单按领域整理，保留各平台原始排名；热点事件持续汇总多方报道。',day:'今日榜',week:'近 7 天',weekPending:'正在积累真实榜单快照；当前先展示已采集数据，排名会随记录增加逐步稳定。',weekEmpty:'近 7 天暂时没有可展示的榜单记录。',eventLoading:'正在汇总持续更新的热点事件……',eventErr:'热点追踪暂时不可用，请稍后重试。',eventEmpty:'暂时没有正在持续更新的热点事件。',eventRetry:'重试热点追踪',eventSources:n=>`${n} 个来源`,eventUpdated:m=>`最后更新 ${m}`,trendUp:'热度上升',trendDown:'热度回落',trendStable:'持续更新',rank:n=>`榜内第 ${n} 名`,newest:'最新',siteRead:'可在站内打开',openSite:'打开原站'},
+  en:{boards:n=>`Platform charts${n?` · ${n}`:''}`,events:'Live topics',focus:'Today’s picks ranking',focusSub:'Today’s focus · selected from developing stories across sources',focusMore:'Full live tracking ›',hero:'Browse charts by interest',intro:'Charts are grouped by topic and keep each platform’s original ranking. Live topics follow developing stories across sources.',day:'Today',week:'Last 7 days',weekPending:'We are collecting real chart snapshots. Showing the data available so far; rankings will stabilize as more days are recorded.',weekEmpty:'There are no chart entries to show for the last 7 days yet.',eventLoading:'Gathering developing stories…',eventErr:'Live topic tracking is temporarily unavailable.',eventEmpty:'No developing stories are available right now.',eventRetry:'Retry topic tracking',eventSources:n=>`${n} sources`,eventUpdated:m=>`Last updated ${m}`,trendUp:'Rising',trendDown:'Cooling',trendStable:'Developing',rank:n=>`#${n} on chart`,newest:'Latest',siteRead:'Read here',openSite:'Open source'}
 };
 const hotUi=(k,...args)=>{ const v=(HOT_UI_COPY[state.lang==='en'?'en':'zh']||HOT_UI_COPY.zh)[k]; return typeof v==='function'?v(...args):v||k; };
 const hotName = o => state.lang==='en' ? (o.name_en||o.name) : o.name;
 const hotShown = () => dirOn() && state.dHot && dirIsHome() && !!hotBase();
-const hotKey = p => p.regions ? p.id+'|'+state.hot.region : p.id;                                  // a list of a country is kept for each country that was asked for
-const hotFeed = (p,region) => hotBase()+'/api/hot?p='+encodeURIComponent(p.id)+(p.regions && region ? '&region='+encodeURIComponent(region) : '');
+const hotKey = p => p.id+'|'+state.hot.period+(p.regions?'|'+state.hot.region:'');                    // cache each period and country independently
+const hotFeed = (p,region,period='day') => hotBase()+'/api/hot?p='+encodeURIComponent(p.id)+(p.regions && region ? '&region='+encodeURIComponent(region) : '')+(period==='week'?'&period=week':'');
 const hotCountry = c => { try{ return new Intl.DisplayNames([state.lang==='zh'?'zh-Hans':'en'],{type:'region'}).of(c) || c; }catch(e){ return c; } };
 const paintHot = () => { $('#dirReco').innerHTML=hotHTML(); };
+const hotActiveColumns = () => { const h=state.hot, cols=h.idx&&Array.isArray(h.idx.columns)?h.idx.columns:[], plats=h.idx&&Array.isArray(h.idx.platforms)?h.idx.platforms:[]; return cols.filter(c=>c.enabled!==false&&plats.some(p=>p.col===c.id)); };
 function hotCur(){                                                                                 // the column and the platform that are chosen (the first ones when what was remembered is gone)
-  const h=state.hot, idx=h.idx; if(!idx || !idx.columns.length) return null;
+  const h=state.hot, idx=h.idx, columns=hotActiveColumns(); if(!idx || !columns.length) return null;
   if(h.want){ const w=idx.platforms.find(x=>x.id===h.want); h.want=''; if(w){ h.sel.c=w.col; if(!h.sel.p || typeof h.sel.p!=='object') h.sel.p={}; h.sel.p[w.col]=w.id; hotSave(); } }          // (asked for by the way from a platform's tab)
-  const col=idx.columns.find(c=>c.id===h.sel.c) || idx.columns[0], plats=idx.platforms.filter(p=>p.col===col.id); if(!plats.length) return null;
+  const col=columns.find(c=>c.id===h.sel.c) || columns[0], plats=idx.platforms.filter(p=>p.col===col.id); if(!plats.length) return null;
   const want=h.sel.p && typeof h.sel.p==='object' ? h.sel.p[col.id] : '';
   return {col, plats, cur:plats.find(p=>p.id===want) || plats[0]};
-}
-function hotMixSources(){
-  const idx=state.hot.idx; if(!idx || !Array.isArray(idx.platforms)) return [];
-  const out=[];
-  (idx.columns||[]).forEach(c=>idx.platforms.filter(p=>p.col===c.id).slice(0,HOT_MIX_PER_COLUMN).forEach(p=>out.push(p)));
-  return out.length ? out : idx.platforms.slice(0,HOT_MIX_PER_COLUMN*3);
-}
-function hotMixBuild(){
-  const h=state.hot, sources=hotMixSources(), rows=[], seenUrl=new Set(), seenTitle=new Set(), cols=h.idx&&h.idx.columns||[];
-  sources.forEach((p,sourceIndex)=>{
-    const d=h.data.get(hotKey(p)); if(!d || d.state!=='ok' || !Array.isArray(d.rows)) return;
-    const n=Math.max(1,d.rows.length), listAge=d.at?Math.max(0,(Date.now()/1000-d.at)/3600):null;
-    d.rows.forEach((r,i)=>{
-      const title=String(r&&r.title||'').trim(), url=httpUrl(r&&r.url); if(!title || !url) return;
-      const displayTitle=state.lang==='zh' ? String(r.title_zh||title).trim() : title;
-      const titleKey=displayTitle.toLowerCase().normalize('NFKC').replace(/[\s·•\-—_…，。；：、!?！？'"“”‘’()（）\[\]{}<>《》「」]+/g,'');
-      const ukey=urlKey(url); if((ukey && seenUrl.has(ukey)) || (titleKey && seenTitle.has(titleKey))) return;
-      if(ukey) seenUrl.add(ukey); if(titleKey) seenTitle.add(titleKey);
-      const dt=Date.parse(String(r.date||'')), itemAge=Number.isFinite(dt)?Math.max(0,(Date.now()-dt)/3600000):null;
-      const age=itemAge===null?listAge:itemAge, fresh=age===null ? .45 : 1/(1+age/36);
-      const rankScore=p.ranked===false ? .45 : Math.max(0,1-i/n), languageScore=(p.lang===state.lang ? .09 : 0)+(state.lang==='zh'&&r.title_zh ? .06 : 0);
-      const priority=1-sourceIndex/Math.max(1,sources.length), score=rankScore*.65+fresh*.24+languageScore+priority*.04;
-      rows.push({row:r,platform:p,col:cols.find(c=>c.id===p.col)||null,rank:i+1,displayTitle,sourceAt:d.at||0,score,sourceIndex});
-    });
-  });
-  rows.sort((a,b)=>b.score-a.score || a.sourceIndex-b.sourceIndex || a.rank-b.rank);
-  const picked=[], deferred=[], sourceCounts=new Map(), colCounts=new Map();
-  rows.forEach(x=>{
-    const sc=sourceCounts.get(x.platform.id)||0, cc=colCounts.get(x.platform.col)||0, early=picked.length<6, sourceCap=early?1:3, columnCap=early?2:7;
-    if(sc<sourceCap && cc<columnCap){ picked.push(x); sourceCounts.set(x.platform.id,sc+1); colCounts.set(x.platform.col,cc+1); }
-    else deferred.push(x);
-  });
-  return picked.concat(deferred).slice(0,HOT_MIX_LIMIT);
-}
-async function hotMixEnsure(force){
-  const h=state.hot; if(!h.idx || h.mixBusy || h.view!=='mix') return;
-  const sources=hotMixSources(), todo=sources.filter(p=>{ const d=h.data.get(hotKey(p)); return force || !d || (d.state==='ok' && Date.now()-d.t>HOT_TTL); });
-  if(!todo.length){ h.mixRows=hotMixBuild(); return; }
-  h.mixBusy=true; h.mixRows=hotMixBuild(); const run=++h.mixRun; let next=0;
-  const worker=async()=>{ while(next<todo.length){ const p=todo[next++]; await hotLoad(p,false,HOT_MIX_ITEMS); } };
-  await Promise.all(Array.from({length:Math.min(3,todo.length)},worker));
-  if(run!==h.mixRun) return;
-  h.mixBusy=false; h.mixRows=hotMixBuild(); if(hotShown()) paintHot();
 }
 async function hotIndex(force){
   const base=hotBase(), h=state.hot; if(!base || h.busy || (h.idx && !force)) return;
@@ -6920,16 +6937,27 @@ async function hotLoad(p, fresh, limit){
   h.data.set(key,{...(old||{}), state:'load'}); if(hotShown()) paintHot();
   try{
     const n=Math.max(1,Math.min(50,Number(limit)||50));
-    const r=await fetch(base+'/api/hot?p='+encodeURIComponent(p.id)+'&format=json&n='+n+(state.lang==='zh' && p.lang==='en' ? '&tr=zh' : '')+(p.regions ? '&region='+encodeURIComponent(h.region) : ''),{credentials:'omit', cache:fresh?'no-cache':'default'}), d=await r.json().catch(()=>null);
+    const r=await fetch(base+'/api/hot?p='+encodeURIComponent(p.id)+'&format=json&n='+n+'&period='+encodeURIComponent(h.period)+(state.lang==='zh' && p.lang==='en' ? '&tr=zh' : '')+(p.regions ? '&region='+encodeURIComponent(h.region) : ''),{credentials:'omit', cache:fresh?'no-cache':'default'}), d=await r.json().catch(()=>null);
     if(!d || !d.ok || !Array.isArray(d.items)){ const m=d && (state.lang==='zh' ? d.message : d.message_en); throw Object.assign(new Error(m || 'HTTP '+r.status), {svc:!!m}); }
-    h.data.set(key,{state:'ok', rows:d.items, t:Date.now(), at:+d.updated||0, region:String(d.region||'')});
+    h.data.set(key,{state:'ok', rows:d.items, t:Date.now(), at:+d.updated||0, region:String(d.region||''), history:d.history||null, period:d.period||h.period});
   }catch(e){ h.data.set(key,{state:'err', rows:old && old.rows || [], t:Date.now(), msg:e.svc ? e.message : t('hotListErr',String(e.message||e))}); }       // (the service’s own sentence says what is wrong already)
-  if(h.view==='mix') h.mixRows=hotMixBuild();
+  if(hotShown()) paintHot();
+}
+async function hotEventsEnsure(force){
+  const h=state.hot, base=hotBase(); if(!base || h.eventsBusy || (!force && h.eventsAt && Date.now()-h.eventsAt<HOT_EVENTS_TTL)) return;
+  h.eventsBusy=true; h.eventsErr=''; const run=++h.eventsRun; if(hotShown()) paintHot();
+  try{
+    const r=await fetch(base+'/api/hot/events?lang='+encodeURIComponent(state.lang==='en'?'en':'zh')+'&limit=24',{credentials:'omit',cache:force?'no-cache':'default'}), d=await r.json().catch(()=>null);
+    if(!d || !d.ok || !Array.isArray(d.events)) throw new Error('events');
+    if(run===h.eventsRun){ h.events=d.events; h.eventsAt=Date.now(); h.eventsUpdated=+d.updated||0; }
+  }catch(e){ if(run===h.eventsRun) h.eventsErr=hotUi('eventErr'); }
+  if(run===h.eventsRun) h.eventsBusy=false;
   if(hotShown()) paintHot();
 }
 function hotEnsure(){                                                                              // the list that is shown is asked for, once it is missing or old
   const h=state.hot; if(!h.idx){ if(!h.err) hotIndex(); return; }                                  // (a service that failed is asked again by the retry button, not by every repaint)
-  if(h.view==='mix'){ hotMixEnsure(false); return; }
+  if(h.view==='events'){ hotEventsEnsure(false); return; }
+  hotEventsEnsure(false);                                                                         // power the compact today-picks strip while browsing charts
   const s=hotCur(); if(!s) return; const d=h.data.get(hotKey(s.cur));
   if(!d || (d.state==='ok' && Date.now()-d.t>HOT_TTL)) hotLoad(s.cur);
 }
@@ -6947,53 +6975,66 @@ function hotBoardsHTML(){
   const h=state.hot, s=hotCur();
   if(!s) return `<div class="hot-list"><p class="hot-state">${esc(h.err || t('hotLoading'))}${h.err?`<br><button class="btn" type="button" data-hot-retry>${esc(t('dirRetry'))}</button>`:''}</p></div>`;
   const cur=s.cur, d=h.data.get(hotKey(cur)), ranked=cur.ranked!==false, canSub=!!feedApi(), where=cur.regions ? (h.region!=='auto' ? h.region : (d && d.region) || '') : '';          // (where: the country of the list that is shown, once it is known)
-  const subbed=canSub && (!cur.regions || !!where) && subCols().some(c=>urlKey(c.feed.url)===urlKey(hotFeed(cur,where)));
+  const subUrl=hotFeed(cur,where,h.period), subbed=canSub && (!cur.regions || !!where) && subCols().some(c=>urlKey(c.feed.url)===urlKey(subUrl));
   const pick = cur.regions ? `<select class="hot-region" data-hot-region aria-label="${esc(t('hotRegion'))}" title="${esc(t('hotRegion'))}"><option value="auto"${h.region==='auto'?' selected':''}>${esc(t('hotRegionAuto', h.region==='auto' && where ? hotCountry(where) : ''))}</option>${cur.regions.map(c=>[c,hotCountry(c)]).sort((a,b)=>a[1].localeCompare(b[1],state.lang==='zh'?'zh-Hans-CN':'en')).map(([c,n])=>`<option value="${esc(c)}"${h.region===c?' selected':''}>${esc(n)}</option>`).join('')}</select>` : '';
   let body;
   if(!d || (d.state==='load' && !(d.rows||[]).length)) body=`<p class="hot-state">${esc(t('hotLoading'))}</p>`;
   else if(d.state==='err' && !(d.rows||[]).length) body=`<p class="hot-state">${esc(d.msg)}<br><button class="btn" type="button" data-hot-refresh>${esc(t('dirRetry'))}</button></p>`;
+  else if(h.period==='week' && !(d.history&&d.history.complete)) body=d.rows.length?`<div><p class="hot-history-note">${esc(hotUi('weekPending'))}${d.history&&d.history.snapshots?`<br>${esc(String(d.history.snapshots))} / ${esc(String(d.history.required_days||7))}`:''}</p><ol class="hot-rows">${d.rows.map((r,i)=>hotRowHTML(r,i,ranked)).join('')}</ol></div>`:`<p class="hot-history-note">${esc(hotUi(d.history&&d.history.available?'weekPending':'weekEmpty'))}${d.history&&d.history.snapshots?`<br>${esc(String(d.history.snapshots))} / ${esc(String(d.history.required_days||7))}`:''}</p>`;
+  else if(!d.rows.length && h.period==='week') body=`<p class="hot-history-note">${esc(hotUi('weekEmpty'))}</p>`;
   else if(!d.rows.length) body=`<p class="hot-state">${esc(t('hotEmpty'))}</p>`;
   else body=`<ol class="hot-rows">${d.rows.map((r,i)=>hotRowHTML(r,i,ranked)).join('')}</ol>`;
-  const meta=[cur.via ? t('hotVia',cur.via) : '', d && d.at ? t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))) : '', ranked ? '' : t('hotNewest')].filter(Boolean).join(' · ');
-  return `<div class="hot"><div class="hot-cols" role="tablist" aria-label="${esc(t('hotTitle'))}">${h.idx.columns.map(c=>`<button class="hot-col" type="button" role="tab" aria-selected="${c.id===s.col.id}" data-hot-c="${esc(c.id)}">${esc(hotName(c))}</button>`).join('')}</div>`
+  const meta=[cur.via ? t('hotVia',cur.via) : '', d && d.at ? t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))) : '', h.period==='week'&&d&&d.history?`${d.history.snapshots||0} / ${d.history.required_days||7}`:'', ranked ? '' : t('hotNewest')].filter(Boolean).join(' · '), columns=hotActiveColumns();
+  return `<div class="hot"><label class="sr-only" for="hotCatSelect">${esc(hotUi('boards',columns.length))}</label><select id="hotCatSelect" class="hot-cat-select" data-hot-c-select aria-label="${esc(hotUi('boards',columns.length))}">${columns.map(c=>`<option value="${esc(c.id)}"${c.id===s.col.id?' selected':''}>${esc(hotName(c))}</option>`).join('')}</select><div class="hot-cols" role="tablist" aria-label="${esc(t('hotTitle'))}">${columns.map(c=>`<button class="hot-col" type="button" role="tab" aria-selected="${c.id===s.col.id}" data-hot-c="${esc(c.id)}">${esc(hotName(c))}</button>`).join('')}</div>`
     + `<div class="hot-main"><nav class="hot-plats" role="tablist" aria-label="${esc(hotName(s.col))}">${s.plats.map(p=>`<button class="hot-plat" type="button" role="tab" aria-selected="${p.id===cur.id}" data-hot-p="${esc(p.id)}">${esc(hotName(p))}</button>`).join('')}</nav>`
     + `<section class="hot-list" aria-live="polite" aria-busy="${!!(d && d.state==='load')}"><header class="hot-head"><h2>${esc(hotName(cur))}${where ? ' · '+esc(hotCountry(where)) : ''}</h2><span class="hot-meta">${esc(meta)}</span><span class="hot-acts">`
+    + `<span class="hot-period" role="group" aria-label="${esc(hotUi('boards',columns.length))}"><button type="button" data-hot-period="day" aria-pressed="${h.period==='day'}">${esc(hotUi('day'))}</button><button type="button" data-hot-period="week" aria-pressed="${h.period==='week'}">${esc(hotUi('week'))}</button></span>`
     + (httpUrl(cur.home) ? `<a href="${esc(cur.home)}" target="_blank" rel="nofollow ugc noopener noreferrer">${esc(t('hotHome'))}</a>` : '')
     + pick + `<button class="btn dr-act" type="button" data-hot-refresh>${esc(t('hotRefresh'))}</button>`
     + (canSub ? `<button class="btn dr-act" type="button" data-hot-sub title="${esc(t('hotFollowTip'))}" ${subbed || (cur.regions && !where) ?'disabled':''}>${esc(t(subbed?'hotFollowed':'hotFollow'))}</button>` : '')
     + `</span></header>${body}</section></div></div>`;
 }
-function hotMixCardHTML(x,i,featured){
-  const r=x.row, p=x.platform, url=httpUrl(r.url), title=x.displayTitle, original=state.lang==='zh'&&r.title_zh&&r.title_zh!==r.title?`<p class="hot-mix-note" lang="en">${esc(r.title)}</p>`:'', note=r.note&&String(r.note).trim()!==title?`<p class="hot-mix-note">${esc(r.note)}</p>`:'', source=[hotName(p),x.col?hotName(x.col):''].filter(Boolean).join(' · '), rank=p.ranked===false?hotUi('newest'):hotUi('rank',x.rank), readable=!!(p.read||p.kw||embedOf(url)||RICH_DETAIL.test(url)||String(r.body||'').length>=30), foot=[r.heat||'',r.date||'',readable?hotUi('siteRead'):hotUi('openSite')].filter(Boolean).map(v=>`<span>${esc(v)}</span>`).join('');
-  if(featured) return `<article class="hot-mix-card" data-featured="${i===0}" data-rank="${i+1}"><div class="hot-mix-source"><strong>${esc(source)}</strong><span class="hot-mix-rank">${esc(rank)}</span></div><a class="hot-mix-link" href="${esc(url)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-mix-i="${i}"><strong>${esc(title)}</strong></a>${original}${note}<div class="hot-mix-foot">${foot}</div></article>`;
-  return `<article class="hot-mix-row"><span class="hot-mix-num">${i+1}</span><div class="hot-mix-source"><strong>${esc(source)}</strong><span class="hot-mix-rank">${esc(rank)}</span></div><a class="hot-mix-link" href="${esc(url)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-mix-i="${i}"><strong>${esc(title)}</strong></a><div class="hot-mix-foot">${foot}</div>${original}${note}</article>`;
+function hotEventTime(value){
+  if(value===null||value===undefined||value==='') return '';
+  let ms=Number(value); if(Number.isFinite(ms)&&ms>0) ms=ms<100000000000?ms*1000:ms; else ms=Date.parse(String(value));
+  if(!Number.isFinite(ms)||ms<=0) return '';
+  const mins=Math.max(0,Math.round((Date.now()-ms)/60000));
+  if(state.lang==='en') return mins<1?'just now':mins<60?`${mins} min ago`:`${Math.round(mins/60)} h ago`;
+  return mins<1?'刚刚':mins<60?`${mins} 分钟前`:`${Math.round(mins/60)} 小时前`;
 }
-function hotMixHTML(){
-  const h=state.hot, sources=hotMixSources(), settled=sources.filter(p=>{ const d=h.data.get(hotKey(p)); return d&&d.state!=='load'; }).length, warming=h.mixBusy&&settled<Math.min(3,sources.length), rows=warming?[]:(h.mixRows&&h.mixRows.length?h.mixRows:hotMixBuild()), failed=sources.some(p=>{ const d=h.data.get(hotKey(p)); return d&&d.state==='err'&&!(d.rows||[]).length; });
-  const stamps=sources.map(p=>{ const d=h.data.get(hotKey(p)); return d&&d.at||0; }).filter(Boolean), updated=stamps.length?Math.max(...stamps):0;
-  const age=updated?Math.max(0,Math.round((Date.now()/1000-updated)/60)):null;
-  let content='';
-  if(rows.length){
-    const top=rows.slice(0,3), rest=rows.slice(3,24);
-    content=`<h3 class="hot-mix-title">${esc(hotUi('featured'))}</h3><div class="hot-mix-grid">${top.map((x,i)=>hotMixCardHTML(x,i,true)).join('')}</div>`
-      +(rest.length?`<h3 class="hot-mix-title">${esc(hotUi('more'))}</h3><div class="hot-mix-list">${rest.map((x,i)=>hotMixCardHTML(x,i+3,false)).join('')}</div>`:'');
-  }else if(h.mixBusy||h.busy){ content=`<p class="hot-state" aria-live="polite">${esc(hotUi('loading'))}</p>`; }
-  else if(h.err){ content=`<p class="hot-state">${esc(h.err)}<br><button class="btn hot-mix-retry" type="button" data-hot-retry>${esc(t('dirRetry'))}</button></p>`; }
-  else { content=`<p class="hot-state">${esc(failed||!sources.length?hotUi('empty'):hotUi('loading'))}${failed?`<br><button class="btn hot-mix-retry" type="button" data-hot-mix-retry>${esc(hotUi('retry'))}</button>`:''}</p>`; }
-  const status=h.mixBusy?(rows.length?hotUi('loading'):''):failed&&rows.length?hotUi('partial'):'';
-  return `<section class="hot-mixed" aria-live="polite" aria-busy="${!!h.mixBusy}">${status?`<p class="hot-mix-status">${esc(status)}</p>`:''}${content}</section>`;
+function hotEventCategory(id){ const c=(state.hot.idx&&state.hot.idx.columns||[]).find(x=>x.id===id); return c?hotName(c):String(id||''); }
+function hotEventTrend(value){ const v=typeof value==='object'&&value?String(value.direction||value.label||''):String(value||''); const s=v.toLowerCase(); if(/ris(?:e|ing)|up|increase|上升|升温/.test(s)) return hotUi('trendUp'); if(/fall|down|cool|decrease|回落|降温/.test(s)) return hotUi('trendDown'); return hotUi('trendStable'); }
+function hotEventsHTML(){
+  const h=state.hot;
+  if(h.eventsBusy&&!h.events.length) return `<p class="hot-state" aria-live="polite">${esc(hotUi('eventLoading'))}</p>`;
+  if(h.eventsErr&&!h.events.length) return `<p class="hot-state">${esc(h.eventsErr)}<br><button class="btn" type="button" data-hot-events-retry>${esc(hotUi('eventRetry'))}</button></p>`;
+  if(!h.events.length) return `<p class="hot-state">${esc(hotUi('eventEmpty'))}${h.eventsErr?`<br><button class="btn" type="button" data-hot-events-retry>${esc(hotUi('eventRetry'))}</button>`:''}</p>`;
+  const cards=h.events.map(ev=>{
+    const items=Array.isArray(ev.items)?ev.items:[], latest=items[0]||{}, title=String(ev.title||latest.title||''), url=httpUrl(latest.url||latest.source_url||ev.url), excerpt=String(latest.excerpt||latest.summary||latest.note||''), updated=hotEventTime(ev.last_updated), count=Math.max(0,Number(ev.source_count)||items.length), src=[];
+    const seen=new Set(); items.forEach(it=>{ const name=typeof it.source==='string'?it.source:String(it.source&& (it.source.name||it.source.title)||it.source_name||''); const link=httpUrl(it.url||it.source_url); const key=name+'|'+link; if(name&&!seen.has(key)){ seen.add(key); src.push(link?`<a href="${esc(link)}" target="_blank" rel="nofollow ugc noopener noreferrer">${esc(name)}</a>`:`<span>${esc(name)}</span>`); } });
+    const titleHtml=url?`<a class="hot-event-title" href="${esc(url)}" target="_blank" rel="nofollow ugc noopener noreferrer">${esc(title)}</a>`:`<h3 class="hot-event-title">${esc(title)}</h3>`;
+    return `<article class="hot-event"><div class="hot-event-head"><span class="hot-event-category">${esc(hotEventCategory(ev.category))}</span><span class="hot-event-trend">${esc(hotEventTrend(ev.trend))}</span></div>${titleHtml}${excerpt?`<p class="hot-event-summary">${esc(excerpt)}</p>`:''}<div class="hot-event-meta"><span>${esc(hotUi('eventSources',count))}</span>${updated?`<span>${esc(hotUi('eventUpdated',updated))}</span>`:''}</div>${src.length?`<div class="hot-event-sources">${src.slice(0,3).join('')}</div>`:''}</article>`;
+  }).join('');
+  return `<section class="hot-events" aria-live="polite" aria-busy="${!!h.eventsBusy}">${cards}</section>${h.eventsErr?`<p class="hot-feedback">${esc(h.eventsErr)}</p>`:''}`;
+}
+function hotFocusHTML(){
+  const events=state.hot.events.slice(0,3); if(!events.length) return '';
+  const cards=events.map((ev,i)=>{ const it=Array.isArray(ev.items)?ev.items[0]||{}:{}, url=httpUrl(it.url||it.source_url||ev.url), title=String(ev.title||it.title||''), excerpt=String(it.excerpt||it.summary||it.note||''), count=Math.max(0,Number(ev.source_count)||((Array.isArray(ev.items)&&ev.items.length)||0)), updated=hotEventTime(ev.last_updated); if(!title) return ''; return `<a class="hot-focus-card" href="${esc(url||'#')}" ${url?'target="_blank" rel="nofollow ugc noopener noreferrer"':'data-hot-view="events"'}><span class="hot-focus-rank">${i+1}</span><span class="hot-event-category">${esc(hotEventCategory(ev.category))}</span><strong>${esc(title)}</strong>${excerpt?`<p>${esc(excerpt)}</p>`:''}<span class="hot-focus-meta">${esc(hotUi('eventSources',count))}${updated?' · '+esc(updated):''}</span></a>`; }).join('');
+  if(!cards) return '';
+  return `<section class="hot-focus" aria-label="${esc(hotUi('focus'))}"><header class="hot-focus-head"><div><h3>${esc(hotUi('focus'))}</h3><p>${esc(hotUi('focusSub'))}</p></div><button type="button" data-hot-view="events">${esc(hotUi('focusMore'))}</button></header><div class="hot-focus-grid">${cards}</div></section>`;
 }
 function hotHTML(){
-  const h=state.hot, n=h.idx&&Array.isArray(h.idx.platforms)?h.idx.platforms.length:0, sources=hotMixSources(), stamps=sources.map(p=>{ const d=h.data.get(hotKey(p)); return d&&d.at||0; }).filter(Boolean), updated=stamps.length?Math.max(...stamps):0, age=updated?Math.max(0,Math.round((Date.now()/1000-updated)/60)):null;
-  const meta=age===null?'':t('hotAgo',age);
-  return `<div class="hot"><section class="hot-intro"><div class="hot-intro-copy"><p class="hot-kicker">${esc(t('hotTitle'))}</p><h2>${esc(hotUi('hero'))}</h2><p>${esc(hotUi('intro'))}</p></div><span class="hot-updated">${esc(meta)}</span></section>`
-    + `<div class="hot-modebar" role="tablist" aria-label="${esc(t('hotTitle'))}"><button class="hot-mode" type="button" role="tab" aria-selected="${h.view==='mix'}" data-hot-view="mix">${esc(hotUi('mix'))}</button><button class="hot-mode" type="button" role="tab" aria-selected="${h.view==='boards'}" data-hot-view="boards">${esc(hotUi('boards',n))}</button></div>`
-    + (h.view==='mix'?hotMixHTML():hotBoardsHTML()) + `</div>`;
+  const h=state.hot, n=h.idx&&Array.isArray(h.idx.platforms)?h.idx.platforms.length:0, updated=h.view==='events'?h.eventsUpdated||0:Math.max(0,...[...h.data.values()].map(d=>d.at||0)), age=updated?Math.max(0,Math.round((Date.now()/1000-updated)/60)):null, meta=age===null?'':t('hotAgo',age);
+  return `<div class="hot"><section class="hot-intro"><div class="hot-intro-copy"><h2>${esc(hotUi('hero'))}</h2><p>${esc(hotUi('intro'))}</p></div><span class="hot-updated">${esc(meta)}</span></section>`
+    + (h.view==='boards'?hotFocusHTML():'')
+    + `<div class="hot-modebar" role="tablist" aria-label="${esc(t('hotTitle'))}"><button class="hot-mode" type="button" role="tab" aria-selected="${h.view==='boards'}" data-hot-view="boards">${esc(hotUi('boards',n))}</button><button class="hot-mode" type="button" role="tab" aria-selected="${h.view==='events'}" data-hot-view="events">${esc(hotUi('events'))}</button></div>`
+    + (h.view==='events'?hotEventsHTML():hotBoardsHTML()) + `</div>`;
 }
 function hotSetView(view){
-  if(view!=='mix'&&view!=='boards') return;
+  if(view!=='events'&&view!=='boards') return;
   state.hot.view=view; LS.set('hotView',view); paintHot(); hotEnsure();
 }
+function hotSetPeriod(period){ if(period!=='day'&&period!=='week') return; state.hot.period=period; LS.set('hotPeriod',period); paintHot(); hotEnsure(); }
 function hotOpenItem(e,r,p){
   if(!r||!p) return true;
   if(e.button===0 && !(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey) && richOpen({title:r.title, url:r.url, img:r.img, body:r.body||'', note:r.note, heat:r.heat, from:hotName(p), lang:p.lang, hot:true, kw:!!p.kw, read:!!p.read, date:r.date})){ e.preventDefault(); return true; }
@@ -7008,9 +7049,8 @@ function hotSave(){ LS.set('hotSel',state.hot.sel); }
 function hotShow(focus){ paintHot(); hotEnsure(); if(focus){ const el=document.querySelector(focus); if(el) el.focus({preventScroll:true}); } }
 function hotClick(e){                                                                              // everything inside the hot-list page; true when it was one of its own
   const mode=e.target.closest('[data-hot-view]'); if(mode){ hotSetView(mode.dataset.hotView); return true; }
-  if(e.target.closest('[data-hot-mix-retry]')){ hotMixEnsure(true); return true; }
-  const mixA=e.target.closest('a[data-hot-mix-i]');
-  if(mixA){ const x=state.hot.mixRows[+mixA.dataset.hotMixI]; if(x) hotOpenItem(e,x.row,x.platform); return true; }
+  const period=e.target.closest('[data-hot-period]'); if(period){ hotSetPeriod(period.dataset.hotPeriod); return true; }
+  if(e.target.closest('[data-hot-events-retry]')){ hotEventsEnsure(true); return true; }
   const c=e.target.closest('[data-hot-c]');
   if(c){ state.hot.sel.c=c.dataset.hotC; hotSave(); hotShow(`[data-hot-c="${CSS.escape(c.dataset.hotC)}"]`); return true; }
   const p=e.target.closest('[data-hot-p]');
@@ -7021,7 +7061,7 @@ function hotClick(e){                                                           
     const s=hotCur(); if(!s) return true;
     const d=state.hot.data.get(hotKey(s.cur)), where=s.cur.regions ? (state.hot.region!=='auto' ? state.hot.region : (d && d.region) || '') : '';
     if(s.cur.regions && !where) return true;                                                      // (a list of a country is subscribed for a country: the one that is shown)
-    const id=subscribeNow(hotName(s.cur)+(where ? ' · '+hotCountry(where) : ''), hotFeed(s.cur,where), s.cur.home);
+    const id=subscribeNow(hotName(s.cur)+(where ? ' · '+hotCountry(where) : '')+(state.hot.period==='week'?'（近 7 天）':''), hotFeed(s.cur,where,state.hot.period), s.cur.home);
     if(id){ paintHot(); toast(t('dirSubscribed',cut(hotName(s.cur),24)), t('recoView'), ()=>{ setSpace('mine'); state.cat='all'; state.col=id; LS.set('col',id); render(); }); }
     return true;
   }
@@ -7038,6 +7078,7 @@ function hotClick(e){                                                           
 }
 
 $('#dirReco').addEventListener('change',e=>{                                                       // the country of a list that has countries
+  const cat=e.target.closest('[data-hot-c-select]'); if(cat){ const c=hotActiveColumns().find(x=>x.id===cat.value); if(c){ state.hot.sel.c=c.id; hotSave(); hotShow(); } return; }
   const sel=e.target.closest('[data-hot-region]'); if(!sel) return;
   const v=String(sel.value).toUpperCase()==='AUTO' ? 'auto' : String(sel.value).toUpperCase(); state.hot.region=v; LS.set('hotRegion',v);
   hotShow('[data-hot-region]');
@@ -8045,7 +8086,6 @@ window.addEventListener('pagehide',()=>{ if(NE.open) neSave(); });
 $('#noteBtn').addEventListener('click',()=>openNote(''));
 $('#noteFab').addEventListener('click',()=>{ if(dirOn()) setSpace('mine'); openNote(''); });          // (a note belongs to my shelf: from the public space the page goes there first)
 $('#addNote').addEventListener('click',()=>{ dlg.close(); openNote(''); });
-$('#readerEdit').addEventListener('click',()=>{ if(state.readingId) openNote(state.readingId); });
 
 /* ================= events ================= */
 $('#grid').addEventListener('click',e=>{                            // the parts of a card that exist in both spaces: tags, the shelf name, save
@@ -8232,7 +8272,7 @@ document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){ e.preventDefault(); if(document.body.classList.contains('reader-focus')) readerFocus(false); else if(panelsOpen()) closePanels(); else closeReader(); }
     else if(!typing && PGD.on && (e.key==='ArrowLeft' || e.key==='PageUp')){ e.preventDefault(); pagedStep(-1); }
     else if(!typing && PGD.on && (e.key==='ArrowRight' || e.key==='PageDown' || e.key===' ')){ e.preventDefault(); pagedStep(1); }
-    else if(!typing && PGD.on && (e.key==='Home' || e.key==='End')){ e.preventDefault(); const fd=frameDoc(); if(fd) pagedTo(fd,e.key==='Home'?0:PGD.pages-1); }
+    else if(!typing && PGD.on && (e.key==='Home' || e.key==='End')){ e.preventDefault(); const fd=frameDoc(); if(fd) pagedTo(fd,e.key==='Home'?0:PGD.pages-1,true); }
     else if(!typing && e.key==='ArrowLeft') step(-1);
     else if(!typing && e.key==='ArrowRight') step(1);
     return;

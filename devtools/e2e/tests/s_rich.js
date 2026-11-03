@@ -38,7 +38,7 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await stub();
 
   // ================================================ A. a video plays in a window of the page (the platform's own player)
-  await plat('综合热点', 'B 站热门视频');
+  await plat('影音与社区', 'B 站热门视频');
   await first(); await sleep(400);
   const em = await J(`({open:document.querySelector('#embedDlg').open, src:(document.querySelector('#embedBox iframe')||{}).src, sandbox:(document.querySelector('#embedBox iframe')||{}).getAttribute('sandbox')||'', title:document.querySelector('#embedTitle').textContent,
     sub:document.querySelector('#embedSub').textContent, body:document.querySelector('#embedBody').hidden?'':document.querySelector('#embedBody').textContent, orig:document.querySelector('#embedOrig').href, origText:document.querySelector('#embedOrig').textContent,
@@ -51,12 +51,12 @@ const get = p => fetch(SVC + p).then(r => r.json());
   ok('closing the window empties the frame (the video stops)', await J(`!document.querySelector('#embedDlg').open && document.querySelector('#embedBox').children.length===0`));
 
   // ================================================ B. a song in the NetEase player; a row with nothing to show goes to the platform as before
-  await plat('读书与影音', '网易云音乐飙升榜');
+  await plat('影音与社区', '网易云音乐飙升榜');
   await first(); await sleep(400);
   const ne = await J(`({open:document.querySelector('#embedDlg').open, src:(document.querySelector('#embedBox iframe')||{}).src, h:document.querySelector('#embedBox').style.height})`);
   ok('a NetEase song: its own small player (66 px) in the window', ne.open && ne.src === 'https://music.163.com/outchain/player?type=2&id=300591&auto=0&height=66' && ne.h === '86px', ne);
   await J(`document.querySelector('#embedDone').click()`); await sleep(300);
-  await plat('读书与影音', 'Steam 热销');
+  await plat('娱乐', 'Steam 热销');
   await J(`window.__dp=[]`); await first(); await sleep(300);
   const st = await J(`({dp:window.__dp[0], open:document.querySelector('#embedDlg').open, reader:!document.querySelector('#reader').hidden, target:document.querySelector('#dirReco .hot-t').target})`);
   ok('a row with nothing to show (only a title and a price): the click is left to the browser, a tab of its own', st.dp === false && !st.open && !st.reader && st.target === '_blank', st);
@@ -85,7 +85,7 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await J(`document.querySelector('#readerBack').click()`); await sleep(500);
 
   // ================================================ D. a Zhihu question: its excerpt and picture, and the news
-  await plat('综合热点', '知乎热榜');
+  await plat('影音与社区', '知乎热榜');
   await first();
   await waitFor(`state.readingId && /^tmp:rich:/.test(state.readingId)`);
   txt = await frameHas(/第一篇相关报道/);
@@ -94,13 +94,13 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await J(`document.querySelector('#readerBack').click()`); await sleep(500);
 
   // ================================================ E. V2EX and a README in the reader
-  await plat('科技与开发', 'V2EX');
+  await plat('科技', 'V2EX');
   await first();
   await waitFor(`state.readingId && /^tmp:rich:/.test(state.readingId)`);
   txt = await frameHas(/第一条回复/);
   ok('a V2EX topic: its text and its replies are in the reader', /昨天早上停电/.test(txt) && /第一条回复的内容/.test(txt) && /bob/.test(txt) && /V2EX · 生活 · alice · 2 条回复/.test(txt), txt.slice(0, 300));
   await J(`document.querySelector('#readerBack').click()`); await sleep(500);
-  await plat('科技与开发', 'GitHub');
+  await plat('科技', 'GitHub');
   await first();
   await waitFor(`state.readingId && /^tmp:rich:/.test(state.readingId)`);
   txt = await frameHas(/A short readme/);
@@ -109,7 +109,7 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await J(`document.querySelector('#readerBack').click()`); await sleep(500);
 
   // ================================================ F. a podcast of a chart: its episodes play in the bar
-  await plat('读书与影音', 'Apple 播客榜 · 中国');
+  await plat('影音与社区', 'Apple 播客榜 · 中国');
   await first();
   await waitFor(`state.readingId && /^tmp:rich:/.test(state.readingId)`);
   txt = await frameHas(/最新几集/);
@@ -227,14 +227,14 @@ const get = p => fetch(SVC + p).then(r => r.json());
     await J(`document.querySelector('#dSubs [data-hot-go]').click()`);
     await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0`);
     const hot1 = await J(`({page:document.body.classList.contains('dir-hot'), col:(document.querySelector('#dirReco .hot-col[aria-selected="true"]')||{}).textContent, plat:(document.querySelector('#dirReco .hot-plat[aria-selected="true"]')||{}).textContent})`);
-    ok('the button opens the hot-list page on that platform (its column, its tab)', hot1.page && hot1.col === '综合热点' && hot1.plat === '知乎热榜', hot1);
+    ok('the button opens the hot-list page on that platform (its column, its tab)', hot1.page && hot1.col === '影音与社区' && hot1.plat === '知乎热榜', hot1);
     await J(`document.querySelector('#cats [data-dtype="all"]').click()`); await sleep(700);
     await J(`document.querySelector('[data-dtabs="plat"]').click()`); await sleep(400);
     await J(`document.querySelector('#dTabs [data-dtab="plat:qqmusic"]').click()`); await sleep(500);
     await J(`document.querySelector('#dSubs [data-hot-go]').click()`);
     await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0`);
     const hot2 = await J(`({col:(document.querySelector('#dirReco .hot-col[aria-selected="true"]')||{}).textContent, plat:(document.querySelector('#dirReco .hot-plat[aria-selected="true"]')||{}).textContent})`);
-    ok('another platform, another column: QQ Music is in "读书与影音"', hot2.col === '读书与影音' && hot2.plat === 'QQ 音乐飙升榜', hot2);
+    ok('another platform, another column: QQ Music is in "影音与社区" (the same column as Zhihu now: the page stays on the column and changes the tab)', hot2.col === '影音与社区' && hot2.plat === 'QQ 音乐飙升榜', hot2);
     // ---- M. the Chinese of an English title
     await J(`document.querySelector('#cats [data-dtype="all"]').click()`); await sleep(700);
     await J(`state.dLimit=999; render(); 1`); await sleep(400);

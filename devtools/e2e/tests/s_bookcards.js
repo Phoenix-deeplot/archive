@@ -69,14 +69,15 @@ const addBooks = () => {
   for (let k = 0; k < 20; k++) { const n = await J(`((document.querySelector('#frame').contentDocument||{body:{textContent:''}}).body||{textContent:''}).textContent.length`); if (n > 400) break; await sleep(400); }
   const t1 = await J(`({reader:!document.querySelector('#reader').hidden, dlg:document.querySelector('#bookDlg').open, title:document.querySelector('#readerTitle').textContent})`);
   ok('a book with chapters: the button opens the first chapter at once (no window in between)', t1.reader && !t1.dlg && t1.title === 'The Tale · Chapter 1', t1);
-  await J(`(()=>{ const w=document.querySelector('#frame').contentWindow, d=w.document; w.scrollTo(0,(d.documentElement.scrollHeight-w.innerHeight)*0.5); })()`); await sleep(600);
+  await J(`window.__zt.goPct(50)`); await sleep(600);                                                     // (a book is in pages: to the page that has the middle of the text)
+  const page50 = await J(`document.querySelector('#rbInfo').textContent`);
   await J(`document.querySelector('#readerBack').click()`); await sleep(600);
   await J(`document.querySelector('#bookDlg').open && document.querySelector('#bookClose').click()`); await sleep(400);
   const again = await info('The Tale');
   ok('after reading a little the card says "继续阅读" and where the reader is', again.go === '继续阅读' && /读到 Chapter 1/.test(again.meta), [again.go, again.meta]);
   await J(`${card('The Tale')}.querySelector('.bk-go').click()`); await sleep(2500);
-  const t2 = await J(`({reader:!document.querySelector('#reader').hidden, title:document.querySelector('#readerTitle').textContent, at:(()=>{ const w=document.querySelector('#frame').contentWindow, d=w.document; return Math.round(w.scrollY/(d.documentElement.scrollHeight-w.innerHeight)*100); })()})`);
-  ok('"继续阅读" goes back to the chapter and the place', t2.reader && t2.title === 'The Tale · Chapter 1' && t2.at > 35 && t2.at < 65, t2);
+  const t2 = await J(`({reader:!document.querySelector('#reader').hidden, title:document.querySelector('#readerTitle').textContent, at:document.querySelector('#rbInfo').textContent})`);
+  ok('"继续阅读" goes back to the chapter and the page where the reader was', t2.reader && t2.title === 'The Tale · Chapter 1' && t2.at === page50 && !/^1 \//.test(t2.at), [t2, page50]);
   await J(`document.querySelector('#readerBack').click()`); await sleep(500);
   await J(`document.querySelector('#bookDlg').open && document.querySelector('#bookClose').click()`); await sleep(300);
 

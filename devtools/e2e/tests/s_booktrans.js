@@ -83,7 +83,7 @@ const ARTICLE = '# A short history of tea\n\n' + ['Tea was first drunk in China,
   await J(`document.querySelector('#trMenu [data-tr="screen"]').click()`); await idle();
   lg = await log();
   const total = await fdoc(`[...d.querySelectorAll('p,li,h1,h2,h3')].filter(e=>!e.closest('.zt-tr,nav,.doc-meta,.doc-src,.doc-lic')).length`), n1 = await fdoc(`d.querySelectorAll('.zt-tr').length`);
-  ok('"翻译本屏": only the paragraphs on the screen and a little more are sent (not the whole chapter), each one has its translation under it', lg.length === 2 && lg[1].n === n1 && n1 >= 4 && n1 < total - 8, { lg, n1, total });
+  ok('"翻译本屏": only the paragraphs on the screen and a little more are sent (not the whole chapter), each one has its translation under it', lg.length === 2 && lg[1].n === n1 && n1 >= 4 && n1 < total - 3, { lg, n1, total });          // (in pages: this page and the next one)
   ok('the end of the chapter is not translated yet; the author and source lines never are', (await fdoc(`(()=>{ const ps=[...d.querySelectorAll('.doc>p:not([class])')]; return !ps[ps.length-1].querySelector('.zt-tr') && !d.querySelector('.doc-meta .zt-tr') && !d.querySelector('.doc-src .zt-tr'); })()`)));
   const m1 = await (async () => { await J(`document.querySelector('#readerTrans').click()`); await sleep(300); return menu(); })();
   ok('the menu now offers to switch (双语), and tells what is left of today\'s allowance', m1.items.includes('cycle') && /双语/.test(m1.cycle) && /今天还可以翻译约 \d+ 字/.test(m1.left), m1);
@@ -126,8 +126,8 @@ const ARTICLE = '# A short history of tea\n\n' + ['Tea was first drunk in China,
   await c.mobile(390, 780, 3); await sleep(500);
   await fresh('zh');
   await openChapter(0);
-  const fab = await J(`(()=>{ const f=document.querySelector('#trFab'), r=f.getBoundingClientRect(), nav=document.querySelector('#readerMobileNav').getBoundingClientRect(); return {shown:getComputedStyle(f).display!=='none', right:Math.round(r.right), bottom:Math.round(r.bottom), navTop:Math.round(nav.top), w:Math.round(r.width), vw:innerWidth}; })()`);
-  ok('on a phone a round button is at the corner of the page: finger-sized, inside the screen, above the bar of chapters', fab.shown && fab.w >= 44 && fab.right <= fab.vw && fab.bottom <= fab.navTop, fab);
+  const fab = await J(`(()=>{ const f=document.querySelector('#trFab'), r=f.getBoundingClientRect(), pill=document.querySelector('#rBook').getBoundingClientRect(); return {shown:getComputedStyle(f).display!=='none', right:Math.round(r.right), left:Math.round(r.left), bottom:Math.round(r.bottom), pillRight:Math.round(pill.right), w:Math.round(r.width), vw:innerWidth, vh:innerHeight}; })()`);
+  ok('on a phone a round button is at the corner of the page: finger-sized, inside the screen, beside the bar of the letters (not on it)', fab.shown && fab.w >= 44 && fab.right <= fab.vw && fab.bottom <= fab.vh && fab.left >= fab.pillRight, fab);
   await J(`document.querySelector('#trFab').click()`); await sleep(400);
   const pm = await J(`(()=>{ const m=document.querySelector('#trMenu'), r=m.getBoundingClientRect(); return {open:!m.hidden, top:Math.round(r.top), bottom:Math.round(r.bottom), left:Math.round(r.left), right:Math.round(r.right), vh:innerHeight, vw:innerWidth}; })()`);
   ok('it opens the same menu at the foot of the screen', pm.open && pm.top > pm.vh * 0.4 && pm.bottom <= pm.vh && pm.left >= 0 && pm.right <= pm.vw, pm);
@@ -139,7 +139,10 @@ const ARTICLE = '# A short history of tea\n\n' + ['Tea was first drunk in China,
   await J(`document.body.classList.remove('reader-focus')`);
   await shut();
   await J(`openReader('local:en')`); await waitFor(`!document.querySelector('#reader').hidden`); await sleep(1500);
-  ok('an article that is not a book has no round button (and the button of its bar is as it was)', await J(`document.querySelector('#trFab').hidden`));
+  await waitFor(`!document.querySelector('#trFab').hidden`);
+  ok('an article that is not a book has the round button too (a phone has no "Aa" panel to carry the translation)', !(await J(`document.querySelector('#trFab').hidden`)));
+  await J(`document.querySelector('#trFab').click()`); await idle();
+  ok('...and it translates the page at once: the menu of the chapters is for a book', (await fdoc(`d.querySelectorAll('.zt-tr').length`)) >= 3 && (await J(`document.querySelector('#trMenu').hidden`)));
   await c.desktop(1280, 900, 1);
 
   ok('no script errors in the whole run', errs.length === 0, errs);

@@ -40,7 +40,8 @@ const addBooks = () => {
   const openChapter = async (i, re) => { await openBookWindow(); await J(`document.querySelector('#bookDlg [data-bo-ch="${i}"]').click()`); return waitText(re || /bright|chapter, and/); };
   const dlg = () => J(`(()=>{ const d=document.querySelector('#bookDlg'); return {open:d.open, sub:document.querySelector('#bookSub').textContent, start:document.querySelector('#bookStart').textContent, hasT:d.querySelector('#bookChs').classList.contains('has-t'), labels:[...d.querySelectorAll('.bo-ch')].map(b=>b.textContent), done:[...d.querySelectorAll('.bo-ch.done')].map(b=>b.dataset.boCh), cur:[...d.querySelectorAll('.bo-ch')].findIndex(b=>b.getAttribute('aria-current')==='true')}; })()`);
   const rd = () => J(`({open:!document.querySelector('#reader').hidden, title:document.querySelector('#readerTitle').textContent, pos:document.querySelector('#readerPos').textContent, h1:(()=>{ const d=document.querySelector('#frame').contentDocument, h=d&&d.body?d.querySelector('h1'):null; return h?h.textContent:''; })(), prev:document.querySelector('#readerPrev .lbl').textContent, next:document.querySelector('#readerNext .lbl').textContent})`);
-  const scrollTo = async pct => { await J(`(()=>{ const w=document.querySelector('#frame').contentWindow, d=w.document; w.scrollTo(0,(d.documentElement.scrollHeight-w.innerHeight)*${pct}/100); })()`); await sleep(500); };
+  const scrollTo = async pct => { await J(`window.__zt.goPct(${pct})`); await sleep(500); };                // (a book is in pages: to the page that has that place of the text)
+  const where = () => J(`document.querySelector('#rbInfo').textContent`);
   const back = async () => { await J(`document.querySelector('#readerBack').click()`); await sleep(500); await J(`document.querySelector('#bookDlg').open && document.querySelector('#bookClose').click()`); await sleep(300); };
   const place = () => J(`state.progress['bk:tale0001']`);
 
@@ -88,13 +89,13 @@ const addBooks = () => {
   await fresh();
   await openChapter(1, /second chapter, and the travellers/);
   await scrollTo(50);
-  const pl = await place();
-  ok('how far the reader got is kept as the place in the book (chapter and percent), in the progress that the sync carries', pl && pl.i === 1 && pl.pct > 40 && pl.pct < 60 && typeof pl.at === 'number', pl);
+  const pl = await place(), at50 = await where();
+  ok('how far the reader got is kept as the place in the book (chapter and percent: the top of the page), in the progress that the sync carries', pl && pl.i === 1 && pl.pct > 15 && pl.pct < 60 && typeof pl.at === 'number' && !/^1 \//.test(at50), [pl, at50]);
   await back();
   const d1 = await dlg();
   await J(`document.querySelector('#bookDlg').open || [...document.querySelectorAll('#grid .card')].find(c=>c.textContent.includes('The Tale')).querySelector('.card-title a').click()`); await sleep(400);
   const d2 = await dlg();
-  ok('the window says where the reader is: "continue", the chapter and how far, and the share of the whole book', /继续读：Chapter 2 · (4\d|5\d)%/.test(d2.start) && /已读约 (4\d|5\d)%/.test(d2.sub) && d2.cur === 1, d2);
+  ok('the window says where the reader is: "continue", the chapter and how far, and the share of the whole book', /继续读：Chapter 2 · [1-9]\d?%/.test(d2.start) && /已读约 [1-9]\d%/.test(d2.sub) && d2.cur === 1, d2);
   await J(`document.querySelector('#bookClose').click()`); await sleep(300);
   const meta = await J(`[...document.querySelectorAll('#grid .card')].find(c=>c.textContent.includes('The Tale')).querySelector('.xmeta').textContent`);
   ok('the card of the book says where the reader is', /读到 Chapter 2/.test(meta), meta);
@@ -103,8 +104,8 @@ const addBooks = () => {
   await J(`document.querySelector('#bookStart').click()`);
   await waitText(/second chapter, and the travellers/);
   await sleep(900);
-  const back50 = await J(`(()=>{ const w=document.querySelector('#frame').contentWindow, d=w.document; return Math.round(w.scrollY/(d.documentElement.scrollHeight-w.innerHeight)*100); })()`);
-  ok('after a reload "continue" opens the same chapter at the same place', back50 > 40 && back50 < 60, back50);
+  const back50 = await where();
+  ok('after a reload "continue" opens the same chapter at the same page', back50 === at50, [at50, back50]);
   await back();
 
   // ------------------------------------------------ the next chapter is fetched in advance (once), and read marks
@@ -113,7 +114,7 @@ const addBooks = () => {
   await openChapter(0, /first chapter, and the lamps/);
   await sleep(500);
   ok('nothing of the next chapter is asked for before the reader is well into this one', !asked.some(q => /c=1/.test(q)), asked);
-  await scrollTo(70);
+  await scrollTo(85);
   await sleep(2500);
   const pre = await J(`(itemById('tmp:tale0001~1')||{}).content ? (itemById('tmp:tale0001~1').content.length) : 0`);
   ok('past 60% the next chapter is fetched, once, and is already there', pre > 300 && asked.filter(q => /c=1/.test(q)).length === 1, [pre, asked]);
@@ -128,20 +129,12 @@ const addBooks = () => {
   ok('a chapter read to the end is marked read in the window of the book and in the chapters panel', d4.done.includes('0'), d4);
   await J(`document.querySelector('#bookClose').click()`); await sleep(300);
 
-  // ------------------------------------------------ the options of reading
+  // ------------------------------------------------ the looks of a book are fixed: what older versions kept as options does not count
+  await J(`LS.set('reader',{fs:100,th:'follow',ff:'serif',pg:'l',ind:'off',jus:'on',lh:'l',w:'w',mode:'scroll',dbl:'off'}); Object.assign(state.rs,{ff:'serif',pg:'l',ind:'off',jus:'on',lh:'l',w:'w'})`);
   await openChapter(0, /first chapter, and the lamps/);
-  const css = () => J(`(()=>{ const d=document.querySelector('#frame').contentDocument, p=d.querySelectorAll('.doc>p:not([class])')[2], cs=d.defaultView.getComputedStyle(p), bs=d.defaultView.getComputedStyle(d.body); return {indent:cs.textIndent, align:cs.textAlign, mb:cs.marginBottom, ff:bs.fontFamily, style:d.documentElement.getAttribute('style')}; })()`);
+  const css = () => J(`(()=>{ const d=document.querySelector('#frame').contentDocument, p=d.querySelectorAll('.doc>p:not([class])')[2], cs=d.defaultView.getComputedStyle(p), bs=d.defaultView.getComputedStyle(d.body); return {indent:cs.textIndent, align:cs.textAlign, mb:cs.marginBottom, ff:bs.fontFamily, lh:bs.lineHeight, style:d.documentElement.getAttribute('style')}; })()`);
   const base = await css();
-  ok('with the options at their defaults the page looks as it did: no indent, left, 1.1em below a paragraph, the usual font, nothing extra in the style', base.indent === '0px' && /^(start|left)$/.test(base.align) && Math.abs(parseFloat(base.mb) - 18.7) < 1 && !/--ff|--pg|--ind|--jus/.test(base.style) && /Segoe|PingFang|Sans|sans|Microsoft YaHei/i.test(base.ff), base);
-  await J(`document.querySelector('#readerSet').click()`); await sleep(300);
-  for (const [k, v] of [['ff', 'serif'], ['pg', 'l'], ['ind', 'on'], ['jus', 'on']]) await J(`document.querySelector('#rSetPanel [data-key="${k}"] [data-v="${v}"]').click()`);
-  await sleep(500);
-  const set = await css();
-  ok('font, paragraph spacing, first-line indent and justified: the page follows at once', /Noto Serif|Songti|STSong|Georgia/i.test(set.ff) && set.indent === '34px' && set.align === 'justify' && Math.abs(parseFloat(set.mb) - 28.9) < 1.2, set);
-  ok('the options are kept (the reader settings)', (await J(`(({ff,pg,ind,jus})=>[ff,pg,ind,jus].join())(state.rs)`)) === 'serif,l,on,on');
-  await c.shot(P.SHOTS + '/bookreader_typography.png');
-  await J(`for (const [k,v] of [['ff','follow'],['pg','m'],['ind','off'],['jus','off']]) document.querySelector('#rSetPanel [data-key="'+k+'"] [data-v="'+v+'"]').click()`); await sleep(400);
-  ok('and put back they are the defaults again', (await css()).indent === '0px');
+  ok('whatever the old options said, the looks of a book are the best known: first line indented 1.5 em, left (English), .45 em below a paragraph, 1.65 lines high, the usual font', base.indent === '28.5px' && /^(start|left)$/.test(base.align) && Math.abs(parseFloat(base.mb) - 8.55) < 0.5 && Math.abs(parseFloat(base.lh) - 19 * 1.65) < 0.6 && !/--ff/.test(base.style) && /Segoe|PingFang|Sans|sans|Microsoft YaHei/i.test(base.ff), base);
   await back();
 
   // ------------------------------------------------ the old list of places (only the chapter) is still read
