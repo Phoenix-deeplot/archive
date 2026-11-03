@@ -1,6 +1,6 @@
 // e2e: reading a picked book (R2 + "simple reading"): the chapter is in pages, on a PC (a sheet in the middle of the screen, an arrow at each side, keys, the wheel) and on a phone (the page follows the finger,
 // lets go and goes on or comes back, taps at the sides); nothing to set but the size of the letters (the bar at the foot); the top bar has only what a book needs, and an eye-care button that changes the colour;
-// the place is a place in the text (the size of the letters changes, the reader stays where he is); a chapter with a table is scrolled; the chapters panel pinned at the left of a wide screen; an article is as it was
+// the place is a place in the text (the size of the letters changes, the reader stays where he is); a chapter with a table is scrolled; the chapters panel pinned at the left of a wide screen; an article has the same settings (the letters, the colour), is scrolled, and has no bookmark
 const fs = require('fs');
 const { connect, sleep } = require('../cdp');
 const { writeDir } = require('../dir_fixture.js');
@@ -192,13 +192,28 @@ const ARTICLE = '# A short history of tea\n\n' + Array.from({ length: 30 }, (_, 
   await J(`LS.set('tocPin',0)`);
   await J(`document.querySelector('#bookDlg').open && document.querySelector('#bookClose').click()`); await sleep(300);
 
-  // ------------------------------------------------ an article is as it was
+  // ------------------------------------------------ an article: the same (the size of the letters and the colour, nothing else), scrolled, no bookmark
   await J(`openReader('local:en')`); await waitFor(`!document.querySelector('#reader').hidden`); await sleep(1500);
   const art = {};
-  for (const [k, sel] of Object.entries({ set: '#readerSet', save: '#readerSave', mark: '#readerMark', star: '#readerStar', newtab: '#readerNew', eye: '#readerEye', rbook: '#rBook' })) art[k] = await shown(sel);
-  ok('an article keeps all its buttons (Aa, save, bookmark, star, new tab) and has neither the eye-care button nor the bar of a book', art.set && art.save && art.mark && art.star && art.newtab && !art.eye && !art.rbook, art);
-  await click('#readerSet'); await sleep(300);
-  ok('the settings of an article are all there: size, line height, width, font, spacing, indent, justify, colours; no way of reading', (await J(`['#rowFs','#rowLh','#rowW','#rowFf','#rowPg','#rowInd','#rowJus'].every(s=>!document.querySelector(s).hidden) && !document.querySelector('#rowMode') && !document.querySelector('#rowDbl')`)) && !(await pg()).paged);
+  for (const [k, sel] of Object.entries({ save: '#readerSave', eye: '#readerEye', rbook: '#rBook', prevch: '#rbPrev', set: '#readerSet', mark: '#readerMark', star: '#readerStar', edit: '#readerEdit', newtab: '#readerNew' })) art[k] = await shown(sel);
+  ok('an article: save, eye care and the bar of the letters (without the chapters of a book); no Aa, no bookmark, no star, no pen, no "new tab"', art.save && art.eye && art.rbook && !art.prevch && !art.set && !art.mark && !art.star && !art.edit && !art.newtab && !(await J(`!!document.querySelector('#rSetPanel')`)), art);
+  const al = await fdoc(`(()=>{ const r=d.documentElement, doc=d.querySelector('.doc').getBoundingClientRect(), cs=getComputedStyle(d.body); return {paged:r.classList.contains('paged'), fs:cs.fontSize, lh:r.style.getPropertyValue('--lh'), w:Math.round(doc.width), ind:r.style.getPropertyValue('--ind'), jus:r.style.getPropertyValue('--jus')}; })()`);
+  ok('an article is scrolled, not paged, with the best looks: 19 px letters, 1.65 lines high, 34 em wide, no indent, not justified', !al.paged && al.fs === '19px' && al.lh === '1.65' && Math.abs(al.w - 34 * 19) < 6 && al.ind === '' && al.jus === '', al);
+  ok('the bar says how far one has read (a percent) in an article', /^\d+%$/.test(await J(`document.querySelector('#rbInfo').textContent`)));
+  await click('#rbFsP'); await sleep(500);
+  ok('A+ in an article: 110 % (20.9 px)', (await fdoc(`getComputedStyle(d.body).fontSize`)) === '20.9px');
+  await click('#rbFsM'); await sleep(300);
+  await click('#readerToc'); await sleep(400);
+  ok('the contents of an article have no "bookmarks" page and no chapters page', !(await shown('#rTocPanel .rtabs [data-tab="marks"]')) && !(await shown('#rTocPanel .rtabs [data-tab="chs"]')));
+  await click('#readerToc'); await sleep(300);
+  await shut();
+
+  // ------------------------------------------------ like / dislike of an article of the directory stay in the middle, the bar of the letters is at the left (they were one on the other)
+  await J(`(()=>{ const d=state.dirData; d.items.unshift({id:'zz1',url:'${SITE}/a/2',title:'目录里的一篇文章',summary:'s',image:'',date:'2026-10-20',lang:'en',shelf:'',type:'article',tags:[]}); window.__zt.openDirReader('zz1'); })()`);
+  await waitFor(`!document.querySelector('#reader').hidden && !document.querySelector('#rVote').hidden`, 15000); await sleep(1500);
+  const vb = await J(`(()=>{ const v=document.querySelector('#rVote').getBoundingClientRect(), b=document.querySelector('#rBook').getBoundingClientRect(), f=document.querySelector('#frame').getBoundingClientRect(); return {overlap:!(v.bottom<=b.top || v.top>=b.bottom || v.right<=b.left || v.left>=b.right), vMid:Math.round((v.left+v.right)/2), mid:Math.round((f.left+f.right)/2), bLeft:Math.round(b.left), bRight:Math.round(b.right), vLeft:Math.round(v.left), vis:getComputedStyle(document.querySelector('#rBook')).display!=='none'}; })()`);
+  ok('like / dislike of an article of the directory are in the middle of the foot, the bar of the letters at the left of it: they do not cover each other', vb.vis && !vb.overlap && Math.abs(vb.vMid - vb.mid) <= 6 && vb.bLeft < 40 && vb.bRight < vb.vLeft, vb);
+  await c.shot(P.SHOTS + '/bookpaged_vote.png');
   await shut();
 
   // ------------------------------------------------ translation in pages
@@ -258,6 +273,13 @@ const ARTICLE = '# A short history of tea\n\n' + Array.from({ length: 30 }, (_, 
   ok('a pull to the left on the last page goes on to the next chapter', /Chapter 2/.test((await pg()).title) && (await pg()).paged, await pg());
   await click('#rbPrev'); await ready(); await sleep(900);
   ok('the button before in the foot goes to the chapter before (a phone has no arrows at the sides)', /Chapter 1/.test((await pg()).title), await pg());
+  await shut();
+  await J(`(()=>{ const d=state.dirData; if(!d.items.some(i=>i.id==='zz1')) d.items.unshift({id:'zz1',url:'${SITE}/a/2',title:'目录里的一篇文章',summary:'s',image:'',date:'2026-10-20',lang:'en',shelf:'',type:'article',tags:[]}); window.__zt.openDirReader('zz1'); })()`);
+  await waitFor(`!document.querySelector('#reader').hidden && !document.querySelector('#rVote').hidden`, 15000); await sleep(1500);
+  const pv = await J(`(()=>{ const v=document.querySelector('#rVote').getBoundingClientRect(), b=document.querySelector('#rBook').getBoundingClientRect(), f=document.querySelector('#trFab').getBoundingClientRect(); return {bLeft:Math.round(b.left), bRight:Math.round(b.right), vLeft:Math.round(v.left), vRight:Math.round(v.right), vMid:Math.round((v.left+v.right)/2), fLeft:Math.round(f.left), bBottom:Math.round(b.bottom), miniTop:(()=>{ const m=document.querySelector('.pl-mini'); return m && getComputedStyle(m).display!=='none' ? Math.round(m.getBoundingClientRect().top) : null; })(), vw:innerWidth, fabShown:getComputedStyle(document.querySelector('#trFab')).display!=='none'}; })()`);
+  ok('phone, an article of the directory: A− A+ at the left (above the small player when one is on), like / dislike in the middle, the round translate button at the right, none on another', pv.bRight <= pv.vLeft && Math.abs(pv.vMid - pv.vw / 2) <= 6 && (!pv.fabShown || pv.vRight <= pv.fLeft) && (pv.miniTop === null || pv.bBottom <= pv.miniTop + 1), pv);
+  await c.shot(P.SHOTS + '/bookpaged_phone_vote.png');
+  await shut();
   await c.desktop(1280, 900, 1);
 
   const mine = errs.filter(e => !/adsbygoogle|googlesyndication/.test(e));              // (the script of the adverts of the demo page is not ours)

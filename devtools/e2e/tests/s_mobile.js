@@ -123,7 +123,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await sleep(1000);
   await swipe(70, mid, 300, mid - 6);
   ok('swipe right on the first: it says so and stays', await where() === 'local:a' && /第一篇/.test(await J(`document.querySelector('#toastMsg').textContent`)));
-  console.log('  dbg:', JSON.stringify(await J(`(()=>{ const d=document.querySelector('#frame').contentDocument; return {sel:String(d.getSelection()).length, vv:window.visualViewport.scale, w:d.defaultView.innerWidth, panel:[document.querySelector('#rSetPanel').hidden, document.querySelector('#rTocPanel').hidden], ready:d.readyState, url:d.location.href.slice(0,20)}; })()`)));
+  console.log('  dbg:', JSON.stringify(await J(`(()=>{ const d=document.querySelector('#frame').contentDocument; return {sel:String(d.getSelection()).length, vv:window.visualViewport.scale, w:d.defaultView.innerWidth, panel:[document.querySelector('#rTocPanel').hidden], ready:d.readyState, url:d.location.href.slice(0,20)}; })()`)));
   await swipe(300, mid, 70, mid); console.log('  after 1st:', await where()); await sleep(900); await swipe(300, mid, 70, mid); console.log('  after 2nd:', await where()); await sleep(900);
   ok('two swipes left: the last one (乙)', await where() === 'local:b', await where());
   await swipe(300, mid, 70, mid);

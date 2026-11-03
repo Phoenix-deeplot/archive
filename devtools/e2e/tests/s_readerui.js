@@ -83,11 +83,11 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await J(`document.querySelector('#readerToc').click()`); await sleep(400);
   await J(`document.querySelector('#rTocBody .toc-i').click()`); await sleep(500);
   ok('choosing a heading closes it (as before)', await hidden('#rTocPanel'));
-  // the settings panel
-  await J(`document.querySelector('#readerSet').click()`); await sleep(300);
-  ok('the settings panel is open with the backdrop', !(await hidden('#rSetPanel')) && await J(`getComputedStyle(document.querySelector('#rBack')).display`) === 'block');
-  await tap(200, 650);
-  ok('a tap on the blank part closes the settings panel', await hidden('#rSetPanel'));
+  // no settings panel: the size of the letters is the bar at the foot, the colour is the eye-care button
+  ok('phone: there is no "Aa" button and no settings panel; the bar of the letters is at the foot, the eye-care button in the top bar', await J(`!document.querySelector('#readerSet') && !document.querySelector('#rSetPanel') && getComputedStyle(document.querySelector('#rBook')).display!=='none' && getComputedStyle(document.querySelector('#readerEye')).display!=='none'`));
+  await J(`document.querySelector('#rbFsP').click()`); await sleep(400);
+  ok('phone: A+ at the foot makes the letters bigger', await J(`/--fs:\\s*18\\.7px/.test(document.querySelector('#frame').contentDocument.documentElement.getAttribute('style')||'')`));
+  await J(`document.querySelector('#rbFsM').click()`); await sleep(300);
   await closeReader();
 
   // ------------------------------------------------ a PDF and a page shown as it is

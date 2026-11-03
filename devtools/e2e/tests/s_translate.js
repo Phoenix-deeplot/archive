@@ -110,18 +110,18 @@ const ZH = '# 茶的简史\n\n茶最早在中国被当作药来喝，已经有�
   const loge = await get('/__trans_log');
   ok('an English interface: the button says "Translate" and a Chinese article is translated into English', be.lbl === 'Translate' && loge.length === 1 && loge[0].to === 'en' && (await fdoc(`/^EN:/.test(d.querySelector('.zt-tr').textContent) && d.querySelector('.zt-tr').lang==='en'`)), { be, loge });
 
-  // ---- a phone: the bar has no room for one more button; the row is in the "Aa" panel
+  // ---- a phone: the bar has no room for one more button; a round button at the corner of the page translates
   await c.mobile(375, 812, 2);
   await fresh();
   await J(`LS.set('trOk',1)`);
   await open('local:en');
   const bar = await J(`(()=>{ const b=document.querySelector('#readerTrans'); const r=document.querySelector('.reader-bar').getBoundingClientRect(); const ids=[...document.querySelectorAll('.rb-right .rbtn')].filter(x=>x.offsetParent!==null).map(x=>x.id); return {shown:getComputedStyle(b).display!=='none', ids, right:Math.round(Math.max(...[...document.querySelectorAll('.rb-right .rbtn')].filter(x=>x.offsetParent!==null).map(x=>x.getBoundingClientRect().right))), vw:innerWidth}; })()`);
   ok('a phone: the bar is as it was (no translate button in it, it fits the screen)', !bar.shown && !bar.ids.includes('readerTrans') && bar.right <= bar.vw, bar);
-  await J(`document.querySelector('#readerSet').click()`); await sleep(400);
-  const row = await J(`(()=>{ const r=document.querySelector('#rowTrans'), b=document.querySelector('#rSetTrans'); const h=Math.round(b.getBoundingClientRect().height); return {vis:r.offsetParent!==null, txt:b.textContent, h}; })()`);
-  ok('the "Aa" panel has the row "翻译这一页", at least 40 px high', row.vis && /翻译这一页/.test(row.txt) && row.h >= 40, row);
-  await J(`document.querySelector('#rSetTrans').click()`); await waitFor(`TR.mode==='both'`);
-  ok('it translates, and the panel is closed so that the page can be seen', (await fdoc(`d.querySelectorAll('.zt-tr').length`)) >= 7 && (await J(`document.querySelector('#rSetPanel').hidden`)), await get('/__trans_log'));
+  await waitFor(`!document.querySelector('#trFab').hidden`);
+  const fab = await J(`(()=>{ const f=document.querySelector('#trFab'), r=f.getBoundingClientRect(), pill=document.querySelector('#rBook').getBoundingClientRect(); return {shown:getComputedStyle(f).display!=='none', w:Math.round(r.width), h:Math.round(r.height), right:Math.round(r.right), left:Math.round(r.left), pillRight:Math.round(pill.right), vw:innerWidth}; })()`);
+  ok('a phone: a round button at the corner of the page (the text has no "Aa" panel any more), at least 44 px, inside the screen and beside the bar of the letters', fab.shown && fab.w >= 44 && fab.h >= 44 && fab.right <= fab.vw && fab.left >= fab.pillRight, fab);
+  await J(`document.querySelector('#trFab').click()`); await waitFor(`TR.mode==='both'`);
+  ok('it translates the page at once (no menu: the menu is for a book)', (await fdoc(`d.querySelectorAll('.zt-tr').length`)) >= 7 && (await J(`document.querySelector('#trMenu').hidden`)), await get('/__trans_log'));
   await c.desktop(1280, 900, 1);
 
   ok('no script errors in the whole run', errs.length === 0, errs);

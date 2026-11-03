@@ -34,7 +34,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   ok('images are https with no referrer; links open elsewhere safely', rd.img.length === 1 && rd.img[0].startsWith('https://127.0.0.1') === false || rd.img.every(s => s.startsWith('https://') && s.endsWith('|no-referrer')), rd.img);
   ok('links', rd.links.length >= 2 && rd.links.every(l => l.includes('|_blank|noopener noreferrer')) && rd.links.filter(l => l.includes('nofollow')).length === rd.links.length - 1, rd.links);
   ok('the document itself allows no script and sends no referrer', rd.scripts === 0 && /default-src 'none'/.test(rd.csp) && rd.ref === 'no-referrer', [rd.scripts, rd.csp, rd.ref]);
-  ok('the original is one click away (footer and top bar)', rd.src === BLOG + '/blog/post/1' && rd.readerNew === BLOG + '/blog/post/1', [rd.src, rd.readerNew]);
+  ok('the original is one click away at the foot of the text (the top bar has no "new tab" for a text: the eye-care button is there)', rd.src === BLOG + '/blog/post/1' && await J(`getComputedStyle(document.querySelector('#readerNew')).display==='none' && getComputedStyle(document.querySelector('#readerEye')).display!=='none'`), [rd.src, rd.readerNew]);
   ok('opening marked it read', rd.unread === false || rd.unread === undefined, rd.unread);
   await c.shot(require('../paths').SHOTS + '/text_reader.png');
 
@@ -53,10 +53,9 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   ok('its relative link points to the original site', hs.rel.some(h => h === BLOG + '/relative/page'), hs.rel);
 
   // ------------------------------------------------ settings apply, save as HTML, print
-  await J(`document.querySelector('#readerSet').click()`); await sleep(400);
-  ok('the save row is no longer in the settings panel; the top bar has a Save button for a document', await J(`!document.querySelector('#rowSave') && !document.querySelector('#rSetPanel #rSaveHtml') && !document.querySelector('#readerSave').disabled`));
-  await J(`document.querySelector('[data-fs="10"]').click(); document.querySelector('#rThemes [data-th="sepia"]').click()`); await sleep(500);
-  ok('size and colour apply to the article', await J(`(()=>{ const el=document.querySelector('#frame').contentDocument.documentElement; return /--fs:\\s*18\\.7px/.test(el.getAttribute('style')||'') && el.getAttribute('data-theme')==='sepia'; })()`));
+  ok('there is no settings panel; the top bar has a Save button for a document', await J(`!document.querySelector('#rSetPanel') && !document.querySelector('#readerSet') && !document.querySelector('#readerSave').disabled`));
+  await J(`document.querySelector('#rbFsP').click(); document.querySelector('#readerEye').click()`); await sleep(500);
+  ok('size (the bar at the foot) and colour (the eye-care button) apply to the article', await J(`(()=>{ const el=document.querySelector('#frame').contentDocument.documentElement; return /--fs:\\s*20\\.9px/.test(el.getAttribute('style')||'') && el.getAttribute('data-theme')==='sepia'; })()`));
   await c.shot(require('../paths').SHOTS + '/text_settings.png');
   await J(`document.querySelector('#readerSave').click()`); await sleep(300);
   ok('the Save panel shows the download for a document', await J(`!document.querySelector('#rSaveHtml').hidden && /Download as a web page/.test(document.querySelector('#rSaveHtml').textContent)`));

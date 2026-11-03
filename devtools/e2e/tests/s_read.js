@@ -90,7 +90,7 @@ const log = async () => (await fetch(SITE + '/__log')).json();
   await J(`(()=>{ const d=state.dirData; d.items.unshift({id:'zz1',url:'${SITE}/a/2',title:'目录里的一篇文章',summary:'s',image:'',date:'2026-10-20',lang:'en',shelf:'',type:'article',tags:[]},{id:'zz2',url:'https://video.example/v',title:'目录里的视频',summary:'v',image:'',date:'2026-10-19',lang:'en',shelf:'',type:'video',tags:[]}); document.querySelector('[data-space="dir"]').click(); })()`); await sleep(800);
   await stubOpen();
   await J(`${card('目录里的一篇文章')}.querySelector('.card-title a').click()`); await sleep(4500);
-  const dir = await J(`({open:!document.querySelector('#reader').hidden, text:/Lead time is the gap/.test(document.querySelector('#frame').contentDocument.body.textContent), star:document.querySelector('#readerStar').hidden, mark:document.querySelector('#readerMark').disabled, opened:window.__opened.length, hash:location.hash, kept:state.items.some(x=>x.id==='tmp:zz1')})`);
+  const dir = await J(`({open:!document.querySelector('#reader').hidden, text:/Lead time is the gap/.test(document.querySelector('#frame').contentDocument.body.textContent), star:!document.querySelector('#readerStar'), mark:!document.querySelector('#readerMark'), opened:window.__opened.length, hash:location.hash, kept:state.items.some(x=>x.id==='tmp:zz1')})`);
   ok('a directory article is read in the reader (nothing opened, nothing put on the shelf, no star or bookmark of its own)', dir.open && dir.text && dir.star && dir.mark && dir.opened === 0 && !dir.kept, dir);
   await J(`document.querySelector('#readerBack').click()`); await sleep(600);
   ok('closing the reader leaves you in the directory', await J(`document.querySelector('[data-space="dir"]').getAttribute('aria-pressed')`) === 'true');
