@@ -865,7 +865,7 @@ def _root_names(root, library, out_name):
     for name in sorted(os.listdir(root)):
         if name.startswith('.') or name in SKIP_DIRS or name in SKIP_ROOT_DIRS or name in (out_name, ARTICLES, CONVERTED, os.path.basename(library)):
             continue
-        if os.path.isfile(os.path.join(root, name)) and name in SKIP_ROOT_FILES:
+        if os.path.isfile(os.path.join(root, name)) and (name in SKIP_ROOT_FILES or name.lower().endswith('.md')):          # (a Markdown file in the root is a note of the project, never a page of the site)
             continue
         names.append(name)
     return names
@@ -913,6 +913,7 @@ def verify_site(out):
     if os.path.isdir(os.path.join(out, 'library')):
         problems.append('a library/ folder is in the site: /library/* is redirected away by vercel.json, so every page in it would be a 404')
     problems += ['%s is a private file of the project and must not be published' % n for n in PRIVATE_FILES if os.path.exists(os.path.join(out, n))]
+    problems += ['%s is a Markdown file in the root of the site: a note of the project, not a page, and it must not be published' % n for n in sorted(os.listdir(out)) if n.lower().endswith('.md') and os.path.isfile(os.path.join(out, n))]
     try:
         with open(os.path.join(out, 'manifest.json'), 'r', encoding='utf-8') as f:
             items = json.load(f).get('items') or []
