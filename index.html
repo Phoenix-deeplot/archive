@@ -547,53 +547,66 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .hot-side a{color:var(--accent)}
 .hot-state{margin:0;padding:34px 14px;text-align:center;color:var(--muted)}
 .hot-state .btn{margin-top:10px}
-.hot-intro{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 18px;margin:2px 0 14px;padding:20px 22px;border:1px solid var(--rule);border-radius:16px;background:linear-gradient(125deg,color-mix(in srgb,var(--accent) 12%,var(--surface)),var(--surface) 62%)}
+.hot-intro{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 18px;margin:0 0 10px;padding:0 0 10px;border:0;border-bottom:1px solid var(--rule);border-radius:0;background:none}
 .hot-intro-copy{max-width:760px}
 .hot-kicker{margin:0 0 5px;color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
-.hot-intro h2{margin:0;font:700 25px/1.25 var(--serif);color:var(--ink)}
-.hot-intro p{margin:7px 0 0;color:var(--muted);font-size:14px;line-height:1.55}
+.hot-intro h2{margin:0;font:700 21px/1.25 var(--serif);color:var(--ink)}
+.hot-intro p{margin:4px 0 0;color:var(--muted);font-size:13px;line-height:1.45}
 .hot-updated{flex:0 0 auto;color:var(--muted);font-size:12.5px}
 .hot-modebar{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
 .hot-mode{min-height:40px;padding:7px 14px;border:1px solid var(--rule);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
 .hot-mode[aria-selected="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg);font-weight:650}
-.hot-mix-title{margin:0 0 10px;font:700 18px/1.35 var(--serif);color:var(--ink)}
-.hot-mix-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:20px}
-.hot-mix-card{position:relative;min-width:0;min-height:184px;overflow:hidden;padding:16px 16px 14px;border:1px solid var(--rule);border-radius:14px;background:var(--surface);box-shadow:0 2px 8px rgba(20,36,32,.045)}
-.hot-mix-card::after{position:absolute;right:8px;bottom:-26px;color:color-mix(in srgb,var(--accent) 10%,transparent);font:800 96px/.9 var(--sans);content:attr(data-rank);pointer-events:none}
-.hot-mix-card[data-featured="true"]{background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 10%,var(--surface)),var(--surface) 72%)}
-.hot-mix-source{position:relative;z-index:1;display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:12px;color:var(--muted);font-size:12px}
-.hot-mix-source strong{color:var(--accent);font-weight:700}
-.hot-mix-rank{padding:2px 7px;border-radius:999px;background:color-mix(in srgb,var(--heat) 14%,var(--surface));color:var(--heat);font-weight:700;white-space:nowrap}
-.hot-mix-link{position:relative;z-index:1;display:block;color:var(--ink);text-decoration:none}
-.hot-mix-link:hover{color:var(--accent)}
-.hot-mix-link strong{display:-webkit-box;overflow:hidden;-webkit-line-clamp:3;-webkit-box-orient:vertical;font-size:16px;line-height:1.45}
-.hot-mix-note{position:relative;z-index:1;display:-webkit-box;overflow:hidden;margin:7px 0 0;color:var(--muted);font-size:13px;line-height:1.5;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.hot-mix-foot{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:5px 10px;margin-top:12px;color:var(--muted);font-size:11.5px}
-.hot-mix-list{display:grid;gap:8px}
-.hot-mix-row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:start;gap:4px 10px;padding:12px 14px;border:1px solid var(--rule);border-radius:12px;background:var(--surface)}
-.hot-mix-row .hot-mix-num{grid-column:1;grid-row:1 / span 2;padding-top:2px;color:var(--heat);font-size:16px;font-weight:800;text-align:center;font-variant-numeric:tabular-nums}
-.hot-mix-row .hot-mix-source{grid-column:2 / 4;margin:0 0 2px}
-.hot-mix-row .hot-mix-link{grid-column:2;grid-row:2}
-.hot-mix-row .hot-mix-link strong{display:-webkit-box;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:15px}
-.hot-mix-row .hot-mix-foot{grid-column:3;grid-row:2;justify-content:flex-end;margin:0;text-align:right}
-.hot-mix-row .hot-mix-note{grid-column:2 / 4;margin:1px 0 0}
-.hot-mix-status{margin:10px 0 14px;color:var(--muted);font-size:13px}
-.hot-mix-retry{margin-top:8px}
+.hot-cat-select{display:none;width:100%;min-height:44px;border:1px solid var(--rule);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;padding:7px 10px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.hot-period{display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--rule);border-radius:9px;background:var(--bg)}
+.hot-period button{min-height:32px;padding:4px 10px;border:0;border-radius:6px;background:transparent;color:var(--muted);font:inherit;font-size:12px;cursor:pointer;white-space:nowrap}
+.hot-period button[aria-pressed="true"]{background:var(--ink);color:var(--bg);font-weight:650}
+.hot-history-note{margin:0;padding:24px 14px;text-align:center;color:var(--muted);line-height:1.55}
+.hot-focus{margin:0 0 16px}
+.hot-focus-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 8px}
+.hot-focus-head h3{margin:0;font:700 16px/1.3 var(--serif);color:var(--ink)}
+.hot-focus-head p{margin:3px 0 0;color:var(--muted);font-size:12px}
+.hot-focus-head button{border:0;background:none;color:var(--accent);font:inherit;font-size:12px;cursor:pointer}
+.hot-focus-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.hot-focus-card{display:block;min-width:0;padding:12px 13px;border:1px solid var(--rule);border-radius:12px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 8%,var(--surface)),var(--surface) 72%);color:var(--ink);text-decoration:none}
+.hot-focus-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.hot-focus-card .hot-event-category{margin-bottom:7px}
+.hot-focus-rank{display:inline-flex;margin-right:6px;color:#b67a22;font-size:12px;font-weight:800;font-variant-numeric:tabular-nums}
+.hot-focus-card strong{display:-webkit-box;overflow:hidden;font:700 15px/1.4 var(--serif);-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.hot-focus-card p{display:-webkit-box;overflow:hidden;margin:5px 0 7px;color:var(--muted);font-size:12px;line-height:1.45;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.hot-focus-meta{color:var(--muted);font-size:11px}
+.hot-events{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.hot-event{min-width:0;padding:15px 16px;border:1px solid var(--rule);border-radius:13px;background:var(--surface)}
+.hot-event-head,.hot-event-meta,.hot-event-sources{display:flex;flex-wrap:wrap;align-items:center;gap:6px 9px}
+.hot-event-head{justify-content:space-between;margin-bottom:9px}
+.hot-event-category{display:inline-flex;padding:3px 8px;border-radius:999px;background:color-mix(in srgb,var(--accent) 12%,var(--surface));color:var(--accent);font-size:11.5px;font-weight:700}
+.hot-event-trend{color:var(--heat);font-size:11.5px;font-weight:650}
+.hot-event-title{display:block;color:var(--ink);font:700 17px/1.45 var(--serif);text-decoration:none;overflow-wrap:anywhere}
+.hot-event-title:hover{color:var(--accent)}
+.hot-event-summary{display:-webkit-box;overflow:hidden;margin:7px 0 11px;color:var(--muted);font-size:13px;line-height:1.55;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.hot-event-meta,.hot-event-sources{color:var(--muted);font-size:11.5px}
+.hot-event-sources{margin-top:8px;padding-top:8px;border-top:1px solid var(--rule)}
+.hot-event-sources a{color:var(--accent);text-decoration:none}
+.hot-event-sources a:hover{text-decoration:underline}
+.hot-feedback{margin:10px 0 14px;color:var(--muted);font-size:13px}
 @media (max-width:760px){
-  .hot-intro{align-items:flex-start;padding:16px;border-radius:13px}
-  .hot-intro h2{font-size:22px}
-  .hot-updated{width:100%}
+  .hot-intro{align-items:flex-start;margin-bottom:8px;padding-bottom:8px}
+  .hot-intro h2{font-size:19px}
+  .hot-updated{width:auto;margin-left:auto;text-align:right}
   .hot-modebar{position:sticky;top:0;z-index:4;padding:5px 0;background:var(--bg)}
   .hot-mode{min-height:44px}
-  .hot-mix-grid{grid-template-columns:1fr;gap:8px;margin-bottom:16px}
-  .hot-mix-card{min-height:0;padding:14px}
-  .hot-mix-card[data-featured="true"]{min-height:168px}
-  .hot-mix-row{grid-template-columns:28px minmax(0,1fr);padding:11px 12px}
-  .hot-mix-row .hot-mix-source{grid-column:2;grid-row:1}
-  .hot-mix-row .hot-mix-num{grid-column:1;grid-row:1 / span 3}
-  .hot-mix-row .hot-mix-link{grid-column:2;grid-row:2}
-  .hot-mix-row .hot-mix-foot{grid-column:2;grid-row:3;justify-content:flex-start;text-align:left;margin-top:4px}
-  .hot-mix-row .hot-mix-note{grid-column:2;grid-row:4}
+  .hot-cols{display:none}
+  .hot-cat-select{display:block;margin:0 0 8px}
+  .hot-period{width:100%;justify-content:stretch}
+  .hot-period button{flex:1;min-height:38px}
+  .hot-events{grid-template-columns:minmax(0,1fr);gap:8px}
+  .hot-event{padding:13px}
+  .hot-event-title{font-size:16px}
+  .hot-focus{margin-bottom:12px}
+  .hot-focus-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .hot-focus-card{padding:10px}
+  .hot-focus-card strong{font-size:13px}
+  .hot-focus-card p{font-size:11px}
   .hot-main{grid-template-columns:minmax(0,1fr);gap:10px}
   .hot-plats{position:static;flex-direction:row;overflow-x:auto;overflow-y:visible;max-height:none;gap:6px;padding:0 0 4px;scrollbar-width:none}
   .hot-plat{flex:0 0 auto;white-space:nowrap;border:1px solid var(--rule);border-radius:999px;padding:7px 14px;min-height:40px}
@@ -5992,7 +6005,7 @@ state.ls={scene:String(LS.get('lsScene','')||'')};
 state.lp={idx:null, idxAt:0, busy:false, err:'', data:new Map(), pending:new Map(), g:String(LS.get('lpG','daily')||'daily'), mode:'music', g_music:String(LS.get('lpG_music','daily')||'daily'), g_podcast:String(LS.get('lpG_podcast','pod-hot')||'pod-hot'), show:'', shown:30, more:false, pods:null, podsKey:'', io:null,
   sort:(k=>['rank','new','dur','title','artist'].includes(k)?k:'rank')(LS.get('lpSort','rank'))};
 state.dListen=false;                    // today's listening: what the service said, when it was asked, the scene that is shown
-state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), view:LS.get('hotView','mix')==='boards'?'boards':'mix', mixBusy:false, mixRows:[], mixRun:0, region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
+state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), view:LS.get('hotView','boards')==='events'?'events':'boards', period:LS.get('hotPeriod','day')==='week'?'week':'day', events:[], eventsAt:0, eventsBusy:false, eventsErr:'', eventsRun:0, region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
 const PUBLIC_ROUTES={discover:'/discover/',hot:'/hot/',listen:'/listen/',books:'/picks/books/',articles:'/picks/articles/',watch:'/watch/'};
 const publicRouteFromPath=()=>Object.keys(PUBLIC_ROUTES).find(k=>PUBLIC_ROUTES[k]===location.pathname)||'';
 const publicLabel=k=>({discover:['发现','Discover'],hot:['热榜','Trending'],listen:['今日听什么','Listen today'],books:['精选图书','Book picks'],articles:['精选文章','Article picks'],watch:['看什么','What to watch']}[k]||[])[state.lang==='zh'?0:1]||'';
@@ -6888,67 +6901,25 @@ function richLinkClick(e){                                                      
 
 /* ---- the hot lists (热榜): the service (hotapi.py) says which columns and platforms it has; a platform's list is asked when it is shown, kept 3 minutes here */
 const HOT_TTL=180000;
-const HOT_MIX_PER_COLUMN=2, HOT_MIX_LIMIT=30, HOT_MIX_ITEMS=18;
+const HOT_EVENTS_TTL=300000;
 const HOT_UI_COPY={
-  zh:{mix:'今日精选',boards:n=>`浏览平台榜单${n?` · ${n}`:''}`,hero:'今天有什么值得看',intro:'把各平台当前榜单放在一起看。先看榜内名次和更新时间，并分散来源；不同平台的热度数值不直接比较。',featured:'今日焦点',more:'继续发现',loading:'正在汇总各平台榜单……',partial:'部分榜单暂时读不到，已先展示可用内容。',retry:'重试汇总',empty:'暂时没有可展示的热榜内容。',rank:n=>`榜内第 ${n} 名`,newest:'最新',siteRead:'可在站内打开',openSite:'打开原站'},
-  en:{mix:'Today’s picks',boards:n=>`Browse platform charts${n?` · ${n}`:''}`,hero:'What’s worth a look today',intro:'A mixed view of current platform charts, ordered by each chart’s own rank and freshness with source variety. Heat numbers are not compared across platforms.',featured:'Today’s highlights',more:'More to discover',loading:'Gathering charts…',partial:'Some charts are unavailable; showing what loaded.',retry:'Retry charts',empty:'No hot-list items are available right now.',rank:n=>`#${n} on chart`,newest:'Latest',siteRead:'Read here',openSite:'Open source'}
+  zh:{boards:n=>`平台榜单${n?` · ${n}`:''}`,events:'热点追踪',focus:'今日精选排名',focusSub:'今日焦点 · 从持续更新的多源事件中优先呈现',focusMore:'完整热点追踪 ›',hero:'按兴趣浏览平台热榜',intro:'榜单按领域整理，保留各平台原始排名；热点事件持续汇总多方报道。',day:'今日榜',week:'近 7 天',weekPending:'正在积累真实榜单快照；当前先展示已采集数据，排名会随记录增加逐步稳定。',weekEmpty:'近 7 天暂时没有可展示的榜单记录。',eventLoading:'正在汇总持续更新的热点事件……',eventErr:'热点追踪暂时不可用，请稍后重试。',eventEmpty:'暂时没有正在持续更新的热点事件。',eventRetry:'重试热点追踪',eventSources:n=>`${n} 个来源`,eventUpdated:m=>`最后更新 ${m}`,trendUp:'热度上升',trendDown:'热度回落',trendStable:'持续更新',rank:n=>`榜内第 ${n} 名`,newest:'最新',siteRead:'可在站内打开',openSite:'打开原站'},
+  en:{boards:n=>`Platform charts${n?` · ${n}`:''}`,events:'Live topics',focus:'Today’s picks ranking',focusSub:'Today’s focus · selected from developing stories across sources',focusMore:'Full live tracking ›',hero:'Browse charts by interest',intro:'Charts are grouped by topic and keep each platform’s original ranking. Live topics follow developing stories across sources.',day:'Today',week:'Last 7 days',weekPending:'We are collecting real chart snapshots. Showing the data available so far; rankings will stabilize as more days are recorded.',weekEmpty:'There are no chart entries to show for the last 7 days yet.',eventLoading:'Gathering developing stories…',eventErr:'Live topic tracking is temporarily unavailable.',eventEmpty:'No developing stories are available right now.',eventRetry:'Retry topic tracking',eventSources:n=>`${n} sources`,eventUpdated:m=>`Last updated ${m}`,trendUp:'Rising',trendDown:'Cooling',trendStable:'Developing',rank:n=>`#${n} on chart`,newest:'Latest',siteRead:'Read here',openSite:'Open source'}
 };
 const hotUi=(k,...args)=>{ const v=(HOT_UI_COPY[state.lang==='en'?'en':'zh']||HOT_UI_COPY.zh)[k]; return typeof v==='function'?v(...args):v||k; };
 const hotName = o => state.lang==='en' ? (o.name_en||o.name) : o.name;
 const hotShown = () => dirOn() && state.dHot && dirIsHome() && !!hotBase();
-const hotKey = p => p.regions ? p.id+'|'+state.hot.region : p.id;                                  // a list of a country is kept for each country that was asked for
-const hotFeed = (p,region) => hotBase()+'/api/hot?p='+encodeURIComponent(p.id)+(p.regions && region ? '&region='+encodeURIComponent(region) : '');
+const hotKey = p => p.id+'|'+state.hot.period+(p.regions?'|'+state.hot.region:'');                    // cache each period and country independently
+const hotFeed = (p,region,period='day') => hotBase()+'/api/hot?p='+encodeURIComponent(p.id)+(p.regions && region ? '&region='+encodeURIComponent(region) : '')+(period==='week'?'&period=week':'');
 const hotCountry = c => { try{ return new Intl.DisplayNames([state.lang==='zh'?'zh-Hans':'en'],{type:'region'}).of(c) || c; }catch(e){ return c; } };
 const paintHot = () => { $('#dirReco').innerHTML=hotHTML(); };
+const hotActiveColumns = () => { const h=state.hot, cols=h.idx&&Array.isArray(h.idx.columns)?h.idx.columns:[], plats=h.idx&&Array.isArray(h.idx.platforms)?h.idx.platforms:[]; return cols.filter(c=>c.enabled!==false&&plats.some(p=>p.col===c.id)); };
 function hotCur(){                                                                                 // the column and the platform that are chosen (the first ones when what was remembered is gone)
-  const h=state.hot, idx=h.idx; if(!idx || !idx.columns.length) return null;
+  const h=state.hot, idx=h.idx, columns=hotActiveColumns(); if(!idx || !columns.length) return null;
   if(h.want){ const w=idx.platforms.find(x=>x.id===h.want); h.want=''; if(w){ h.sel.c=w.col; if(!h.sel.p || typeof h.sel.p!=='object') h.sel.p={}; h.sel.p[w.col]=w.id; hotSave(); } }          // (asked for by the way from a platform's tab)
-  const col=idx.columns.find(c=>c.id===h.sel.c) || idx.columns[0], plats=idx.platforms.filter(p=>p.col===col.id); if(!plats.length) return null;
+  const col=columns.find(c=>c.id===h.sel.c) || columns[0], plats=idx.platforms.filter(p=>p.col===col.id); if(!plats.length) return null;
   const want=h.sel.p && typeof h.sel.p==='object' ? h.sel.p[col.id] : '';
   return {col, plats, cur:plats.find(p=>p.id===want) || plats[0]};
-}
-function hotMixSources(){
-  const idx=state.hot.idx; if(!idx || !Array.isArray(idx.platforms)) return [];
-  const out=[];
-  (idx.columns||[]).forEach(c=>idx.platforms.filter(p=>p.col===c.id).slice(0,HOT_MIX_PER_COLUMN).forEach(p=>out.push(p)));
-  return out.length ? out : idx.platforms.slice(0,HOT_MIX_PER_COLUMN*3);
-}
-function hotMixBuild(){
-  const h=state.hot, sources=hotMixSources(), rows=[], seenUrl=new Set(), seenTitle=new Set(), cols=h.idx&&h.idx.columns||[];
-  sources.forEach((p,sourceIndex)=>{
-    const d=h.data.get(hotKey(p)); if(!d || d.state!=='ok' || !Array.isArray(d.rows)) return;
-    const n=Math.max(1,d.rows.length), listAge=d.at?Math.max(0,(Date.now()/1000-d.at)/3600):null;
-    d.rows.forEach((r,i)=>{
-      const title=String(r&&r.title||'').trim(), url=httpUrl(r&&r.url); if(!title || !url) return;
-      const displayTitle=state.lang==='zh' ? String(r.title_zh||title).trim() : title;
-      const titleKey=displayTitle.toLowerCase().normalize('NFKC').replace(/[\s·•\-—_…，。；：、!?！？'"“”‘’()（）\[\]{}<>《》「」]+/g,'');
-      const ukey=urlKey(url); if((ukey && seenUrl.has(ukey)) || (titleKey && seenTitle.has(titleKey))) return;
-      if(ukey) seenUrl.add(ukey); if(titleKey) seenTitle.add(titleKey);
-      const dt=Date.parse(String(r.date||'')), itemAge=Number.isFinite(dt)?Math.max(0,(Date.now()-dt)/3600000):null;
-      const age=itemAge===null?listAge:itemAge, fresh=age===null ? .45 : 1/(1+age/36);
-      const rankScore=p.ranked===false ? .45 : Math.max(0,1-i/n), languageScore=(p.lang===state.lang ? .09 : 0)+(state.lang==='zh'&&r.title_zh ? .06 : 0);
-      const priority=1-sourceIndex/Math.max(1,sources.length), score=rankScore*.65+fresh*.24+languageScore+priority*.04;
-      rows.push({row:r,platform:p,col:cols.find(c=>c.id===p.col)||null,rank:i+1,displayTitle,sourceAt:d.at||0,score,sourceIndex});
-    });
-  });
-  rows.sort((a,b)=>b.score-a.score || a.sourceIndex-b.sourceIndex || a.rank-b.rank);
-  const picked=[], deferred=[], sourceCounts=new Map(), colCounts=new Map();
-  rows.forEach(x=>{
-    const sc=sourceCounts.get(x.platform.id)||0, cc=colCounts.get(x.platform.col)||0, early=picked.length<6, sourceCap=early?1:3, columnCap=early?2:7;
-    if(sc<sourceCap && cc<columnCap){ picked.push(x); sourceCounts.set(x.platform.id,sc+1); colCounts.set(x.platform.col,cc+1); }
-    else deferred.push(x);
-  });
-  return picked.concat(deferred).slice(0,HOT_MIX_LIMIT);
-}
-async function hotMixEnsure(force){
-  const h=state.hot; if(!h.idx || h.mixBusy || h.view!=='mix') return;
-  const sources=hotMixSources(), todo=sources.filter(p=>{ const d=h.data.get(hotKey(p)); return force || !d || (d.state==='ok' && Date.now()-d.t>HOT_TTL); });
-  if(!todo.length){ h.mixRows=hotMixBuild(); return; }
-  h.mixBusy=true; h.mixRows=hotMixBuild(); const run=++h.mixRun; let next=0;
-  const worker=async()=>{ while(next<todo.length){ const p=todo[next++]; await hotLoad(p,false,HOT_MIX_ITEMS); } };
-  await Promise.all(Array.from({length:Math.min(3,todo.length)},worker));
-  if(run!==h.mixRun) return;
-  h.mixBusy=false; h.mixRows=hotMixBuild(); if(hotShown()) paintHot();
 }
 async function hotIndex(force){
   const base=hotBase(), h=state.hot; if(!base || h.busy || (h.idx && !force)) return;
@@ -6966,16 +6937,27 @@ async function hotLoad(p, fresh, limit){
   h.data.set(key,{...(old||{}), state:'load'}); if(hotShown()) paintHot();
   try{
     const n=Math.max(1,Math.min(50,Number(limit)||50));
-    const r=await fetch(base+'/api/hot?p='+encodeURIComponent(p.id)+'&format=json&n='+n+(state.lang==='zh' && p.lang==='en' ? '&tr=zh' : '')+(p.regions ? '&region='+encodeURIComponent(h.region) : ''),{credentials:'omit', cache:fresh?'no-cache':'default'}), d=await r.json().catch(()=>null);
+    const r=await fetch(base+'/api/hot?p='+encodeURIComponent(p.id)+'&format=json&n='+n+'&period='+encodeURIComponent(h.period)+(state.lang==='zh' && p.lang==='en' ? '&tr=zh' : '')+(p.regions ? '&region='+encodeURIComponent(h.region) : ''),{credentials:'omit', cache:fresh?'no-cache':'default'}), d=await r.json().catch(()=>null);
     if(!d || !d.ok || !Array.isArray(d.items)){ const m=d && (state.lang==='zh' ? d.message : d.message_en); throw Object.assign(new Error(m || 'HTTP '+r.status), {svc:!!m}); }
-    h.data.set(key,{state:'ok', rows:d.items, t:Date.now(), at:+d.updated||0, region:String(d.region||'')});
+    h.data.set(key,{state:'ok', rows:d.items, t:Date.now(), at:+d.updated||0, region:String(d.region||''), history:d.history||null, period:d.period||h.period});
   }catch(e){ h.data.set(key,{state:'err', rows:old && old.rows || [], t:Date.now(), msg:e.svc ? e.message : t('hotListErr',String(e.message||e))}); }       // (the service’s own sentence says what is wrong already)
-  if(h.view==='mix') h.mixRows=hotMixBuild();
+  if(hotShown()) paintHot();
+}
+async function hotEventsEnsure(force){
+  const h=state.hot, base=hotBase(); if(!base || h.eventsBusy || (!force && h.eventsAt && Date.now()-h.eventsAt<HOT_EVENTS_TTL)) return;
+  h.eventsBusy=true; h.eventsErr=''; const run=++h.eventsRun; if(hotShown()) paintHot();
+  try{
+    const r=await fetch(base+'/api/hot/events?lang='+encodeURIComponent(state.lang==='en'?'en':'zh')+'&limit=24',{credentials:'omit',cache:force?'no-cache':'default'}), d=await r.json().catch(()=>null);
+    if(!d || !d.ok || !Array.isArray(d.events)) throw new Error('events');
+    if(run===h.eventsRun){ h.events=d.events; h.eventsAt=Date.now(); h.eventsUpdated=+d.updated||0; }
+  }catch(e){ if(run===h.eventsRun) h.eventsErr=hotUi('eventErr'); }
+  if(run===h.eventsRun) h.eventsBusy=false;
   if(hotShown()) paintHot();
 }
 function hotEnsure(){                                                                              // the list that is shown is asked for, once it is missing or old
   const h=state.hot; if(!h.idx){ if(!h.err) hotIndex(); return; }                                  // (a service that failed is asked again by the retry button, not by every repaint)
-  if(h.view==='mix'){ hotMixEnsure(false); return; }
+  if(h.view==='events'){ hotEventsEnsure(false); return; }
+  hotEventsEnsure(false);                                                                         // power the compact today-picks strip while browsing charts
   const s=hotCur(); if(!s) return; const d=h.data.get(hotKey(s.cur));
   if(!d || (d.state==='ok' && Date.now()-d.t>HOT_TTL)) hotLoad(s.cur);
 }
@@ -6993,53 +6975,66 @@ function hotBoardsHTML(){
   const h=state.hot, s=hotCur();
   if(!s) return `<div class="hot-list"><p class="hot-state">${esc(h.err || t('hotLoading'))}${h.err?`<br><button class="btn" type="button" data-hot-retry>${esc(t('dirRetry'))}</button>`:''}</p></div>`;
   const cur=s.cur, d=h.data.get(hotKey(cur)), ranked=cur.ranked!==false, canSub=!!feedApi(), where=cur.regions ? (h.region!=='auto' ? h.region : (d && d.region) || '') : '';          // (where: the country of the list that is shown, once it is known)
-  const subbed=canSub && (!cur.regions || !!where) && subCols().some(c=>urlKey(c.feed.url)===urlKey(hotFeed(cur,where)));
+  const subUrl=hotFeed(cur,where,h.period), subbed=canSub && (!cur.regions || !!where) && subCols().some(c=>urlKey(c.feed.url)===urlKey(subUrl));
   const pick = cur.regions ? `<select class="hot-region" data-hot-region aria-label="${esc(t('hotRegion'))}" title="${esc(t('hotRegion'))}"><option value="auto"${h.region==='auto'?' selected':''}>${esc(t('hotRegionAuto', h.region==='auto' && where ? hotCountry(where) : ''))}</option>${cur.regions.map(c=>[c,hotCountry(c)]).sort((a,b)=>a[1].localeCompare(b[1],state.lang==='zh'?'zh-Hans-CN':'en')).map(([c,n])=>`<option value="${esc(c)}"${h.region===c?' selected':''}>${esc(n)}</option>`).join('')}</select>` : '';
   let body;
   if(!d || (d.state==='load' && !(d.rows||[]).length)) body=`<p class="hot-state">${esc(t('hotLoading'))}</p>`;
   else if(d.state==='err' && !(d.rows||[]).length) body=`<p class="hot-state">${esc(d.msg)}<br><button class="btn" type="button" data-hot-refresh>${esc(t('dirRetry'))}</button></p>`;
+  else if(h.period==='week' && !(d.history&&d.history.complete)) body=d.rows.length?`<div><p class="hot-history-note">${esc(hotUi('weekPending'))}${d.history&&d.history.snapshots?`<br>${esc(String(d.history.snapshots))} / ${esc(String(d.history.required_days||7))}`:''}</p><ol class="hot-rows">${d.rows.map((r,i)=>hotRowHTML(r,i,ranked)).join('')}</ol></div>`:`<p class="hot-history-note">${esc(hotUi(d.history&&d.history.available?'weekPending':'weekEmpty'))}${d.history&&d.history.snapshots?`<br>${esc(String(d.history.snapshots))} / ${esc(String(d.history.required_days||7))}`:''}</p>`;
+  else if(!d.rows.length && h.period==='week') body=`<p class="hot-history-note">${esc(hotUi('weekEmpty'))}</p>`;
   else if(!d.rows.length) body=`<p class="hot-state">${esc(t('hotEmpty'))}</p>`;
   else body=`<ol class="hot-rows">${d.rows.map((r,i)=>hotRowHTML(r,i,ranked)).join('')}</ol>`;
-  const meta=[cur.via ? t('hotVia',cur.via) : '', d && d.at ? t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))) : '', ranked ? '' : t('hotNewest')].filter(Boolean).join(' · ');
-  return `<div class="hot"><div class="hot-cols" role="tablist" aria-label="${esc(t('hotTitle'))}">${h.idx.columns.map(c=>`<button class="hot-col" type="button" role="tab" aria-selected="${c.id===s.col.id}" data-hot-c="${esc(c.id)}">${esc(hotName(c))}</button>`).join('')}</div>`
+  const meta=[cur.via ? t('hotVia',cur.via) : '', d && d.at ? t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))) : '', h.period==='week'&&d&&d.history?`${d.history.snapshots||0} / ${d.history.required_days||7}`:'', ranked ? '' : t('hotNewest')].filter(Boolean).join(' · '), columns=hotActiveColumns();
+  return `<div class="hot"><label class="sr-only" for="hotCatSelect">${esc(hotUi('boards',columns.length))}</label><select id="hotCatSelect" class="hot-cat-select" data-hot-c-select aria-label="${esc(hotUi('boards',columns.length))}">${columns.map(c=>`<option value="${esc(c.id)}"${c.id===s.col.id?' selected':''}>${esc(hotName(c))}</option>`).join('')}</select><div class="hot-cols" role="tablist" aria-label="${esc(t('hotTitle'))}">${columns.map(c=>`<button class="hot-col" type="button" role="tab" aria-selected="${c.id===s.col.id}" data-hot-c="${esc(c.id)}">${esc(hotName(c))}</button>`).join('')}</div>`
     + `<div class="hot-main"><nav class="hot-plats" role="tablist" aria-label="${esc(hotName(s.col))}">${s.plats.map(p=>`<button class="hot-plat" type="button" role="tab" aria-selected="${p.id===cur.id}" data-hot-p="${esc(p.id)}">${esc(hotName(p))}</button>`).join('')}</nav>`
     + `<section class="hot-list" aria-live="polite" aria-busy="${!!(d && d.state==='load')}"><header class="hot-head"><h2>${esc(hotName(cur))}${where ? ' · '+esc(hotCountry(where)) : ''}</h2><span class="hot-meta">${esc(meta)}</span><span class="hot-acts">`
+    + `<span class="hot-period" role="group" aria-label="${esc(hotUi('boards',columns.length))}"><button type="button" data-hot-period="day" aria-pressed="${h.period==='day'}">${esc(hotUi('day'))}</button><button type="button" data-hot-period="week" aria-pressed="${h.period==='week'}">${esc(hotUi('week'))}</button></span>`
     + (httpUrl(cur.home) ? `<a href="${esc(cur.home)}" target="_blank" rel="nofollow ugc noopener noreferrer">${esc(t('hotHome'))}</a>` : '')
     + pick + `<button class="btn dr-act" type="button" data-hot-refresh>${esc(t('hotRefresh'))}</button>`
     + (canSub ? `<button class="btn dr-act" type="button" data-hot-sub title="${esc(t('hotFollowTip'))}" ${subbed || (cur.regions && !where) ?'disabled':''}>${esc(t(subbed?'hotFollowed':'hotFollow'))}</button>` : '')
     + `</span></header>${body}</section></div></div>`;
 }
-function hotMixCardHTML(x,i,featured){
-  const r=x.row, p=x.platform, url=httpUrl(r.url), title=x.displayTitle, original=state.lang==='zh'&&r.title_zh&&r.title_zh!==r.title?`<p class="hot-mix-note" lang="en">${esc(r.title)}</p>`:'', note=r.note&&String(r.note).trim()!==title?`<p class="hot-mix-note">${esc(r.note)}</p>`:'', source=[hotName(p),x.col?hotName(x.col):''].filter(Boolean).join(' · '), rank=p.ranked===false?hotUi('newest'):hotUi('rank',x.rank), readable=!!(p.read||p.kw||embedOf(url)||RICH_DETAIL.test(url)||String(r.body||'').length>=30), foot=[r.heat||'',r.date||'',readable?hotUi('siteRead'):hotUi('openSite')].filter(Boolean).map(v=>`<span>${esc(v)}</span>`).join('');
-  if(featured) return `<article class="hot-mix-card" data-featured="${i===0}" data-rank="${i+1}"><div class="hot-mix-source"><strong>${esc(source)}</strong><span class="hot-mix-rank">${esc(rank)}</span></div><a class="hot-mix-link" href="${esc(url)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-mix-i="${i}"><strong>${esc(title)}</strong></a>${original}${note}<div class="hot-mix-foot">${foot}</div></article>`;
-  return `<article class="hot-mix-row"><span class="hot-mix-num">${i+1}</span><div class="hot-mix-source"><strong>${esc(source)}</strong><span class="hot-mix-rank">${esc(rank)}</span></div><a class="hot-mix-link" href="${esc(url)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-mix-i="${i}"><strong>${esc(title)}</strong></a><div class="hot-mix-foot">${foot}</div>${original}${note}</article>`;
+function hotEventTime(value){
+  if(value===null||value===undefined||value==='') return '';
+  let ms=Number(value); if(Number.isFinite(ms)&&ms>0) ms=ms<100000000000?ms*1000:ms; else ms=Date.parse(String(value));
+  if(!Number.isFinite(ms)||ms<=0) return '';
+  const mins=Math.max(0,Math.round((Date.now()-ms)/60000));
+  if(state.lang==='en') return mins<1?'just now':mins<60?`${mins} min ago`:`${Math.round(mins/60)} h ago`;
+  return mins<1?'刚刚':mins<60?`${mins} 分钟前`:`${Math.round(mins/60)} 小时前`;
 }
-function hotMixHTML(){
-  const h=state.hot, sources=hotMixSources(), settled=sources.filter(p=>{ const d=h.data.get(hotKey(p)); return d&&d.state!=='load'; }).length, warming=h.mixBusy&&settled<Math.min(3,sources.length), rows=warming?[]:(h.mixRows&&h.mixRows.length?h.mixRows:hotMixBuild()), failed=sources.some(p=>{ const d=h.data.get(hotKey(p)); return d&&d.state==='err'&&!(d.rows||[]).length; });
-  const stamps=sources.map(p=>{ const d=h.data.get(hotKey(p)); return d&&d.at||0; }).filter(Boolean), updated=stamps.length?Math.max(...stamps):0;
-  const age=updated?Math.max(0,Math.round((Date.now()/1000-updated)/60)):null;
-  let content='';
-  if(rows.length){
-    const top=rows.slice(0,3), rest=rows.slice(3,24);
-    content=`<h3 class="hot-mix-title">${esc(hotUi('featured'))}</h3><div class="hot-mix-grid">${top.map((x,i)=>hotMixCardHTML(x,i,true)).join('')}</div>`
-      +(rest.length?`<h3 class="hot-mix-title">${esc(hotUi('more'))}</h3><div class="hot-mix-list">${rest.map((x,i)=>hotMixCardHTML(x,i+3,false)).join('')}</div>`:'');
-  }else if(h.mixBusy||h.busy){ content=`<p class="hot-state" aria-live="polite">${esc(hotUi('loading'))}</p>`; }
-  else if(h.err){ content=`<p class="hot-state">${esc(h.err)}<br><button class="btn hot-mix-retry" type="button" data-hot-retry>${esc(t('dirRetry'))}</button></p>`; }
-  else { content=`<p class="hot-state">${esc(failed||!sources.length?hotUi('empty'):hotUi('loading'))}${failed?`<br><button class="btn hot-mix-retry" type="button" data-hot-mix-retry>${esc(hotUi('retry'))}</button>`:''}</p>`; }
-  const status=h.mixBusy?(rows.length?hotUi('loading'):''):failed&&rows.length?hotUi('partial'):'';
-  return `<section class="hot-mixed" aria-live="polite" aria-busy="${!!h.mixBusy}">${status?`<p class="hot-mix-status">${esc(status)}</p>`:''}${content}</section>`;
+function hotEventCategory(id){ const c=(state.hot.idx&&state.hot.idx.columns||[]).find(x=>x.id===id); return c?hotName(c):String(id||''); }
+function hotEventTrend(value){ const v=typeof value==='object'&&value?String(value.direction||value.label||''):String(value||''); const s=v.toLowerCase(); if(/ris(?:e|ing)|up|increase|上升|升温/.test(s)) return hotUi('trendUp'); if(/fall|down|cool|decrease|回落|降温/.test(s)) return hotUi('trendDown'); return hotUi('trendStable'); }
+function hotEventsHTML(){
+  const h=state.hot;
+  if(h.eventsBusy&&!h.events.length) return `<p class="hot-state" aria-live="polite">${esc(hotUi('eventLoading'))}</p>`;
+  if(h.eventsErr&&!h.events.length) return `<p class="hot-state">${esc(h.eventsErr)}<br><button class="btn" type="button" data-hot-events-retry>${esc(hotUi('eventRetry'))}</button></p>`;
+  if(!h.events.length) return `<p class="hot-state">${esc(hotUi('eventEmpty'))}${h.eventsErr?`<br><button class="btn" type="button" data-hot-events-retry>${esc(hotUi('eventRetry'))}</button>`:''}</p>`;
+  const cards=h.events.map(ev=>{
+    const items=Array.isArray(ev.items)?ev.items:[], latest=items[0]||{}, title=String(ev.title||latest.title||''), url=httpUrl(latest.url||latest.source_url||ev.url), excerpt=String(latest.excerpt||latest.summary||latest.note||''), updated=hotEventTime(ev.last_updated), count=Math.max(0,Number(ev.source_count)||items.length), src=[];
+    const seen=new Set(); items.forEach(it=>{ const name=typeof it.source==='string'?it.source:String(it.source&& (it.source.name||it.source.title)||it.source_name||''); const link=httpUrl(it.url||it.source_url); const key=name+'|'+link; if(name&&!seen.has(key)){ seen.add(key); src.push(link?`<a href="${esc(link)}" target="_blank" rel="nofollow ugc noopener noreferrer">${esc(name)}</a>`:`<span>${esc(name)}</span>`); } });
+    const titleHtml=url?`<a class="hot-event-title" href="${esc(url)}" target="_blank" rel="nofollow ugc noopener noreferrer">${esc(title)}</a>`:`<h3 class="hot-event-title">${esc(title)}</h3>`;
+    return `<article class="hot-event"><div class="hot-event-head"><span class="hot-event-category">${esc(hotEventCategory(ev.category))}</span><span class="hot-event-trend">${esc(hotEventTrend(ev.trend))}</span></div>${titleHtml}${excerpt?`<p class="hot-event-summary">${esc(excerpt)}</p>`:''}<div class="hot-event-meta"><span>${esc(hotUi('eventSources',count))}</span>${updated?`<span>${esc(hotUi('eventUpdated',updated))}</span>`:''}</div>${src.length?`<div class="hot-event-sources">${src.slice(0,3).join('')}</div>`:''}</article>`;
+  }).join('');
+  return `<section class="hot-events" aria-live="polite" aria-busy="${!!h.eventsBusy}">${cards}</section>${h.eventsErr?`<p class="hot-feedback">${esc(h.eventsErr)}</p>`:''}`;
+}
+function hotFocusHTML(){
+  const events=state.hot.events.slice(0,3); if(!events.length) return '';
+  const cards=events.map((ev,i)=>{ const it=Array.isArray(ev.items)?ev.items[0]||{}:{}, url=httpUrl(it.url||it.source_url||ev.url), title=String(ev.title||it.title||''), excerpt=String(it.excerpt||it.summary||it.note||''), count=Math.max(0,Number(ev.source_count)||((Array.isArray(ev.items)&&ev.items.length)||0)), updated=hotEventTime(ev.last_updated); if(!title) return ''; return `<a class="hot-focus-card" href="${esc(url||'#')}" ${url?'target="_blank" rel="nofollow ugc noopener noreferrer"':'data-hot-view="events"'}><span class="hot-focus-rank">${i+1}</span><span class="hot-event-category">${esc(hotEventCategory(ev.category))}</span><strong>${esc(title)}</strong>${excerpt?`<p>${esc(excerpt)}</p>`:''}<span class="hot-focus-meta">${esc(hotUi('eventSources',count))}${updated?' · '+esc(updated):''}</span></a>`; }).join('');
+  if(!cards) return '';
+  return `<section class="hot-focus" aria-label="${esc(hotUi('focus'))}"><header class="hot-focus-head"><div><h3>${esc(hotUi('focus'))}</h3><p>${esc(hotUi('focusSub'))}</p></div><button type="button" data-hot-view="events">${esc(hotUi('focusMore'))}</button></header><div class="hot-focus-grid">${cards}</div></section>`;
 }
 function hotHTML(){
-  const h=state.hot, n=h.idx&&Array.isArray(h.idx.platforms)?h.idx.platforms.length:0, sources=hotMixSources(), stamps=sources.map(p=>{ const d=h.data.get(hotKey(p)); return d&&d.at||0; }).filter(Boolean), updated=stamps.length?Math.max(...stamps):0, age=updated?Math.max(0,Math.round((Date.now()/1000-updated)/60)):null;
-  const meta=age===null?'':t('hotAgo',age);
-  return `<div class="hot"><section class="hot-intro"><div class="hot-intro-copy"><p class="hot-kicker">${esc(t('hotTitle'))}</p><h2>${esc(hotUi('hero'))}</h2><p>${esc(hotUi('intro'))}</p></div><span class="hot-updated">${esc(meta)}</span></section>`
-    + `<div class="hot-modebar" role="tablist" aria-label="${esc(t('hotTitle'))}"><button class="hot-mode" type="button" role="tab" aria-selected="${h.view==='mix'}" data-hot-view="mix">${esc(hotUi('mix'))}</button><button class="hot-mode" type="button" role="tab" aria-selected="${h.view==='boards'}" data-hot-view="boards">${esc(hotUi('boards',n))}</button></div>`
-    + (h.view==='mix'?hotMixHTML():hotBoardsHTML()) + `</div>`;
+  const h=state.hot, n=h.idx&&Array.isArray(h.idx.platforms)?h.idx.platforms.length:0, updated=h.view==='events'?h.eventsUpdated||0:Math.max(0,...[...h.data.values()].map(d=>d.at||0)), age=updated?Math.max(0,Math.round((Date.now()/1000-updated)/60)):null, meta=age===null?'':t('hotAgo',age);
+  return `<div class="hot"><section class="hot-intro"><div class="hot-intro-copy"><h2>${esc(hotUi('hero'))}</h2><p>${esc(hotUi('intro'))}</p></div><span class="hot-updated">${esc(meta)}</span></section>`
+    + (h.view==='boards'?hotFocusHTML():'')
+    + `<div class="hot-modebar" role="tablist" aria-label="${esc(t('hotTitle'))}"><button class="hot-mode" type="button" role="tab" aria-selected="${h.view==='boards'}" data-hot-view="boards">${esc(hotUi('boards',n))}</button><button class="hot-mode" type="button" role="tab" aria-selected="${h.view==='events'}" data-hot-view="events">${esc(hotUi('events'))}</button></div>`
+    + (h.view==='events'?hotEventsHTML():hotBoardsHTML()) + `</div>`;
 }
 function hotSetView(view){
-  if(view!=='mix'&&view!=='boards') return;
+  if(view!=='events'&&view!=='boards') return;
   state.hot.view=view; LS.set('hotView',view); paintHot(); hotEnsure();
 }
+function hotSetPeriod(period){ if(period!=='day'&&period!=='week') return; state.hot.period=period; LS.set('hotPeriod',period); paintHot(); hotEnsure(); }
 function hotOpenItem(e,r,p){
   if(!r||!p) return true;
   if(e.button===0 && !(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey) && richOpen({title:r.title, url:r.url, img:r.img, body:r.body||'', note:r.note, heat:r.heat, from:hotName(p), lang:p.lang, hot:true, kw:!!p.kw, read:!!p.read, date:r.date})){ e.preventDefault(); return true; }
@@ -7054,9 +7049,8 @@ function hotSave(){ LS.set('hotSel',state.hot.sel); }
 function hotShow(focus){ paintHot(); hotEnsure(); if(focus){ const el=document.querySelector(focus); if(el) el.focus({preventScroll:true}); } }
 function hotClick(e){                                                                              // everything inside the hot-list page; true when it was one of its own
   const mode=e.target.closest('[data-hot-view]'); if(mode){ hotSetView(mode.dataset.hotView); return true; }
-  if(e.target.closest('[data-hot-mix-retry]')){ hotMixEnsure(true); return true; }
-  const mixA=e.target.closest('a[data-hot-mix-i]');
-  if(mixA){ const x=state.hot.mixRows[+mixA.dataset.hotMixI]; if(x) hotOpenItem(e,x.row,x.platform); return true; }
+  const period=e.target.closest('[data-hot-period]'); if(period){ hotSetPeriod(period.dataset.hotPeriod); return true; }
+  if(e.target.closest('[data-hot-events-retry]')){ hotEventsEnsure(true); return true; }
   const c=e.target.closest('[data-hot-c]');
   if(c){ state.hot.sel.c=c.dataset.hotC; hotSave(); hotShow(`[data-hot-c="${CSS.escape(c.dataset.hotC)}"]`); return true; }
   const p=e.target.closest('[data-hot-p]');
@@ -7067,7 +7061,7 @@ function hotClick(e){                                                           
     const s=hotCur(); if(!s) return true;
     const d=state.hot.data.get(hotKey(s.cur)), where=s.cur.regions ? (state.hot.region!=='auto' ? state.hot.region : (d && d.region) || '') : '';
     if(s.cur.regions && !where) return true;                                                      // (a list of a country is subscribed for a country: the one that is shown)
-    const id=subscribeNow(hotName(s.cur)+(where ? ' · '+hotCountry(where) : ''), hotFeed(s.cur,where), s.cur.home);
+    const id=subscribeNow(hotName(s.cur)+(where ? ' · '+hotCountry(where) : '')+(state.hot.period==='week'?'（近 7 天）':''), hotFeed(s.cur,where,state.hot.period), s.cur.home);
     if(id){ paintHot(); toast(t('dirSubscribed',cut(hotName(s.cur),24)), t('recoView'), ()=>{ setSpace('mine'); state.cat='all'; state.col=id; LS.set('col',id); render(); }); }
     return true;
   }
@@ -7084,6 +7078,7 @@ function hotClick(e){                                                           
 }
 
 $('#dirReco').addEventListener('change',e=>{                                                       // the country of a list that has countries
+  const cat=e.target.closest('[data-hot-c-select]'); if(cat){ const c=hotActiveColumns().find(x=>x.id===cat.value); if(c){ state.hot.sel.c=c.id; hotSave(); hotShow(); } return; }
   const sel=e.target.closest('[data-hot-region]'); if(!sel) return;
   const v=String(sel.value).toUpperCase()==='AUTO' ? 'auto' : String(sel.value).toUpperCase(); state.hot.region=v; LS.set('hotRegion',v);
   hotShow('[data-hot-region]');

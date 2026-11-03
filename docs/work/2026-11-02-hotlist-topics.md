@@ -1,6 +1,6 @@
 # 热榜分类与热点追踪（2026-11-02）
 
-状态：规划中；等待用户确认后开发
+状态：开发已完成，待用户预览；尚未合并或部署
 
 ## 1. 任务清单（用户）
 
@@ -18,8 +18,8 @@
 
 | 任务 | 负责 | 分支 / worktree | 会改的文件 | 不许碰 |
 |---|---|---|---|---|
-| 热榜布局、分类呈现、日/周切换与 E2E 验收 | Codex | `codex/hotlist-topics` · `E:\Ztree\wt\codex-hotlist-topics`（my-archive） | `index.html`、`devtools/e2e/tests/s_hotpage.js` 及必要的热榜测试 | 书架/发现/阅读器、无关翻译词典、未跟踪用户文件、线上配置 |
-| 热榜分类、事件源聚合、历史快照接口与数据库迁移 | Codex 子代理 | `codex/hotlist-topics-api` · `E:\Ztree\wt\codex-hotlist-topics-api`（shelf-directory） | `hotapi.py`、`api/hot.py`、新增事件 API、`registry/hot.json`、新增迁移与热榜测试；必要时最小修改 `vercel.json` | `my-archive` 文件、现有 `ops` 业务表及用户内容数据、密钥/线上环境变量 |
+| 热榜布局、分类呈现、日/周切换与 E2E 验收 | Codex | `codex/hotlist-topics` · `E:\Ztree\wt\codex-hotlist-topics`（my-archive） | `index.html`、`devtools/e2e/tests/s_hotpage.js`、为新事件接口提供本地响应的 `devtools/e2e/services/sync_dev.py` | 书架/发现/阅读器、无关翻译词典、未跟踪用户文件、线上配置 |
+| 热榜分类、事件源聚合、历史快照接口与数据库迁移 | Codex 子代理 | `codex/hotlist-topics-api` · `E:\Ztree\wt\codex-hotlist-topics-api`（shelf-directory） | `hotapi.py`、`api/hot.py`、新增事件 API、`registry/hot.json`、新增迁移与热榜测试；为事件抓取设置可选上限的 `aggregate.py` helper | `my-archive` 文件、现有 `ops` 业务表及用户内容数据、密钥/线上环境变量 |
 | 来源可用性与条款复核 | 只读审阅 | 不改文件 | 无 | 不提交、不修改工作区 |
 
 注：两个仓库必须各自在自己的 `master` 上有规划记录，再各自建立隔离 worktree。当前会话没有 Claude 执行端，因此后端由 Codex 子代理负责独立分支；不冒充 Claude。
@@ -29,7 +29,7 @@
 - 保持现有 `GET /api/hot` 的 `columns`、`platforms` 字段兼容；分类 ID 使用稳定英文键：`news`、`tech`、`ai`、`money`、`world`、`entertainment`、`learning`、`media`、`shopping`。`shopping` 默认不占主导航，可通过配置启用。
 - 保持现有 `GET /api/hot?p=<id>&format=json` 兼容；新增 `period=day|week`，缺省为 `day`。`day` 返回平台当前榜，`week` 使用服务端保存的近 7 天榜单快照计算，不伪造上游不存在的“周榜”。
 - 新增只读 `GET /api/hot/events?lang=zh&limit=...`，返回 `{ok, updated, events}`；事件字段至少包含 `id`、`title`、`category`、`last_updated`、`source_count`、`trend`、`items`。每个 `items` 只返回标题、短摘要、来源、发布时间、语言和原文 URL，不返回全文或图片副本。
-- 新增受保护的刷新入口供计划任务调用；既有 `/api/hot` 调用方式和字段不变。数据库表单独迁移、幂等创建，不清理或重建已有表。
+- 公共热点读取按缓存限频触发事件更新；受保护刷新入口仍可供计划任务调用。上游单请求设 2.5 秒上限；既有 `/api/hot` 调用方式和字段不变。数据库表单独迁移、幂等创建，不清理或重建已有表。
 - 事件发现采用“跨来源自动候选 + 运营固定/忽略”的混合方式；来源数和更新时间用于呈现/排序，不代表事实核验或真实性结论。
 
 ### 热点来源与更新策略
@@ -78,13 +78,20 @@
 
 ### Codex 子代理
 
-- 用户已确认功能规划；后端任务待建立独立 worktree 后分派。
+- 后端实现已提交至独立分支 `codex/hotlist-topics-api`，提交 `a1eb6e4`；未合并、推送或部署。
+- 后端新增分类兼容、榜单快照/周榜、事件列表/受保护刷新与加法迁移；公开事件读取按 10 分钟限频尝试刷新，使用 PostgreSQL advisory lock 防并发，旧数据在刷新失败时仍可返回。
+- 后端测试：`tests.test_hot` + `tests.test_hot_events` 共 52 项、`tests.test_aggregate` 97 项通过；未执行数据库迁移。
+- 后端为设置 2.5 秒上游请求上限，额外改动 `aggregate.py` 的可选超时参数；用户已确认保留，默认调用行为不变。
 
 ### Codex
 
-- 已检查 `git status`、最近 3 次提交和现有热榜规划；发现的未跟踪用户文件全部保留。
-- 已审阅当前前端与 `shelf-directory/hotapi.py`：当前只有六个平台类别；接口返回当前榜单，进程内约 3 分钟、CDN 约 10 分钟缓存，不保存历史快照。
-- 已核实 Vercel Hobby Cron 当前限制：每天最多一次；用户确认计划前未修改产品代码或数据库。
+- 前端已完成：首屏顺序为“今日精选排名 → 平台榜单”；精选排名使用热点事件接口顺序，最多显示 3 条；“热点追踪”保留为独立切换入口，查看完整事件列表；无事件时精选区隐藏。移动端分类为单个下拉。
+- 周榜快照未满 7 天时展示已累计的真实排名并标注积累状态；没有历史数据时明确展示空状态，不伪造周榜。
+- 本地浏览器 Smoke：11 项通过、0 项失败，覆盖精选排名与平台榜单顺序、事件追踪和移动端布局；未运行整套 `s_hotpage` 用例。
+- 预览图已生成：`devtools/e2e/shots/hotpage_desktop.png`、`hotpage_events_desktop.png`、`hotpage_events_mobile.png`、`hotpage_boards_mobile.png`。
+- 静态验收：内联 JS `syntax_check.py` 通过；501 个函数无重名；E2E JS `node --check` 通过；前后端 `git diff --check` 通过。
+- 事件接口测试最初发现本地 mock 缺少 CORS，已修正测试服务响应；趋势值 `rising` 识别也已修正并通过 Smoke。
+- 只在隔离 worktree 开发；主仓库未跟踪文件保留，未运行迁移、未合并、未推送、未部署。
 
 ## 4. 合并记录
 
