@@ -70,9 +70,7 @@
 
 ### claude
 
-（开发中）
-
-## 4. 合并记录
+- **A + B（做完，待预览）**：分支 `claude/app-like-loading`。`index.html`：①`dirBuild(d, ops)`（原来 `loadDirectory` 里“洗数据 + 准备”那一段，网络和本机副本共用）；②本机副本 `dirKeptGet` / `dirKeptPut`（Cache API `zt-dir`，版本 `DIR_KEEP_V`、地址 `base`、30 天过期；目录原文 + 运营数据一条，热度单独一条）；③`loadDirectory`：没数据时先读副本、建好就画（并立刻开始取热度），再等网络；网络回来的原文和运营数据与已显示的一样就什么都不做（`state.dirSrc` 比对），不一样才 `dirBuild` 重画并更新副本；运营服务没回答就沿用已知的运营数据；网络失败有数据就不报错；`state.dirBusy` 取代原来用 `dirState==='loading'` 当锁；④`loadHeat`：存副本，数字没变不重画；⑤`manifest.js` 后的小脚本 `window.__early`：知道目录地址就并行请求 `directory.json` 和（https 时）`/api/ops?public=1`，`loadDirectory` 取用（运营地址对得上才用）；⑥Google 字体样式表改成 `preload` + `onload`，`<noscript>` 兜底。`devtools/e2e/tests/s_dirkeep.js` 20 项（第一次、再次打开时目录被拖住、没变不重建、变了换上、网络失败、四种坏副本、运营数据隐藏、热度副本、请求只发一次、字体样式表）。README 写了。和规划一致，没有改别的函数。
 
 - 合并顺序：
 - 合并后的测试结果：

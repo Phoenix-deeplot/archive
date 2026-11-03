@@ -30,7 +30,8 @@
 <!-- /seo:head -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet"></noscript>
 <style>
 :root{
   --bg:#F2F3F0; --side:#E9ECE8; --surface:#FFFFFF; --ink:#1A2229; --muted:#5A6670; --rule:#D3D8D6;
@@ -1944,6 +1945,16 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
 <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button type="button" id="toastAct"></button></div>
 
 <script src="manifest.js" onerror="void 0"></script>
+<script>
+/* The public directory (and its operations data, when the address is the usual one) is asked for now, before the big script below is read and run (it takes a while): loadDirectory takes the answers from window.__early. A failed request answers null. */
+(function(){ try{
+  var m=window.ARCHIVE_MANIFEST, base=m && m.directory; if(typeof base!=='string' || !/^https?:\/\//.test(base)) return;
+  var text=function(r){ if(!r.ok) throw 0; return r.text(); }, no=function(){ return null; };
+  var e={base:base, dir:fetch(new URL('directory.json',base).href,{cache:'no-cache'}).then(text).catch(no), o:'', ops:null};
+  if(/^https:/.test(base)){ e.o=new URL('api/ops?public=1',base).href; e.ops=fetch(e.o,{cache:'no-store',credentials:'omit'}).then(text).catch(no); }
+  window.__early=e;
+}catch(x){} })();
+</script>
 <script src="vendor/marked.min.js" onerror="void 0"></script>
 <script src="vendor/purify.min.js" onerror="void 0"></script>
 <script>
@@ -2408,7 +2419,7 @@ const state = {
   seeds: LS.get('seeds',{}), progress: LS.get('progress',{}), lastRead: LS.get('lastRead',{}),
   visible:[], readingId:null, blobUrl:null, pending:[], dirOpen:new Set(),
   tag:'', tagsOpen:false, pubReq:LS.get('pubReq',{}),          // tag filter of my own shelf; articles of mine that were handed to the directory (id -> time)
-  space:LS.get('space','mine'), dirCfg:'', dirData:null, dirState:'idle', dirErr:'', shelfMap:new Map(), dirKeys:null, dirOps:null,   // 'mine' | 'dir' (the public directory, read-only)
+  space:LS.get('space','mine'), dirCfg:'', dirData:null, dirState:'idle', dirErr:'', dirBusy:false, dirSrc:null, shelfMap:new Map(), dirKeys:null, dirOps:null,   // 'mine' | 'dir' (the public directory, read-only)
   dType:'all', dTag:'', dShelf:'', dLimit:60
 };
 const $ = s => document.querySelector(s);
@@ -6181,7 +6192,11 @@ async function loadHeat(force){
   state.heatAt=Date.now();
   try{
     const r=await fetch(api,{credentials:'omit'}), d=await r.json();
-    if(d && d.ok && d.configured!==false && d.items && d.shelves){ state.heat={items:d.items,shelves:d.shelves}; if(dirOn()) render(); if(!$('#reader').hidden) syncVote(); }
+    if(d && d.ok && d.configured!==false && d.items && d.shelves){
+      const same=!!state.heat && JSON.stringify(state.heat)===JSON.stringify({items:d.items,shelves:d.shelves});                // (the copy of the last visit was shown first: drawn again only when the numbers are others)
+      state.heat={items:d.items,shelves:d.shelves}; if(state.dirCfg) dirKeptPut(state.dirCfg,'heat',{heat:state.heat});
+      if(!same){ if(dirOn()) render(); if(!$('#reader').hidden) syncVote(); }
+    }
   }catch(e){ state.heatAt=0; }
 }
 const heatAvailable = () => !!(state.heat && (Object.keys(state.heat.items).length || Object.keys(state.heat.shelves).length));
@@ -7171,29 +7186,55 @@ $('#dirReco').addEventListener('click',e=>{
   dirOpenClick(e);
 });
 
+/* The public directory is kept in this browser (Cache API "zt-dir"): the page opens with the copy of the last visit at once, and only then asks the network. What is kept is what the network said (the text of directory.json,
+   the data of /api/ops, the heat), so that one function (dirBuild) makes the form that the page uses, from the copy or from the network; an answer that is the same as what is shown changes nothing on the screen.
+   DIR_KEEP_V: raise it when dirBuild would read an old copy wrongly. */
+const DIR_KEEP='zt-dir', DIR_KEEP_V=1, DIR_KEEP_AGE=30*86400000;
+const dirKeepKey = (base,kind) => 'https://dir.cache/'+(kind?kind+'/':'')+encodeURIComponent(base);
+async function dirKeptGet(base,kind){ try{ const c=await caches.open(DIR_KEEP), r=await c.match(dirKeepKey(base,kind)), o=r ? await r.json() : null; return o && o.v===DIR_KEEP_V && o.base===base && Date.now()-(+o.at||0)<DIR_KEEP_AGE ? o : null; }catch(e){ return null; } }
+async function dirKeptPut(base,kind,o){ try{ const c=await caches.open(DIR_KEEP); await c.put(dirKeepKey(base,kind),new Response(JSON.stringify({v:DIR_KEEP_V, base, at:Date.now(), ...o}))); }catch(e){} }
+const dirOpsParse = text => { try{ const b=JSON.parse(text); return b && b.ok && b.data && +b.data.version>=1 ? b.data : null; }catch(e){ return null; } };
+function dirBuild(d,opsRaw){                                                                           // d: a fresh parse of directory.json (it is changed here), opsRaw: the data of /api/ops or null -> state.dirData, the form that the page uses
+  if(!d || d.spec!==1 || !Array.isArray(d.items)) throw new Error('directory.json');
+  d.items=d.items.filter(i=>i && typeof i==='object' && i.id && httpUrl(i.url)).map(i=>({...i, id:String(i.id), title:String(i.title||i.url), summary:String(i.summary||''), url:httpUrl(i.url),
+    image:String(i.image||'').startsWith('https://')?String(i.image):'', date:String(i.date||''), lang:String(i.lang||''), shelf:String(i.shelf||''),
+    type:DIR_TYPES.includes(i.type)?i.type:'article', tags:Array.isArray(i.tags)?i.tags.map(String):[], audio:feedAudio(i),
+    author:String(i.author||'').slice(0,60), pages:Math.max(0,Math.min(99999,Math.floor(+i.pages)||0)), toc:Array.isArray(i.toc)?i.toc.slice(0,40).map(x=>String(x).slice(0,80)):[]}));          // (what a book's own doc.json says)
+  d.shelves=(Array.isArray(d.shelves)?d.shelves:[]).filter(s=>s && s.id).map(s=>({...s, id:String(s.id), name:String(s.name||s.id), home:httpUrl(s.home), description:String(s.description||''), kind:String(s.kind||''), n:+s.n||0,
+    tags:Array.isArray(s.tags)?s.tags.map(String):[], featured:s.featured===true, blurb:String(s.blurb||'').slice(0,120), lang:String(s.lang||''), feed:httpUrl(s.feed)||''}));
+  d.topics=mergeTopics((Array.isArray(d.topics)?d.topics:[]).filter(x=>x && /^[a-z0-9-]{1,20}$/.test(String(x.id||'')) && Array.isArray(x.tags)).slice(0,30).map(x=>({id:String(x.id), zh:String(x.zh||x.en||x.id).slice(0,20), en:String(x.en||x.zh||x.id).slice(0,24), tags:x.tags.slice(0,60).map(y=>String(y).toLowerCase())})));
+  d.tags=(Array.isArray(d.tags)?d.tags:[]).filter(g=>g && g.name).map(g=>({name:String(g.name), slug:String(g.slug||''), n:+g.n||0}));
+  applyPublicOps(d,opsRaw);
+  state.shelfMap=new Map(d.shelves.map(s=>[s.id,s]));
+  DIR_COLS=dirColumns(d.columns); d.columns=DIR_COLS; migratePickT();
+  dirPrepare(d); d.items.forEach(i=>dirMeta(i,d.topics));
+  state.dirData=d; state.dirState='ok'; state.dirKeys=new Set(d.items.map(i=>urlKey(i.url)));
+}
 async function loadDirectory(force){
-  if(!state.dirCfg || state.dirState==='loading' || (state.dirData && !force)) return;
-  state.dirState='loading'; state.dirErr=''; if(dirOn()) render();
+  if(!state.dirCfg || state.dirBusy || (state.dirData && !force)) return;
+  const base=state.dirCfg, early=window.__early && httpUrl(window.__early.base)===base ? window.__early : null; window.__early=null;       // (what the small script at the top of the page began to ask for, see window.__early)
+  state.dirBusy=true; state.dirErr='';
+  let shown=!!state.dirData, redraw=!shown;
+  if(!shown){                                                                                          // the copy of the last visit: shown at once, the network only checks it
+    const kept=await dirKeptGet(base);
+    if(kept && typeof kept.dirText==='string'){
+      try{
+        dirBuild(JSON.parse(kept.dirText),kept.ops||null); state.dirSrc={text:kept.dirText, ops:JSON.stringify(kept.ops||null)}; shown=true;
+        const h=await dirKeptGet(base,'heat'); if(h && h.heat && h.heat.items && h.heat.shelves) state.heat=h.heat;
+        render(); redraw=false; if(dirOn()) loadHeat();
+      }catch(e){ state.dirData=null; state.dirState='idle'; state.dirSrc=null; shown=false; }
+    }
+  }
+  if(!shown){ state.dirState='loading'; if(dirOn()) render(); }
   try{
-    const r=await fetch(new URL('directory.json',state.dirCfg),{cache:'no-cache'});
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    const d=await r.json();
-    if(!d || d.spec!==1 || !Array.isArray(d.items)) throw new Error('directory.json');
-    d.items=d.items.filter(i=>i && typeof i==='object' && i.id && httpUrl(i.url)).map(i=>({...i, id:String(i.id), title:String(i.title||i.url), summary:String(i.summary||''), url:httpUrl(i.url),
-      image:String(i.image||'').startsWith('https://')?String(i.image):'', date:String(i.date||''), lang:String(i.lang||''), shelf:String(i.shelf||''),
-      type:DIR_TYPES.includes(i.type)?i.type:'article', tags:Array.isArray(i.tags)?i.tags.map(String):[], audio:feedAudio(i),
-      author:String(i.author||'').slice(0,60), pages:Math.max(0,Math.min(99999,Math.floor(+i.pages)||0)), toc:Array.isArray(i.toc)?i.toc.slice(0,40).map(x=>String(x).slice(0,80)):[]}));          // (what a book's own doc.json says)
-    d.shelves=(Array.isArray(d.shelves)?d.shelves:[]).filter(s=>s && s.id).map(s=>({...s, id:String(s.id), name:String(s.name||s.id), home:httpUrl(s.home), description:String(s.description||''), kind:String(s.kind||''), n:+s.n||0,
-      tags:Array.isArray(s.tags)?s.tags.map(String):[], featured:s.featured===true, blurb:String(s.blurb||'').slice(0,120), lang:String(s.lang||''), feed:httpUrl(s.feed)||''}));
-    d.topics=mergeTopics((Array.isArray(d.topics)?d.topics:[]).filter(x=>x && /^[a-z0-9-]{1,20}$/.test(String(x.id||'')) && Array.isArray(x.tags)).slice(0,30).map(x=>({id:String(x.id), zh:String(x.zh||x.en||x.id).slice(0,20), en:String(x.en||x.zh||x.id).slice(0,24), tags:x.tags.slice(0,60).map(y=>String(y).toLowerCase())})));
-    d.tags=(Array.isArray(d.tags)?d.tags:[]).filter(g=>g && g.name).map(g=>({name:String(g.name), slug:String(g.slug||''), n:+g.n||0}));
-    applyPublicOps(d,await loadPublicOps(d));
-    state.shelfMap=new Map(d.shelves.map(s=>[s.id,s]));
-    DIR_COLS=dirColumns(d.columns); d.columns=DIR_COLS; migratePickT();
-    dirPrepare(d); d.items.forEach(i=>dirMeta(i,d.topics));
-    state.dirData=d; state.dirState='ok'; state.dirKeys=new Set(d.items.map(i=>urlKey(i.url)));
-  }catch(e){ state.dirState='error'; state.dirErr=e.message||String(e); }
-  render(); if(dlg.open && !$('#addSubPane').hidden) renderStarter();
+    const text=(early && await early.dir) || await (async()=>{ const r=await fetch(new URL('directory.json',base),{cache:'no-cache'}); if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })();
+    const raw=JSON.parse(text), api=opsApiForDirectory(raw); let ops=null;
+    if(api){ ops=(early && early.ops && early.o===api+'?public=1') ? dirOpsParse(await early.ops) : await loadPublicOps(raw); if(!ops && state.dirSrc) ops=JSON.parse(state.dirSrc.ops); }          // (an operations service that does not answer: what was known stays)
+    const opsKey=JSON.stringify(ops||null);
+    if(!state.dirSrc || state.dirSrc.text!==text || state.dirSrc.ops!==opsKey){ dirBuild(raw,ops); state.dirSrc={text, ops:opsKey}; redraw=true; dirKeptPut(base,'',{dirText:text, ops}); }
+  }catch(e){ if(!state.dirData){ state.dirState='error'; state.dirErr=e.message||String(e); redraw=true; } }
+  state.dirBusy=false;
+  if(redraw) render(); if(dlg.open && !$('#addSubPane').hidden) renderStarter();
   if(state.dirData && dirOn()) loadHeat();
   recoSync();
 }
