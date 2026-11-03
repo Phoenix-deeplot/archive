@@ -26,8 +26,9 @@ Start-Sleep 1
 Start-Process -FilePath python -ArgumentList "-m http.server $appPort --bind 127.0.0.1 --directory `"$dist`"" -WindowStyle Hidden -RedirectStandardError "$R\h$appPort.err" -RedirectStandardOutput "$R\h$appPort.log"
 $svc = @(@('sync_dev.py', $hotPort), @('feed_site.py', $feedPort), @('feed_site_text.py', $textPort), @('podcast_site.py', $podPort), @('read_site.py', $readPort))
 foreach ($s in $svc) { Start-Process -FilePath python -ArgumentList "-X utf8 `"$E\services\$($s[0])`" $($s[1])" -WindowStyle Hidden -RedirectStandardError "$R\$($s[0]).err" -RedirectStandardOutput "$R\$($s[0]).log" }
-foreach ($pair in @(@($cdpPort, 'edge1'), @($cdp2Port, 'edge2'))) {
-  Start-Process -FilePath $edge -ArgumentList "--headless=new --remote-debugging-port=$($pair[0]) --user-data-dir=`"$R\$($pair[1])`" --no-first-run --no-default-browser-check --disable-gpu --autoplay-policy=no-user-gesture-required --proxy-server=direct:// --proxy-bypass-list=* about:blank" -WindowStyle Hidden
+$prof = Join-Path ([System.IO.Path]::GetTempPath()) 'zt-e2e-profiles'     # (the browsers keep their cookie files locked while they run: they live outside the project folder, where a file list or a watcher of an editor stumbles on them, "EBUSY")
+foreach ($pair in @(@($cdpPort, "edge-$cdpPort"), @($cdp2Port, "edge-$cdp2Port"))) {
+  Start-Process -FilePath $edge -ArgumentList "--headless=new --remote-debugging-port=$($pair[0]) --user-data-dir=`"$prof\$($pair[1])`"--no-first-run --no-default-browser-check --disable-gpu --autoplay-policy=no-user-gesture-required --proxy-server=direct:// --proxy-bypass-list=* about:blank" -WindowStyle Hidden
 }
 $up = $false
 for ($i = 0; $i -lt 40 -and -not $up; $i++) { Start-Sleep 1; $up = -not ($ports | Where-Object { -not (Get-NetTCPConnection -State Listen -LocalPort $_ -ErrorAction SilentlyContinue) }) }
