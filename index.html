@@ -985,6 +985,30 @@ body.has-player .fab{bottom:calc(var(--pl-h) + 16px + env(safe-area-inset-bottom
 .rpin{display:none;float:right;margin:-2px 0 0 8px;padding:2px 10px;border:1px solid var(--rule);border-radius:999px;background:none;color:var(--muted);font-size:12px;cursor:pointer}
 .rpin[aria-pressed="true"]{color:var(--accent);border-color:var(--accent)}
 @media (min-width:1200px){.rpin{display:inline-block}#reader.toc-pin .rpanel.rside{left:0;right:auto;width:300px;border-width:0 1px 0 0;box-shadow:none}#reader.toc-pin #frame{left:300px;width:calc(100% - 300px)}}
+#readerEye{display:none}
+#reader.bookmode #readerEye{display:inline-flex}
+#reader.bookmode #readerSet,#reader.bookmode #readerSave,#reader.bookmode #readerMark,#reader.bookmode #readerStar,#reader.bookmode #readerNew,#reader.bookmode #readerEdit,#reader.bookmode #readerMobileNav{display:none!important}
+#readerEye{position:relative}
+#readerEye .eye{display:none;position:absolute;top:5px;right:5px;width:10px;height:10px;border-radius:50%;border:1.5px solid var(--ink);background:var(--ec,transparent)}
+#readerEye[data-th="sepia"] .eye,#readerEye[data-th="green"] .eye,#readerEye[data-th="dark"] .eye{display:block}
+#readerEye[data-th="sepia"]{--ec:#F4ECD8}#readerEye[data-th="green"]{--ec:#CCE8CF}#readerEye[data-th="dark"]{--ec:#1F262B}
+.rbook{position:absolute;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:4;display:flex;align-items:center;gap:2px;padding:4px;border:1px solid var(--rule);border-radius:999px;background:var(--surface);color:var(--ink);box-shadow:0 6px 18px rgba(0,0,0,.14);opacity:.66;transition:opacity .2s ease}
+.rbook[hidden]{display:none}
+.rbook:hover,.rbook:focus-within{opacity:1}
+.rbook button{min-width:40px;height:40px;border:0;border-radius:999px;background:none;color:var(--ink);font:600 15px/1 var(--sans);cursor:pointer;padding:0 8px;display:grid;place-items:center}
+.rbook button:hover:not(:disabled){background:var(--code)}.rbook button:disabled{opacity:.35;cursor:default}
+.rbook output{min-width:64px;padding:0 6px;text-align:center;font:13px/1 var(--sans);color:var(--muted);font-variant-numeric:tabular-nums}
+.rbook .icon{width:20px;height:20px}
+.rbook .rb-ch{display:none}
+@media (max-width:620px){.rbook .rb-ch{display:grid}.rbook button{min-width:38px;height:38px}.rbook output{min-width:56px}}
+#reader.toc-pin .rbook{left:calc(50% + 150px)}
+body.reader-focus .rbook{display:none}
+.redge{display:none;position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:52px;height:112px;border:0;border-radius:14px;background:none;color:var(--muted);cursor:pointer;align-items:center;justify-content:center;opacity:.55;transition:opacity .15s ease,background .15s ease}
+.redge:hover,.redge:focus-visible{opacity:1;background:var(--code)}
+.redge.l{left:var(--redge,12px)}.redge.r{right:var(--redge,12px)}
+.redge .icon{width:30px;height:30px}
+@media (hover:hover) and (pointer:fine){#reader.pgd .redge{display:flex}}
+#reader.toc-pin .redge.l{left:calc(300px + var(--redge,12px))}
 .toc-i .trl{display:block;flex-basis:100%;margin-top:2px;font-style:normal;font-size:12.5px;line-height:1.4;color:var(--accent);font-weight:400}
 #trMenu{padding:8px}
 .tr-act{display:block;width:100%;min-height:44px;padding:10px 12px;border:0;border-radius:8px;background:none;color:var(--ink);font:inherit;font-size:14.5px;text-align:left;cursor:pointer}
@@ -1479,6 +1503,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
       <button class="rbtn ico" type="button" id="readerMark"><svg class="icon" viewBox="0 0 24 24"><path d="M6.5 4h11a1 1 0 0 1 1 1v15l-6.5-4-6.5 4V5a1 1 0 0 1 1-1z"/></svg><span class="lbl" data-i="readerMark">加书签</span></button>
       <button class="rbtn" type="button" id="readerStar" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg><span class="lbl" id="readerStarLbl"></span></button>
       <a class="rbtn" id="readerNew" target="_blank" rel="noopener"><svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span class="lbl" data-i="newTab">新标签打开</span></a>
+      <button class="rbtn ico" type="button" id="readerEye"><svg class="icon" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.6"/></svg><span class="eye" aria-hidden="true"></span><span class="lbl" data-i="eyeLbl">护眼</span></button>
     </div>
   </div>
   <div class="reader-prog"><span id="readerProg"></span></div>
@@ -1486,6 +1511,15 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     <iframe id="frame" title="Reader"></iframe>
     <div class="tint" id="tint" aria-hidden="true"></div>
     <div class="rback" id="rBack" hidden></div>
+    <button type="button" class="redge l" id="rEdgeL" data-i-aria="pgPrev"><svg class="icon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <button type="button" class="redge r" id="rEdgeR" data-i-aria="pgNext"><svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <div class="rbook" id="rBook" hidden role="group" data-i-aria="rbarTip">
+      <button type="button" class="rb-ch" id="rbPrev" data-i-aria="prevCh"><svg class="icon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <button type="button" id="rbFsM" data-i-aria="fsSmaller">A−</button>
+      <output id="rbInfo" aria-live="polite"></output>
+      <button type="button" id="rbFsP" data-i-aria="fsBigger">A+</button>
+      <button type="button" class="rb-ch" id="rbNext" data-i-aria="nextCh"><svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
     <div class="rvote" id="rVote" hidden>
       <button type="button" id="rLike" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span id="rLikeN"></span></button>
       <button type="button" id="rDislike" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24"><path d="M7 13V4H4v9zM7 13l4 7c1.5 0 2.5-1 2.5-2.5V15H19a1.5 1.5 0 0 0 1.5-1.7l-1-7A2 2 0 0 0 17.5 4.5H7"/></svg><span id="rDislikeN"></span></button>
@@ -1498,9 +1532,6 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
       <div class="rrow" id="rowPg"><span data-i="pgLabel">段距</span><div class="seg2" data-key="pg"><button type="button" data-v="s" data-i="lhS">紧</button><button type="button" data-v="m" data-i="lhM">中</button><button type="button" data-v="l" data-i="lhL">松</button></div></div>
       <div class="rrow" id="rowInd"><span data-i="indLabel">首行缩进</span><div class="seg2" data-key="ind"><button type="button" data-v="off" data-i="optOff">关</button><button type="button" data-v="on" data-i="optOn">开</button></div></div>
       <div class="rrow" id="rowJus"><span data-i="jusLabel">两端对齐</span><div class="seg2" data-key="jus"><button type="button" data-v="off" data-i="optOff">关</button><button type="button" data-v="on" data-i="optOn">开</button></div></div>
-      <div class="rrow" id="rowMode" hidden><span data-i="modeLabel">阅读方式</span><div class="seg2" data-key="mode"><button type="button" data-v="scroll" data-i="modeScroll">滚动</button><button type="button" data-v="paged" data-i="modePaged">翻页</button></div></div>
-      <div class="rrow" id="rowDbl" hidden><span data-i="dblLabel">双页（宽屏）</span><div class="seg2" data-key="dbl"><button type="button" data-v="on" data-i="optOn">开</button><button type="button" data-v="off" data-i="optOff">关</button></div></div>
-      <p class="rnote" id="rModeNote" hidden data-i="modeNote">这一章有表格或大图，用滚动阅读。</p>
       <div class="rrow col"><span data-i="readerColor">颜色</span><div class="themes" id="rThemes">
         <button type="button" data-th="follow" data-i="thFollow">跟随系统</button><button type="button" data-th="light" data-i="thLight">浅色</button><button type="button" data-th="dark" data-i="thDark">深色</button><button type="button" data-th="sepia" data-i="thSepia">米黄</button><button type="button" data-th="green" data-i="thGreen">护眼绿</button></div></div>
       <div class="rrow col"><span data-i="focusRead">专注阅读</span><div class="themes"><button type="button" id="rSetFocus" data-i="focusReadGo">收起所有按钮，只留正文，边读边听</button></div></div>
@@ -2378,7 +2409,7 @@ const LINK_LANG = (function(){
 const state = {
   lang: LINK_LANG || (['zh','en'].includes(LS.get('lang','')) ? LS.get('lang','') : sysLang()), langAuto: !LINK_LANG && !['zh','en'].includes(LS.get('lang','')),                // (no choice made: the system's language, and it follows the system)
   theme: LS.get('theme','auto'), view: LS.get('view','grid'), sort: LS.get('sort','recent'),
-  rs: Object.assign({fs:100, lh:'m', w:'m', th:'follow', ff:'follow', pg:'m', ind:'off', jus:'off', mode:'scroll', dbl:'on'}, LS.get('reader',{})),        // reader settings: font scale %, line height s/m/l, width n/m/w, colours follow|light|dark|sepia|green, font follow|serif|sans|kai, paragraph spacing s/m/l, first-line indent off|on, justified off|on
+  rs: Object.assign({fs:100, lh:'m', w:'m', th:'follow', ff:'follow', pg:'m', ind:'off', jus:'off'}, LS.get('reader',{})),        // reader settings: font scale %, line height s/m/l, width n/m/w, colours follow|light|dark|sepia|green, font follow|serif|sans|kai, paragraph spacing s/m/l, first-line indent off|on, justified off|on
   marks: LS.get('marks',{}),                                                           // bookmarks (a place in a document): {id:[{pct,label,at}]}
   cols: LS.get('cols',[]), col: LS.get('col','all'),                                   // collections of the files added in this browser: [{id,name,at}]; which part of the shelf is shown: all | site | folder | loose | <collection id>
   cat:'all', q:'', lf:'all', loaded:false,
@@ -2409,8 +2440,8 @@ Object.assign(I18N.en,{bkTrialBtn:'Read a sample', bkContinueBtn:'Continue', bkT
   ffLabel:'Font', ffFollow:'Default', ffSerif:'Serif', ffSans:'Sans', ffKai:'Kai', pgLabel:'Paragraph spacing', indLabel:'First-line indent', jusLabel:'Justify', optOff:'Off', optOn:'On'});
 Object.assign(I18N.zh,{trMenuScreen:'翻译本屏', trMenuAll:'翻译本章', trMenuToc:'翻译目录', trMenuCycle:x=>`正在显示：${x}（点一下切换）`, trLeft:n=>`今天还可以翻译约 ${n} 字`, trAllDone:'这一页已经翻译完了', trTocNone:'这里没有可以翻译的目录', trTocDone:'目录翻译好了', bookTrBtn:'翻译简介'});
 Object.assign(I18N.en,{trMenuScreen:'Translate this screen', trMenuAll:'Translate this chapter', trMenuToc:'Translate the contents', trMenuCycle:x=>`Showing: ${x} (click to switch)`, trLeft:n=>`About ${n} characters left to translate today`, trAllDone:'This page is translated already', trTocNone:'There are no contents to translate here', trTocDone:'The contents are translated', bookTrBtn:'Translate the summary'});
-Object.assign(I18N.zh,{modeLabel:'阅读方式', modeScroll:'滚动', modePaged:'翻页', dblLabel:'双页（宽屏）', modeNote:'这一章有表格或大图，用滚动阅读。', pinTip:'固定在左边', unpinTip:'取消固定'});
-Object.assign(I18N.en,{modeLabel:'Reading', modeScroll:'Scroll', modePaged:'Pages', dblLabel:'Two pages (wide screen)', modeNote:'This chapter has a table or a big picture: it is scrolled.', pinTip:'Pin at the left', unpinTip:'Unpin'});
+Object.assign(I18N.zh,{pinTip:'固定在左边', unpinTip:'取消固定', eyeLbl:'护眼', eye_follow:'跟随系统', eye_sepia:'米黄', eye_green:'护眼绿', eye_dark:'深色', eyeTip:x=>`护眼：现在是“${x}”，点一下换下一种`, eyeNow:x=>`护眼：${x}`, fsNow:n=>`字号 ${n}%`, pgPrev:'上一页', pgNext:'下一页', fsSmaller:'缩小字号', fsBigger:'放大字号', rbarTip:'字号和页码'});
+Object.assign(I18N.en,{pinTip:'Pin at the left', unpinTip:'Unpin', eyeLbl:'Eye care', eye_follow:'Follow system', eye_sepia:'Sepia', eye_green:'Green', eye_dark:'Dark', eyeTip:x=>`Eye care: now "${x}", click for the next`, eyeNow:x=>`Eye care: ${x}`, fsNow:n=>`Text size ${n}%`, pgPrev:'Previous page', pgNext:'Next page', fsSmaller:'Smaller text', fsBigger:'Bigger text', rbarTip:'Text size and page'});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const catName = c => (['all','featured','books','tools','notes','hidden'].includes(c)? t(c) : c);
@@ -3548,7 +3579,11 @@ details.toc a{text-decoration:none;color:var(--ink)}
 /* what the reader settings mean for a Markdown / TXT document (the page is ours, so size, spacing, width and colours are native); a page shown as it is gets only a colour change (see applyReader) */
 const LH={s:1.65, m:1.85, l:2.1}, WD={n:'36em', m:'44em', w:'60em'};
 const FF={serif:'var(--serif)', sans:'var(--sans)', kai:"'Kaiti SC','STKaiti','KaiTi','楷体',var(--serif)"}, PG={s:'.55em', l:'1.7em'};
-const docVars = () => `--fs:${(17*state.rs.fs/100).toFixed(1)}px;--lh:${LH[state.rs.lh]||1.85};--w:${WD[state.rs.w]||'44em'}${FF[state.rs.ff]?`;--ff:${FF[state.rs.ff]}`:''}${PG[state.rs.pg]?`;--pg:${PG[state.rs.pg]}`:''}${state.rs.ind==='on'?';--ind:2em':''}${state.rs.jus==='on'?';--jus:justify':''}`;
+const articleVars = () => `--fs:${(17*state.rs.fs/100).toFixed(1)}px;--lh:${LH[state.rs.lh]||1.85};--w:${WD[state.rs.w]||'44em'}${FF[state.rs.ff]?`;--ff:${FF[state.rs.ff]}`:''}${PG[state.rs.pg]?`;--pg:${PG[state.rs.pg]}`:''}${state.rs.ind==='on'?';--ind:2em':''}${state.rs.jus==='on'?';--jus:justify':''}`;
+const bookIs = () => { const it=itemById(state.readingId); return !!(it && it.bookOf); };                // a chapter of a picked book is on the screen: its looks are fixed, only the size of the letters is the reader's
+function bookCJK(){ const it=itemById(state.readingId), l=String((it&&it.lang)||''); return l ? !/^(en|fr|de|es|it|pt|nl|ru|la)\b/i.test(l) : /[\u3400-\u9fff]/.test((it&&it.title)||''); }
+const bookVars = () => { const cjk=bookCJK(), px=(matchMedia('(max-width:620px)').matches?17:19)*state.rs.fs/100; return `--fs:${px.toFixed(1)}px;--lh:${cjk?1.8:1.65};--w:${cjk?'36em':'34em'};--pg:${cjk?'.5em':'.45em'};--ind:${cjk?'2em':'1.5em'};--jus:${cjk?'justify':'start'}`; };          // (a line of about 36 characters, 1.8 lines high; a book is indented and justified)
+const docVars = () => bookIs() ? bookVars() : articleVars();
 const docTheme = () => state.rs.th!=='follow' ? state.rs.th : themeNow()!=='auto' ? themeNow() : '';
 const STRICT = `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https: data:; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com"><meta name="referrer" content="no-referrer">`;
 function docShell(title, bodyHTML, meta, strict){                                  // strict: somebody else's text; the document itself allows no script and sends no referrer
@@ -3665,6 +3700,7 @@ function syncReader(){
   $('#readerMobilePos').textContent=$('#readerPos').textContent;
   const bookNow=!!it.bookOf;                                                                                  // (in a book the buttons are about chapters)
   [['#readerPrev .lbl','prev'],['#readerNext .lbl','next'],['#readerMobilePrev .lbl','prev'],['#readerMobileNext .lbl','next']].forEach(([sel,k])=>{ const el=$(sel); if(el) el.textContent=t(bookNow?k+'Ch':k); });
+  $('#reader').classList.toggle('bookmode',bookNow); $('#rBook').hidden=!bookNow; eyeSync(); rbSync();                                  // (a picked book: no Aa, bookmark, save, star, new tab; the bar at the foot and the eye-care button instead)
   pinSync();
 }
 /* A link is read in the page: its text if it was kept, else the service reads the original page (once; the text is then kept in this browser). A page that cannot be read (a login,
@@ -3787,7 +3823,7 @@ function bookPlace(did){
 }
 function bookSave(did, i, pct){
   const p=bookPlace(did), done=new Set(p.done); if(pct>=90) done.add(i);
-  state.progress['bk:'+did]={i, pct:Math.round(pct*10)/10, at:Date.now(), done:[...done].sort((a,b)=>a-b).slice(0,400)};
+  state.progress['bk:'+did]={i, pct:Math.round(pct*100)/100, at:Date.now(), done:[...done].sort((a,b)=>a-b).slice(0,400)};
   LS.set('progress',state.progress);
 }
 const bookOverall = (did, ch) => { const p=bookPlace(did); return Math.max(0,Math.min(100,Math.round((p.i+p.pct/100)/ch.n.length*100))); };          // how much of the whole book, by chapters
@@ -3944,7 +3980,7 @@ function applyReader(){
 function syncSettings(){
   const rs=state.rs, doc=state.rkind==='doc';
   ['#rowFs','#rowLh','#rowW','#rowFf','#rowPg','#rowInd','#rowJus'].forEach(s=>{ $(s).hidden=!doc; }); $('#rOrigNote').hidden=doc;
-  const book=doc && !!bookOfReading(); $('#rowMode').hidden=!book; $('#rowDbl').hidden=!(book && rs.mode==='paged' && innerWidth>=1100); $('#rModeNote').hidden=!(book && PGD.note);
+  eyeSync();
   $('#fsVal').textContent=rs.fs+'%';
   document.querySelectorAll('#rSetPanel .seg2[data-key] button').forEach(b=>b.setAttribute('aria-pressed',String(rs[b.parentElement.dataset.key]===b.dataset.v)));
   document.querySelectorAll('#rThemes button').forEach(b=>b.setAttribute('aria-pressed',String(rs.th===b.dataset.th)));
@@ -3985,7 +4021,7 @@ function currentHeading(fd){
 let tocTab='toc';
 function renderTocPanel(){
   const book=bookOfReading(); if(tocTab==='chs' && !book) tocTab='toc';
-  $('#rTocPanel .rtabs [data-tab="chs"]').hidden=!book;
+  $('#rTocPanel .rtabs [data-tab="chs"]').hidden=!book; $('#rTocPanel .rtabs [data-tab="marks"]').hidden=!!book; if(tocTab==='marks' && book) tocTab='chs';          // (a book remembers its place by itself: no bookmarks)
   document.querySelectorAll('#rTocPanel .rtabs button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===tocTab)));
   const body=$('#rTocBody'), id=state.readingId;
   if(tocTab==='chs' && book){
@@ -4033,20 +4069,24 @@ $('#rTocPanel').addEventListener('click',e=>{
   const del=e.target.closest('[data-del]'); if(del){ (state.marks[state.readingId]||[]).splice(+del.dataset.del,1); LS.set('marks',state.marks); toast(t('markGone')); renderTocPanel(); return; }
   if(e.target.closest('[data-add]')){ addMark(); renderTocPanel(); }
 });
-/* ================= paged reading of a chapter of a book (an option of "Aa": scroll or pages; the default is to scroll) =================
-   The text of the chapter is set in columns that are as wide as the screen (two of them side by side on a wide screen) and as high as the screen: a page is a column, a turn of the page moves the document
-   sideways by the width of the screen. It is only for a chapter of a book (a page with a table, a big picture, code ... is too difficult for columns and is scrolled as before). The place is a place in the text (how many
-   characters come before the top of the page), so that a change of the size of the letters or of the window keeps the reader where he is; it is the same figure (a percent) that the scrolling saves. */
-const PGD={on:false, page:0, pages:1, cols:1, stride:1, note:false, pct:0};
-const PG_CSS=`html.paged{height:100%;overflow:hidden}
-html.paged body{height:100%;margin:0}
+/* ================= paged reading of a chapter of a picked book =================
+   A book is read in pages, on a phone and on a PC; there is nothing to set but the size of the letters (the bar at the foot of the page). The text of the chapter is set in columns that are as wide as the screen and as high as
+   the text area: a page is a column, a turn moves the document sideways by the width of the screen (a short slide). On a wide screen the page is a column of about 36 characters in the middle of the screen (a sheet on a desk) with an
+   arrow at each side; on a phone it takes the whole width and follows the finger. A chapter with a table, a code, a video or a lot of pictures is scrolled (columns do not hold them). The place is a place in the text
+   (how many characters come before the top of the page), so that a change of the size of the letters or of the window keeps the reader where he is; it is the same figure (a percent) that scrolling saves. */
+const PGD={on:false, page:0, pages:1, stride:1, pct:0, anim:0, wide:false, hold:false};
+const PG_CSS=`html.paged{height:100%;overflow:hidden;background:var(--desk,var(--bg));--desk:#EFEFEA}
+html.paged[data-theme="dark"]{--desk:#0E1215}html.paged[data-theme="sepia"]{--desk:#E7DDC4}html.paged[data-theme="green"]{--desk:#BBD9BF}
+@media (prefers-color-scheme:dark){html.paged:not([data-theme]){--desk:#0E1215}}
+html.paged body{height:100%;margin:0;background:transparent}
+html.paged.wide::before{content:"";position:fixed;z-index:-1;top:0;bottom:0;left:calc(var(--pm) - 44px);width:calc(100vw - 2*var(--pm) + 88px);background:var(--bg);box-shadow:0 0 0 1px var(--rule),0 10px 34px rgba(0,0,0,.07)}
 html.paged .doc{box-sizing:border-box;width:calc(100vw - 2*var(--pm));max-width:none;height:calc(100vh - var(--pt) - var(--pb));margin:var(--pt) var(--pm) var(--pb);padding:0;column-width:var(--pcw);column-gap:calc(2*var(--pm));column-fill:auto}
 html.paged .doc h1,html.paged .doc h2,html.paged .doc h3{break-after:avoid}
 html.paged .doc img{max-height:calc(100vh - var(--pt) - var(--pb) - 24px);width:auto;object-fit:contain}
-html.paged .doc .bk-end{break-before:column}
-html.paged .pgnum{position:fixed;left:0;right:0;bottom:10px;text-align:center;font:13px/1 var(--sans);color:var(--muted);pointer-events:none}`;
-const pagedWanted = () => state.rkind==='doc' && !state.rpdf && state.rs.mode==='paged' && !!bookOfReading();
+html.paged .doc .bk-end{display:none}`;
+const pagedWanted = () => state.rkind==='doc' && !state.rpdf && !!bookOfReading();
 const pagedSuitable = d => !d.querySelector('table,pre,iframe,video,object') && d.querySelectorAll('.doc img').length<=3;
+const reducedMotion = () => matchMedia('(prefers-reduced-motion:reduce)').matches;
 function pagedText(d){                                                                             // the text nodes of the chapter in their order (not the translations, not the way on at the end): where each begins
   const doc=d.querySelector('.doc'), list=[]; let total=0; if(!doc) return {list,total};
   const wk=d.createTreeWalker(doc,NodeFilter.SHOW_TEXT,{acceptNode:n=>!n.nodeValue.trim() || (n.parentElement && n.parentElement.closest('.zt-tr,.bk-end,.doc-src,.doc-lic,script,style')) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT});
@@ -4061,64 +4101,128 @@ function pagedCharPct(fd){                                                      
   if(r){ const k=list.findIndex(x=>x[0]===r.startContainer); if(k>=0) return Math.min(100,(list[k][1]+r.startOffset)/total*100); }
   return PGD.pages>1 ? PGD.page/(PGD.pages-1)*100 : 0;
 }
-function pagedGoPct(fd,pct,last){                                                                  // to the page that has this place of the text at its top
+function pagedGoPct(fd,pct,last,anchor){                                                           // to the page that has this place of the text (anchor: the place stays the one asked for, not the top of the page that holds it, so that many changes of the letters do not drift)
   const {w,d}=fd, root=d.documentElement, {list,total}=pagedText(d);
-  if(last || pct>=99.5 || !total){ pagedTo(fd,last||pct>=99.5 ? PGD.pages-1 : 0); return; }
-  const at=Math.max(0,Math.min(total-1,Math.round(pct/100*total)));
+  if(last || pct>=99.5 || !total){ pagedTo(fd,last||pct>=99.5 ? PGD.pages-1 : 0); if(anchor) PGD.pct=pct; return; }
+  const at=Math.max(0,Math.min(total-1,Math.round(pct/100*total+total*0.00005)));                   // (the saved figure is rounded to a hundredth of a percent: a little forward, so that the first letter of a page does not fall on the page before it)
   let k=list.length-1; while(k>0 && list[k][1]>at) k--;
   const r=d.createRange(); try{ r.setStart(list[k][0],Math.min(list[k][0].nodeValue.length-1,Math.max(0,at-list[k][1]))); r.collapse(true); }catch(e){ return pagedTo(fd,0); }
-  const rc=r.getBoundingClientRect(); pagedTo(fd,Math.floor((rc.left+root.scrollLeft+1)/PGD.stride));
+  const rc=r.getBoundingClientRect(); pagedTo(fd,Math.floor((rc.left+root.scrollLeft+1)/PGD.stride)); if(anchor) PGD.pct=pct;
 }
-function pagedTo(fd,n){                                                                            // show page n
-  const {w,d}=fd; n=Math.max(0,Math.min(PGD.pages-1,n)); PGD.page=n; d.documentElement.scrollLeft=n*PGD.stride;
-  const num=d.querySelector('.pgnum'); if(num) num.textContent=`${n+1} / ${PGD.pages}`;
+function pagedMove(root,to,ms,done){                                                               // the document slides to a place (ease out), or is put there at once
+  if(PGD.anim){ cancelAnimationFrame(PGD.anim); PGD.anim=0; }
+  const from=root.scrollLeft;
+  if(!ms || Math.abs(to-from)<2){ root.scrollLeft=to; if(done) done(); return; }
+  const t0=performance.now();
+  const f=now=>{ const k=Math.min(1,(now-t0)/ms), e=1-Math.pow(1-k,3); root.scrollLeft=from+(to-from)*e; if(k<1) PGD.anim=requestAnimationFrame(f); else { PGD.anim=0; root.scrollLeft=to; if(done) done(); } };
+  PGD.anim=requestAnimationFrame(f);
+}
+function pagedTo(fd,n,anim){                                                                       // show page n (anim: slide to it)
+  const root=fd.d.documentElement; n=Math.max(0,Math.min(PGD.pages-1,n)); PGD.page=n; rbSync();
+  pagedMove(root,n*PGD.stride,anim && !reducedMotion() ? 230 : 0,()=>pagedSettled(fd));
+}
+function pagedSettled(fd){                                                                         // the page has come to rest: the place, the progress, the contents
+  if(!PGD.on) return;
   const pct=pagedCharPct(fd); PGD.pct=pct; $('#readerProg').style.width=pct+'%';                  // (the place is kept here: a change of the letters or of the window moves the text before the page is set again)
-  const b=bookOfReading(); if(b){ bookSave(b.did,b.i,pct); if(pct>=60) bookPrefetch(b.it); }
+  const b=bookOfReading(); if(b && !PGD.hold){ bookSave(b.did,b.i,pct); if(pct>=60) bookPrefetch(b.it); }
   const cur=currentHeading(fd); if((cur?cur.id:'')!==state.tocCur){ state.tocCur=cur?cur.id:''; if(!$('#rTocPanel').hidden && tocTab==='toc') renderTocPanel(); }
 }
 function pagedLayout(fd){                                                                          // set the columns for the size of the window now
-  const {w,d}=fd, root=d.documentElement, W=w.innerWidth, wide=W>=1100 && state.rs.dbl!=='off', m=Math.round(Math.max(16,Math.min(56,W*0.06))), cw=wide ? (W-4*m)/2 : W-2*m;
+  const {w,d}=fd, root=d.documentElement, W=w.innerWidth, wide=W>=900, fsPx=parseFloat(w.getComputedStyle(d.body).fontSize)||17, wem=parseFloat(root.style.getPropertyValue('--w'))||36;
+  let cw = wide ? Math.min(W-96,Math.round(wem*fsPx)) : W-2*Math.round(Math.max(16,Math.min(28,W*0.055)));
+  const m=Math.floor((W-cw)/2); cw=W-2*m;
   if(!d.getElementById('zt-paged')){ const st=d.createElement('style'); st.id='zt-paged'; st.textContent=PG_CSS; d.head.appendChild(st); }
-  if(!d.querySelector('.pgnum')){ const p=d.createElement('div'); p.className='pgnum'; d.body.appendChild(p); }
-  root.style.setProperty('--pm',m+'px'); root.style.setProperty('--pt','30px'); root.style.setProperty('--pb','44px'); root.style.setProperty('--pcw',cw+'px');
-  root.classList.add('paged'); PGD.on=true; PGD.cols=wide?2:1; PGD.stride=W; w.scrollTo(0,0);
-  PGD.pages=Math.max(1,Math.ceil((root.scrollWidth-2)/W));
+  root.style.setProperty('--pm',m+'px'); root.style.setProperty('--pt',(wide?44:26)+'px'); root.style.setProperty('--pb','72px'); root.style.setProperty('--pcw',cw+'px');
+  root.classList.add('paged'); root.classList.toggle('wide',wide); PGD.on=true; PGD.wide=wide; PGD.stride=W; w.scrollTo(0,0);
+  $('#reader').classList.add('pgd'); $('#reader').style.setProperty('--redge',Math.max(8,m-72)+'px');                  // (the arrows of a PC stand in the margin beside the page)
+  let sp=d.getElementById('zt-pgsp'); if(!sp){ sp=d.createElement('div'); sp.id='zt-pgsp'; sp.style.cssText='position:absolute;top:0;left:0;height:1px;visibility:hidden;pointer-events:none'; d.body.appendChild(sp); }
+  sp.style.width='1px';                                                                                // (the last column ends before the end of its page, by the margin: the document is made as wide as whole pages, so that the last page is as the others)
+  PGD.pages=Math.max(1,Math.ceil((root.scrollWidth+m-2)/W)); sp.style.width=PGD.pages*W+'px';
 }
-function pagedApply(fd,keepPct){                                                                   // paged or scrolled, as the reader wants and as the chapter allows; the place is kept
-  fd=fd||frameDoc(); if(!fd) return; const {w,d}=fd, root=d.documentElement, want=pagedWanted(), ok=want && pagedSuitable(d);
-  PGD.note = want && !ok;
+function pagedApply(fd,keepPct){                                                                   // paged, unless the chapter cannot be; the place is kept
+  fd=fd||frameDoc(); if(!fd) return; const {w,d}=fd, root=d.documentElement, ok=pagedWanted() && pagedSuitable(d);
   if(ok){
-    const pct = keepPct!==undefined ? keepPct : PGD.on ? PGD.pct : scrollPct(fd);
-    pagedLayout(fd); pagedGoPct(fd,pct);
+    const pct = keepPct!==undefined ? keepPct : PGD.on ? PGD.pct : 0;                                // (a document that is not paged yet is a new one: the place is put right after, by the load of the frame)
+    pagedLayout(fd); pagedGoPct(fd,pct,false,PGD.on);
   } else if(PGD.on){
-    const pct=PGD.pct; root.classList.remove('paged'); PGD.on=false; const num=d.querySelector('.pgnum'); if(num) num.remove();
+    const pct=PGD.pct; root.classList.remove('paged','wide'); PGD.on=false; $('#reader').classList.remove('pgd'); const sp=d.getElementById('zt-pgsp'); if(sp) sp.remove();
     root.scrollLeft=0; const max=root.scrollHeight-w.innerHeight; w.scrollTo(0,max*pct/100);
   }
-  syncSettings();
+  rbSync();
 }
 function pagedStep(dir){                                                                           // a page on; at the end of the chapter, the next one; at the beginning, the end of the one before
   const fd=frameDoc(); if(!fd || !PGD.on) return; const n=PGD.page+dir;
-  if(n>=0 && n<PGD.pages) return pagedTo(fd,n);
+  if(n>=0 && n<PGD.pages) return pagedTo(fd,n,true);
   const b=bookOfReading(); if(!b) return;
   if(dir>0){ if(b.i<b.ch.n.length-1) step(1); else toast(t('bkLast')); }
   else if(b.i>0){ state.pgJump='last'; step(-1); }
 }
-function pagedToEl(el){ const fd=frameDoc(); if(!fd || !PGD.on) return; const r=el.getBoundingClientRect(); pagedTo(fd,Math.floor((r.left+fd.d.documentElement.scrollLeft+1)/PGD.stride)); }
-function pagedWatch(fd){                                                                           // what the reader does in the page: keys, the wheel, the size of the window, the letters that come late (the taps and the swipes are in the frame code)
+function pagedToEl(el){ const fd=frameDoc(); if(!fd || !PGD.on) return; const r=el.getBoundingClientRect(); pagedTo(fd,Math.floor((r.left+fd.d.documentElement.scrollLeft+1)/PGD.stride),true); }
+function pagedTouch(fd){                                                                           // a finger on the page: the page follows it, and on letting go goes on or comes back (a pull at the end of the chapter goes on to the next one)
+  const {w,d}=fd, root=d.documentElement; let s=null, swallow=0;
+  const doc=()=>d.querySelector('.doc'), rubber=px=>{ const e=doc(); if(e) e.style.transform=px ? `translateX(${px}px)` : ''; };
+  d.addEventListener('touchstart',e=>{
+    s=null; if(!PGD.on || e.touches.length!==1 || panelsOpen()) return;
+    const p=e.touches[0]; if(p.clientX<SW_EDGE || p.clientX>w.innerWidth-SW_EDGE) return;                    // (the system's back gesture)
+    if(window.visualViewport && window.visualViewport.scale>1.02) return;
+    const sel=w.getSelection && w.getSelection(); if(sel && String(sel).length) return;
+    if(PGD.anim){ cancelAnimationFrame(PGD.anim); PGD.anim=0; }
+    s={x:p.clientX,y:p.clientY,base:root.scrollLeft,drag:false,pts:[[performance.now(),p.clientX]]};
+  },{passive:true});
+  d.addEventListener('touchmove',e=>{
+    if(!s) return; if(e.touches.length>1){ s=null; rubber(0); return; }
+    const p=e.touches[0], dx=p.clientX-s.x, dy=p.clientY-s.y;
+    if(!s.drag){ if(Math.abs(dx)<10 && Math.abs(dy)<10) return; if(Math.abs(dx)>Math.abs(dy)*1.3) s.drag=true; else { s=null; return; } }
+    e.preventDefault();
+    s.pts.push([performance.now(),p.clientX]); if(s.pts.length>8) s.pts.shift();                         // (the last few places of the finger: how fast it goes is told from them)
+    const max=(PGD.pages-1)*PGD.stride, want=s.base-dx, got=Math.max(0,Math.min(max,want));
+    root.scrollLeft=got; rubber(want===got ? 0 : -(want-got)/3);                                            // (the end of the chapter: the text is pulled a little, and held)
+  },{passive:false});
+  const done=e=>{
+    if(!s) return; const st=s; s=null; if(!st.drag) return; swallow=Date.now();
+    const last=st.pts[st.pts.length-1], p=e.changedTouches && e.changedTouches[0], dx=p ? p.clientX-st.x : last[1]-st.x, W=w.innerWidth;
+    const old=st.pts.find(q=>last[0]-q[0]<=120)||st.pts[0], v=(last[1]-old[1])/Math.max(10,last[0]-old[0]); let dir=0;          // (px per ms over the last 120 ms)
+    if(Math.abs(v)>0.45 && Math.abs(dx)>24) dir=v<0?1:-1; else if(Math.abs(dx)>W*0.18) dir=dx<0?1:-1;           // (a quick flick, or a long enough pull)
+    const e0=doc(); if(e0){ e0.style.transition='transform .2s ease'; e0.style.transform=''; setTimeout(()=>{ e0.style.transition=''; },240); }
+    const n=PGD.page+dir;
+    if(!dir || n<0 || n>=PGD.pages){ pagedTo(fd,PGD.page,true); if(dir) pagedStep(dir); } else pagedTo(fd,n,true);
+  };
+  d.addEventListener('touchend',done,{passive:true});
+  d.addEventListener('touchcancel',e=>{ if(s && s.drag){ s=null; rubber(0); pagedTo(fd,PGD.page,true); } else s=null; },{passive:true});
+  d.addEventListener('click',e=>{ if(Date.now()-swallow<350){ e.stopPropagation(); e.preventDefault(); } },true);          // (the tap that ends a drag is not a tap at the side)
+}
+function pagedWatch(fd){                                                                           // what the reader does in the page: a finger, keys, the wheel, the size of the window, the letters that come late (the taps are in the frame code)
   const {w,d}=fd; let wheelAt=0, wheelSeen=0, resizeTimer=0, lateTimer=0;
   const late=()=>{ clearTimeout(lateTimer); lateTimer=setTimeout(()=>{ if(PGD.on && frameDoc() && frameDoc().d===d) pagedApply(frameDoc()); },150); };      // (letters or pictures that come late move the text: the pages are counted again, the place is kept)
   if(d.fonts && d.fonts.ready) d.fonts.ready.then(late);
   d.addEventListener('load',e=>{ if(e.target && e.target.tagName==='IMG') late(); },true);
+  pagedTouch(fd);
   w.addEventListener('keydown',e=>{
     if(!PGD.on || e.altKey || e.ctrlKey || e.metaKey) return; const k=e.key;
     if(k==='ArrowRight' || k==='PageDown' || (k===' ' && !e.shiftKey)){ e.preventDefault(); pagedStep(1); }
     else if(k==='ArrowLeft' || k==='PageUp' || (k===' ' && e.shiftKey)){ e.preventDefault(); pagedStep(-1); }
-    else if(k==='Home'){ e.preventDefault(); pagedTo(fd,0); } else if(k==='End'){ e.preventDefault(); pagedTo(fd,PGD.pages-1); }
+    else if(k==='Home'){ e.preventDefault(); pagedTo(fd,0,true); } else if(k==='End'){ e.preventDefault(); pagedTo(fd,PGD.pages-1,true); }
   });
   d.addEventListener('wheel',e=>{ if(!PGD.on || e.ctrlKey) return; e.preventDefault(); const now=Date.now(), idle=now-wheelSeen>160; wheelSeen=now;       // (one turn for one push: the long tail of a trackpad is the same push)
     if(!idle || now-wheelAt<250 || Math.abs(e.deltaY)+Math.abs(e.deltaX)<4) return; wheelAt=now; pagedStep((Math.abs(e.deltaY)>=Math.abs(e.deltaX)?e.deltaY:e.deltaX)>0?1:-1); },{passive:false});
   w.addEventListener('resize',()=>{ if(!PGD.on) return; clearTimeout(resizeTimer); resizeTimer=setTimeout(()=>{ if(frameDoc() && PGD.on) pagedApply(frameDoc()); },120); });
 }
+/* ---- a picked book: the bar at the foot (size of the letters, where one is), the arrows of a PC, the colour of the eyes ---- */
+function rbSync(){                                                                                 // the bar at the foot of a book: the page (or how far, when scrolled) and the chapters that can be gone to
+  const out=$('#rbInfo'); if(!out) return; const fd=frameDoc();
+  out.textContent = !fd ? '' : PGD.on ? `${PGD.page+1} / ${PGD.pages}` : Math.round(scrollPct(fd))+'%';
+  $('#rbPrev').disabled=$('#readerPrev').disabled; $('#rbNext').disabled=$('#readerNext').disabled;
+}
+$('#rBook').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  if(b.id==='rbFsM' || b.id==='rbFsP'){ state.rs.fs=Math.max(70,Math.min(200,state.rs.fs+(b.id==='rbFsP'?10:-10))); saveReader(); toast(t('fsNow',state.rs.fs)); }
+  else if(b.id==='rbPrev'){ closePanels(); step(-1); } else if(b.id==='rbNext'){ closePanels(); step(1); }
+});
+$('#rEdgeL').addEventListener('click',()=>pagedStep(-1));
+$('#rEdgeR').addEventListener('click',()=>pagedStep(1));
+const EYE=['follow','sepia','green','dark'];                                                       // the colours of the eye-care button, one after the other
+function eyeSync(){ const k=EYE.includes(state.rs.th)?state.rs.th:'follow', b=$('#readerEye'); b.dataset.th=k; b.title=t('eyeTip',t('eye_'+k)); b.setAttribute('aria-label',b.title); }
+$('#readerEye').addEventListener('click',()=>{ const k=EYE.includes(state.rs.th)?state.rs.th:'follow'; state.rs.th=EYE[(EYE.indexOf(k)+1)%EYE.length]; saveReader(); toast(t('eyeNow',t('eye_'+state.rs.th))); });
 /* ================= touch gestures: a swipe to the left / right ================= */
 const SW_MIN=64, SW_RATIO=1.8, SW_MS=700, SW_EDGE=20;
 function hScrollable(el, win){                                                                   // something that scrolls sideways (a wide table, a code block) keeps its swipes
@@ -4164,33 +4268,36 @@ $('#frame').addEventListener('load',()=>{
   const id=state.readingId; if(!id) return;
   try{
     const fd=frameDoc(); if(!fd) return; const {w,d}=fd;
-    PGD.on=false;                                                                                        // (a new document: nothing is paged yet)
+    const it00=itemById(id), bk00=it00 && it00.bookOf && it00.bk ? it00 : null, bp00=bk00 ? bookPlace(bk00.bookOf) : null;
+    const saved=bk00 ? (bp00.i===bk00.bk.c ? bp00.pct : 0) : (state.progress[id]||{}).pct||0;            // (where the reader was: read before anything is laid out, which would write the place of the first page over it)
+    PGD.on=false; PGD.hold=true; $('#reader').classList.remove('pgd');                                   // (a new document: nothing is paged yet, and the place is not saved until the reader is put back where he was)
     applyReader(); buildToc(); if(!$('#rTocPanel').hidden) renderTocPanel();
     const reveal = state.ftOpen && state.ftOpen.id===id ? state.ftOpen : null; state.ftOpen=null;
     if(reveal) setTimeout(()=>ftReveal(fd,reveal),80);
     const it0=itemById(id), bk=it0 && it0.bookOf && it0.bk ? it0 : null;                                  // a chapter of a book: its own place, its own ways on
-    watchSwipe(d,bk ? dir=>{ if(PGD.on && !panelsOpen()) pagedStep(dir==='left'?1:-1); } : readerSwipe); d.documentElement.style.overscrollBehaviorX='none'; d.documentElement.style.touchAction='pan-y pinch-zoom'; if(!d.__rich){ d.__rich=1; d.addEventListener('click',richLinkClick); }
+    watchSwipe(d,bk ? ()=>{} : readerSwipe); d.documentElement.style.overscrollBehaviorX='none'; d.documentElement.style.touchAction='pan-y pinch-zoom'; if(!d.__rich){ d.__rich=1; d.addEventListener('click',richLinkClick); }
     if(bk){
       d.addEventListener('click',e=>{ const a=e.target.closest && e.target.closest('a[data-bk]'); if(a){ e.preventDefault(); e.stopPropagation(); step(a.dataset.bk==='next'?1:-1); } },true);          // the buttons at the end of a chapter
       d.addEventListener('click',e=>{                                                                    // a tap: at the sides (pages) the page turns; in the middle (a phone) the bars come or go (a swipe no longer changes the chapter in a scroll: it is easy to do by mistake)
         if(panelsOpen() || (e.target.closest && e.target.closest('a,button,input,select,textarea'))) return;
         const sel=w.getSelection && w.getSelection(); if(sel && String(sel).length) return;
         const x=e.clientX/w.innerWidth, coarse=matchMedia('(pointer:coarse)').matches, mid=()=>readerFocus(!document.body.classList.contains('reader-focus'));
-        if(PGD.on){ if(x<.3) pagedStep(-1); else if(x>.7) pagedStep(1); else if(coarse) mid(); }
-        else if(coarse && x>.28 && x<.72) mid();
+        if(!coarse) return;                                                                          // (a PC turns the page with the arrows, the keys and the wheel: a click on the text does nothing)
+        if(PGD.on){ if(x<.3) pagedStep(-1); else if(x>.7) pagedStep(1); else mid(); }
+        else if(x>.28 && x<.72) mid();
       });
       pagedWatch(fd);
       setTimeout(()=>{ if(state.readingId===id) bookPrefetch(bk); },20000);
     }
     if(!bk && matchMedia('(pointer:coarse)').matches && state.visible.length>1 && !LS.get('swipeHint',0)){ LS.set('swipeHint',1); toast(t('swipeHint')); }
-    const bp=bk ? bookPlace(bk.bookOf) : null, saved=bk ? (bp.i===bk.bk.c ? bp.pct : 0) : (state.progress[id]||{}).pct||0;
     const toLast=state.pgJump==='last'; state.pgJump='';                                                // (back from the first page of a chapter: the end of the one before)
+    PGD.hold=false;
     if(PGD.on) pagedGoPct(fd, toLast ? 100 : saved, toLast);
     else if(!reveal && saved>3 && saved<95) setTimeout(()=>{ const max=d.documentElement.scrollHeight-w.innerHeight; w.scrollTo(0,max*saved/100); },120);
     let tick=false;
     w.addEventListener('scroll',()=>{ if(PGD.on || tick) return; tick=true; requestAnimationFrame(()=>{ tick=false;
       const pct=scrollPct(fd);
-      $('#readerProg').style.width=pct+'%';
+      $('#readerProg').style.width=pct+'%'; rbSync();
       if(bk){ bookSave(bk.bookOf,bk.bk.c,pct); if(pct>=60) bookPrefetch(bk); } else if(!id.startsWith('tmp:')){ state.progress[id]={pct,at:Date.now()}; LS.set('progress',state.progress); }
       const cur=currentHeading(fd); if((cur?cur.id:'')!==state.tocCur){ state.tocCur=cur?cur.id:''; if(!$('#rTocPanel').hidden && tocTab==='toc') renderTocPanel(); }
       if(!$('#rSetPanel').hidden || !$('#rSavePanel').hidden) closePopovers(); }); },{passive:true});
@@ -8232,7 +8339,7 @@ document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){ e.preventDefault(); if(document.body.classList.contains('reader-focus')) readerFocus(false); else if(panelsOpen()) closePanels(); else closeReader(); }
     else if(!typing && PGD.on && (e.key==='ArrowLeft' || e.key==='PageUp')){ e.preventDefault(); pagedStep(-1); }
     else if(!typing && PGD.on && (e.key==='ArrowRight' || e.key==='PageDown' || e.key===' ')){ e.preventDefault(); pagedStep(1); }
-    else if(!typing && PGD.on && (e.key==='Home' || e.key==='End')){ e.preventDefault(); const fd=frameDoc(); if(fd) pagedTo(fd,e.key==='Home'?0:PGD.pages-1); }
+    else if(!typing && PGD.on && (e.key==='Home' || e.key==='End')){ e.preventDefault(); const fd=frameDoc(); if(fd) pagedTo(fd,e.key==='Home'?0:PGD.pages-1,true); }
     else if(!typing && e.key==='ArrowLeft') step(-1);
     else if(!typing && e.key==='ArrowRight') step(1);
     return;
