@@ -1181,8 +1181,13 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
         xml = ['<?xml version="1.0" encoding="UTF-8"?>', '<!-- %s -->' % GENERATED,
                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"%s>' % (' xmlns:xhtml="http://www.w3.org/1999/xhtml"' if alt_links else '')]
         for loc, d in rows:
-            alts = ''.join('<xhtml:link rel="alternate" hreflang="%s" href="%s"/>' % (h, xml_escape(u)) for h, u in alt_links.get(loc, []))
-            xml.append('  <url><loc>%s</loc>%s%s</url>' % (xml_escape(loc), '<lastmod>%s</lastmod>' % d if DAY.match(d) else '', alts))
+            xml.append('  <url>')
+            xml.append('    <loc>%s</loc>' % xml_escape(loc))
+            if DAY.match(d):
+                xml.append('    <lastmod>%s</lastmod>' % d)
+            for h, u in alt_links.get(loc, []):
+                xml.append('    <xhtml:link rel="alternate" hreflang="%s" href="%s" />' % (h, xml_escape(u)))
+            xml.append('  </url>')
         xml.append('</urlset>')
         robots = ['# ' + GENERATED, 'User-agent: *', 'Allow: /', 'Disallow: /manifest.json', 'Disallow: /manifest.js']
         if conv_items:
