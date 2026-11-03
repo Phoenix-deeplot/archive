@@ -563,6 +563,17 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .hot-period button{min-height:32px;padding:4px 10px;border:0;border-radius:6px;background:transparent;color:var(--muted);font:inherit;font-size:12px;cursor:pointer;white-space:nowrap}
 .hot-period button[aria-pressed="true"]{background:var(--ink);color:var(--bg);font-weight:650}
 .hot-history-note{margin:0;padding:24px 14px;text-align:center;color:var(--muted);line-height:1.55}
+.hot-focus{margin:0 0 16px}
+.hot-focus-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 8px}
+.hot-focus-head h3{margin:0;font:700 16px/1.3 var(--serif);color:var(--ink)}
+.hot-focus-head button{border:0;background:none;color:var(--accent);font:inherit;font-size:12px;cursor:pointer}
+.hot-focus-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.hot-focus-card{display:block;min-width:0;padding:12px 13px;border:1px solid var(--rule);border-radius:12px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 8%,var(--surface)),var(--surface) 72%);color:var(--ink);text-decoration:none}
+.hot-focus-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.hot-focus-card .hot-event-category{margin-bottom:7px}
+.hot-focus-card strong{display:-webkit-box;overflow:hidden;font:700 15px/1.4 var(--serif);-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.hot-focus-card p{display:-webkit-box;overflow:hidden;margin:5px 0 7px;color:var(--muted);font-size:12px;line-height:1.45;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.hot-focus-meta{color:var(--muted);font-size:11px}
 .hot-events{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .hot-event{min-width:0;padding:15px 16px;border:1px solid var(--rule);border-radius:13px;background:var(--surface)}
 .hot-event-head,.hot-event-meta,.hot-event-sources{display:flex;flex-wrap:wrap;align-items:center;gap:6px 9px}
@@ -590,6 +601,11 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
   .hot-events{grid-template-columns:minmax(0,1fr);gap:8px}
   .hot-event{padding:13px}
   .hot-event-title{font-size:16px}
+  .hot-focus{margin-bottom:12px}
+  .hot-focus-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .hot-focus-card{padding:10px}
+  .hot-focus-card strong{font-size:13px}
+  .hot-focus-card p{font-size:11px}
   .hot-main{grid-template-columns:minmax(0,1fr);gap:10px}
   .hot-plats{position:static;flex-direction:row;overflow-x:auto;overflow-y:visible;max-height:none;gap:6px;padding:0 0 4px;scrollbar-width:none}
   .hot-plat{flex:0 0 auto;white-space:nowrap;border:1px solid var(--rule);border-radius:999px;padding:7px 14px;min-height:40px}
@@ -6520,8 +6536,8 @@ function richLinkClick(e){                                                      
 const HOT_TTL=180000;
 const HOT_EVENTS_TTL=300000;
 const HOT_UI_COPY={
-  zh:{boards:n=>`平台榜单${n?` · ${n}`:''}`,events:'热点追踪',hero:'按兴趣浏览平台热榜',intro:'榜单按领域整理，保留各平台原始排名；热点事件持续汇总多方报道。',day:'今日榜',week:'近 7 天',weekPending:'正在积累真实榜单快照；当前先展示已采集数据，排名会随记录增加逐步稳定。',weekEmpty:'近 7 天暂时没有可展示的榜单记录。',eventLoading:'正在汇总持续更新的热点事件……',eventErr:'热点追踪暂时不可用，请稍后重试。',eventEmpty:'暂时没有正在持续更新的热点事件。',eventRetry:'重试热点追踪',eventSources:n=>`${n} 个来源`,eventUpdated:m=>`最后更新 ${m}`,trendUp:'热度上升',trendDown:'热度回落',trendStable:'持续更新',rank:n=>`榜内第 ${n} 名`,newest:'最新',siteRead:'可在站内打开',openSite:'打开原站'},
-  en:{boards:n=>`Platform charts${n?` · ${n}`:''}`,events:'Live topics',hero:'Browse charts by interest',intro:'Charts are grouped by topic and keep each platform’s original ranking. Live topics follow developing stories across sources.',day:'Today',week:'Last 7 days',weekPending:'We are collecting real chart snapshots. Showing the data available so far; rankings will stabilize as more days are recorded.',weekEmpty:'There are no chart entries to show for the last 7 days yet.',eventLoading:'Gathering developing stories…',eventErr:'Live topic tracking is temporarily unavailable.',eventEmpty:'No developing stories are available right now.',eventRetry:'Retry topic tracking',eventSources:n=>`${n} sources`,eventUpdated:m=>`Last updated ${m}`,trendUp:'Rising',trendDown:'Cooling',trendStable:'Developing',rank:n=>`#${n} on chart`,newest:'Latest',siteRead:'Read here',openSite:'Open source'}
+  zh:{boards:n=>`平台榜单${n?` · ${n}`:''}`,events:'热点追踪',focus:'热点 · 今日精选',focusMore:'更多热点 ›',hero:'按兴趣浏览平台热榜',intro:'榜单按领域整理，保留各平台原始排名；热点事件持续汇总多方报道。',day:'今日榜',week:'近 7 天',weekPending:'正在积累真实榜单快照；当前先展示已采集数据，排名会随记录增加逐步稳定。',weekEmpty:'近 7 天暂时没有可展示的榜单记录。',eventLoading:'正在汇总持续更新的热点事件……',eventErr:'热点追踪暂时不可用，请稍后重试。',eventEmpty:'暂时没有正在持续更新的热点事件。',eventRetry:'重试热点追踪',eventSources:n=>`${n} 个来源`,eventUpdated:m=>`最后更新 ${m}`,trendUp:'热度上升',trendDown:'热度回落',trendStable:'持续更新',rank:n=>`榜内第 ${n} 名`,newest:'最新',siteRead:'可在站内打开',openSite:'打开原站'},
+  en:{boards:n=>`Platform charts${n?` · ${n}`:''}`,events:'Live topics',focus:'Today’s hot picks',focusMore:'More topics ›',hero:'Browse charts by interest',intro:'Charts are grouped by topic and keep each platform’s original ranking. Live topics follow developing stories across sources.',day:'Today',week:'Last 7 days',weekPending:'We are collecting real chart snapshots. Showing the data available so far; rankings will stabilize as more days are recorded.',weekEmpty:'There are no chart entries to show for the last 7 days yet.',eventLoading:'Gathering developing stories…',eventErr:'Live topic tracking is temporarily unavailable.',eventEmpty:'No developing stories are available right now.',eventRetry:'Retry topic tracking',eventSources:n=>`${n} sources`,eventUpdated:m=>`Last updated ${m}`,trendUp:'Rising',trendDown:'Cooling',trendStable:'Developing',rank:n=>`#${n} on chart`,newest:'Latest',siteRead:'Read here',openSite:'Open source'}
 };
 const hotUi=(k,...args)=>{ const v=(HOT_UI_COPY[state.lang==='en'?'en':'zh']||HOT_UI_COPY.zh)[k]; return typeof v==='function'?v(...args):v||k; };
 const hotName = o => state.lang==='en' ? (o.name_en||o.name) : o.name;
@@ -6569,11 +6585,12 @@ async function hotEventsEnsure(force){
     if(run===h.eventsRun){ h.events=d.events; h.eventsAt=Date.now(); h.eventsUpdated=+d.updated||0; }
   }catch(e){ if(run===h.eventsRun) h.eventsErr=hotUi('eventErr'); }
   if(run===h.eventsRun) h.eventsBusy=false;
-  if(hotShown() && h.view==='events') paintHot();
+  if(hotShown()) paintHot();
 }
 function hotEnsure(){                                                                              // the list that is shown is asked for, once it is missing or old
   const h=state.hot; if(!h.idx){ if(!h.err) hotIndex(); return; }                                  // (a service that failed is asked again by the retry button, not by every repaint)
   if(h.view==='events'){ hotEventsEnsure(false); return; }
+  hotEventsEnsure(false);                                                                         // power the compact today-picks strip while browsing charts
   const s=hotCur(); if(!s) return; const d=h.data.get(hotKey(s.cur));
   if(!d || (d.state==='ok' && Date.now()-d.t>HOT_TTL)) hotLoad(s.cur);
 }
@@ -6633,11 +6650,17 @@ function hotEventsHTML(){
   }).join('');
   return `<section class="hot-events" aria-live="polite" aria-busy="${!!h.eventsBusy}">${cards}</section>${h.eventsErr?`<p class="hot-feedback">${esc(h.eventsErr)}</p>`:''}`;
 }
+function hotFocusHTML(){
+  const events=state.hot.events.slice(0,3); if(!events.length) return '';
+  const cards=events.map(ev=>{ const it=Array.isArray(ev.items)?ev.items[0]||{}:{}, url=httpUrl(it.url||it.source_url||ev.url), title=String(ev.title||it.title||''), excerpt=String(it.excerpt||it.summary||it.note||''), count=Math.max(0,Number(ev.source_count)||((Array.isArray(ev.items)&&ev.items.length)||0)), updated=hotEventTime(ev.last_updated); if(!title) return ''; return `<a class="hot-focus-card" href="${esc(url||'#')}" ${url?'target="_blank" rel="nofollow ugc noopener noreferrer"':'data-hot-view="events"'}><span class="hot-event-category">${esc(hotEventCategory(ev.category))}</span><strong>${esc(title)}</strong>${excerpt?`<p>${esc(excerpt)}</p>`:''}<span class="hot-focus-meta">${esc(hotUi('eventSources',count))}${updated?' · '+esc(updated):''}</span></a>`; }).join('');
+  if(!cards) return '';
+  return `<section class="hot-focus" aria-label="${esc(hotUi('focus'))}"><header class="hot-focus-head"><h3>${esc(hotUi('focus'))}</h3><button type="button" data-hot-view="events">${esc(hotUi('focusMore'))}</button></header><div class="hot-focus-grid">${cards}</div></section>`;
+}
 function hotHTML(){
   const h=state.hot, n=h.idx&&Array.isArray(h.idx.platforms)?h.idx.platforms.length:0, updated=h.view==='events'?h.eventsUpdated||0:Math.max(0,...[...h.data.values()].map(d=>d.at||0)), age=updated?Math.max(0,Math.round((Date.now()/1000-updated)/60)):null, meta=age===null?'':t('hotAgo',age);
   return `<div class="hot"><section class="hot-intro"><div class="hot-intro-copy"><h2>${esc(hotUi('hero'))}</h2><p>${esc(hotUi('intro'))}</p></div><span class="hot-updated">${esc(meta)}</span></section>`
     + `<div class="hot-modebar" role="tablist" aria-label="${esc(t('hotTitle'))}"><button class="hot-mode" type="button" role="tab" aria-selected="${h.view==='boards'}" data-hot-view="boards">${esc(hotUi('boards',n))}</button><button class="hot-mode" type="button" role="tab" aria-selected="${h.view==='events'}" data-hot-view="events">${esc(hotUi('events'))}</button></div>`
-    + (h.view==='events'?hotEventsHTML():hotBoardsHTML()) + `</div>`;
+    + (h.view==='events'?hotEventsHTML():hotFocusHTML()+hotBoardsHTML()) + `</div>`;
 }
 function hotSetView(view){
   if(view!=='events'&&view!=='boards') return;
