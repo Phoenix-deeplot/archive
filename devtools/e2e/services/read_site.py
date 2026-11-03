@@ -33,6 +33,7 @@ PAGES = {
     '/wiki/Tale/Chapter_1': ('text/html; charset=utf-8', article('Chapter 1', 'It was the first chapter, and the lamps were lit early in the town.', 40), 0),
     '/wiki/Tale/Chapter_2': ('text/html; charset=utf-8', article('Chapter 2', 'It was the second chapter, and the travellers reached the river at noon.', 60), 0),
     '/wiki/Tale/Chapter_3': ('text/html; charset=utf-8', article('Chapter 3', 'It was the third chapter, and the bridge, at last, was found.', 5), 0),
+    '/wiki/Tale/Chapter_4': ('text/html; charset=utf-8', article('Chapter 4', 'It was the fourth chapter, and it had a table in it.', 12).replace('</article>', '<table><tr><th>Town</th><th>Lamps</th></tr><tr><td>North</td><td>12</td></tr><tr><td>South</td><td>7</td></tr></table></article>'), 0),
 }
 POSTS = [(1, '库存周转率怎么看', '/a/1', 'Wed, 14 Oct 2026 08:00:00 GMT'), (2, 'Lead time in one picture', '/a/2', 'Tue, 13 Oct 2026 08:00:00 GMT'), (3, 'Members only', '/wall', 'Mon, 12 Oct 2026 08:00:00 GMT'),
          (4, 'Drawn by scripts', '/spa', 'Sun, 11 Oct 2026 08:00:00 GMT'), (5, 'A PDF report', '/doc.pdf', 'Sat, 10 Oct 2026 08:00:00 GMT'), (6, 'A slow article', '/slow', 'Fri, 09 Oct 2026 08:00:00 GMT'),
