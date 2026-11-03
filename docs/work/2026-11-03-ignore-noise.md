@@ -51,7 +51,10 @@
 
 ### claude
 
-（开发中）
+- 做完，待用户确认：`.vercelignore`（新）、`seo.py`（发布时根目录的 `.md` 一律不复制；`verify_site` 发现站根上有 `.md` 就停止构建）、`.gitignore`（加 `.claude/`、`/RSS_*.md`）、README 的部署说明。
+- 验证（临时目录里的真实构建）：把工作树的文件拷两份，一份全拷（外加一个根目录的 `TEST_PRIVATE.md`），一份去掉 `.vercelignore` 排除的东西，各跑 `build_index.py --keep-dates --seo`：两次都成功，`dist/` 都是 110 个文件、一模一样，`TEST_PRIVATE.md` 没有被发布；`verify_site` 对好的 `dist` 返回空、对站根上多出一个 `.md` 的 `dist` 返回问题。
+- 没跑浏览器测试：改的只是构建和忽略文件，没有动页面；而且用户正在 8820 的预览上检查，重启测试会把它关掉。合并前再跑 `s_seo_sections`。
+- “不进 git”还没做，等用户决定（见上）。
 
 ## 4. 合并记录
 
