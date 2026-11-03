@@ -1,6 +1,6 @@
 # 热榜分类与热点追踪（2026-11-02）
 
-状态：开发已完成，待用户预览；尚未合并或部署
+状态：已合并进 master（2026-11-03，用户说“把 codex 的版本一起合并了”）；未推送、未部署
 
 ## 1. 任务清单（用户）
 
@@ -95,6 +95,6 @@
 
 ## 4. 合并记录
 
-- 合并顺序：未开始。
-- 合并后的测试结果：未开始。
-- 删除的分支和 worktree：未创建。
+- 合并顺序：shelf-directory 的 `codex/hotlist-topics-api` 早已合并；my-archive 的 `codex/hotlist-topics`（前端）由 Claude 在 2026-11-03 并进 `claude/reader-simple`（没有冲突），再随它合进 master（`2c7a170`）。
+- 合并后的测试结果：`s_hotpage` 60 项、`s_rich` 48 项、`s_hot` 9 项通过（整套回归见 `2026-11-03-reader-simple.md` 的合并记录）。合并时补了三处测试（钩子 `hotEventsEnsure`、`s_hotpage` 空事件的竞态、`s_rich` 的新分类）。
+- 删除的分支和 worktree：`codex/hotlist-topics` 和 `E:\\Ztree\\wt\\codex-hotlist-topics`。

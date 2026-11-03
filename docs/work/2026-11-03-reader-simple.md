@@ -1,6 +1,6 @@
 # 阅读做减法：最佳默认、悬浮字号条、图书书本式翻页（电脑 `‹` `›`、手机跟手滑动）、护眼切换、没有书签（2026-11-03）
 
-状态：**已确认（用户 2026-11-03：“确认你明白了我的需求，就开始改”）**，开发中
+状态：**已合并（2026-11-03，用户说“可以，把 codex 的版本一起合并了”）**；未推送、未部署
 
 ## 1. 任务清单（用户）
 
@@ -94,6 +94,8 @@ shelf-directory 不动。
 
 ## 4. 合并记录
 
-- 合并顺序：
-- 合并后的测试结果：
-- 删除的分支和 worktree：
+- **合并顺序（2026-11-03，`--no-ff`，没推送、没部署）**：先在分支 `claude/reader-simple` 里并入 `codex/hotlist-topics`（Codex 的热榜页前端，已完成、等合并；没有冲突，没有动 Codex 的 worktree），整套验收后再把 `claude/reader-simple` 合进 master（`2c7a170`）。合并前后用户 master 的 `index.html` 里那行没提交的百度验证标签先 `git stash`、再 `git stash pop`，没有提交。
+- **合并后的测试结果**（整套 `run_all.ps1` 在分支上跑过，master 上再跑了相关的）：`s_bookpaged` 59、`s_bookreader` 21、`s_bookcards` 16、`s_booktrans` 22、`s_translate` 22、`s_bookcache` 12、`s_books` 19、`s_readerui` 25、`s_text` 27、`s_focus` 52、`s_notes` 61、`s_notes_doc` 49、`s_dir` 128、`s_first` 29、`s_shell` 76、`s_hot` 9、`s_hotpage` 60、`s_rich` 48、`s_lang` 13、`s_listen` 91、`s_more` 13、`s_player` 46、`s_player2` 11、`s_tips` 16、`s_backup` 31、`s_starter` 19、`s_mobile` 39（先清掉计数库）、Codex 的 `s_reader_usability` 12，全部通过；重名函数和语法检查通过。
+  - 为让 Codex 的热榜测试在合并后跑通，改了三处测试：`make_demo.py` 的钩子加了 `hotEventsEnsure`（`s_hotpage` 用到）；`s_hotpage` 里“空事件列表”那条等回应出来再看（加载状态也是 `.hot-state`，原来是竞态）；`s_rich` 里平台所在的栏换成新的分类（B 站 / 网易云 / 知乎 / Apple 播客 → 影音与社区，Steam → 娱乐，V2EX / GitHub → 科技）。
+  - master 上本来就失败、和这次无关的：`s_read`（目录页里找不到测试塞进去的文章，第 92 行）、`s_reco` 2 项、`s_sync` 1 项。
+- **删除的分支和 worktree**：`claude/reader-simple` 和 `E:\\Ztree\\wt\\claude-reader-simple`、`codex/hotlist-topics` 和 `E:\\Ztree\\wt\\codex-hotlist-topics`（它的 worktree 是干净的）。**没动 `codex/miniprogram-pilot`**：它的工作目录里还有没提交的改动，规划里“微信开发者工具预览”也还没确认，等用户决定。
