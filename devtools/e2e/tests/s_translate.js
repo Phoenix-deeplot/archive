@@ -54,7 +54,7 @@ const ZH = '# 茶的简史\n\n茶最早在中国被当作药来喝，已经有�
   const n = await fdoc(`d.querySelectorAll('.zt-tr').length`), blocks = await fdoc(`[...d.querySelectorAll('p,li,h1,h2,h3')].filter(e=>!e.closest('.zt-tr,.doc-meta,.doc-src,.doc-lic')).length`);
   const log = await get('/__trans_log');
   ok('"翻译": every paragraph, item and heading has its translation under it; one request, in Chinese', n >= 7 && n === blocks && log.length === 1 && log[0].to === 'zh' && log[0].n === n, { n, blocks, log });
-  ok('the translations are the service\'s answers, in the page, in Chinese, under their text', await fdoc(`(()=>{ const p=d.querySelector('p'); return !!p.querySelector(':scope > .zt-src') && /^译:/.test(p.querySelector(':scope > .zt-tr').textContent) && p.querySelector('.zt-tr').lang==='zh-CN'; })()`));
+  ok('the translations are the service\'s answers, in the page, in Chinese, under their text', await fdoc(`(()=>{ const p=d.querySelector('p:not(.doc-meta):not(.doc-src):not(.doc-lic)'); return !!p.querySelector(':scope > .zt-src') && /^译:/.test(p.querySelector(':scope > .zt-tr').textContent) && p.querySelector('.zt-tr').lang==='zh-CN'; })()`));
   const b1 = await btn();
   ok('the button says 双语 and is on', b1.lbl === '双语' && b1.on, b1);
   ok('the contents of the page keep the headings as they were (the translation is not in them)', await J(`state.toc.length>0 && state.toc.every(x=>!/^译:/.test(x.text))`), await J(`state.toc`));
