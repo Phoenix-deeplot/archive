@@ -6983,6 +6983,7 @@ const HOT_UI_COPY={
 };
 const hotUi=(k,...args)=>{ const v=(HOT_UI_COPY[state.lang==='en'?'en':'zh']||HOT_UI_COPY.zh)[k]; return typeof v==='function'?v(...args):v||k; };
 const hotName = o => state.lang==='en' ? (o.name_en||o.name) : o.name;
+const hotTrackName=o=>{ const labels=state.lang==='en'?{vendor:'Vendor & product updates',research:'Research & papers',tools:'Tools & Skills',applications:'Applications'}:{vendor:'厂商与产品动态',research:'论文与研究',tools:'工具与 Skill',applications:'应用案例'}; return labels[o&&o.track]||''; };
 const hotShown = () => dirOn() && state.dHot && dirIsHome() && !!hotBase();
 const HOT_EXPERIMENT='hot-layout-v1', hotAnalytics={anon:'',session:'',variant:'control',enabled:false,configBusy:false,observer:null,seen:new Set(),timers:new Map(),activeAt:0,activeSeconds:0,flushTimer:0};
 function hotUuid(){ return crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16);}); }
@@ -7168,7 +7169,7 @@ function hotBoardsHTML(){
   else if(!d.rows.length && h.period==='week') body=`<p class="hot-history-note">${esc(hotUi('weekEmpty'))}</p>`;
   else if(!d.rows.length) body=`<p class="hot-state">${esc(t('hotEmpty'))}</p>`;
   else body=`<ol class="hot-rows">${d.rows.map((r,i)=>hotRowHTML(r,i,ranked)).join('')}</ol>`;
-  const meta=[cur.via ? t('hotVia',cur.via) : '', d && d.at ? t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))) : '', ranked ? '' : t('hotNewest')].filter(Boolean).join(' · '), columns=hotActiveColumns();
+  const meta=[hotTrackName(cur),cur.via ? t('hotVia',cur.via) : '', d && d.at ? t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))) : '', ranked ? '' : t('hotNewest')].filter(Boolean).join(' · '), columns=hotActiveColumns();
   return `<div class="hot"><label class="sr-only" for="hotCatSelect">${esc(hotUi('boards',columns.length))}</label><select id="hotCatSelect" class="hot-cat-select" data-hot-c-select aria-label="${esc(hotUi('boards',columns.length))}">${columns.map(c=>`<option value="${esc(c.id)}"${c.id===s.col.id?' selected':''}>${esc(hotName(c))}</option>`).join('')}</select><div class="hot-cols" role="tablist" aria-label="${esc(t('hotTitle'))}">${columns.map(c=>`<button class="hot-col" type="button" role="tab" aria-selected="${c.id===s.col.id}" data-hot-c="${esc(c.id)}">${esc(hotName(c))}</button>`).join('')}</div>`
     + `<div class="hot-main"><nav class="hot-plats" role="tablist" aria-label="${esc(hotName(s.col))}">${s.plats.map(p=>`<button class="hot-plat" type="button" role="tab" aria-selected="${p.id===cur.id}" data-hot-p="${esc(p.id)}">${esc(hotName(p))}</button>`).join('')}</nav>`
     + `<section class="hot-list" aria-live="polite" aria-busy="${!!(d && d.state==='load')}"><header class="hot-head"><h2>${esc(hotName(cur))}${where ? ' · '+esc(hotCountry(where)) : ''}</h2><span class="hot-meta">${esc(meta)}</span><span class="hot-acts">`
