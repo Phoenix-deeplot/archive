@@ -1,6 +1,11 @@
 # 精选图书页：简化、卡片瘦身、退出不弹窗、书单（2026-11-04）
 
-状态：规划中（第一步可以开工的部分等用户确认；第二步“分类和书单”要先定设计）
+状态：已确认（2026-11-04，用户：规划按建议做；“已更新时间”全站去掉；简介留着；书单数据由 claude 一起做）
+
+用户的决定：
+- “已更新时间”（`#updNote`）**全站去掉**，不只是精选图书页。下拉刷新、回到页面隔 10 分钟再看一次、出错时的“重试”都还在；只是不再有那一行字和 ↻ 按钮。
+- 卡片上的简介（两行）**留着**。
+- 书单数据（`booklists`）由 claude 在 `shelf-directory` 里一起做（分支 `claude/books-lists`），不交给 Codex。
 
 ## 1. 任务清单（用户）
 
@@ -23,7 +28,7 @@
 
 | 项 | 做法 |
 |---|---|
-| 1 | 在精选图书页：`#dirBar` 不显示；`#updNote` 不显示；进入这一页时不再套用“节目 / 栏目 / 平台 / 领域”的筛选状态（`dPick`、`dPickT`、`dTab`、`dSub`），也不在副标题里列出这些筛选的小标签。其它发现世界的页面不动。顶栏的搜索框和 中 / EN 还在（它们是整个站的，不是这一页的筛选条）。 |
+| 1 | `#updNote` 全站去掉（`updNoteSync` 只留“下拉刷新时关掉浏览器自己的下拉”这件事，元素、样式、“已更新 / 更新中”两句话和 ↻ 按钮都删）。在精选图书页：`#dirBar` 不显示；进入这一页时不再套用“节目 / 栏目 / 平台 / 领域”的筛选状态（`dPick`、`dPickT`、`dTab`、`dSub`），也不在副标题里列出这些筛选的小标签。其它发现世界的页面不动。顶栏的搜索框和 中 / EN 还在（它们是整个站的，不是这一页的筛选条）。 |
 | 2 | 精选图书的卡片（卡片视图和列表视图都改）：去掉左上“站长推荐”、右上“书籍”、“公有领域”、`#标签`、“精选图书”书架名。底下一行只留：语言（中文 / English）· 作者 · 来源（原站的名字，例如“维基文库”“古腾堡计划”，不是“精选图书”）· 章数；右下 ♥（有数就带数）、热度、收藏、“试读 / 继续阅读”。**读书用户的个人进度**：有进度时写“读到 第 3 章 · 32%”，封面底边一条细进度线；没读过就什么也不写。简介（两行）留着，因为选书靠它。授权信息不丢：阅读页底部和书的章节表里仍然写（`bookLicLine`），只是不在卡片上。 |
 | 3 | 删掉 `closeReader` 里回弹章节表的那一行；说明文字（zh / en）去掉那半句。章节表还在阅读页的“目录 → 章节”里。点卡片上的“试读 / 继续阅读”本来就直接进阅读页，不动。 |
 | 5 | 发现世界不再画侧栏标签盒（不调用 `renderTagbox`，盒子隐藏）。卡片上的标签和 `state.dTag` 的逻辑不动，别处点标签仍然能筛。我的书架的标签盒不动。 |
@@ -43,7 +48,7 @@
 | 任务 | 负责 | 分支 / worktree | 会改的文件 | 不许碰 |
 |---|---|---|---|---|
 | 第一步（1、2、3、5）+ 第二步前端（类别、书单一排、作者） | claude | `claude/books-page` · `E:\Ztree\wt\claude-books-page` | `index.html`、`devtools/e2e/tests/s_book*.js`（新增 `s_bookpage.js`）、`devtools/e2e/run_all.ps1`、`devtools/e2e/make_demo.py`（只加钩子）、`devtools/e2e/books_preview.py`（演示书单）、`library/notes/guide/*`、`README.md` | 播放器和听歌的函数（`pl*`、`lp*`、`ls*`）、热榜的函数（`renderHotPage` 等，Codex 在改）、翻译词典的长行（新词只加在新行里） |
-| 第二步数据（`booklists`，可选 `genre`） | 待定（codex 或 claude） | `codex/books-lists` · `E:\Ztree\wt\codex-books-lists`（在 `shelf-directory` 里） | `shelf-directory` 的 `aggregate.py`、测试、一个书单 JSON | `listen.py`、`hotapi.py` |
+| 第二步数据（`booklists`，可选 `genre`） | claude | `claude/books-lists` · `E:\Ztree\wt\claude-books-lists`（在 `shelf-directory` 里） | `shelf-directory` 的 `aggregate.py`、测试、一个书单 JSON | `listen.py`、`hotapi.py`（Codex 在 `codex/music-sources` 里改） |
 
 ### 接口约定
 
