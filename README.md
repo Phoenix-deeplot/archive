@@ -347,7 +347,8 @@ vercel --prod        # 或者 git push（已接 Git 时）
 - **隐藏的内容不会被部署**：`dist/` 里没有隐藏的文件，清单里也没有，`library/_meta.json` 同样不发布。想让某篇上线，就取消隐藏。
 - 新文件必须重新部署才会出现（静态站点没有后台）。
 - 看不到新内容时，打开 `https://你的域名/manifest.json` 看 `generated` 和 `items`：不在清单里 = 部署的不是最新文件。
-- `.gitignore` 里不要忽略 `vercel.json`，也别写 `*.py`（构建需要 `build_index.py`、`seo.py`）。
+- **上传和发布各排除什么**：`vercel --prod` 上传时看 `.vercelignore`（这个文件在时 Vercel 不再看 `.gitignore`，所以 `.gitignore` 里要忽略的在 `.vercelignore` 里抄了一份，改其中一个时两个都改）：`devtools/`、`docs/`、根目录的 `*.md`、`export_guide.py`、`.claude/` 不上传。网站构建本身也不发布它们，**根目录的 `.md` 一律不发布**（你放在根目录的内部笔记不会上线；构建出来的站根上有 `.md` 就会停止构建）。
+- `.gitignore` 和 `.vercelignore` 里都不要忽略 `vercel.json`，也别写 `*.py`（构建需要 `build_index.py`、`seo.py`）。
 - 网址写在 `vercel.json` 的构建命令里（`--site-url https://books.zhitree.cn`）；换域名就改这里。
 
 ### 搜索引擎（Google、Bing）

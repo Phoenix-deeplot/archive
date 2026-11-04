@@ -1,0 +1,24 @@
+# What `vercel --prod` uploads. While this file exists Vercel does NOT read .gitignore, so what that file ignores is repeated here.
+# vercel.json must not be ignored; the build needs build_index.py, seo.py, index.html, site.json, vendor/, icons/, library/, en/ ... (do not write *.py here).
+.history
+.vercel
+.env*
+.vscode/
+node_modules/
+package-lock.json
+index_dev.html
+.venv/
+.venv
+__pycache__
+*.pyc
+.git
+dist/
+.indexnow-state.json
+marked.LICENSE.md
+.claude/
+
+# the work of the project: plans, browser tests, notes, the cross-posting script. The site does not need them (the build skips them too).
+devtools/
+docs/
+/*.md
+export_guide.py
