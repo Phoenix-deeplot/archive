@@ -170,7 +170,7 @@ hotdetail.DETAILS = [(rx, (lambda m: {'kind': 'podcast', 'title': 'English Learn
                      for rx, fn in hotdetail.DETAILS]
 
 
-def fake_entries(pid, now=None, env=None, region=''):
+def fake_entries(pid, now=None, env=None, region='', timeout=None, period='day'):
     HOT['asked'].append(pid + (':' + region if region else ''))
     if HOT.get('real') and pid in REAL:
         return [hotapi._norm(r) for r in REAL[pid]], time.time() - 120

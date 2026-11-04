@@ -6070,7 +6070,7 @@ state.ls={scene:String(LS.get('lsScene','')||'')};
 state.lp={idx:null, idxAt:0, busy:false, err:'', data:new Map(), pending:new Map(), g:String(LS.get('lpG','daily')||'daily'), mode:'music', g_music:String(LS.get('lpG_music','daily')||'daily'), g_podcast:String(LS.get('lpG_podcast','pod-hot')||'pod-hot'), show:'', shown:30, more:false, pods:null, podsKey:'', io:null,
   sort:(k=>['rank','new','dur','title','artist'].includes(k)?k:'rank')(LS.get('lpSort','rank'))};
 state.dListen=false;                    // today's listening: what the service said, when it was asked, the scene that is shown
-state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), view:LS.get('hotView','mix')==='boards'?'boards':'mix', mixBusy:false, mixRows:[], mixRun:0, period:LS.get('hotPeriod','day')==='week'?'week':'day', events:[], eventsAt:0, eventsBusy:false, eventsErr:'', eventsRun:0, region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
+state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), view:'boards', mixBusy:false, mixRows:[], mixRun:0, period:LS.get('hotPeriod','day')==='week'?'week':'day', events:[], eventsAt:0, eventsBusy:false, eventsErr:'', eventsRun:0, region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
 const PUBLIC_ROUTES={discover:'/discover/',hot:'/hot/',listen:'/listen/',books:'/picks/books/',articles:'/picks/articles/',watch:'/watch/'};
 const publicRouteFromPath=()=>Object.keys(PUBLIC_ROUTES).find(k=>PUBLIC_ROUTES[k]===location.pathname)||'';
 const publicLabel=k=>({discover:['发现','Discover'],hot:['热榜','Trending'],listen:['今日听什么','Listen today'],books:['精选图书','Book picks'],articles:['精选文章','Article picks'],watch:['看什么','What to watch']}[k]||[])[state.lang==='zh'?0:1]||'';
@@ -6973,8 +6973,8 @@ const HOT_TTL=180000;
 const HOT_EVENTS_TTL=300000;
 const HOT_MIX_PER_COLUMN=1, HOT_MIX_LIMIT=30, HOT_MIX_ITEMS=18;
 const HOT_UI_COPY={
-  zh:{mix:'今日精选',boards:n=>`平台榜单${n?` · ${n}`:''}`,events:'热点追踪',focus:'热点追踪',focusSub:'持续追踪多来源报道',hero:'今日精选',intro:'先看持续更新的热点，再浏览跨平台推荐；切换到平台榜单可查看各来源原始排名。',featured:'今日推荐',more:'继续发现',loading:'正在汇总平台热门内容……',partial:'部分榜单暂时读不到，先展示已获取内容。',retry:'重试推荐',empty:'暂时没有可展示的推荐内容。',rank:n=>`榜内第 ${n} 名`,newest:'最新',siteRead:'可在站内打开',openSite:'打开原站',day:'今日榜',week:'近 7 天',weekPending:'正在积累真实榜单快照；当前先展示已采集数据，排名会随记录增加逐步稳定。',weekEmpty:'近 7 天暂时没有可展示的榜单记录。',eventLoading:'正在汇总持续更新的热点事件……',eventErr:'热点追踪暂时不可用，请稍后重试。',eventEmpty:'暂时没有正在持续更新的热点事件。',eventRetry:'重试热点追踪',eventSources:n=>`${n} 个来源`,eventUpdated:m=>`最后更新 ${m}`,trendUp:'热度上升',trendDown:'热度回落',trendStable:'持续更新'},
-  en:{mix:'Today’s picks',boards:n=>`Platform charts${n?` · ${n}`:''}`,events:'Live topics',focus:'Developing stories',focusSub:'Tracked across multiple sources',hero:'Today’s picks',intro:'Start with developing stories, then browse a mixed feed; platform charts show each source’s original ranking.',featured:'Recommended today',more:'More to discover',loading:'Gathering popular items…',partial:'Some charts are unavailable; showing what loaded.',retry:'Retry recommendations',empty:'No recommended items are available right now.',rank:n=>`#${n} on chart`,newest:'Latest',siteRead:'Read here',openSite:'Open source',day:'Today',week:'Last 7 days',weekPending:'We are collecting real chart snapshots. Showing the data available so far; rankings will stabilize as more days are recorded.',weekEmpty:'There are no chart entries to show for the last 7 days yet.',eventLoading:'Gathering developing stories…',eventErr:'Live topic tracking is temporarily unavailable.',eventEmpty:'No developing stories are available right now.',eventRetry:'Retry topic tracking',eventSources:n=>`${n} sources`,eventUpdated:m=>`Last updated ${m}`,trendUp:'Rising',trendDown:'Cooling',trendStable:'Developing'}
+  zh:{boards:n=>`平台榜单${n?` · ${n}`:''}`,day:'今日榜',week:'近 7 天',weekEmpty:'近 7 天暂时没有榜单数据。',focus:'今日焦点',focusSub:'跨平台持续追踪的重要热点',eventLoading:'正在汇总持续更新的热点事件……',eventErr:'热点追踪暂时不可用，请稍后重试。',eventEmpty:'暂时没有正在持续更新的热点事件。',eventRetry:'重试热点追踪',eventSources:n=>`${n} 个来源`,eventUpdated:m=>`最后更新 ${m}`,trendUp:'热度上升',trendDown:'热度回落',trendStable:'持续更新'},
+  en:{boards:n=>`Platform charts${n?` · ${n}`:''}`,day:'Today',week:'Last 7 days',weekEmpty:'No rankings are available for the last 7 days yet.',focus:'Today’s focus',focusSub:'Developing stories tracked across platforms',eventLoading:'Gathering developing stories…',eventErr:'Live topic tracking is temporarily unavailable.',eventEmpty:'No developing stories are available right now.',eventRetry:'Retry topic tracking',eventSources:n=>`${n} sources`,eventUpdated:m=>`Last updated ${m}`,trendUp:'Rising',trendDown:'Cooling',trendStable:'Developing'}
 };
 const hotUi=(k,...args)=>{ const v=(HOT_UI_COPY[state.lang==='en'?'en':'zh']||HOT_UI_COPY.zh)[k]; return typeof v==='function'?v(...args):v||k; };
 const hotName = o => state.lang==='en' ? (o.name_en||o.name) : o.name;
@@ -7068,8 +7068,7 @@ async function hotEventsEnsure(force){
   if(hotShown()) paintHot();
 }
 function hotEnsure(){                                                                              // the list that is shown is asked for, once it is missing or old
-  const h=state.hot; if(!h.idx){ if(!h.err) hotIndex(); return; }                                  // (a service that failed is asked again by the retry button, not by every repaint)
-  if(h.view==='mix'){ hotEventsEnsure(false); hotMixEnsure(false); return; }
+  const h=state.hot; hotEventsEnsure(false); if(!h.idx){ if(!h.err) hotIndex(); return; }         // tracked stories remain above the chart list; a failed service is retried by its button
   const s=hotCur(); if(!s) return; const d=h.data.get(hotKey(s.cur));
   if(!d || (d.state==='ok' && Date.now()-d.t>HOT_TTL)) hotLoad(s.cur);
 }
@@ -7092,11 +7091,11 @@ function hotBoardsHTML(){
   let body;
   if(!d || (d.state==='load' && !(d.rows||[]).length)) body=`<p class="hot-state">${esc(t('hotLoading'))}</p>`;
   else if(d.state==='err' && !(d.rows||[]).length) body=`<p class="hot-state">${esc(d.msg)}<br><button class="btn" type="button" data-hot-refresh>${esc(t('dirRetry'))}</button></p>`;
-  else if(h.period==='week' && !(d.history&&d.history.complete)) body=d.rows.length?`<div><p class="hot-history-note">${esc(hotUi('weekPending'))}${d.history&&d.history.snapshots?`<br>${esc(String(d.history.snapshots))} / ${esc(String(d.history.required_days||7))}`:''}</p><ol class="hot-rows">${d.rows.map((r,i)=>hotRowHTML(r,i,ranked)).join('')}</ol></div>`:`<p class="hot-history-note">${esc(hotUi(d.history&&d.history.available?'weekPending':'weekEmpty'))}${d.history&&d.history.snapshots?`<br>${esc(String(d.history.snapshots))} / ${esc(String(d.history.required_days||7))}`:''}</p>`;
+  else if(h.period==='week' && !(d.history&&d.history.complete)) body=d.rows.length?`<ol class="hot-rows">${d.rows.map((r,i)=>hotRowHTML(r,i,ranked)).join('')}</ol>`:`<p class="hot-history-note">${esc(hotUi('weekEmpty'))}</p>`;
   else if(!d.rows.length && h.period==='week') body=`<p class="hot-history-note">${esc(hotUi('weekEmpty'))}</p>`;
   else if(!d.rows.length) body=`<p class="hot-state">${esc(t('hotEmpty'))}</p>`;
   else body=`<ol class="hot-rows">${d.rows.map((r,i)=>hotRowHTML(r,i,ranked)).join('')}</ol>`;
-  const meta=[cur.via ? t('hotVia',cur.via) : '', d && d.at ? t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))) : '', h.period==='week'&&d&&d.history?`${d.history.snapshots||0} / ${d.history.required_days||7}`:'', ranked ? '' : t('hotNewest')].filter(Boolean).join(' · '), columns=hotActiveColumns();
+  const meta=[cur.via ? t('hotVia',cur.via) : '', d && d.at ? t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))) : '', ranked ? '' : t('hotNewest')].filter(Boolean).join(' · '), columns=hotActiveColumns();
   return `<div class="hot"><label class="sr-only" for="hotCatSelect">${esc(hotUi('boards',columns.length))}</label><select id="hotCatSelect" class="hot-cat-select" data-hot-c-select aria-label="${esc(hotUi('boards',columns.length))}">${columns.map(c=>`<option value="${esc(c.id)}"${c.id===s.col.id?' selected':''}>${esc(hotName(c))}</option>`).join('')}</select><div class="hot-cols" role="tablist" aria-label="${esc(t('hotTitle'))}">${columns.map(c=>`<button class="hot-col" type="button" role="tab" aria-selected="${c.id===s.col.id}" data-hot-c="${esc(c.id)}">${esc(hotName(c))}</button>`).join('')}</div>`
     + `<div class="hot-main"><nav class="hot-plats" role="tablist" aria-label="${esc(hotName(s.col))}">${s.plats.map(p=>`<button class="hot-plat" type="button" role="tab" aria-selected="${p.id===cur.id}" data-hot-p="${esc(p.id)}">${esc(hotName(p))}</button>`).join('')}</nav>`
     + `<section class="hot-list" aria-live="polite" aria-busy="${!!(d && d.state==='load')}"><header class="hot-head"><h2>${esc(hotName(cur))}${where ? ' · '+esc(hotCountry(where)) : ''}</h2><span class="hot-meta">${esc(meta)}</span><span class="hot-acts">`
@@ -7150,10 +7149,7 @@ function hotMixHTML(){
   return `<section class="hot-mixed" aria-live="polite" aria-busy="${!!h.mixBusy}">${status?`<p class="hot-mix-status">${esc(status)}</p>`:''}${content}</section>`;
 }
 function hotHTML(){
-  const h=state.hot,n=h.idx&&Array.isArray(h.idx.platforms)?h.idx.platforms.length:0,sources=hotMixSources(),stamps=sources.map(p=>{const d=h.data.get(hotKey(p));return d&&d.at||0;}).filter(Boolean),updated=stamps.length?Math.max(...stamps):h.eventsUpdated||0,age=updated?Math.max(0,Math.round((Date.now()/1000-updated)/60)):null,meta=age===null?'':t('hotAgo',age);
-  return `<div class="hot"><section class="hot-intro"><div class="hot-intro-copy"><h2>${esc(hotUi('hero'))}</h2><p>${esc(hotUi('intro'))}</p></div><span class="hot-updated">${esc(meta)}</span></section>`
-    + `<div class="hot-modebar" role="tablist" aria-label="${esc(t('hotTitle'))}"><button class="hot-mode" type="button" role="tab" aria-selected="${h.view==='mix'}" data-hot-view="mix">${esc(hotUi('mix'))}</button><button class="hot-mode" type="button" role="tab" aria-selected="${h.view==='boards'}" data-hot-view="boards">${esc(hotUi('boards',n))}</button></div>`
-    + (h.view==='mix'?hotFocusHTML()+hotMixHTML():hotBoardsHTML()) + `</div>`;
+  return `<div class="hot">${hotFocusHTML()}${hotBoardsHTML()}</div>`;
 }
 function hotSetView(view){
   if(view!=='mix'&&view!=='boards') return;
