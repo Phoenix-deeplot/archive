@@ -10,6 +10,7 @@ const get = p => fetch(SVC + p).then(r => r.json());
 
 (async () => {
   const c = await connect(9444, { newShell: true });
+  const settle = await require('../settle')(c);
   c.autoDialog(true, []);
   const errs = [];
   c.on(m => { if (m.method === 'Runtime.exceptionThrown') errs.push(JSON.stringify(m.params.exceptionDetails.exception && m.params.exceptionDetails.exception.description || m.params.exceptionDetails.text).slice(0, 300)); });
@@ -17,20 +18,20 @@ const get = p => fetch(SVC + p).then(r => r.json());
   const J = expr => c.js(`(()=>{ const {state,LS,pl,plAudio,plStop,idb,addCollection,loadAll,render,openReader}=window.__zt||{}; return eval(${JSON.stringify(expr)}); })()`);
   const waitFor = async (expr, ms = 9000) => { const t0 = Date.now(); for (;;) { const v = await J(expr); if (v || Date.now() - t0 > ms) return v; await sleep(120); } };
   const fresh = async (flag = '&shell=2', lang = 'zh') => {
-    await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE + '?lang=' + lang + flag, 1500);
+    await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE + '?lang=' + lang + flag, 0); await settle(1500);
     await J(`localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver','"2026-10-22"'); localStorage.setItem('archive.dirIntroOff','1'); localStorage.setItem('archive.guideTipOff','1')`);
-    await c.goto(BASE, 2800);
+    await c.goto(BASE, 0); await settle(2800);
   };
   const rect = sel => J(`(()=>{ const e=document.querySelector(${JSON.stringify(sel)}); if(!e) return null; const r=e.getBoundingClientRect(); return {x:Math.round(r.left), y:Math.round(r.top), w:Math.round(r.width), h:Math.round(r.height), r:Math.round(r.right), b:Math.round(r.bottom), d:getComputedStyle(e).display}; })()`);
   const bar = () => J(`(()=>{ const r=s=>{ const e=document.querySelector(s), b=e.getBoundingClientRect(); return [Math.round(b.top), Math.round(b.height)].join('/'); }; return {top:r('.top'), strip:r('#strip'), tools:r('#stTools'), head:r('.view-head'), pos:getComputedStyle(document.querySelector('.top')).position}; })()`);
   const accent = () => J(`(()=>{ const p=document.createElement('i'); p.style.color='var(--accent)'; document.body.append(p); const c=getComputedStyle(p).color; p.remove(); return c; })()`);
   const tabcol = () => J(`({on:getComputedStyle(document.querySelector('#tabbar [aria-pressed="true"]')).color, off:getComputedStyle(document.querySelector('#tabbar [data-space="dir"]')).color, plus:getComputedStyle(document.querySelector('#tbPlus')).backgroundColor, w:getComputedStyle(document.querySelector('#tabbar [aria-pressed="true"]')).fontWeight})`);
-  const swipe = async (x1, x2, y = 560) => { await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x1, y }] }); for (let i = 1; i <= 6; i++) { await c.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x1 + (x2 - x1) * i / 6, y }] }); await sleep(12); } await c.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await sleep(900); };
+  const swipe = async (x1, x2, y = 560) => { await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x1, y }] }); for (let i = 1; i <= 6; i++) { await c.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x1 + (x2 - x1) * i / 6, y }] }); await sleep(12); } await c.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await settle(900); };
   const active = () => J(`[...document.querySelectorAll('#cats .cat-btn')].filter(b=>b.getAttribute('aria-current')==='true').map(b=>b.textContent.trim().replace(/\\d+$/,'')).join()`);
   const library = async () => {
     await J(`(async()=>{ const cid=addCollection('我的合集'); const mk=(id,extra)=>({id,path:'',category:'notes',filename:'',hash:'',title:'',summary:'摘要',keywords:[],lang:'zh',minutes:1,pages:null,size:10,date:'2026-01-01',added:1,featured:false,hidden:false,cover:'',collection:cid,...extra});
       await idb.put(mk('local:m',{type:'md',filename:'m.md',title:'甲：有目录的文章',added:300,data:'# 甲\\n\\n## 第一节\\n\\n'+'正文。'.repeat(120)})); await loadAll(); render(); })()`);
-    await sleep(600);
+    await settle(600);
   };
   writeDir(); await get('/__listen?mode=ok&reset=1');
 
@@ -57,11 +58,11 @@ const get = p => fetch(SVC + p).then(r => r.json());
   const thp = await J(`({open:!document.querySelector('#themePop').hidden, rows:document.querySelectorAll('#themePop .fl-row').length, chips:[...document.querySelectorAll('#themePop button')].map(b=>b.textContent.trim()).join('|'), h:Math.min(...[...document.querySelectorAll('#themePop button')].map(b=>Math.round(b.getBoundingClientRect().height))), on:[...document.querySelectorAll('#themePop [aria-pressed="true"]')].map(b=>b.textContent.trim()).join('|'), set:getComputedStyle(document.querySelector('#setBtn')).display, th:getComputedStyle(document.querySelector('#themeTop')).display})`);
   ok('a theme button sits beside the settings: it opens ONE row of three themes (经典 | 深色 | 云红), each at least 44 px high; the one on screen is marked', thp.open && thp.rows === 1 && thp.chips === '经典|深色|云红' && thp.h >= 44 && thp.on === '经典' && thp.set !== 'none' && thp.th !== 'none', thp);
   const l0 = await look();
-  await J(`document.querySelector('[data-thset="cloud"]').click()`); await sleep(400);
+  await J(`document.querySelector('[data-thset="cloud"]').click()`); await settle(400);
   const l1 = await look(), tc1 = await tabcol(), ac1 = await accent();
   ok('"云红" is a whole theme at once: a cool white, a red accent, sans-serif headings (not the serif), a heavier line for the icons, rounder cards; kept in this browser; the settings say so; the panel stays open to see it', l1.th === 'cloud' && l1.stored === 'cloud' && l1.open && l1.accent === '#d8363a' && l1.bg === 'rgb(246, 247, 249)' && l1.font !== l0.font && !/Noto Serif/.test(l1.font) && /Noto Serif/.test(l0.font) && parseFloat(l1.stroke) > parseFloat(l0.stroke) && parseFloat(l1.card) > parseFloat(l0.card) && l1.btn === '主题：云红', [l0, l1]);
   ok('the bottom bar follows the theme: the one that is on and the + are red now', ac1 !== ac0 && tc1.on === ac1 && tc1.plus === ac1, [tc1, ac1]);
-  await J(`document.querySelector('[data-thset="dark"]').click()`); await sleep(400);
+  await J(`document.querySelector('[data-thset="dark"]').click()`); await settle(400);
   const l2 = await look();
   ok('"深色": dark colours, and the serif and the thin icons of the classic theme again', l2.th === 'dark' && l2.accent === '#5cc2b1' && l2.bg === 'rgb(18, 22, 25)' && l2.font === l0.font && l2.stroke === l0.stroke && l2.btn === '主题：深色', l2);
   await J(`document.querySelector('[data-thset="light"]').click()`); await sleep(300);
@@ -71,23 +72,23 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await J(`state.theme='auto'; LS.set('theme','auto'); document.documentElement.removeAttribute('data-theme')`);
 
   // the filter panel
-  await J(`document.querySelector('#flBtn').click()`); await sleep(400);
+  await J(`document.querySelector('#flBtn').click()`); await settle(400);
   const fl = await J(`(()=>{ const p=document.querySelector('#flPanel'), h=s=>Math.round(document.querySelector(s).getBoundingClientRect().height); return {open:!p.hidden, sort:h('#flSort #sort'), lang:h('#flLang #langFilter'), view:h('#flView #viewBtn'), tags:document.querySelectorAll('#flTag .tag, #flTag button').length>0, tagRow:!document.querySelector('#flTagRow').hidden, topbarHas:!!document.querySelector('.toolbar #sort'), exp:document.querySelector('#flBtn').getAttribute('aria-expanded'), inside:document.querySelector('.top').contains(p)}; })()`);
   ok('"筛选" opens a panel under the strip with the sort, the language of the content, cards / rows (each at least 44 px) and the tags', fl.open && fl.sort >= 44 && fl.lang >= 44 && fl.view >= 44 && fl.tagRow && fl.exp === 'true' && fl.inside, fl);
-  await J(`(()=>{ const s=document.querySelector('#sort'); s.value='title'; s.dispatchEvent(new Event('change',{bubbles:true})); })()`); await sleep(400);
+  await J(`(()=>{ const s=document.querySelector('#sort'); s.value='title'; s.dispatchEvent(new Event('change',{bubbles:true})); })()`); await settle(400);
   ok('the controls in the panel are the same ones as before: a sort chosen there sorts the list', (await J(`state.sort`)) === 'title' && (await J(`!document.querySelector('#flPanel').hidden`)));
   ok('no filter is on: the button has no number', !(await J(`!!document.querySelector('#flBtn .fl-n')`)));
-  await J(`document.querySelector('#langFilter [data-lf="zh"]').click()`); await sleep(500);
+  await J(`document.querySelector('#langFilter [data-lf="zh"]').click()`); await settle(500);
   ok('the language of the content is chosen: the button says 1 (and the panel stays open)', (await J(`(document.querySelector('#flBtn .fl-n')||{}).textContent`)) === '1' && (await J(`!document.querySelector('#flPanel').hidden`)));
-  await J(`document.querySelector('#langFilter [data-lf="all"]').click()`); await sleep(400);
+  await J(`document.querySelector('#langFilter [data-lf="all"]').click()`); await settle(400);
   await J(`document.querySelector('#grid').click()`); await sleep(300);
   ok('a tap on the page closes the panel', await J(`document.querySelector('#flPanel').hidden && document.querySelector('#flBtn').getAttribute('aria-expanded')==='false'`));
 
   // the + sheet
-  await J(`document.querySelector('#tbPlus').click()`); await sleep(400);
+  await J(`document.querySelector('#tbPlus').click()`); await settle(400);
   const pl = await J(`({open:document.querySelector('#plusDlg').open, items:[...document.querySelectorAll('#plusDlg [data-plus]')].filter(b=>!b.hidden).map(b=>b.textContent.trim()), hs:[...document.querySelectorAll('#plusDlg [data-plus]')].filter(b=>!b.hidden).map(b=>Math.round(b.getBoundingClientRect().height))})`);
   ok('"+" opens a sheet from the bottom: add a file, write a note, submit to the directory (and "follow a site" where there is a feed service), cancel; every row at least 44 px', pl.open && pl.items.includes('添加文件') && pl.items.includes('写笔记') && pl.items.includes('收录到公共目录') && pl.items.includes('取消') && pl.hs.every(h => h >= 44), pl);
-  await J(`document.querySelector('#plusDlg [data-plus="files"]').click()`); await sleep(500);
+  await J(`document.querySelector('#plusDlg [data-plus="files"]').click()`); await settle(500);
   ok('"添加文件" closes the sheet and opens the add window', await J(`!document.querySelector('#plusDlg').open && !!document.querySelector('dialog[open]')`));
   await J(`document.querySelector('dialog[open]').close()`);
 
@@ -95,23 +96,23 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await library();
   const col0 = await J(`({vis:!document.querySelector('#colChip').hidden, text:document.querySelector('#colChip').textContent, inStrip:document.querySelector('#colChip').parentElement.id, oldRow:getComputedStyle(document.querySelector('#colRow')).display})`);
   ok('collections: a chip "合集 ▾" at the end of the strip (the old row of the dropdown is gone)', col0.vis && col0.text === '合集 ▾' && col0.inStrip === 'stripIn' && col0.oldRow === 'none', col0);
-  await J(`document.querySelector('#colChip').click()`); await sleep(400);
+  await J(`document.querySelector('#colChip').click()`); await settle(400);
   const col1 = await J(`({open:!document.querySelector('#colPop').hidden, items:[...document.querySelectorAll('#colPop [data-colnav]')].map(b=>b.textContent.trim().replace(/\\d+$/,'')).join('|')})`);
   ok('a tap opens the list of the collections under the strip', col1.open && /我的合集/.test(col1.items), col1);
-  await J(`[...document.querySelectorAll('#colPop [data-colnav]')].find(b=>/我的合集/.test(b.textContent)).click()`); await sleep(600);
+  await J(`[...document.querySelectorAll('#colPop [data-colnav]')].find(b=>/我的合集/.test(b.textContent)).click()`); await settle(600);
   const col2 = await J(`({closed:document.querySelector('#colPop').hidden, text:document.querySelector('#colChip').textContent, on:document.querySelector('#colChip').classList.contains('on'), col:state.col})`);
   ok('choosing one closes the list; the chip says which collection it is (and is dark: a tap lets you change it)', col2.closed && /^合集：我的合集 ▾✕$/.test(col2.text) && col2.on && col2.col !== 'all', col2);
   await J(`document.querySelector('#colChip').click()`); await sleep(300);
-  await J(`document.querySelector('#colPop [data-colnav="all"]').click()`); await sleep(500);
+  await J(`document.querySelector('#colPop [data-colnav="all"]').click()`); await settle(500);
   ok('"全部" in the list takes the choice back', (await J(`state.col`)) === 'all' && (await J(`document.querySelector('#colChip').textContent`)) === '合集 ▾');
   await J(`document.querySelector('#colChip').click()`); await sleep(300);
-  await J(`[...document.querySelectorAll('#colPop [data-colnav]')].find(b=>/我的合集/.test(b.textContent)).click()`); await sleep(500);
+  await J(`[...document.querySelectorAll('#colPop [data-colnav]')].find(b=>/我的合集/.test(b.textContent)).click()`); await settle(500);
   ok('the tag has a cross (at least 24 px): ONE tap on it takes the collection back, the list does not open', await J(`!!document.querySelector('#colChip [data-colclear]') && document.querySelector('#colChip [data-colclear]').getBoundingClientRect().width>=24`));
-  await J(`document.querySelector('#colChip [data-colclear]').click()`); await sleep(600);
+  await J(`document.querySelector('#colChip [data-colclear]').click()`); await settle(600);
   ok('... and it does: all of the shelf again, the tag is "合集 ▾", the list stays closed', (await J(`state.col`)) === 'all' && (await J(`document.querySelector('#colChip').textContent`)) === '合集 ▾' && (await J(`document.querySelector('#colPop').hidden`)));
 
   // the discover space
-  await J(`document.querySelector('#tabbar [data-space="dir"]').click()`); await sleep(2500);
+  await J(`document.querySelector('#tabbar [data-space="dir"]').click()`); await settle(2500);
   const dsp = await J(`({sp:state.space, on:[...document.querySelectorAll('#tabbar button')].map(b=>b.getAttribute('aria-pressed')).join(), chips:[...document.querySelectorAll('#stripIn #cats .cat-btn')].map(b=>b.textContent.trim().replace(/\\d+$/,'')).join('|'), ph:document.body.classList.contains('sh-phone'), chip:document.querySelector('#colChip').hidden})`);
   ok('the bottom bar switches to the discover space; the strip is its sections: 发现 | 热榜 | 今日听什么 | 全部 | …', dsp.sp === 'dir' && dsp.on === 'false,,true' || (dsp.sp === 'dir' && /^发现\|热榜\|今日听什么\|精选图书\|全部/.test(dsp.chips) && dsp.chip), dsp);
   ok('the strip begins with 发现 | 热榜 | 今日听什么 | 精选图书 | 全部', /^发现\|热榜\|今日听什么\|精选图书\|全部/.test(dsp.chips), dsp.chips);
@@ -125,65 +126,65 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await swipe(90, 300);
   const a2 = await active();
   ok('a swipe to the left moves to the next section of the strip (发现 → 热榜), to the right back; the left list does not come out', a0 === '发现' && a1 === '热榜' && a2 === '发现' && !(await J(`document.body.classList.contains('drawer')`)), [a0, a1, a2]);
-  await J(`[...document.querySelectorAll('#cats .cat-btn')].find(b=>b.textContent.includes('全部')).click()`); await sleep(1500);
+  await J(`[...document.querySelectorAll('#cats .cat-btn')].find(b=>b.textContent.includes('全部')).click()`); await settle(1500);
   const dir = await J(`({inPanel:!!document.querySelector('#flDir > #dirBar'), barHidden:document.querySelector('#dirBar').hidden, vis:getComputedStyle(document.querySelector('#flBtn')).display})`);
   ok('the whole list of the directory: its own filters (the dropdown, the columns / platforms, the tabs) are behind "筛选" too', dir.inPanel && !dir.barHidden && dir.vis !== 'none', dir);
   const b2 = await bar();
   ok('... and the bar is the same on the whole list as well', b2.top === b0.top && b2.strip === b0.strip && b2.tools === b0.tools && b2.head === b0.head, [b0, b2]);
-  await J(`document.querySelector('#flBtn').click()`); await sleep(400);
+  await J(`document.querySelector('#flBtn').click()`); await settle(400);
   ok('... and the panel shows them together with the sort and the language of the content', await J(`(()=>{ const p=document.querySelector('#flPanel'); return !p.hidden && !!p.querySelector('#dTabs') && getComputedStyle(p.querySelector('#dTabs')).display!=='none' && !!p.querySelector('#sort') && p.getBoundingClientRect().height>200; })()`));
   await J(`document.querySelector('#flBtn').click()`); await sleep(200);
 
   // the player and the bar: the player sits above the bar; the list of "me" is not covered
-  await J(`[...document.querySelectorAll('#cats .cat-btn')].find(b=>b.textContent.includes('今日听什么')).click()`); await waitFor(`document.querySelector('#lpRoot .ls-row')`, 12000); await sleep(600);
+  await J(`[...document.querySelectorAll('#cats .cat-btn')].find(b=>b.textContent.includes('今日听什么')).click()`); await waitFor(`document.querySelector('#lpRoot .ls-row')`, 12000); await settle(600);
   ok('the listening page has no filter button to see (it has its own controls): the row of tools is there but empty', await J(`getComputedStyle(document.querySelector('#stTools')).visibility==='hidden'`));
   const b3 = await bar();
   ok('the listening page: the row of tools is empty but there, the bar keeps its height', b3.top === b0.top && b3.strip === b0.strip && b3.tools === b0.tools && b3.head === b0.head, [b0, b3]);
-  await J(`document.querySelector('#lpRoot .ls-main').click()`); await waitFor(`!plAudio.paused && plAudio.currentTime>0.3`); await sleep(500);
+  await J(`document.querySelector('#lpRoot .ls-main').click()`); await waitFor(`!plAudio.paused && plAudio.currentTime>0.3`); await settle(500);
   const pb = await rect('#player'), tb2 = await rect('#tabbar');
   ok('the player bar sits right above the bottom bar (not over it, not under it)', Math.abs(pb.b - tb2.y) <= 1 && pb.h >= 70, [pb, tb2]);
   const lastRow = await J(`(()=>{ const rows=document.querySelectorAll('#lpRoot .ls-row'); return Math.round(rows[rows.length-1].getBoundingClientRect().bottom); })()`);
-  await J(`window.scrollTo(0, document.documentElement.scrollHeight)`); await sleep(500);
+  await J(`window.scrollTo(0, document.documentElement.scrollHeight)`); await settle(500);
   ok('the end of a page is not under the two bars', await J(`(()=>{ const m=document.querySelector('#moreRow, #lpRoot .lp-end, #lpRoot .ls-rows'); const pt=document.querySelector('#player').getBoundingClientRect().top; const rows=document.querySelectorAll('#lpRoot .ls-row'); return Math.round(rows[rows.length-1].getBoundingClientRect().bottom) <= pt + 2 || document.documentElement.scrollHeight>innerHeight; })()`));
-  await J(`document.querySelector('#setBtn').click()`); await sleep(700);
+  await J(`document.querySelector('#setBtn').click()`); await settle(700);
   const me = await J(`(()=>{ const q=s=>document.querySelector(s), r=e=>e.getBoundingClientRect(), side=r(q('.side')), th=r(q('#themeBtn')), bk=r(q('#bkBtn')), at=(b)=>document.elementFromPoint(b.left+b.width/2,b.top+b.height/2); return {open:document.body.classList.contains('drawer'), sideH:Math.round(side.height), vh:innerHeight, title:(q('.set-title')||{}).textContent, noLogin:!q('#meBox') && !q('#meLogin'), themeIn:!!at(th).closest('.side'), bkIn:!!at(bk).closest('.side'), themeB:Math.round(th.bottom), langSeg:getComputedStyle(q('.side-foot .seg')).display, spaceHidden:getComputedStyle(q('#spaceSwitch')).display, scroll:getComputedStyle(q('.side-scroll')).display}; })()`);
   ok('"设置" (the old side list) opens from the left: the title, then the buttons (backup, sync, theme, install, about); no sign-in card; the language is not here (it is in the top bar); the buttons are NOT under the player', me.open && me.title === '设置' && me.noLogin && me.themeIn && me.bkIn && me.themeB <= me.vh && me.spaceHidden === 'none' && me.scroll === 'none' && me.langSeg === 'none', me);
   ok('it is as tall as the screen', me.sideH >= me.vh - 2, me);
   await J(`document.body.classList.remove('drawer')`);
   const lt0 = await rect('#langTop');
-  await J(`document.querySelector('#langTop').click()`); await sleep(1200);
+  await J(`document.querySelector('#langTop').click()`); await settle(1200);
   const lt1 = await rect('#langTop');
   ok('the language button of the top bar works: it switches the page to the other language, says EN, and does not move or change size', (await J(`state.lang`)) === 'en' && (await J(`document.querySelector('#tabbar').textContent.replace(/\\s+/g,' ')`)).includes('Explore') && (await J(`document.querySelector('#langTop').textContent`)) === 'EN' && lt0.x === lt1.x && lt0.w === lt1.w && lt0.y === lt1.y, [lt0, lt1]);
   const b4 = await bar();
   ok('and the bar is as high in English as it was in Chinese', b4.top === b3.top && b4.strip === b3.strip && b4.tools === b3.tools, [b3, b4]);
-  await J(`document.querySelector('#langTop').click()`); await sleep(800);
+  await J(`document.querySelector('#langTop').click()`); await settle(800);
   await J(`document.body.classList.remove('drawer'); plStop()`);
 
   // the + sheet in the discover space
-  await J(`document.querySelector('#tbPlus').click()`); await sleep(400);
+  await J(`document.querySelector('#tbPlus').click()`); await settle(400);
   const pd = await J(`({sp:state.space, items:[...document.querySelectorAll('#plusDlg [data-plus]')].filter(b=>!b.hidden).map(b=>b.textContent.trim())})`);
   ok('"+" in the discover space has the same rows as on my shelf, 写笔记 among them', pd.sp === 'dir' && pd.items.includes('添加文件') && pd.items.includes('写笔记') && pd.items.includes('收录到公共目录') && pd.items.includes('取消'), pd);
-  await J(`document.querySelector('#plusDlg [data-plus="note"]').click()`); await sleep(900);
+  await J(`document.querySelector('#plusDlg [data-plus="note"]').click()`); await settle(900);
   ok('"写笔记" there takes you to my shelf (a note belongs to it) and opens the editor', await J(`state.space==='mine' && document.body.classList.contains('noting')`), await J(`({sp:state.space, c:document.body.className})`));
-  await J(`document.querySelector('#neBack').click()`); await sleep(600);
+  await J(`document.querySelector('#neBack').click()`); await settle(600);
   ok('the editor closes again (nothing was written, nothing is kept)', await J(`!document.body.classList.contains('noting')`));
 
   // a text: the bars give way
-  await J(`openReader('local:m')`); await sleep(1500);
+  await J(`openReader('local:m')`); await settle(1500);
   ok('reading a text: the bottom bar is gone', (await rect('#tabbar')).d === 'none');
-  await J(`document.querySelector('#readerBack').click()`); await sleep(600);
+  await J(`document.querySelector('#readerBack').click()`); await settle(600);
   ok('and back after it', (await rect('#tabbar')).d === 'grid');
 
   // the old shell and the way back
-  await J(`location.href=location.pathname+'?shell=1'`); await sleep(3000);
+  await J(`location.href=location.pathname+'?shell=1'`); await settle(3000);
   const old = await J(`({ph:document.body.classList.contains('sh-phone'), tab:getComputedStyle(document.querySelector('#tabbar')).display, menu:getComputedStyle(document.querySelector('#menuBtn')).display, sort:!!document.querySelector('.toolbar #sort'), cats:!!document.querySelector('.side-scroll > #cats'), me:!!document.querySelector('#meBox'), stored:LS.get('shell','')})`);
   ok('?shell=1 is the old page again: no bar, the menu button, the sort in the top bar, the sections in the side list (and no sign-in card in it either)', !old.ph && old.tab === 'none' && old.menu !== 'none' && old.sort && old.cats && !old.me && old.stored === '1', old);
 
   // ================================================ B. the old shell: the player did cover the side list
-  await J(`document.querySelector('[data-space="dir"]').click()`); await sleep(2200);
-  await J(`document.body.classList.add('drawer')`); await J(`document.querySelector('#cats [data-dlisten]').click()`); await waitFor(`document.querySelector('#lpRoot .ls-row')`, 12000); await sleep(500);
-  await J(`document.querySelector('#lpRoot .ls-main').click()`); await waitFor(`!plAudio.paused && plAudio.currentTime>0.3`); await sleep(500);
-  await J(`document.querySelector('#menuBtn').click()`); await sleep(700);
+  await J(`document.querySelector('[data-space="dir"]').click()`); await settle(2200);
+  await J(`document.body.classList.add('drawer')`); await J(`document.querySelector('#cats [data-dlisten]').click()`); await waitFor(`document.querySelector('#lpRoot .ls-row')`, 12000); await settle(500);
+  await J(`document.querySelector('#lpRoot .ls-main').click()`); await waitFor(`!plAudio.paused && plAudio.currentTime>0.3`); await settle(500);
+  await J(`document.querySelector('#menuBtn').click()`); await settle(700);
   const old2 = await J(`(()=>{ const b=document.querySelector('#langBtn').getBoundingClientRect(), e=document.elementFromPoint(b.left+b.width/2,b.top+b.height/2); return {open:document.body.classList.contains('drawer'), langIn:!!(e && e.closest('.side')), bottom:Math.round(b.bottom)}; })()`);
   ok('the old page too: with a song playing the language and theme buttons of the side list are not under the player any more', old2.open && old2.langIn, old2);
   await J(`document.body.classList.remove('drawer'); plStop()`);
@@ -202,44 +203,44 @@ const get = p => fetch(SVC + p).then(r => r.json());
   const tp = await J(`(()=>{ const p=document.querySelector('#tagPop'), b=document.querySelector('#tagBtn').getBoundingClientRect(), r=p.getBoundingClientRect(); return {open:!p.hidden, chips:p.querySelectorAll('[data-tag]').length, below:r.top>=b.bottom-1, inside:r.right<=innerWidth && r.left>=0, exp:document.querySelector('#tagBtn').getAttribute('aria-expanded')}; })()`);
   ok('it opens a small panel with the tags under the button', tp.open && tp.chips >= 3 && tp.below && tp.inside && tp.exp === 'true', tp);
   const tg = await J(`document.querySelector('#tagPop [data-tag]').dataset.tag`);
-  await J(`document.querySelector('#tagPop [data-tag]').click()`); await sleep(500);
+  await J(`document.querySelector('#tagPop [data-tag]').click()`); await settle(500);
   const tq = await J(`({tag:state.tag, shut:document.querySelector('#tagPop').hidden, chip:!!document.querySelector('#viewSub [data-clear="tag"]'), btn:document.querySelector('#tagBtn').textContent, cards:document.querySelectorAll('#grid .card').length})`);
   ok('choosing a tag filters the list, closes the panel, the button says which tag, and the heading has a chip to take it back', tq.tag === tg && tq.shut && tq.chip && tq.btn.includes('#') && tq.cards >= 1, tq);
-  await J(`document.querySelector('#viewSub [data-clear="tag"]').click()`); await sleep(400);
+  await J(`document.querySelector('#viewSub [data-clear="tag"]').click()`); await settle(400);
   ok('the chip takes the tag back', (await J(`state.tag`)) === '' && (await J(`document.querySelector('#tagBtn').textContent`)) === '标签 ▾');
-  await J(`document.querySelector('#sideToggle').click()`); await sleep(500);
+  await J(`document.querySelector('#sideToggle').click()`); await settle(500);
   const off = await J(`({side:getComputedStyle(document.querySelector('.side')).display, cols:getComputedStyle(document.querySelector('.app')).gridTemplateColumns.split(' ').length, stored:LS.get('sideOff',0), exp:document.querySelector('#sideToggle').getAttribute('aria-expanded'), main:Math.round(document.querySelector('.main').getBoundingClientRect().left)})`);
   ok('the button hides the side list: the page takes the whole width, the choice is kept', off.side === 'none' && off.cols === 1 && off.stored === 1 && off.exp === 'false' && off.main < 20, off);
-  await c.goto(BASE, 2500);
+  await c.goto(BASE, 0); await settle(2500);
   ok('after a reload it is still hidden', await J(`getComputedStyle(document.querySelector('.side')).display==='none'`));
-  await J(`document.querySelector('#sideToggle').click()`); await sleep(400);
+  await J(`document.querySelector('#sideToggle').click()`); await settle(400);
   ok('and the button brings it back', await J(`getComputedStyle(document.querySelector('.side')).display!=='none' && LS.get('sideOff',0)===0`));
   const fb = await J(`(()=>{ const f=document.querySelector('#noteFab'), r=f.getBoundingClientRect(), cs=getComputedStyle(f); return {pen:getComputedStyle(document.querySelector('#noteBtn')).display, d:cs.display, txt:f.textContent.trim(), w:Math.round(r.width), h:Math.round(r.height), right:Math.round(innerWidth-r.right), bottom:Math.round(innerHeight-r.bottom), bg:cs.backgroundColor}; })()`), acd = await accent();
   ok('a wide screen: the pen in the top bar is gone (it said the same as "添加"); "写笔记" is a pill in the corner of the page, the colour of the theme, with its name', fb.pen === 'none' && fb.d !== 'none' && fb.txt === '写笔记' && fb.w >= 100 && fb.h >= 44 && fb.right <= 60 && fb.bottom <= 60 && fb.bg === acd, [fb, acd]);
   const pb0 = await J(`({d:getComputedStyle(document.querySelector('#themeBtn')).display, txt:document.querySelector('#themeBtn').textContent, inSide:!!document.querySelector('#themeBtn').closest('.side-foot'), top:getComputedStyle(document.querySelector('#themeTop')).display, pal:!!document.querySelector('#paletteBtn')})`);
   ok('a wide screen: "主题：经典" in the foot of the side list is the one button for the theme (no separate palette button); the top bar has no theme button', pb0.d !== 'none' && pb0.txt === '主题：经典' && pb0.inSide && pb0.top === 'none' && !pb0.pal, pb0);
-  await J(`document.querySelector('[data-space="dir"]').click()`); await sleep(2200);
-  await J(`document.querySelector('#cats [data-dbrowse="1"], #cats [data-dtype="all"]').click()`); await sleep(1200);
+  await J(`document.querySelector('[data-space="dir"]').click()`); await settle(2200);
+  await J(`document.querySelector('#cats [data-dbrowse="1"], #cats [data-dtype="all"]').click()`); await settle(1200);
   const dl = await J(`({inLine:!!document.querySelector('#dirBar .dir-line #ctlBox #sort'), barVisible:!document.querySelector('#dirBar').hidden, level:(()=>{ const a=document.querySelector('#dirBar .dir-line').getBoundingClientRect(), b=document.querySelector('#ctlBox').getBoundingClientRect(); return Math.abs(a.top-b.top)<30 && b.right>a.right-20; })()})`);
   ok('the whole list of the directory: sort / language / view are on the row of the tabs (the column | platform choice), at its right end', dl.inLine && dl.barVisible && dl.level, dl);
   const h1 = await rect('.view-head');
   ok('the heading of the page is as high on the directory as on my shelf (the list under it does not jump when the section changes)', Math.abs(h1.h - h0.h) <= 1, [h0, h1]);
   ok('the public space keeps its list of shelves in the side list (a filter of its own)', (await J(`getComputedStyle(document.querySelector('#dir')).display`)) !== 'none');
-  await J(`document.querySelector('#cats [data-dlisten]').click()`); await waitFor(`document.querySelector('#lpRoot .ls-row')`, 12000); await sleep(400);
+  await J(`document.querySelector('#cats [data-dlisten]').click()`); await waitFor(`document.querySelector('#lpRoot .ls-row')`, 12000); await settle(400);
   ok('the listening page keeps its own controls only (the others are not shown)', (await rect('#ctlBox')).d === 'none');
 
   ok('the pill is there in the discover space too', await J(`getComputedStyle(document.querySelector('#noteFab')).display!=='none'`));
-  await J(`document.querySelector('#noteFab').click()`); await sleep(900);
+  await J(`document.querySelector('#noteFab').click()`); await settle(900);
   ok('and takes you to my shelf and opens the editor', await J(`state.space==='mine' && document.body.classList.contains('noting')`), await J(`({sp:state.space, c:document.body.className})`));
-  await J(`document.querySelector('#neBack').click()`); await sleep(600);
+  await J(`document.querySelector('#neBack').click()`); await settle(600);
   const ring = [];
-  for (let k = 0; k < 3; k++) { await J(`document.querySelector('#themeBtn').click()`); await sleep(400); ring.push(await J(`document.documentElement.getAttribute('data-theme')+' '+document.querySelector('#themeBtn').textContent`)); }
+  for (let k = 0; k < 3; k++) { await J(`document.querySelector('#themeBtn').click()`); await settle(400); ring.push(await J(`document.documentElement.getAttribute('data-theme')+' '+document.querySelector('#themeBtn').textContent`)); }
   ok('the button goes round the three themes (深色, 云红, 经典); the page changes with each', ring.join('|') === 'dark 主题：深色|cloud 主题：云红|light 主题：经典', ring);
-  await J(`document.querySelector('#themeBtn').click()`); await J(`document.querySelector('#themeBtn').click()`); await sleep(400);
+  await J(`document.querySelector('#themeBtn').click()`); await J(`document.querySelector('#themeBtn').click()`); await settle(400);
   ok('云红 again (kept in this browser)', await J(`document.documentElement.getAttribute('data-theme')==='cloud' && LS.get('theme','')==='cloud'`));
-  await c.goto(BASE, 2500);
+  await c.goto(BASE, 0); await settle(2500);
   ok('after a reload it is still 云红', await J(`document.documentElement.getAttribute('data-theme')==='cloud'`));
-  await J(`location.href=location.pathname+'?shell=1'`); await sleep(3000);
+  await J(`location.href=location.pathname+'?shell=1'`); await settle(3000);
   ok('?shell=1 (the old page) knows two themes only: it shows 云红 as the light one; the choice waits in the browser', await J(`document.documentElement.getAttribute('data-theme')==='light' && LS.get('theme','')==='cloud' && document.querySelector('#themeBtn').textContent==='主题：浅色'`));
 
   // the new shell is the default: no switch in the address (a home-screen app on an iPhone has no address to type it in)

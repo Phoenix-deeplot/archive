@@ -12,13 +12,14 @@ const N = 37;                                     // the fixture's entries
 
 (async () => {
   const c = await connect(9444);
+  const settle = await require('../settle')(c);
   c.autoDialog(true);
   await c.send('Network.enable'); await c.send('Network.setCacheDisabled', { cacheDisabled: true });
   const AT = process.env.FREEZE_AT || '2026-10-22T00:30:00+08:00';          // (the fixture's entries are from 2026-10-19 .. 24 and "today" takes those of the last 72 hours: the page is shown at an hour when that holds, and an entry of 10-20 is two days old)
   await c.send('Page.addScriptToEvaluateOnNewDocument', { source: `(()=>{ const R=Date, off=new R('${AT}').getTime()-R.now(); class D extends R{ constructor(...a){ if(a.length===0) super(R.now()+off); else super(...a); } static now(){ return R.now()+off; } } window.Date=D; })();` });
   const J = expr => c.js(`(()=>{ const {state,idb,LS,render,statSend,statFlush,statApi,loadHeat,heatAvailable,dirList,markDirRead,subscribeNow,dirMeta,dirWhy}=window.__zt||{}; return eval(${JSON.stringify(expr)}); })()`);
-  const fresh = async (lang, intro) => { await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE, 1500); await J(`localStorage.setItem('archive.lang', JSON.stringify('${lang}')); localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver', JSON.stringify('2026-10-22')); localStorage.setItem('archive.guideTipOff','1')` + (intro ? '' : `; localStorage.setItem('archive.dirIntroOff','1')`)); await c.goto(BASE, 2500); };
-  const toDir = async () => { await J(`document.querySelector('[data-space="dir"]').click()`); await sleep(1800); };
+  const fresh = async (lang, intro) => { await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE, 0); await settle(1500); await J(`localStorage.setItem('archive.lang', JSON.stringify('${lang}')); localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver', JSON.stringify('2026-10-22')); localStorage.setItem('archive.guideTipOff','1')` + (intro ? '' : `; localStorage.setItem('archive.dirIntroOff','1')`)); await c.goto(BASE, 0); await settle(2500); };
+  const toDir = async () => { await J(`document.querySelector('[data-space="dir"]').click()`); await settle(1800); };
   const titles = () => J(`[...document.querySelectorAll('#grid .card .card-title a')].map(a=>a.textContent)`);
   const tabs = () => J(`[...document.querySelectorAll('#dTabs button')].map(b=>b.textContent)`);
   const h2s = () => J(`[...document.querySelectorAll('#dirReco h2')].filter(h=>!h.closest('.ls')).map(h=>h.childNodes[0].textContent)`);
@@ -66,32 +67,32 @@ const N = 37;                                     // the fixture's entries
   await c.shot(require('../paths').SHOTS + '/dir_v2_desktop.png');
 
   // the list button: light rows, on the home page too
-  await J(`document.querySelector('#viewBtn').click()`); await sleep(500);
+  await J(`document.querySelector('#viewBtn').click()`); await settle(500);
   const lat = await J(`(()=>{ const r=document.querySelector('#grid .drow'); const th=r.querySelector('.row-thumb').getBoundingClientRect(), bm=r.querySelector('.bm').getBoundingClientRect(); return {cols:getComputedStyle(document.querySelector('#grid')).gridTemplateColumns.split(' ').length, thumb:[Math.round(th.width),Math.round(th.height)], bm:[Math.round(bm.width),Math.round(bm.height)], svg:!!r.querySelector('.row-thumb svg'), over:document.documentElement.scrollWidth-document.documentElement.clientWidth, cls:document.querySelector('#grid').className, n:document.querySelectorAll('#grid .drow').length, picks:document.querySelectorAll('#dirReco .dr-mix .drow').length, above:state.dirAbove.size, stats:!!r.querySelector('.xmeta .cstat.heart'), saved:LS.get('view','grid')}; })()`);
   ok('the list button works on the home page: the picks and the latest are light rows (a small cover, a 44px bookmark), the choice is kept', /dir-rows/.test(lat.cls) && lat.n === Math.min(24, N - lat.above) && lat.picks === 6 && lat.above === 9 && lat.cols === 1 && lat.svg && lat.bm[0] >= 44 && lat.bm[1] >= 44 && lat.thumb[0] >= 100 && lat.over <= 0 && lat.stats && lat.saved === 'list', lat);
   const rowSum = await J(`[...document.querySelectorAll('#grid .drow')].some(r=>{ const s=r.querySelector('.sum'); return s && getComputedStyle(s).display!=='none'; })`);
   ok('a row shows its summary (two lines) and the counters line', rowSum);
   await c.shot(require('../paths').SHOTS + '/dir_v2_list.png');
-  await J(`document.querySelector('#viewBtn').click()`); await sleep(500);
+  await J(`document.querySelector('#viewBtn').click()`); await settle(500);
   ok('and the button turns the cards back', await J(`/dcards/.test(document.querySelector('#grid').className) && getComputedStyle(document.querySelector('#grid')).gridTemplateColumns.split(' ').length===3 && LS.get('view','grid')==='grid'`));
   // never more than three columns, two on a tablet
-  await c.desktop(1700, 1000, 1); await sleep(600);
+  await c.desktop(1700, 1000, 1); await settle(600);
   const wide = await J(`({cols:getComputedStyle(document.querySelector('#grid')).gridTemplateColumns.split(' ').length, w:Math.round(document.querySelector('#grid .xcard').getBoundingClientRect().width)})`);
   ok('on a wide screen the cards stay three in a row (never more), just wider', wide.cols === 3 && wide.w >= 330, wide);
-  await c.desktop(768, 1024, 1); await sleep(900);
+  await c.desktop(768, 1024, 1); await settle(900);
   const tab2 = await J(`({cols:getComputedStyle(document.querySelector('#grid')).gridTemplateColumns.split(' ').length, picks:getComputedStyle(document.querySelector('#dirReco .dr-mix')).gridTemplateColumns.split(' ').length, n:document.querySelectorAll('#dirReco .dr-mix .xcard').length})`);
   ok('on a tablet two in a row (the picks are 6: three whole rows)', tab2.cols === 2 && tab2.picks === 2 && tab2.n === 6, tab2);
-  await c.desktop(1280, 900, 1); await sleep(900);
+  await c.desktop(1280, 900, 1); await settle(900);
 
   // the hero opens in the reader, a bookmark does not shuffle the page
   const heroId = today3[0];
-  await J(`document.querySelector('#dirReco .hero .bm').click()`); await sleep(500);
+  await J(`document.querySelector('#dirReco .hero .bm').click()`); await settle(500);
   ok('a bookmark on the hero: it stays the hero (the page is not shuffled), pressed, saved', await J(`document.querySelector('#dirReco .hero').dataset.did`) === heroId && await J(`document.querySelector('#dirReco .hero .bm').getAttribute('aria-pressed')`) === 'true' && await J(`state.items.some(x=>x.id==='local:link:${heroId}')`));
-  await J(`document.querySelector('#dirReco .hero .bm').click()`); await sleep(400);
+  await J(`document.querySelector('#dirReco .hero .bm').click()`); await settle(400);
   ok('and the same tap takes it back', await J(`document.querySelector('#dirReco .hero .bm').getAttribute('aria-pressed')`) === 'false' && await J(`!state.items.some(x=>x.id==='local:link:${heroId}')`));
-  await J(`document.querySelector('#dirReco .hero .hero-link').click()`); await sleep(2200);
+  await J(`document.querySelector('#dirReco .hero .hero-link').click()`); await settle(2200);
   ok('a tap on the hero opens its article in the reader', await J(`!document.querySelector('#reader').hidden && /^tmp:/.test(state.readingId||'')`), await J(`state.readingId`));
-  await J(`document.querySelector('#readerBack').click()`); await sleep(500); await J(`render()`); await sleep(300);
+  await J(`document.querySelector('#readerBack').click()`); await settle(500); await J(`render()`); await sleep(300);
   ok('read, it is not today’s any more (the hero is another one)', await J(`document.querySelector('#dirReco .hero').dataset.did`) !== heroId);
   await J(`(()=>{ LS.set('dirRead',{}); state.dirRead={}; render(); })()`); await sleep(300);
 
@@ -131,7 +132,7 @@ const N = 37;                                     // the fixture's entries
   const coverOk = `(()=>{ const c=document.querySelector('#grid .card[data-did="m4mmmmmmm4"] .xcover'); return /xtext/.test(c.className) && !c.querySelector('img') && /This one has a picture/.test(c.textContent); })()`;
   for (let i = 0; i < 80 && !(await J(coverOk)); i++) await sleep(150);                                // (the name of the missing host takes a few seconds to fail on a slow resolver)
   ok('a cover picture that cannot be loaded is replaced by a cover of our own (the summary on the program’s colour)', await J(coverOk));
-  await J(`document.querySelector('#viewBtn').click()`); await sleep(400);
+  await J(`document.querySelector('#viewBtn').click()`); await settle(400);
   ok('the list button turns the tab into light rows (and the choice is kept)', await J(`/dir-rows/.test(document.querySelector('#grid').className) && document.querySelectorAll('#grid .drow').length>=10 && LS.get('view','grid')==='list'`));
   await J(`document.querySelector('#viewBtn').click()`); await sleep(300);
   await clickTab('');
@@ -167,7 +168,7 @@ const N = 37;                                     // the fixture's entries
   ok('the tabs now count only what is ticked: YouTube 2, blogs and sites 4', (await tabs()).join('|') === '全部6|YouTube2|供应链周刊4', await tabs());
   await closePanel();
   ok('the choice is kept in this browser', await J(`LS.get('dirPick',[]).sort().join()`) === 'blogA,ytC');
-  await c.goto(BASE, 2500); await toDir();
+  await c.goto(BASE, 0); await settle(2500); await toDir();
   ok('after a reload the platform side still shows only those two programs', (await titles()).length === 6 && await J(`document.querySelector('#dPickN').textContent`) === '2');
   await mode('topic');
   ok('on the domain side the ticked PROGRAMS do not apply (that side has its own dropdown, of columns): the home page, no chip, the button is "栏目" with no number', await J(`!document.querySelector('#dirReco').hidden && !document.querySelector('#viewSub [data-clear="dpick"]') && document.querySelector('#dPickBtn').textContent.trim().startsWith('栏目') && document.querySelector('#dPickN').hidden`));
@@ -203,15 +204,15 @@ const N = 37;                                     // the fixture's entries
   ok('the page shows the articles of both (17 + 5 = 22) and the tabs only those two columns; what the sections above show is not repeated in the list', (await titles()).length === 22 - await aboveN() && (await tabs()).join('|') === '全部22|AI 与科技17|财经与商业5', [await titles(), await tabs(), await aboveN()]);
   ok('the reader’s own home: today, one small section of each ticked column (3 cards, "更多 ›"), the programs of those columns, the latest', (await h2s()).join('|') === '今日 3 件值得看|继续探索|AI 与科技|财经与商业|值得订阅|最新更新' && await J(`[...document.querySelectorAll('#dirReco .dr-col')].every(s=>s.querySelectorAll('.card').length===3 && !!s.querySelector('[data-dr-colmore]'))`), await h2s());
   await closePanel();
-  await c.goto(BASE, 2500); await toDir();
+  await c.goto(BASE, 0); await settle(2500); await toDir();
   ok('after a reload the domain side still shows only the ticked columns', (await titles()).length === 22 - await aboveN() && await J(`document.querySelector('#dPickN').textContent`) === '2');
-  await J(`document.querySelector('#dirReco [data-dr-colmore="tech"]').click()`); await sleep(400);
+  await J(`document.querySelector('#dirReco [data-dr-colmore="tech"]').click()`); await settle(400);
   ok('"更多 ›" of a section opens that column (17 articles)', await J(`state.dTab`) === 'col:tech' && (await titles()).length === 17, await titles());
   const scope = await J(`({chips:[...document.querySelectorAll('#viewSub .chip')].map(x=>x.textContent.replace('✕','').trim()), home:!!document.querySelector('#viewSub [data-clear="dhome"]')})`);
   ok('one line says where you are (栏目：AI 与科技, and the ticked columns) and no "← 回到首页" button', !scope.home && scope.chips.some(x => x === '栏目：AI 与科技') && scope.chips.some(x => /已选 2 个栏目/.test(x)), scope);
   await J(`document.querySelector('#dSubs [data-dsub="dev"]').click()`); await sleep(350);
   ok('inside the column, the domain is on the line too (领域：编程, 7 articles)', (await titles()).length === 7 && await J(`[...document.querySelectorAll('#viewSub .chip')].some(x=>x.textContent.includes('领域：编程'))`));
-  await J(`document.querySelector('#cats [data-dbrowse="0"]').click()`); await sleep(400);
+  await J(`document.querySelector('#cats [data-dbrowse="0"]').click()`); await settle(400);
   ok('the sidebar’s "发现" clears the column, the domain and the rest at once (the ticked columns stay): the home page is back', await J(`!state.dTab && !state.dSub && !document.querySelector('#dirReco').hidden && !document.querySelector('#viewSub [data-clear="dhome"]') && state.dPickT.size===2`));
   await clickTab('col:biz');
   ok('a tab inside the ticked ones narrows further', (await titles()).length === 5, await titles());
@@ -235,20 +236,20 @@ const N = 37;                                     // the fixture's entries
   await J(`document.querySelector('[data-dr-intro-skip]').click()`); await sleep(300);
   ok('"先随便看看": the question goes away for good, nothing is picked, the editor’s picks are there', await J(`!document.querySelector('.dr-intro') && state.dPickT.size===0 && LS.get('dirIntroOff',0)===1`) && (await h2s()).includes('编辑精选'));
   await fresh('zh', true); await toDir();
-  await J(`document.querySelector('[data-dr-intent="learn"]').click()`); await sleep(500);
+  await J(`document.querySelector('[data-dr-intent="learn"]').click()`); await settle(500);
   ok('a mood ("学习进阶") ticks its columns that have articles (学习与研究, AI 与科技; 职场与产品 has none), the question goes away, the page is the reader’s own home', await J(`LS.get('dirPickT',[]).slice().sort().join()`) === 'learn,tech' && !(await J(`!!document.querySelector('.dr-intro')`)) && (await h2s()).join('|').startsWith('今日 3 件值得看|继续探索|AI 与科技|学习与研究'), [await J(`LS.get('dirPickT',[])`), await h2s()]);
   // away for more than 30 days
-  await fresh('zh'); await J(`localStorage.setItem('archive.dirVisit', JSON.stringify({first:Date.now()-100*864e5,last:Date.now()-40*864e5}))`); await c.goto(BASE, 2500); await toDir();
+  await fresh('zh'); await J(`localStorage.setItem('archive.dirVisit', JSON.stringify({first:Date.now()-100*864e5,last:Date.now()-40*864e5}))`); await c.goto(BASE, 0); await settle(2500); await toDir();
   const cold = await J(`(()=>{ const s=document.querySelector('#dirReco .dr-cold'); return s ? {h2:s.querySelector('h2').textContent, note:s.querySelector('.dr-note').textContent, n:s.querySelectorAll('.card').length, order:[...document.querySelectorAll('#dirReco section:not(.ls)')].slice(0,3).map(x=>x.className.replace('dr-sec ',''))} : null; })()`);
   ok('away for 40 days: "你可能错过了" (the newest pieces, whole rows) comes right after today and the way on, with how long it has been', cold && cold.h2 === '你可能错过了' && /40 天/.test(cold.note) && cold.n >= 3 && cold.order[2] === 'dr-cold', cold);
-  await c.goto(BASE, 2500); await toDir();
+  await c.goto(BASE, 0); await settle(2500); await toDir();
   ok('and the next visit is not a "cold" one any more', await J(`!document.querySelector('#dirReco .dr-cold')`));
   await fresh('zh');
 
   // what an older version ticked (domains) moves to the column they belong to
-  await J(`localStorage.setItem('archive.dirPickT', JSON.stringify(['tech','finance','nonsense']))`); await c.goto(BASE, 2500); await toDir();
+  await J(`localStorage.setItem('archive.dirPickT', JSON.stringify(['tech','finance','nonsense']))`); await c.goto(BASE, 0); await settle(2500); await toDir();
   ok('what an older version ticked (domains) moves to their columns: tech -> tech, finance -> biz, the unknown one is dropped', await J(`LS.get('dirPickT',[]).slice().sort().join()`) === 'biz,tech', await J(`LS.get('dirPickT',[])`));
-  await J(`localStorage.removeItem('archive.dirPickT')`); await c.goto(BASE, 2500); await toDir();
+  await J(`localStorage.removeItem('archive.dirPickT')`); await c.goto(BASE, 0); await settle(2500); await toDir();
 
   // ================================================ B. counters, heat, the heart and the eye, personal recommendations
   await get('/__stat_reset');
@@ -273,13 +274,13 @@ const N = 37;                                     // the fixture's entries
   await J(`document.querySelector('#grid .card[data-did="a1aaaaaaa1"] .cstat.heart').click()`); await sleep(250);
   const hp = await J(`(()=>{ const x=document.querySelector('#grid .card[data-did="a1aaaaaaa1"] .cstat.heart'); return {pressed:x.getAttribute('aria-pressed'), n:x.textContent, vote:LS.get('dirVote',{}).a1aaaaaaa1}; })()`);
   ok('a tap on the heart likes it at once (1), remembers it here', hp.pressed === 'true' && hp.n === '1' && hp.vote === 1, hp);
-  await J(`statFlush()`); await sleep(500);
+  await J(`statFlush()`); await settle(500);
   ok('and it is counted once: one "like"', (await statLog()).filter(e => e.t === 'like' && e.id === 'a1aaaaaaa1').length === 1, await statLog());
   await J(`document.querySelector('#grid .card[data-did="a1aaaaaaa1"] .cstat.heart').click()`); await sleep(250);
   ok('the same tap again takes it back (the 0 is not shown)', await J(`document.querySelector('#grid .card[data-did="a1aaaaaaa1"] .cstat.heart').getAttribute('aria-pressed')`) === 'false' && await J(`document.querySelector('#grid .card[data-did="a1aaaaaaa1"] .cstat.heart').textContent`) === '' && await J(`LS.get('dirVote',{}).a1aaaaaaa1===undefined`));
-  await J(`statFlush()`); await sleep(500);
+  await J(`statFlush()`); await settle(500);
   ok('and what was sent is a change, never a person: like then unlike', (await statLog()).filter(e => e.id === 'a1aaaaaaa1').map(e => e.t).join() === 'like,unlike', await statLog());
-  await J(`document.querySelector('#viewBtn').click()`); await sleep(400);
+  await J(`document.querySelector('#viewBtn').click()`); await settle(400);
   ok('in rows the numbers are on the line under the title (♥ is a button there too)', await J(`(()=>{ const c=document.querySelector('#grid .card[data-did="a1aaaaaaa1"]'); return !!c.querySelector('.xmeta .cstat.heart') && [...c.querySelectorAll('.xmeta .cstat:not(.fire):not(.heart)')].map(x=>x.textContent).join()==='40'; })()`));
   await J(`document.querySelector('#viewBtn').click()`); await sleep(300);
   await clickTab('');
@@ -291,7 +292,7 @@ const N = 37;                                     // the fixture's entries
   await closePanel(); await mode('topic');
 
   // reading and liking in the reader
-  await J(`document.querySelector('.card[data-did="a2aaaaaaa2"] .card-title a').click()`); await sleep(2200);
+  await J(`document.querySelector('.card[data-did="a2aaaaaaa2"] .card-title a').click()`); await settle(2200);
   const pill = await J(`({vis:!document.querySelector('#rVote').hidden, like:document.querySelector('#rLikeN').textContent, dis:document.querySelector('#rDislikeN').textContent, pressed:document.querySelector('#rLike').getAttribute('aria-pressed')})`);
   ok('the reader of a directory article has the heart / thumb-down with the counts (7, 2)', pill.vis && pill.like === '7' && pill.dis === '2' && pill.pressed === 'false', pill);
   await J(`document.querySelector('#rLike').click()`); await sleep(200);
@@ -299,13 +300,13 @@ const N = 37;                                     // the fixture's entries
   await J(`document.querySelector('#rLike').click()`); await sleep(150); await J(`document.querySelector('#rDislike').click()`); await sleep(200);
   ok('from like to dislike: the like is taken back, the dislike counted (7, 3)', await J(`document.querySelector('#rLikeN').textContent`) === '7' && await J(`document.querySelector('#rDislikeN').textContent`) === '3' && await J(`LS.get('dirVote',{}).a2aaaaaaa2`) === -1);
   await c.shot(require('../paths').SHOTS + '/dir_vote.png');
-  await J(`document.querySelector('#readerBack').click()`); await sleep(500);
+  await J(`document.querySelector('#readerBack').click()`); await settle(500);
 
   // for you, folded into the picks
   const picksNote = () => J(`(document.querySelector('#dirReco .dr-picks .dr-note')||{textContent:''}).textContent`);
-  await J(`(()=>{ LS.set('dirVote',{}); state.vote={}; LS.set('dirRead',{}); state.dirRead={}; render(); })()`); await sleep(400);
+  await J(`(()=>{ LS.set('dirVote',{}); state.vote={}; LS.set('dirRead',{}); state.dirRead={}; render(); })()`); await settle(400);
   ok('with nothing read the picks say nothing personal', !/不离开你的设备/.test(await picksNote()) && await J(`!document.querySelector('[data-dr-clear]')`));
-  await J(`(()=>{ ['a1aaaaaaa1','a2aaaaaaa2','b1bbbbbbb1'].forEach(id=>markDirRead(id)); render(); })()`); await sleep(500);
+  await J(`(()=>{ ['a1aaaaaaa1','a2aaaaaaa2','b1bbbbbbb1'].forEach(id=>markDirRead(id)); render(); })()`); await settle(500);
   ok('after reading 3 articles the same picks say what they used (and where the data stays), and offer to clear it (a button of the page’s own look)', /不离开你的设备/.test(await picksNote()) && await J(`!!document.querySelector('[data-dr-clear]') && document.querySelector('[data-dr-clear]').classList.contains('btn')`));
   const you = await J(`(()=>{ const f=id=>state.dirData.items.find(i=>i.id===id); return {rec:dirWhy(f('m2mmmmmmm2'),true), plain:dirWhy(f('m2mmmmmmm2'),false), pick:dirWhy(f('a3aaaaaaa3'),true)}; })()`);
   ok('after reading 3 articles of 财经与商业, a recommendation of another one says "因为你常看 · 财经与商业" (a plain list says nothing); the owner’s pick still comes first', you.rec && you.rec[0] === 'you' && /因为你常看 · 财经与商业/.test(you.rec[1]) && you.plain === null && you.pick && you.pick[0] === 'pick', you);
@@ -313,9 +314,9 @@ const N = 37;                                     // the fixture's entries
   const seen = await J(`[...document.querySelectorAll('#dirReco .today .card, #dirReco .dr-picks .card')].map(x=>x.dataset.did)`);
   ok('what was read is not recommended again (today, the picks)', !seen.some(id => ['a1aaaaaaa1', 'a2aaaaaaa2', 'b1bbbbbbb1'].includes(id)), seen);
   ok('with a history the picks are "为你精选", and "最近读过" lists the last three opened (newest first), no repeat in the list', (await h2s()).includes('为你精选') && (await h2s()).includes('最近读过') && await J(`[...document.querySelectorAll('#dirReco .dr-recent .card')].map(x=>x.dataset.did).sort().join()`) === 'a1aaaaaaa1,a2aaaaaaa2,b1bbbbbbb1' && !await J(`!!document.querySelector('#grid .card[data-did="a1aaaaaaa1"]')`), [await h2s(), await J(`[...document.querySelectorAll('#dirReco .dr-recent .card')].map(x=>x.dataset.did).sort().join()`), await J(`!!document.querySelector('#grid .card[data-did="a1aaaaaaa1"]')`)]);
-  await J(`(()=>{ LS.set('dirVote',{a3aaaaaaa3:-1}); state.vote={a3aaaaaaa3:-1}; render(); })()`); await sleep(400);
+  await J(`(()=>{ LS.set('dirVote',{a3aaaaaaa3:-1}); state.vote={a3aaaaaaa3:-1}; render(); })()`); await settle(400);
   ok('what was disliked is not shown above any more (it is in the list)', !(await aboveIds()).includes('a3aaaaaaa3'), await aboveIds());
-  await J(`document.querySelector('[data-dr-clear]').click()`); await sleep(400);
+  await J(`document.querySelector('[data-dr-clear]').click()`); await settle(400);
   ok('"清除这些记录" empties the records, the note loses its personal part', await J(`Object.keys(LS.get('dirRead',{})).length===0 && Object.keys(LS.get('dirVote',{})).length===0`) && !/不离开你的设备/.test(await picksNote()));
   await J(`document.querySelector('[data-dr-shuffle]').click()`); await sleep(300);
   ok('"换一批" works (the page stays whole)', (await mixIds()).length >= 6 && (await h2s()).length === 5, await mixIds());
@@ -324,7 +325,7 @@ const N = 37;                                     // the fixture's entries
   await get('/__stat_reset'); await seed([{ t: 'open', k: 'item', id: 'b2bbbbbbb2', n: 12 }]);
   const dnt = await c.send('Page.addScriptToEvaluateOnNewDocument', { source: "Object.defineProperty(navigator,'doNotTrack',{get:()=>'1'})" });
   await fresh('zh'); await toDir(); await clickTab('col:tech');
-  await J(`document.querySelector('#grid .card[data-did="b2bbbbbbb2"] .cstat.heart').click()`); await sleep(200); await J(`statFlush()`); await sleep(500);
+  await J(`document.querySelector('#grid .card[data-did="b2bbbbbbb2"] .cstat.heart').click()`); await sleep(200); await J(`statFlush()`); await settle(500);
   ok('with "do not track": the like is kept here and used for recommendations, nothing is sent', await J(`LS.get('dirVote',{}).b2bbbbbbb2`) === 1 && (await get('/__stat_log')).length === 0, await get('/__stat_log'));
   await c.send('Page.removeScriptToEvaluateOnNewDocument', { identifier: dnt.identifier });
 
@@ -334,7 +335,7 @@ const N = 37;                                     // the fixture's entries
   await fresh('zh'); await toDir();
   const ph0 = await J(`(()=>{ const h=document.querySelector('#dirReco .hero').getBoundingClientRect(); return {over:document.documentElement.scrollWidth-document.documentElement.clientWidth, bar:document.querySelector('#dirBar').offsetParent!==null, heroTop:Math.round(h.top), vh:innerHeight, viewBtn:getComputedStyle(document.querySelector('#viewBtn')).display, today:getComputedStyle(document.querySelector('#dirReco .today')).gridTemplateColumns.split(' ').length}; })()`);
   ok('phone: the discovery page has no toolbar, so the hero is on the first screen; no sideways scroll; today is one column; the card / list button is there', ph0.over <= 0 && !ph0.bar && ph0.heroTop < ph0.vh * 0.6 && ph0.today === 1 && ph0.viewBtn !== 'none', ph0);
-  await J(`document.querySelector('#dirReco [data-dr-browse]').click()`); await sleep(500);
+  await J(`document.querySelector('#dirReco [data-dr-browse]').click()`); await settle(500);
   const ph = await J(`(()=>{ const t=document.querySelector('#dTabs'), more=document.querySelector('#dTabsMore'); return {over:document.documentElement.scrollWidth-document.documentElement.clientWidth, folded:t.classList.contains('folded'), tabsH:Math.round(t.getBoundingClientRect().height), more:!more.hidden && more.textContent}; })()`);
   ok('phone, the whole directory: no sideways scroll; the column tabs are two lines with "更多"', ph.over <= 0 && ph.folded && ph.tabsH <= 110 && /更多/.test(ph.more), ph);
   const tgt = await J(`[...document.querySelectorAll('#dTabs button, #dTabsMode button, #dPickBtn, #dTabsMore')].filter(b=>b.offsetParent!==null).map(b=>Math.round(b.getBoundingClientRect().height))`);
@@ -342,7 +343,7 @@ const N = 37;                                     // the fixture's entries
   await J(`document.querySelector('#dTabsMore').click()`); await sleep(300);
   ok('"更多" shows every domain (the tabs wrap onto more lines), "收起" folds them again', await J(`!document.querySelector('#dTabs').classList.contains('folded') && /收起/.test(document.querySelector('#dTabsMore').textContent) && document.querySelector('#dTabs').getBoundingClientRect().height>90`));
   await J(`document.querySelector('#dTabsMore').click()`); await sleep(300);
-  await J(`document.querySelector('#cats [data-dbrowse="0"]').click()`); await sleep(500);                  // (back to the discovery page: its cards are looked at next)
+  await J(`document.querySelector('#cats [data-dbrowse="0"]').click()`); await settle(500);                  // (back to the discovery page: its cards are looked at next)
   const pr = await J(`(()=>{ const g=document.querySelector('#dirReco .dr-mix'), cs=[...g.querySelectorAll('.xcard')], k=cs[0], r=x=>x.getBoundingClientRect(), bm=r(k.querySelector('.card-foot [data-d="save"]')), cv=r(k.querySelector('.xcover')); return {cols:getComputedStyle(g).gridTemplateColumns.split(' ').length, wide:Math.round(r(cs[0]).width), same:Math.abs(r(cs[0]).width-r(cs[1]).width)<1 && Math.abs(r(cs[0]).top-r(cs[1]).top)<1, square:Math.abs(cv.width-cv.height)<2, title:getComputedStyle(k.querySelector('.card-title')).fontSize, chipsHidden:[...document.querySelectorAll('#dirReco .xcard .chips')].every(x=>getComputedStyle(x).display==='none'), ext:document.querySelectorAll('#grid .ext, #dirReco .ext').length, inside:[...document.querySelectorAll('#dirReco .xcard, #grid .xcard')].every(x=>r(x).right<=innerWidth+0.5), bm:[Math.round(bm.width),Math.round(bm.height)], footIn:bm.right<=r(k).right+0.5, grid:getComputedStyle(document.querySelector('#grid')).gridTemplateColumns.split(' ').length}; })()`);
   ok('phone: the cards are two in a row, aligned (same width and top), square covers, the title is 14px+, no open arrow, a 44px bookmark inside the card, everything inside the screen', pr.cols === 2 && pr.same && pr.square && parseFloat(pr.title) >= 14 && pr.chipsHidden && pr.ext === 0 && pr.inside && pr.footIn && pr.grid === 2 && pr.bm[0] >= 44 && pr.bm[1] >= 44, pr);
   const phSum = await J(`(()=>{ const c=[...document.querySelectorAll('#grid .xcard')].find(x=>!x.querySelector('.xtext')); return c ? {show:getComputedStyle(c.querySelector('.sum')||document.body).display, has:!!c.querySelector('.sum')} : null; })()`);
@@ -350,14 +351,14 @@ const N = 37;                                     // the fixture's entries
   const cov = await J(`(()=>{ const q=document.querySelector('.xcover.xtext'); const r=q.getBoundingClientRect(), t=q.querySelector('.xquote').getBoundingClientRect(); return {fits:t.bottom<=r.bottom+1 && t.top>=r.top-1, fs:getComputedStyle(q.querySelector('.xquote')).fontSize}; })()`);
   ok('phone: the text on a text cover fits inside its cover (the cover grows with the text)', cov.fits, cov);
   await c.shot(require('../paths').SHOTS + '/dir_v2_phone.png');
-  await J(`document.querySelector('#viewBtn').click()`); await sleep(500);
+  await J(`document.querySelector('#viewBtn').click()`); await settle(500);
   const pl = await J(`(()=>{ const r=document.querySelector('#grid .drow'), bm=r.querySelector('.bm').getBoundingClientRect(); return {cols:getComputedStyle(document.querySelector('#grid')).gridTemplateColumns.split(' ').length, bm:[Math.round(bm.width),Math.round(bm.height)], over:document.documentElement.scrollWidth-document.documentElement.clientWidth, inside:[...document.querySelectorAll('#grid .drow')].every(x=>x.getBoundingClientRect().right<=innerWidth+0.5), sum:[...document.querySelectorAll('#grid .drow .sum')].every(s=>getComputedStyle(s).webkitLineClamp==='1')}; })()`);
   ok('phone, the list button: one column of rows, a 44px bookmark, a one-line summary, nothing sideways', pl.cols === 1 && pl.bm[0] >= 44 && pl.bm[1] >= 44 && pl.over <= 0 && pl.inside && pl.sum, pl);
   await c.shot(require('../paths').SHOTS + '/dir_v2_phone_list.png');
-  await J(`document.querySelector('#viewBtn').click()`); await sleep(400);
-  await J(`document.querySelector('#dirReco [data-dr-browse]').click()`); await sleep(500);                       // (the dropdown is on the second level)
+  await J(`document.querySelector('#viewBtn').click()`); await settle(400);
+  await J(`document.querySelector('#dirReco [data-dr-browse]').click()`); await settle(500);                       // (the dropdown is on the second level)
   await mode('plat');
-  await J(`document.querySelector('#dPickBtn').click()`); await sleep(500);
+  await J(`document.querySelector('#dPickBtn').click()`); await settle(500);
   const sheet = await J(`(()=>{ const p=document.querySelector('#dPick').getBoundingClientRect(); return {bottom:p.bottom, h:p.height, left:p.left, right:p.right, back:getComputedStyle(document.querySelector('#dPickBack')).display, ih:innerHeight}; })()`);
   ok('phone: the panel is a sheet from the bottom (inside the screen, not taller than 78%), with a dimmed backdrop', Math.abs(sheet.bottom - sheet.ih) <= 1 && sheet.h <= sheet.ih * 0.79 && sheet.left === 0 && sheet.right === 390 && sheet.back === 'block', sheet);
   const rowH = await J(`Math.min(...[...document.querySelectorAll('#dPickList .dp-row')].map(r=>r.getBoundingClientRect().height))`);
@@ -367,7 +368,7 @@ const N = 37;                                     // the fixture's entries
   await J(`document.querySelector('#dPickBack').click()`); await sleep(300);
   ok('a tap on the backdrop closes the panel, and the page scrolls again', await J(`document.querySelector('#dPick').hidden && getComputedStyle(document.body).overflow!=='hidden'`));
   await mode('topic');
-  await J(`document.querySelector('#dPickBtn').click()`); await sleep(500);
+  await J(`document.querySelector('#dPickBtn').click()`); await settle(500);
   ok('phone, domain side: the same sheet lists the columns', (await rows()).includes('AI 与科技') && await J(`!document.querySelector('#dPick').hidden`));
   await J(`document.querySelector('#dPickBack').click()`); await sleep(300);
   await clickTab('col:biz');

@@ -26,18 +26,19 @@ const writeDir = fn => { const d = JSON.parse(JSON.stringify(dir0)); fn(d); fs.w
 
 (async () => {
   const c = await connect(9444);
+  const settle = await require('../settle')(c);
   c.autoDialog(true);
   await c.send('Network.enable'); await c.send('Network.setCacheDisabled', { cacheDisabled: true });
   const J = expr => c.js(`(()=>{ const {state,idb,LS,render,addCollection}=window.__zt||{}; return eval(${JSON.stringify(expr)}); })()`);
   const fresh = async (lang, w = 1280, h = 900, phone = false) => {
     if (phone) await c.mobile(w, h, 2); else await c.desktop(w, h, 1);
-    await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE, 1500);
+    await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE, 0); await settle(1500);
     await J(`localStorage.setItem('archive.lang', JSON.stringify('${lang}')); localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver', JSON.stringify('2026-10-22'))`);
-    await c.goto(BASE, 2800);
+    await c.goto(BASE, 0); await settle(2800);
   };
   const reset = (limit) => fetch(SVC + '/__submit_reset' + (limit != null ? '?limit=' + limit : ''), { method: 'POST' });
   const submits = async () => (await fetch(SVC + '/__submits')).json();
-  const openReco = async () => { await J(`document.querySelector('[data-cat="reco"]').click()`); await sleep(500); };
+  const openReco = async () => { await J(`document.querySelector('[data-cat="reco"]').click()`); await settle(500); };
   const ids = sel => J(`[...document.querySelectorAll(${JSON.stringify(sel)})].map(x=>x.dataset.rid||x.id)`);
   const tick = (kind, id) => J(`document.querySelector('[data-r${kind}="${id}"]').click()`);
   const sumText = () => J(`document.querySelector('#rcSum').textContent`);
@@ -53,8 +54,8 @@ const writeDir = fn => { const d = JSON.parse(JSON.stringify(dir0)); fn(d); fs.w
   await c.shot(require('../paths').SHOTS + '/rc_banner.png');
   await J(`document.querySelector('[data-reco-off]').click()`); await sleep(300);
   ok('"不再提示" hides it and it stays away after a reload', await J(`document.querySelector('#recoBanner').hidden`) && (await c.goto(BASE, 2500), await J(`document.querySelector('#recoBanner').hidden`)));
-  await J(`localStorage.removeItem('archive.recoBannerOff')`); await c.goto(BASE, 2500);
-  await J(`document.querySelector('[data-reco-open]').click()`); await sleep(500);
+  await J(`localStorage.removeItem('archive.recoBannerOff')`); await c.goto(BASE, 0); await settle(2500);
+  await J(`document.querySelector('[data-reco-open]').click()`); await settle(500);
   ok('the banner button opens the page', await J(`!document.querySelector('#recoPane').hidden && document.querySelector('#grid').innerHTML===''`) && await J(`document.querySelector('#recoBanner').hidden`));
 
   // ------------------------------------------------ the page: groups, order by traffic, filters
@@ -68,10 +69,10 @@ const writeDir = fn => { const d = JSON.parse(JSON.stringify(dir0)); fn(d); fs.w
   await J(`document.querySelector('[data-lf="en"]').click()`); await sleep(300);
   ok('the language filter (EN) leaves the English group only', (await J(`[...document.querySelectorAll('.rc-group h2')].map(h=>h.textContent)`)).join() === '英文 · 测试组');
   await J(`document.querySelector('[data-lf="all"]').click()`); await sleep(300);
-  await J(`const i=document.querySelector('#q'); i.value='乙博客'; i.dispatchEvent(new Event('input',{bubbles:true}))`); await sleep(500);
+  await J(`const i=document.querySelector('#q'); i.value='乙博客'; i.dispatchEvent(new Event('input',{bubbles:true}))`); await settle(500);
   ok('the search box filters the recommendations too', (await ids('.rc-row')).join() === 'zB');
-  await J(`const i=document.querySelector('#q'); i.value=''; i.dispatchEvent(new Event('input',{bubbles:true}))`); await sleep(400);
-  await J(`document.querySelectorAll('[data-rjump]')[2].click()`); await sleep(500);
+  await J(`const i=document.querySelector('#q'); i.value=''; i.dispatchEvent(new Event('input',{bubbles:true}))`); await settle(400);
+  await J(`document.querySelectorAll('[data-rjump]')[2].click()`); await settle(500);
   ok('the group chips mark the chosen group and bring it into view', await J(`document.querySelectorAll('[data-rjump]')[2].getAttribute('aria-pressed')`) === 'true' && await J(`(()=>{ const r=document.querySelector('#rc-g2').getBoundingClientRect(); return r.top>=-5 && r.top<innerHeight; })()`));
 
   // ------------------------------------------------ what is in the directory already, what is asked already
@@ -83,7 +84,7 @@ const writeDir = fn => { const d = JSON.parse(JSON.stringify(dir0)); fn(d); fs.w
   await tick('sub', 'zA'); await tick('sub', 'zB');
   ok('two ticked: the bar says so and the button counts them', await sumText() === '已选：订阅 2 个 · 推送审核 0 个' && await J(`document.querySelector('#rcSubGo').textContent`) === '订阅所选（2）' && await J(`!document.querySelector('#rcSubGo').disabled`));
   await c.shot(require('../paths').SHOTS + '/rc_ticked.png');
-  await J(`document.querySelector('#rcSubGo').click()`); await sleep(9000);
+  await J(`document.querySelector('#rcSubGo').click()`); await settle(9000);
   const subd = await J(`({cols:state.cols.filter(x=>x.feed).map(x=>x.name+'|'+(state.items.filter(i=>i.collection===x.id).length)), err:state.cols.filter(x=>x.feed).map(x=>x.feed.error).filter(Boolean), pane:!document.querySelector('#recoPane').hidden, picks:[...document.querySelectorAll('[data-rid="zA"] .rc-pick,[data-rid="zB"] .rc-pick')].map(x=>x.textContent.trim()), cnt:document.querySelector('[data-cat="reco"] .n').textContent, sum:document.querySelector('#rcSum').textContent})`);
   ok('subscribed in one go: two collections with their feeds, both first readings arrived, the page stays, both rows say "已订阅", the count fell to 6', subd.cols.length === 2 && subd.cols.every(x => +x.split('|')[1] >= 3) && subd.err.length === 0 && subd.pane && subd.picks.filter(x => /已订阅/.test(x)).length === 2 && subd.cnt === '6' && /订阅 0 个/.test(subd.sum), subd);
   ok('the banner is gone now that there are subscriptions', await J(`document.querySelector('#recoBanner').hidden`));
