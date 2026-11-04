@@ -22,7 +22,7 @@ HOOKS = ('state idb LS bkBuild bkOpen bkPlan bkApply zipOpen zipBuild loadAll ad
          'syncEnsureKeys syncFetchBody render openDirReader fetchLinkText prefetchTexts introOpen introBoot canReadHere isNoread itemById openLinkReading renderStarter starterShelves statSend statFlush statApi '
          'loadHeat heatAvailable dirList markDirRead subscribeNow dirMeta openNote neSave neClose NE neDeriveTitle neTags syncRecord neDocFit neDomToMd neGet neRaw neParse neFix neNorm renderCheck openSubmit '
          'guideItem dirWhy dirProfile pl plAudio plPlay plEnqueue plToggle plStop plRestore plRender plFold richOpen richFromItem embedOf cardData postData withForm focusOpen readerFocus fcDlg '
-         'shLayout shStep shPanels transApi trAvailable TR goPct frameDoc hotEventsEnsure').split()
+         'shLayout shStep shPanels transApi trAvailable TR goPct frameDoc hotEventsEnsure dirRefresh appResume swCheck updNoteSync').split()
 
 
 def test_ports():

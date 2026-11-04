@@ -1131,6 +1131,21 @@ body.has-player.pl-folded{--pl-h:0px}
 .toast.show{opacity:1;pointer-events:auto}
 .toast button{border:0;background:var(--bg);color:var(--ink);border-radius:6px;padding:4px 12px;font-weight:600;cursor:pointer}
 .toast button:empty{display:none}
+.newver{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:51;display:flex;align-items:center;gap:8px;background:var(--ink);color:var(--bg);padding:7px 8px 7px 16px;border-radius:999px;font-size:14px;max-width:calc(100vw - 32px);box-shadow:0 4px 16px rgba(0,0,0,.22)}
+.newver[hidden]{display:none}
+.newver button{border:0;border-radius:999px;padding:4px 12px;font:inherit;font-weight:600;cursor:pointer;background:var(--bg);color:var(--ink)}
+.newver button.x{background:none;color:inherit;opacity:.7;padding:4px 8px}
+body.sh-phone .newver{bottom:calc(var(--tb) + 76px)}
+.upd-note{position:absolute;left:0;top:100%;display:flex;align-items:center;gap:2px;height:18px;margin:0;font-size:12.5px;line-height:18px;color:var(--muted);white-space:nowrap}          /* (it hangs below the heading in the gap that is there: the heading is as high as on my shelf) */
+.view-head .upd-note{font-size:12.5px;margin:0}
+.upd-note[hidden]{display:none}
+.upd-note button{border:0;background:none;padding:0 6px;height:18px;font:inherit;font-size:15px;line-height:18px;color:var(--accent);cursor:pointer}
+.upd-note.spin button{animation:updspin 1s linear infinite;pointer-events:none}
+@keyframes updspin{to{transform:rotate(360deg)}}
+html.ptr{overscroll-behavior-y:contain}
+.pullhint{position:fixed;left:50%;top:env(safe-area-inset-top,0px);z-index:45;transform:translate(-50%,-64px);padding:7px 16px;border-radius:999px;background:var(--surface);color:var(--ink);border:1px solid var(--rule);font-size:13.5px;box-shadow:0 2px 10px rgba(0,0,0,.14);opacity:0;pointer-events:none;white-space:nowrap}
+.pullhint.snap{transition:transform .22s ease,opacity .22s ease}
+@media (prefers-reduced-motion:reduce){.pullhint.snap{transition:none}.upd-note.spin button{animation:none}}
 
 /* ---------- narrow screens ---------- */
 @media (max-width:980px){
@@ -1275,7 +1290,7 @@ body.drawer .player,body.drawer .pl-mini{z-index:18}
 body.shell2 #noteBtn{display:none}                                          /* (writing a note is the round button at the corner, or the + of a phone: the pen in the top bar said the same as "add") */
 .sw{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px;border:1px solid rgba(127,127,127,.4)}
 .sw-classic{background:#1F7A6D}.sw-dark{background:#1B2125}.sw-cloud{background:#D8363A}
-.vh-txt{min-width:0}
+.vh-txt{min-width:0;position:relative}
 .vh-ctl{display:none}
 body.dir-listen .vh-txt,body.dir-hot .vh-txt{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 14px}
 .ctl-box{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
@@ -1492,7 +1507,8 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     </div>
     <section class="view-head">
       <div class="vh-txt"><h1 id="viewTitle">全部</h1>
-      <p id="viewSub"></p></div>
+      <p id="viewSub"></p>
+      <p class="upd-note" id="updNote" hidden></p></div>
       <div class="vh-ctl" id="vhCtl"><span class="ctl-box" id="ctlBox"><button class="tag-btn" type="button" id="tagBtn" hidden aria-expanded="false" aria-controls="tagPop"></button></span><section class="tag-pop" id="tagPop" hidden aria-label="标签"></section></div>
     </section>
     <div class="dir-bar" id="dirBar" hidden>
@@ -1977,6 +1993,8 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
 
 <div class="drop-overlay" id="dropOverlay" hidden><span data-i="dropRelease">松开即可添加</span></div>
 <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button type="button" id="toastAct"></button></div>
+<div class="newver" id="newVer" role="status" hidden><span id="newVerMsg"></span><button type="button" id="newVerGo"></button><button type="button" class="x" id="newVerX">✕</button></div>
+<div class="pullhint" id="pullHint" aria-hidden="true"></div>
 
 <script src="manifest.js" onerror="void 0"></script>
 <script>
@@ -2453,7 +2471,7 @@ const state = {
   seeds: LS.get('seeds',{}), progress: LS.get('progress',{}), lastRead: LS.get('lastRead',{}),
   visible:[], readingId:null, blobUrl:null, pending:[], dirOpen:new Set(),
   tag:'', tagsOpen:false, pubReq:LS.get('pubReq',{}),          // tag filter of my own shelf; articles of mine that were handed to the directory (id -> time)
-  space:LS.get('space','mine'), dirCfg:'', dirData:null, dirState:'idle', dirErr:'', dirBusy:false, dirSrc:null, shelfMap:new Map(), dirKeys:null, dirOps:null,   // 'mine' | 'dir' (the public directory, read-only)
+  space:LS.get('space','mine'), dirCfg:'', dirData:null, dirState:'idle', dirErr:'', dirBusy:false, dirSrc:null, dirAt:0, dirRefreshing:false, shelfMap:new Map(), dirKeys:null, dirOps:null,   // 'mine' | 'dir' (the public directory, read-only)
   dType:'all', dTag:'', dShelf:'', dLimit:60
 };
 const $ = s => document.querySelector(s);
@@ -2477,6 +2495,8 @@ Object.assign(I18N.zh,{trMenuScreen:'翻译本屏', trMenuAll:'翻译本章', tr
 Object.assign(I18N.en,{trMenuScreen:'Translate this screen', trMenuAll:'Translate this chapter', trMenuToc:'Translate the contents', trMenuCycle:x=>`Showing: ${x} (click to switch)`, trLeft:n=>`About ${n} characters left to translate today`, trAllDone:'This page is translated already', trTocNone:'There are no contents to translate here', trTocDone:'The contents are translated', bookTrBtn:'Translate the summary'});
 Object.assign(I18N.zh,{pinTip:'固定在左边', unpinTip:'取消固定', eyeLbl:'护眼', eye_follow:'跟随系统', eye_sepia:'米黄', eye_green:'护眼绿', eye_dark:'深色', eyeTip:x=>`护眼：现在是“${x}”，点一下换下一种`, eyeNow:x=>`护眼：${x}`, fsNow:n=>`字号 ${n}%`, pgPrev:'上一页', pgNext:'下一页', fsSmaller:'缩小字号', fsBigger:'放大字号', rbarTip:'字号和页码'});
 Object.assign(I18N.en,{pinTip:'Pin at the left', unpinTip:'Unpin', eyeLbl:'Eye care', eye_follow:'Follow system', eye_sepia:'Sepia', eye_green:'Green', eye_dark:'Dark', eyeTip:x=>`Eye care: now "${x}", click for the next`, eyeNow:x=>`Eye care: ${x}`, fsNow:n=>`Text size ${n}%`, pgPrev:'Previous page', pgNext:'Next page', fsSmaller:'Smaller text', fsBigger:'Bigger text', rbarTip:'Text size and page'});
+Object.assign(I18N.zh,{newVer:'有新版本了', newVerGo:'刷新', newVerLater:'以后再说', updAt:w=>`已更新 ${w}`, updBusy:'更新中…', updGo:'现在更新', pullDown:'下拉刷新', pullGo:'松开刷新', pullOk:'已更新', pullOff:'没连上网，还是上次的'});
+Object.assign(I18N.en,{newVer:'A new version is ready', newVerGo:'Refresh', newVerLater:'Not now', updAt:w=>`Updated ${w}`, updBusy:'Updating…', updGo:'Update now', pullDown:'Pull to refresh', pullGo:'Release to refresh', pullOk:'Updated', pullOff:'No connection: still the last one'});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const catName = c => (['all','featured','books','tools','notes','hidden'].includes(c)? t(c) : c);
@@ -3470,8 +3490,8 @@ function render(){
   $('#noteBtn').hidden=dirMode; $('#noteFab').hidden=dirMode && shellSel()!=='2';          // (the new shell writes a note from both spaces)
   const addTxt=t(dirMode?'submit':'add'); $('#addLbl').textContent=addTxt; $('#addBtn').title=addTxt; $('#addBtn').setAttribute('aria-label',addTxt);
   syncSubscribe();
-  if(dirMode){ $('#colRow').hidden=true; $('#colNav').hidden=true; $('#recoPane').hidden=true; $('#recoBanner').hidden=true; renderDir(); renderPublicAd(); syncReader(); return; }
-  renderPublicAd();
+  if(dirMode){ $('#colRow').hidden=true; $('#colNav').hidden=true; $('#recoPane').hidden=true; $('#recoBanner').hidden=true; renderDir(); updNoteSync(); renderPublicAd(); syncReader(); return; }
+  renderPublicAd(); $('#updNote').hidden=true; document.documentElement.classList.remove('ptr');
   $('#moreRow').hidden=true; $('#dirLabel').textContent=t('dir'); $('#dirBar').hidden=true; document.body.classList.remove('dir-discover','dir-hot','dir-listen'); $('#dirReco').hidden=true; $('#dirReco').innerHTML=''; state.dPickOpen=false; $('#dPick').hidden=true; $('#dPickBack').hidden=true; document.body.classList.remove('dp-open');          // (the directory's home page is made again when it is shown: its cards must not linger behind the shelf)
 
   renderCols();                                                            // also settles which part of the shelf is shown, before anything below counts it
@@ -7305,13 +7325,13 @@ function dirBuild(d,opsRaw){                                                    
 async function loadDirectory(force){
   if(!state.dirCfg || state.dirBusy || (state.dirData && !force)) return;
   const base=state.dirCfg, early=window.__early && httpUrl(window.__early.base)===base ? window.__early : null; window.__early=null;       // (what the small script at the top of the page began to ask for, see window.__early)
-  state.dirBusy=true; state.dirErr='';
+  state.dirBusy=true; state.dirErr=''; updNoteSync();
   let shown=!!state.dirData, redraw=!shown;
   if(!shown){                                                                                          // the copy of the last visit: shown at once, the network only checks it
     const kept=await dirKeptGet(base);
     if(kept && typeof kept.dirText==='string'){
       try{
-        dirBuild(JSON.parse(kept.dirText),kept.ops||null); state.dirSrc={text:kept.dirText, ops:JSON.stringify(kept.ops||null)}; shown=true;
+        dirBuild(JSON.parse(kept.dirText),kept.ops||null); state.dirSrc={text:kept.dirText, ops:JSON.stringify(kept.ops||null)}; state.dirAt=+kept.at||0; shown=true;
         const h=await dirKeptGet(base,'heat'); if(h && h.heat && h.heat.items && h.heat.shelves) state.heat=h.heat;
         render(); redraw=false; if(dirOn()) loadHeat();
       }catch(e){ state.dirData=null; state.dirState='idle'; state.dirSrc=null; shown=false; }
@@ -7322,13 +7342,32 @@ async function loadDirectory(force){
     const text=(early && await early.dir) || await (async()=>{ const r=await fetch(new URL('directory.json',base),{cache:'no-cache'}); if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })();
     const raw=JSON.parse(text), api=opsApiForDirectory(raw); let ops=null;
     if(api){ ops=(early && early.ops && early.o===api+'?public=1') ? dirOpsParse(await early.ops) : await loadPublicOps(raw); if(!ops && state.dirSrc) ops=JSON.parse(state.dirSrc.ops); }          // (an operations service that does not answer: what was known stays)
-    const opsKey=JSON.stringify(ops||null);
+    const opsKey=JSON.stringify(ops||null); state.dirAt=Date.now();                                    // (the network answered: this is the time shown as "updated")
     if(!state.dirSrc || state.dirSrc.text!==text || state.dirSrc.ops!==opsKey){ dirBuild(raw,ops); state.dirSrc={text, ops:opsKey}; redraw=true; dirKeptPut(base,'',{dirText:text, ops}); }
   }catch(e){ if(!state.dirData){ state.dirState='error'; state.dirErr=e.message||String(e); redraw=true; } }
-  state.dirBusy=false;
+  state.dirBusy=false; updNoteSync();
   if(redraw) render(); if(dlg.open && !$('#addSubPane').hidden) renderStarter();
-  if(state.dirData && dirOn()) loadHeat();
+  if(state.dirData && dirOn()){ const h=loadHeat(force); if(force) await h; }                           // (asked on purpose: the heat is looked at again too, and waited for)
   recoSync();
+}
+/* look at the public space again now (the update note's button, a pull down, coming back after a while): what is unchanged is not drawn again. -> true when the network answered */
+async function dirRefresh(){
+  if(!state.dirCfg) return false;
+  for(let i=0;i<40 && state.dirBusy;i++) await new Promise(r=>setTimeout(r,200));                         // (a look is on its way already: wait for it)
+  const t0=Date.now(); state.dirRefreshing=true; updNoteSync();
+  try{ await loadDirectory(true); }catch(e){}
+  state.dirRefreshing=false; updNoteSync();
+  return state.dirAt>=t0;
+}
+const fmtWhen = ts => { const d=new Date(ts), hm=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); return today(ts)===today() ? hm : String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+' '+hm; };
+function updNoteSync(){
+  const el=$('#updNote'); if(!el) return;
+  document.documentElement.classList.toggle('ptr',dirOn());                                               // (the public space pulls down to look again by itself: the browser's own pull to reload is off there)
+  const on=dirOn() && !!state.dirData && !document.body.classList.contains('dir-hot') && !document.body.classList.contains('dir-listen');
+  el.hidden=!on; if(!on) return;
+  const busy=state.dirBusy || state.dirRefreshing;
+  el.classList.toggle('spin',busy);
+  el.innerHTML=`<span>${esc(busy ? t('updBusy') : state.dirAt ? t('updAt',fmtWhen(state.dirAt)) : '')}</span><button type="button" data-dirrefresh title="${esc(t('updGo'))}" aria-label="${esc(t('updGo'))}">↻</button>`;
 }
 function dirList(skip){
   const tk=tokens(), tg=state.dTag.toLowerCase(), subs=state.dView==='subs' ? new Set(subCols().map(c=>urlKey(c.feed.url))) : null;
@@ -8492,11 +8531,69 @@ plusDlg.addEventListener('click',e=>{
 shLayout();
 
 /* ================= app: install to the home screen, read again without a network ================= */
-/* The service worker (sw.js) is registered only on a deployed https site: serve.py always shows the folder as it is. */
-if('serviceWorker' in navigator && location.protocol==='https:'){
+/* The service worker (sw.js) is registered only on a deployed https site: serve.py always shows the folder as it is (a test browser on localhost / 127.0.0.1 asks for it with localStorage 'zt.sw' = '1').
+   It answers the page at once from what it kept and looks at the network behind it: a changed page = a small bar offers a refresh (never a reload by itself: the reader may be in the middle of a book). */
+const swOn=(()=>{ try{ return location.protocol==='https:' || (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && localStorage.getItem('zt.sw')==='1'); }catch(e){ return location.protocol==='https:'; } })();
+if('serviceWorker' in navigator && swOn){
   window.addEventListener('load',()=>{ navigator.serviceWorker.register('/sw.js').catch(()=>{}); });
+  navigator.serviceWorker.addEventListener('message',e=>{ if(e.data && e.data.type==='zt-shell-updated') offerNewVersion(); });
   if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});          // ask the browser not to clear what this site keeps (files added here, reading places)
 }
+let newVerNo=false;
+function offerNewVersion(){
+  if(newVerNo) return;
+  $('#newVerMsg').textContent=t('newVer'); $('#newVerGo').textContent=t('newVerGo'); $('#newVerX').title=t('newVerLater'); $('#newVerX').setAttribute('aria-label',t('newVerLater'));
+  $('#newVer').hidden=false;
+}
+$('#newVerGo').addEventListener('click',()=>{ try{ if(NE.open) neSave(); }catch(e){} location.reload(); });
+$('#newVerX').addEventListener('click',()=>{ newVerNo=true; $('#newVer').hidden=true; });
+const swCheck = () => { try{ const c=navigator.serviceWorker && navigator.serviceWorker.controller; if(c) c.postMessage({type:'zt-check-shell'}); }catch(e){} };          // (the page asks sw.js to look at the network now)
+
+/* ================= coming back, pulling down: the page and the public space look again by themselves ================= */
+const RESUME_AFTER=10*60000;                        // away for this long = look again when the page comes back to the front
+let hiddenAt=0;
+function appResume(){ swCheck(); if(dirOn()) dirRefresh(); }
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='hidden'){ hiddenAt=Date.now(); return; }
+  if(hiddenAt && Date.now()-hiddenAt>=RESUME_AFTER) appResume();
+  hiddenAt=0;
+});
+$('#updNote').addEventListener('click',e=>{ if(e.target.closest('[data-dirrefresh]')){ swCheck(); dirRefresh(); } });
+/* pull down at the top of the public space (a phone): a bar follows the finger; past PULL_GO the release looks again. Sideways, scrolling, the reader, a dialog, a panel: not touched. */
+(function(){
+  const hint=$('#pullHint'), PULL_GO=70, PULL_SHOW=64;
+  let x0=0, y0=0, armed=false, pulling=false, d=0, busy=false;
+  const atTop = () => (document.scrollingElement||document.documentElement).scrollTop<=0;
+  const place = (y, snap) => { hint.classList.toggle('snap',!!snap); hint.style.opacity=y>-PULL_SHOW+8?'1':'0'; hint.style.transform=`translate(-50%,${y}px)`; };
+  const park = () => { place(-PULL_SHOW,true); };
+  document.addEventListener('touchstart',e=>{
+    armed=pulling=false; d=0;
+    if(busy || e.touches.length!==1 || !dirOn() || !state.dirData || !atTop() || !$('#reader').hidden || document.querySelector('dialog[open]') || state.dPickOpen || document.body.classList.contains('drawer')) return;
+    if(e.target.closest('input,textarea,select,[contenteditable],.dp-list,.dir-tabs')) return;
+    x0=e.touches[0].clientX; y0=e.touches[0].clientY; armed=true;
+  },{passive:true});
+  document.addEventListener('touchmove',e=>{
+    if(!armed) return;
+    const p=e.touches[0], dx=p.clientX-x0; d=p.clientY-y0;
+    if(!pulling){
+      if(!atTop() || d<-8){ armed=false; return; }
+      if(d>12 && d>Math.abs(dx)*1.5) pulling=true; else return;
+    }
+    hint.textContent=t(d>=PULL_GO?'pullGo':'pullDown');
+    place(-PULL_SHOW+Math.min(d*0.6,PULL_SHOW+14),false);
+  },{passive:true});                                                                                      // (passive: the page scrolls as smoothly as before; the browser's own pull to reload is switched off by html.ptr)
+  const end = async () => {
+    const go=pulling && d>=PULL_GO; armed=false; const was=pulling; pulling=false;
+    if(!was) return;
+    if(!go){ park(); return; }
+    busy=true; hint.textContent=t('updBusy'); place(10,true); swCheck();
+    const ok=await dirRefresh();
+    hint.textContent=t(ok?'pullOk':'pullOff'); await new Promise(r=>setTimeout(r,ok?700:1500));
+    park(); busy=false;
+  };
+  document.addEventListener('touchend',end,{passive:true});
+  document.addEventListener('touchcancel',()=>{ if(pulling){ armed=pulling=false; park(); } },{passive:true});
+})();
 let installEv=null;
 const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent), standalone=(window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone===true;
 const syncInstall=()=>{ $('#installBtn').hidden = standalone || !(installEv || isIos); };
