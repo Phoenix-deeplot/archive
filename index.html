@@ -543,6 +543,7 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .hot-t{grid-column:2;grid-row:1;color:var(--ink);font-size:15px;line-height:1.5;overflow-wrap:anywhere;text-decoration:none}
 .hot-t:hover{color:var(--accent);text-decoration:underline}
 .hot-n{grid-column:2;grid-row:2;margin:0;font-size:12.5px;line-height:1.45;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hot-tz + .hot-note{grid-row:3}
 .hot-side{grid-column:3;grid-row:1;display:flex;flex-direction:column;align-items:flex-end;gap:2px;font-size:12.5px;color:var(--muted);white-space:nowrap}
 .hot-side a{color:var(--accent)}
 .hot-state{margin:0;padding:34px 14px;text-align:center;color:var(--muted)}
@@ -646,6 +647,7 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
   .hot-row{grid-template-columns:26px minmax(0,1fr);padding:10px 12px}
   .hot-side{grid-column:2;grid-row:2;flex-direction:row;align-items:baseline;gap:10px}
   .hot-n{grid-row:3}
+  .hot-tz + .hot-note{grid-row:4}
 }
 /* the directory's cards: today (a hero and two beside it), picture cards in an aligned grid (Xiaohongshu style), light rows. One reason per card, in a pill on the cover or a coloured word. */
 .why{display:inline-flex;align-items:center;gap:4px;max-width:100%;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700;line-height:1.4;color:#fff;background:rgba(18,26,32,.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -7044,7 +7046,7 @@ function renderHotPage(){
 function hotRowHTML(r,i,ranked){
   const u=httpUrl(r.url); if(!u) return '';
   const alt=httpUrl(r.alt), side=(r.heat?`<span>${esc(r.heat)}</span>`:'') + (!ranked && r.date ? `<span>${esc(r.date)}</span>` : '') + (alt ? `<a href="${esc(alt)}" target="_blank" rel="nofollow ugc noopener noreferrer">${esc(t('hotTalk'))}</a>` : '');
-  return `<li class="hot-row"><span class="hot-rank${ranked && i<3 ? ' hot-top' : ''}" aria-hidden="${!ranked}">${ranked ? i+1 : '·'}</span><a class="hot-t" href="${esc(u)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-i="${i}">${esc(r.title)}</a>${state.lang==='zh' && r.title_zh ? `<p class="hot-n hot-tz" lang="zh">${esc(r.title_zh)}</p>` : ''}${r.note?`<p class="hot-n">${esc(r.note)}</p>`:''}${side?`<span class="hot-side">${side}</span>`:''}</li>`;
+  return `<li class="hot-row"><span class="hot-rank${ranked && i<3 ? ' hot-top' : ''}" aria-hidden="${!ranked}">${ranked ? i+1 : '·'}</span><a class="hot-t" href="${esc(u)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-i="${i}">${esc(r.title)}</a>${state.lang==='zh' && r.title_zh ? `<p class="hot-n hot-tz" lang="zh">${esc(r.title_zh)}</p>` : ''}${r.note?`<p class="hot-n hot-note">${esc(r.note)}</p>`:''}${side?`<span class="hot-side">${side}</span>`:''}</li>`;
 }
 function hotBoardsHTML(){
   const h=state.hot, s=hotCur();
