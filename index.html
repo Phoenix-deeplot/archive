@@ -544,6 +544,7 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .hot-t{grid-column:2;grid-row:1;color:var(--ink);font-size:15px;line-height:1.5;overflow-wrap:anywhere;text-decoration:none}
 .hot-t:hover{color:var(--accent);text-decoration:underline}
 .hot-n{grid-column:2;grid-row:2;margin:0;font-size:12.5px;line-height:1.45;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hot-tz + .hot-note{grid-row:3}
 .hot-side{grid-column:3;grid-row:1;display:flex;flex-direction:column;align-items:flex-end;gap:2px;font-size:12.5px;color:var(--muted);white-space:nowrap}
 .hot-side a{color:var(--accent)}
 .hot-state{margin:0;padding:34px 14px;text-align:center;color:var(--muted)}
@@ -576,6 +577,29 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .hot-focus-card strong{display:-webkit-box;overflow:hidden;font:700 15px/1.4 var(--serif);-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .hot-focus-card p{display:-webkit-box;overflow:hidden;margin:5px 0 7px;color:var(--muted);font-size:12px;line-height:1.45;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .hot-focus-meta{color:var(--muted);font-size:11px}
+.hot-mix-title{margin:0 0 10px;font:700 18px/1.35 var(--serif);color:var(--ink)}
+.hot-mix-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.hot-mix-card{position:relative;min-width:0;min-height:160px;overflow:hidden;padding:16px 16px 14px;border:1px solid var(--rule);border-radius:14px;background:var(--surface);box-shadow:0 2px 8px rgba(20,36,32,.045)}
+.hot-mix-card::after{position:absolute;right:8px;bottom:-26px;color:color-mix(in srgb,var(--accent) 10%,transparent);font:800 96px/.9 var(--sans);content:attr(data-rank);pointer-events:none}
+.hot-mix-card[data-featured="true"]{background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 10%,var(--surface)),var(--surface) 72%)}
+.hot-mix-source{position:relative;z-index:1;display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:12px;color:var(--muted);font-size:12px}
+.hot-mix-source strong{color:var(--accent);font-weight:700}
+.hot-mix-rank{padding:2px 7px;border-radius:999px;background:color-mix(in srgb,var(--heat) 14%,var(--surface));color:var(--heat);font-weight:700;white-space:nowrap}
+.hot-mix-link{position:relative;z-index:1;display:block;color:var(--ink);text-decoration:none}
+.hot-mix-link:hover{color:var(--accent)}
+.hot-mix-link strong{display:-webkit-box;overflow:hidden;-webkit-line-clamp:3;-webkit-box-orient:vertical;font-size:16px;line-height:1.45}
+.hot-mix-note{position:relative;z-index:1;display:-webkit-box;overflow:hidden;margin:7px 0 0;color:var(--muted);font-size:13px;line-height:1.5;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.hot-mix-foot{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:5px 10px;margin-top:12px;color:var(--muted);font-size:11.5px}
+.hot-mix-list{display:grid;gap:8px}
+.hot-mix-row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:start;gap:4px 10px;padding:12px 14px;border:1px solid var(--rule);border-radius:12px;background:var(--surface)}
+.hot-mix-row .hot-mix-num{grid-column:1;grid-row:1 / span 2;padding-top:2px;color:var(--heat);font-size:16px;font-weight:800;text-align:center;font-variant-numeric:tabular-nums}
+.hot-mix-row .hot-mix-source{grid-column:2 / 4;margin:0 0 2px}
+.hot-mix-row .hot-mix-link{grid-column:2;grid-row:2}
+.hot-mix-row .hot-mix-link strong{display:-webkit-box;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:15px}
+.hot-mix-row .hot-mix-foot{grid-column:3;grid-row:2;justify-content:flex-end;margin:0;text-align:right}
+.hot-mix-row .hot-mix-note{grid-column:2 / 4;margin:1px 0 0}
+.hot-mix-status{margin:10px 0 14px;color:var(--muted);font-size:13px}
+.hot-mix-retry{margin-top:8px}
 .hot-events{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .hot-event{min-width:0;padding:15px 16px;border:1px solid var(--rule);border-radius:13px;background:var(--surface)}
 .hot-event-head,.hot-event-meta,.hot-event-sources{display:flex;flex-wrap:wrap;align-items:center;gap:6px 9px}
@@ -608,6 +632,15 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
   .hot-focus-card{padding:10px}
   .hot-focus-card strong{font-size:13px}
   .hot-focus-card p{font-size:11px}
+  .hot-mix-grid{grid-template-columns:1fr;gap:8px;margin-bottom:16px}
+  .hot-mix-card{min-height:0;padding:14px}
+  .hot-mix-card[data-featured="true"]{min-height:150px}
+  .hot-mix-row{grid-template-columns:28px minmax(0,1fr);padding:11px 12px}
+  .hot-mix-row .hot-mix-source{grid-column:2;grid-row:1}
+  .hot-mix-row .hot-mix-num{grid-column:1;grid-row:1 / span 3}
+  .hot-mix-row .hot-mix-link{grid-column:2;grid-row:2}
+  .hot-mix-row .hot-mix-foot{grid-column:2;grid-row:3;justify-content:flex-start;text-align:left;margin-top:4px}
+  .hot-mix-row .hot-mix-note{grid-column:2;grid-row:4}
   .hot-main{grid-template-columns:minmax(0,1fr);gap:10px}
   .hot-plats{position:static;flex-direction:row;overflow-x:auto;overflow-y:visible;max-height:none;gap:6px;padding:0 0 4px;scrollbar-width:none}
   .hot-plat{flex:0 0 auto;white-space:nowrap;border:1px solid var(--rule);border-radius:999px;padding:7px 14px;min-height:40px}
@@ -615,6 +648,7 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
   .hot-row{grid-template-columns:26px minmax(0,1fr);padding:10px 12px}
   .hot-side{grid-column:2;grid-row:2;flex-direction:row;align-items:baseline;gap:10px}
   .hot-n{grid-row:3}
+  .hot-tz + .hot-note{grid-row:4}
 }
 /* the directory's cards: today (a hero and two beside it), picture cards in an aligned grid (Xiaohongshu style), light rows. One reason per card, in a pill on the cover or a coloured word. */
 .why{display:inline-flex;align-items:center;gap:4px;max-width:100%;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700;line-height:1.4;color:#fff;background:rgba(18,26,32,.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -6036,7 +6070,7 @@ state.ls={scene:String(LS.get('lsScene','')||'')};
 state.lp={idx:null, idxAt:0, busy:false, err:'', data:new Map(), pending:new Map(), g:String(LS.get('lpG','daily')||'daily'), mode:'music', g_music:String(LS.get('lpG_music','daily')||'daily'), g_podcast:String(LS.get('lpG_podcast','pod-hot')||'pod-hot'), show:'', shown:30, more:false, pods:null, podsKey:'', io:null,
   sort:(k=>['rank','new','dur','title','artist'].includes(k)?k:'rank')(LS.get('lpSort','rank'))};
 state.dListen=false;                    // today's listening: what the service said, when it was asked, the scene that is shown
-state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), view:LS.get('hotView','boards')==='events'?'events':'boards', period:LS.get('hotPeriod','day')==='week'?'week':'day', events:[], eventsAt:0, eventsBusy:false, eventsErr:'', eventsRun:0, region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
+state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), view:LS.get('hotView','mix')==='boards'?'boards':'mix', mixBusy:false, mixRows:[], mixRun:0, period:LS.get('hotPeriod','day')==='week'?'week':'day', events:[], eventsAt:0, eventsBusy:false, eventsErr:'', eventsRun:0, region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
 const PUBLIC_ROUTES={discover:'/discover/',hot:'/hot/',listen:'/listen/',books:'/picks/books/',articles:'/picks/articles/',watch:'/watch/'};
 const publicRouteFromPath=()=>Object.keys(PUBLIC_ROUTES).find(k=>PUBLIC_ROUTES[k]===location.pathname)||'';
 const publicLabel=k=>({discover:['发现','Discover'],hot:['热榜','Trending'],listen:['今日听什么','Listen today'],books:['精选图书','Book picks'],articles:['精选文章','Article picks'],watch:['看什么','What to watch']}[k]||[])[state.lang==='zh'?0:1]||'';
@@ -6937,9 +6971,10 @@ function richLinkClick(e){                                                      
 /* ---- the hot lists (热榜): the service (hotapi.py) says which columns and platforms it has; a platform's list is asked when it is shown, kept 3 minutes here */
 const HOT_TTL=180000;
 const HOT_EVENTS_TTL=300000;
+const HOT_MIX_PER_COLUMN=1, HOT_MIX_LIMIT=30, HOT_MIX_ITEMS=18;
 const HOT_UI_COPY={
-  zh:{boards:n=>`平台榜单${n?` · ${n}`:''}`,events:'热点追踪',focus:'今日精选排名',focusSub:'今日焦点 · 从持续更新的多源事件中优先呈现',focusMore:'完整热点追踪 ›',hero:'按兴趣浏览平台热榜',intro:'榜单按领域整理，保留各平台原始排名；热点事件持续汇总多方报道。',day:'今日榜',week:'近 7 天',weekPending:'正在积累真实榜单快照；当前先展示已采集数据，排名会随记录增加逐步稳定。',weekEmpty:'近 7 天暂时没有可展示的榜单记录。',eventLoading:'正在汇总持续更新的热点事件……',eventErr:'热点追踪暂时不可用，请稍后重试。',eventEmpty:'暂时没有正在持续更新的热点事件。',eventRetry:'重试热点追踪',eventSources:n=>`${n} 个来源`,eventUpdated:m=>`最后更新 ${m}`,trendUp:'热度上升',trendDown:'热度回落',trendStable:'持续更新',rank:n=>`榜内第 ${n} 名`,newest:'最新',siteRead:'可在站内打开',openSite:'打开原站'},
-  en:{boards:n=>`Platform charts${n?` · ${n}`:''}`,events:'Live topics',focus:'Today’s picks ranking',focusSub:'Today’s focus · selected from developing stories across sources',focusMore:'Full live tracking ›',hero:'Browse charts by interest',intro:'Charts are grouped by topic and keep each platform’s original ranking. Live topics follow developing stories across sources.',day:'Today',week:'Last 7 days',weekPending:'We are collecting real chart snapshots. Showing the data available so far; rankings will stabilize as more days are recorded.',weekEmpty:'There are no chart entries to show for the last 7 days yet.',eventLoading:'Gathering developing stories…',eventErr:'Live topic tracking is temporarily unavailable.',eventEmpty:'No developing stories are available right now.',eventRetry:'Retry topic tracking',eventSources:n=>`${n} sources`,eventUpdated:m=>`Last updated ${m}`,trendUp:'Rising',trendDown:'Cooling',trendStable:'Developing',rank:n=>`#${n} on chart`,newest:'Latest',siteRead:'Read here',openSite:'Open source'}
+  zh:{mix:'今日精选',boards:n=>`平台榜单${n?` · ${n}`:''}`,events:'热点追踪',focus:'热点追踪',focusSub:'持续追踪多来源报道',hero:'今日精选',intro:'先看持续更新的热点，再浏览跨平台推荐；切换到平台榜单可查看各来源原始排名。',featured:'今日推荐',more:'继续发现',loading:'正在汇总平台热门内容……',partial:'部分榜单暂时读不到，先展示已获取内容。',retry:'重试推荐',empty:'暂时没有可展示的推荐内容。',rank:n=>`榜内第 ${n} 名`,newest:'最新',siteRead:'可在站内打开',openSite:'打开原站',day:'今日榜',week:'近 7 天',weekPending:'正在积累真实榜单快照；当前先展示已采集数据，排名会随记录增加逐步稳定。',weekEmpty:'近 7 天暂时没有可展示的榜单记录。',eventLoading:'正在汇总持续更新的热点事件……',eventErr:'热点追踪暂时不可用，请稍后重试。',eventEmpty:'暂时没有正在持续更新的热点事件。',eventRetry:'重试热点追踪',eventSources:n=>`${n} 个来源`,eventUpdated:m=>`最后更新 ${m}`,trendUp:'热度上升',trendDown:'热度回落',trendStable:'持续更新'},
+  en:{mix:'Today’s picks',boards:n=>`Platform charts${n?` · ${n}`:''}`,events:'Live topics',focus:'Developing stories',focusSub:'Tracked across multiple sources',hero:'Today’s picks',intro:'Start with developing stories, then browse a mixed feed; platform charts show each source’s original ranking.',featured:'Recommended today',more:'More to discover',loading:'Gathering popular items…',partial:'Some charts are unavailable; showing what loaded.',retry:'Retry recommendations',empty:'No recommended items are available right now.',rank:n=>`#${n} on chart`,newest:'Latest',siteRead:'Read here',openSite:'Open source',day:'Today',week:'Last 7 days',weekPending:'We are collecting real chart snapshots. Showing the data available so far; rankings will stabilize as more days are recorded.',weekEmpty:'There are no chart entries to show for the last 7 days yet.',eventLoading:'Gathering developing stories…',eventErr:'Live topic tracking is temporarily unavailable.',eventEmpty:'No developing stories are available right now.',eventRetry:'Retry topic tracking',eventSources:n=>`${n} sources`,eventUpdated:m=>`Last updated ${m}`,trendUp:'Rising',trendDown:'Cooling',trendStable:'Developing'}
 };
 const hotUi=(k,...args)=>{ const v=(HOT_UI_COPY[state.lang==='en'?'en':'zh']||HOT_UI_COPY.zh)[k]; return typeof v==='function'?v(...args):v||k; };
 const hotName = o => state.lang==='en' ? (o.name_en||o.name) : o.name;
@@ -6955,6 +6990,49 @@ function hotCur(){                                                              
   const col=columns.find(c=>c.id===h.sel.c) || columns[0], plats=idx.platforms.filter(p=>p.col===col.id); if(!plats.length) return null;
   const want=h.sel.p && typeof h.sel.p==='object' ? h.sel.p[col.id] : '';
   return {col, plats, cur:plats.find(p=>p.id===want) || plats[0]};
+}
+function hotMixSources(){
+  const idx=state.hot.idx; if(!idx || !Array.isArray(idx.platforms)) return [];
+  const out=[];
+  (idx.columns||[]).forEach(c=>idx.platforms.filter(p=>p.col===c.id).slice(0,HOT_MIX_PER_COLUMN).forEach(p=>out.push(p)));
+  return (out.length?out:idx.platforms).slice(0,12);
+}
+function hotMixBuild(){
+  const h=state.hot, sources=hotMixSources(), rows=[], seenUrl=new Set(), seenTitle=new Set(), cols=h.idx&&h.idx.columns||[];
+  sources.forEach((p,sourceIndex)=>{
+    const d=h.data.get(hotKey(p)); if(!d || d.state!=='ok' || !Array.isArray(d.rows)) return;
+    const n=Math.max(1,d.rows.length), listAge=d.at?Math.max(0,(Date.now()/1000-d.at)/3600):null;
+    d.rows.forEach((r,i)=>{
+      const title=String(r&&r.title||'').trim(), url=httpUrl(r&&r.url); if(!title || !url) return;
+      const displayTitle=state.lang==='zh' ? String(r.title_zh||title).trim() : title;
+      const titleKey=displayTitle.toLowerCase().normalize('NFKC').replace(/[\s·•\-—_…，。；：、!?！？'"“”‘’()（）\[\]{}<>《》「」]+/g,'');
+      const ukey=urlKey(url); if((ukey && seenUrl.has(ukey)) || (titleKey && seenTitle.has(titleKey))) return;
+      if(ukey) seenUrl.add(ukey); if(titleKey) seenTitle.add(titleKey);
+      const dt=Date.parse(String(r.date||'')), itemAge=Number.isFinite(dt)?Math.max(0,(Date.now()-dt)/3600000):null;
+      const age=itemAge===null?listAge:itemAge, fresh=age===null ? .45 : 1/(1+age/36);
+      const rankScore=p.ranked===false ? .45 : Math.max(0,1-i/n), languageScore=(p.lang===state.lang ? .09 : 0)+(state.lang==='zh'&&r.title_zh ? .06 : 0);
+      const priority=1-sourceIndex/Math.max(1,sources.length), score=rankScore*.65+fresh*.24+languageScore+priority*.04;
+      rows.push({row:r,platform:p,col:cols.find(c=>c.id===p.col)||null,rank:i+1,displayTitle,sourceAt:d.at||0,score,sourceIndex});
+    });
+  });
+  rows.sort((a,b)=>b.score-a.score || a.sourceIndex-b.sourceIndex || a.rank-b.rank);
+  const picked=[], deferred=[], sourceCounts=new Map(), colCounts=new Map();
+  rows.forEach(x=>{
+    const sc=sourceCounts.get(x.platform.id)||0, cc=colCounts.get(x.platform.col)||0, early=picked.length<6, sourceCap=early?1:3, columnCap=early?2:7;
+    if(sc<sourceCap && cc<columnCap){ picked.push(x); sourceCounts.set(x.platform.id,sc+1); colCounts.set(x.platform.col,cc+1); }
+    else deferred.push(x);
+  });
+  return picked.concat(deferred).slice(0,HOT_MIX_LIMIT);
+}
+async function hotMixEnsure(force){
+  const h=state.hot; if(!h.idx || h.mixBusy || h.view!=='mix') return;
+  const sources=hotMixSources(), todo=sources.filter(p=>{ const d=h.data.get(hotKey(p)); return force || !d || (d.state==='ok'&&Date.now()-d.t>HOT_TTL); });
+  if(!todo.length){ h.mixRows=hotMixBuild(); if(hotShown()) paintHot(); return; }
+  h.mixBusy=true; h.mixRows=hotMixBuild(); const run=++h.mixRun; let next=0;
+  const worker=async()=>{ while(next<todo.length){ const p=todo[next++]; await hotLoad(p,false,HOT_MIX_ITEMS); } };
+  await Promise.all(Array.from({length:Math.min(3,todo.length)},worker));
+  if(run!==h.mixRun) return;
+  h.mixBusy=false; h.mixRows=hotMixBuild(); if(hotShown()) paintHot();
 }
 async function hotIndex(force){
   const base=hotBase(), h=state.hot; if(!base || h.busy || (h.idx && !force)) return;
@@ -6991,8 +7069,7 @@ async function hotEventsEnsure(force){
 }
 function hotEnsure(){                                                                              // the list that is shown is asked for, once it is missing or old
   const h=state.hot; if(!h.idx){ if(!h.err) hotIndex(); return; }                                  // (a service that failed is asked again by the retry button, not by every repaint)
-  if(h.view==='events'){ hotEventsEnsure(false); return; }
-  hotEventsEnsure(false);                                                                         // power the compact today-picks strip while browsing charts
+  if(h.view==='mix'){ hotEventsEnsure(false); hotMixEnsure(false); return; }
   const s=hotCur(); if(!s) return; const d=h.data.get(hotKey(s.cur));
   if(!d || (d.state==='ok' && Date.now()-d.t>HOT_TTL)) hotLoad(s.cur);
 }
@@ -7004,7 +7081,7 @@ function renderHotPage(){
 function hotRowHTML(r,i,ranked){
   const u=httpUrl(r.url); if(!u) return '';
   const alt=httpUrl(r.alt), side=(r.heat?`<span>${esc(r.heat)}</span>`:'') + (!ranked && r.date ? `<span>${esc(r.date)}</span>` : '') + (alt ? `<a href="${esc(alt)}" target="_blank" rel="nofollow ugc noopener noreferrer">${esc(t('hotTalk'))}</a>` : '');
-  return `<li class="hot-row"><span class="hot-rank${ranked && i<3 ? ' hot-top' : ''}" aria-hidden="${!ranked}">${ranked ? i+1 : '·'}</span><a class="hot-t" href="${esc(u)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-i="${i}">${esc(r.title)}</a>${state.lang==='zh' && r.title_zh ? `<p class="hot-n hot-tz" lang="zh">${esc(r.title_zh)}</p>` : ''}${r.note?`<p class="hot-n">${esc(r.note)}</p>`:''}${side?`<span class="hot-side">${side}</span>`:''}</li>`;
+  return `<li class="hot-row"><span class="hot-rank${ranked && i<3 ? ' hot-top' : ''}" aria-hidden="${!ranked}">${ranked ? i+1 : '·'}</span><a class="hot-t" href="${esc(u)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-i="${i}">${esc(r.title)}</a>${state.lang==='zh' && r.title_zh ? `<p class="hot-n hot-tz" lang="zh">${esc(r.title_zh)}</p>` : ''}${r.note?`<p class="hot-n hot-note">${esc(r.note)}</p>`:''}${side?`<span class="hot-side">${side}</span>`:''}</li>`;
 }
 function hotBoardsHTML(){
   const h=state.hot, s=hotCur();
@@ -7053,20 +7130,33 @@ function hotEventsHTML(){
   return `<section class="hot-events" aria-live="polite" aria-busy="${!!h.eventsBusy}">${cards}</section>${h.eventsErr?`<p class="hot-feedback">${esc(h.eventsErr)}</p>`:''}`;
 }
 function hotFocusHTML(){
-  const events=state.hot.events.slice(0,3); if(!events.length) return '';
-  const cards=events.map((ev,i)=>{ const it=Array.isArray(ev.items)?ev.items[0]||{}:{}, url=httpUrl(it.url||it.source_url||ev.url), title=String(ev.title||it.title||''), excerpt=String(it.excerpt||it.summary||it.note||''), count=Math.max(0,Number(ev.source_count)||((Array.isArray(ev.items)&&ev.items.length)||0)), updated=hotEventTime(ev.last_updated); if(!title) return ''; return `<a class="hot-focus-card" href="${esc(url||'#')}" ${url?'target="_blank" rel="nofollow ugc noopener noreferrer"':'data-hot-view="events"'}><span class="hot-focus-rank">${i+1}</span><span class="hot-event-category">${esc(hotEventCategory(ev.category))}</span><strong>${esc(title)}</strong>${excerpt?`<p>${esc(excerpt)}</p>`:''}<span class="hot-focus-meta">${esc(hotUi('eventSources',count))}${updated?' · '+esc(updated):''}</span></a>`; }).join('');
-  if(!cards) return '';
-  return `<section class="hot-focus" aria-label="${esc(hotUi('focus'))}"><header class="hot-focus-head"><div><h3>${esc(hotUi('focus'))}</h3><p>${esc(hotUi('focusSub'))}</p></div><button type="button" data-hot-view="events">${esc(hotUi('focusMore'))}</button></header><div class="hot-focus-grid">${cards}</div></section>`;
+  const events=state.hot.events.slice(0,3), cards=events.map((ev,i)=>{ const it=Array.isArray(ev.items)?ev.items[0]||{}:{}, url=httpUrl(it.url||it.source_url||ev.url), title=String(ev.title||it.title||''), excerpt=String(it.excerpt||it.summary||it.note||''), count=Math.max(0,Number(ev.source_count)||((Array.isArray(ev.items)&&ev.items.length)||0)), updated=hotEventTime(ev.last_updated); if(!title) return ''; return `<a class="hot-focus-card" href="${esc(url||'#')}" ${url?'target="_blank" rel="nofollow ugc noopener noreferrer"':'data-hot-events-retry'}><span class="hot-focus-rank">${i+1}</span><span class="hot-event-category">${esc(hotEventCategory(ev.category))}</span><strong>${esc(title)}</strong>${excerpt?`<p>${esc(excerpt)}</p>`:''}<span class="hot-focus-meta">${esc(hotUi('eventSources',count))}${updated?' · '+esc(updated):''}</span></a>`; }).join('');
+  const stateHtml=state.hot.eventsBusy&&!events.length?`<p class="hot-state">${esc(hotUi('eventLoading'))}</p>`:state.hot.eventsErr&&!events.length?`<p class="hot-state">${esc(state.hot.eventsErr)} <button class="btn" type="button" data-hot-events-retry>${esc(hotUi('eventRetry'))}</button></p>`:!events.length?`<p class="hot-state">${esc(hotUi('eventEmpty'))}</p>`:'';
+  return `<section class="hot-focus" aria-label="${esc(hotUi('focus'))}"><header class="hot-focus-head"><div><h3>${esc(hotUi('focus'))}</h3><p>${esc(hotUi('focusSub'))}</p></div></header>${cards?`<div class="hot-focus-grid">${cards}</div>`:stateHtml}</section>`;
+}
+function hotMixCardHTML(x,i,featured){
+  const r=x.row,p=x.platform,url=httpUrl(r.url),title=x.displayTitle,original=state.lang==='zh'&&r.title_zh&&r.title_zh!==r.title?`<p class="hot-mix-note" lang="en">${esc(r.title)}</p>`:'',note=r.note&&String(r.note).trim()!==title?`<p class="hot-mix-note">${esc(r.note)}</p>`:'',source=[hotName(p),x.col?hotName(x.col):''].filter(Boolean).join(' · '),rank=p.ranked===false?hotUi('newest'):hotUi('rank',x.rank),readable=!!(p.read||p.kw||embedOf(url)||RICH_DETAIL.test(url)||String(r.body||'').length>=30),foot=[r.heat||'',r.date||'',readable?hotUi('siteRead'):hotUi('openSite')].filter(Boolean).map(v=>`<span>${esc(v)}</span>`).join('');
+  if(featured) return `<article class="hot-mix-card" data-featured="${i===0}" data-rank="${i+1}"><div class="hot-mix-source"><strong>${esc(source)}</strong><span class="hot-mix-rank">${esc(rank)}</span></div><a class="hot-mix-link" href="${esc(url)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-mix-i="${i}"><strong>${esc(title)}</strong></a>${original}${note}<div class="hot-mix-foot">${foot}</div></article>`;
+  return `<article class="hot-mix-row"><span class="hot-mix-num">${i+1}</span><div class="hot-mix-source"><strong>${esc(source)}</strong><span class="hot-mix-rank">${esc(rank)}</span></div><a class="hot-mix-link" href="${esc(url)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-mix-i="${i}"><strong>${esc(title)}</strong></a><div class="hot-mix-foot">${foot}</div>${original}${note}</article>`;
+}
+function hotMixHTML(){
+  const h=state.hot,sources=hotMixSources(),settled=sources.filter(p=>{const d=h.data.get(hotKey(p));return d&&d.state!=='load';}).length,warming=h.mixBusy&&settled<Math.min(3,sources.length),rows=warming?[]:(h.mixRows&&h.mixRows.length?h.mixRows:hotMixBuild()),failed=sources.some(p=>{const d=h.data.get(hotKey(p));return d&&d.state==='err'&&!(d.rows||[]).length;});
+  let content='';
+  if(rows.length){const top=rows.slice(0,3),rest=rows.slice(3,24);content=`<h3 class="hot-mix-title">${esc(hotUi('featured'))}</h3><div class="hot-mix-grid">${top.map((x,i)=>hotMixCardHTML(x,i,true)).join('')}</div>`+(rest.length?`<h3 class="hot-mix-title">${esc(hotUi('more'))}</h3><div class="hot-mix-list">${rest.map((x,i)=>hotMixCardHTML(x,i+3,false)).join('')}</div>`:'');}
+  else if(h.mixBusy||h.busy) content=`<p class="hot-state" aria-live="polite">${esc(hotUi('loading'))}</p>`;
+  else if(h.err) content=`<p class="hot-state">${esc(h.err)}<br><button class="btn hot-mix-retry" type="button" data-hot-retry>${esc(t('dirRetry'))}</button></p>`;
+  else content=`<p class="hot-state">${esc(failed||!sources.length?hotUi('empty'):hotUi('loading'))}${failed?`<br><button class="btn hot-mix-retry" type="button" data-hot-mix-retry>${esc(hotUi('retry'))}</button>`:''}</p>`;
+  const status=h.mixBusy?(rows.length?hotUi('loading'):''):failed&&rows.length?hotUi('partial'):'';
+  return `<section class="hot-mixed" aria-live="polite" aria-busy="${!!h.mixBusy}">${status?`<p class="hot-mix-status">${esc(status)}</p>`:''}${content}</section>`;
 }
 function hotHTML(){
-  const h=state.hot, n=h.idx&&Array.isArray(h.idx.platforms)?h.idx.platforms.length:0, updated=h.view==='events'?h.eventsUpdated||0:Math.max(0,...[...h.data.values()].map(d=>d.at||0)), age=updated?Math.max(0,Math.round((Date.now()/1000-updated)/60)):null, meta=age===null?'':t('hotAgo',age);
+  const h=state.hot,n=h.idx&&Array.isArray(h.idx.platforms)?h.idx.platforms.length:0,sources=hotMixSources(),stamps=sources.map(p=>{const d=h.data.get(hotKey(p));return d&&d.at||0;}).filter(Boolean),updated=stamps.length?Math.max(...stamps):h.eventsUpdated||0,age=updated?Math.max(0,Math.round((Date.now()/1000-updated)/60)):null,meta=age===null?'':t('hotAgo',age);
   return `<div class="hot"><section class="hot-intro"><div class="hot-intro-copy"><h2>${esc(hotUi('hero'))}</h2><p>${esc(hotUi('intro'))}</p></div><span class="hot-updated">${esc(meta)}</span></section>`
-    + (h.view==='boards'?hotFocusHTML():'')
-    + `<div class="hot-modebar" role="tablist" aria-label="${esc(t('hotTitle'))}"><button class="hot-mode" type="button" role="tab" aria-selected="${h.view==='boards'}" data-hot-view="boards">${esc(hotUi('boards',n))}</button><button class="hot-mode" type="button" role="tab" aria-selected="${h.view==='events'}" data-hot-view="events">${esc(hotUi('events'))}</button></div>`
-    + (h.view==='events'?hotEventsHTML():hotBoardsHTML()) + `</div>`;
+    + `<div class="hot-modebar" role="tablist" aria-label="${esc(t('hotTitle'))}"><button class="hot-mode" type="button" role="tab" aria-selected="${h.view==='mix'}" data-hot-view="mix">${esc(hotUi('mix'))}</button><button class="hot-mode" type="button" role="tab" aria-selected="${h.view==='boards'}" data-hot-view="boards">${esc(hotUi('boards',n))}</button></div>`
+    + (h.view==='mix'?hotFocusHTML()+hotMixHTML():hotBoardsHTML()) + `</div>`;
 }
 function hotSetView(view){
-  if(view!=='events'&&view!=='boards') return;
+  if(view!=='mix'&&view!=='boards') return;
   state.hot.view=view; LS.set('hotView',view); paintHot(); hotEnsure();
 }
 function hotSetPeriod(period){ if(period!=='day'&&period!=='week') return; state.hot.period=period; LS.set('hotPeriod',period); paintHot(); hotEnsure(); }
@@ -7084,6 +7174,8 @@ function hotSave(){ LS.set('hotSel',state.hot.sel); }
 function hotShow(focus){ paintHot(); hotEnsure(); if(focus){ const el=document.querySelector(focus); if(el) el.focus({preventScroll:true}); } }
 function hotClick(e){                                                                              // everything inside the hot-list page; true when it was one of its own
   const mode=e.target.closest('[data-hot-view]'); if(mode){ hotSetView(mode.dataset.hotView); return true; }
+  if(e.target.closest('[data-hot-mix-retry]')){ hotMixEnsure(true); return true; }
+  const mixA=e.target.closest('a[data-hot-mix-i]'); if(mixA){ const x=state.hot.mixRows[+mixA.dataset.hotMixI]; if(x) hotOpenItem(e,x.row,x.platform); return true; }
   const period=e.target.closest('[data-hot-period]'); if(period){ hotSetPeriod(period.dataset.hotPeriod); return true; }
   if(e.target.closest('[data-hot-events-retry]')){ hotEventsEnsure(true); return true; }
   const c=e.target.closest('[data-hot-c]');
