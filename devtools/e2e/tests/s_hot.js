@@ -20,10 +20,11 @@ const get = p => fetch(SVC + p).then(r => r.json());
   const c = await connect(9444);
   c.autoDialog(true);
   await c.send('Network.enable'); await c.send('Network.setCacheDisabled', { cacheDisabled: true });
+  const settle = await require('../settle')(c);
   const J = expr => c.js(`(()=>{ const {state,idb,LS,render,refreshSubs}=window.__zt||{}; return eval(${JSON.stringify(expr)}); })()`);
-  const fresh = async lang => { await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE, 1500); await J(`localStorage.setItem('archive.lang', JSON.stringify('${lang}')); localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver', JSON.stringify('2026-10-22'))`); await c.goto(BASE, 2500); };
+  const fresh = async lang => { await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE, 0); await settle(1500); await J(`localStorage.setItem('archive.lang', JSON.stringify('${lang}')); localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver', JSON.stringify('2026-10-22'))`); await c.goto(BASE, 0); await settle(2500); };
   const rows = () => J(`[...document.querySelectorAll('#recoPane .rc-row')].map(r=>({id:r.dataset.rid, name:r.querySelector('.rc-name a').textContent, href:r.querySelector('.rc-name a').href, chips:[...r.querySelectorAll('.rc-name .where')].map(x=>x.textContent).join('|'), sub:!!r.querySelector('[data-rsub]'), push:!!r.querySelector('[data-rpush]')}))`);
-  const openReco = async () => { await J(`document.querySelector('[data-cat="reco"]').click()`); await sleep(700); };
+  const openReco = async () => { await J(`document.querySelector('[data-cat="reco"]').click()`); await settle(700); };
   await c.desktop(1280, 900, 1);
 
   // ================================================ the service offers its lists (all are on)
@@ -38,7 +39,9 @@ const get = p => fetch(SVC + p).then(r => r.json());
 
   // ================================================ subscribe: the list is read as a feed
   await J(`document.querySelector('[data-rsub="hot-github"]').click()`); await sleep(200);
-  await J(`document.querySelector('#rcSubGo').click()`); await sleep(5500);
+  await J(`document.querySelector('#rcSubGo').click()`);
+  for (let t0 = Date.now(); Date.now() - t0 < 9000 && !(await J(`state.items.some(x=>x.id.startsWith('local:feed:')) || state.cols.some(x=>x.feed && x.feed.error)`)); ) await sleep(150);          // (the first reading of the list is on its way; the check below says what came)
+  await settle(800);
   const sub = await J(`({cols:state.cols.filter(x=>x.feed).map(x=>x.name+'|'+x.feed.url), items:state.items.filter(x=>x.id.startsWith('local:feed:')).map(x=>x.title), err:state.cols.filter(x=>x.feed).map(x=>x.feed.error).filter(Boolean)})`);
   ok('the subscription points at the service’s list and its first reading came back (rank, title)', sub.cols.length === 1 && sub.cols[0] === 'GitHub 趋势|http://127.0.0.1:8840/api/hot?p=github' && sub.items.includes('项目 github 一') && sub.err.length === 0, sub);
   await openReco();
