@@ -5066,9 +5066,9 @@ function plNextIdx(auto){                                                       
   if(m==='one' && auto) return pl.i;
   if(m==='shuffle' && n>1){
     const cur=pl.q[pl.i]; if(pl.sn && pl.sn.from===cur && pl.q.includes(pl.sn.to)) return pl.q.indexOf(pl.sn.to);               // (the same answer for the song that is prepared and for the one that is played)
-    const seen=new Set(pl.hist.concat([cur])); let left=pl.q.filter(x=>!seen.has(x));
-    if(!left.length){ pl.hist=[]; left=pl.q.filter(x=>x!==cur); }
-    pl.sn={from:cur, to:left[Math.floor(Math.random()*left.length)]}; return pl.q.indexOf(pl.sn.to);
+    const seen=new Set(pl.hist.concat([cur])); let left=pl.q.filter(x=>!seen.has(x)), fresh=false;
+    if(!left.length){ fresh=true; left=pl.q.filter(x=>x!==cur); }                                  // (every song was played: a new round. The history is cleared only when the move is made (plHistPush): this function is also asked half way through a song, for the prefetch, and "previous" must still find the songs before)
+    pl.sn={from:cur, to:left[Math.floor(Math.random()*left.length)], fresh}; return pl.q.indexOf(pl.sn.to);
   }
   if(pl.i<n-1) return pl.i+1;
   return m==='order' ? -1 : 0;
@@ -5092,7 +5092,8 @@ function plToggle(){
   if(plAudio.paused){ const p=plAudio.play(); if(p && p.catch) p.catch(()=>{}); } else { pl.sleepAt=0; pl.sleepMin=0; plAudio.pause(); }
 }
 function plSkip(d){ if(!pl.loaded) return; const dur=plAudio.duration; plAudio.currentTime=Math.max(0, Math.min(isFinite(dur)&&dur>0?dur-1:1e9, (plAudio.currentTime||0)+d)); plTick(); }
-function plNext(){ const k=plNextIdx(false); if(k<0) return; if(k!==pl.i || pl.q.length===1){ pl.hist.push(pl.q[pl.i]); if(pl.hist.length>200) pl.hist.shift(); } plLoad(k,true); }
+function plHistPush(){ if(pl.sn && pl.sn.fresh && pl.sn.from===pl.q[pl.i]) pl.hist=[]; pl.hist.push(pl.q[pl.i]); if(pl.hist.length>200) pl.hist.shift(); }          // the song that is left goes to the history (a shuffle that has played them all starts a new round here)
+function plNext(){ const k=plNextIdx(false); if(k<0) return; if(k!==pl.i || pl.q.length===1) plHistPush(); plLoad(k,true); }
 function plPrev(){
   if(pl.loaded && plAudio.currentTime>5){ plAudio.currentTime=0; return; }
   if(plMode()==='shuffle' && pl.hist.length){ const k=pl.q.indexOf(pl.hist.pop()); if(k>=0){ plLoad(k,true); return; } }                 // (shuffled: the song that was before)
@@ -5155,7 +5156,7 @@ plAudio.addEventListener('ended',()=>{
   if(pl.sleepEnd){ pl.sleepEnd=false; pl.sleepMin=0; plToggleIcon(); plMarkCards(); return; }
   const k=plNextIdx(true);
   if(k>=0 && k===pl.i && plMode()==='one'){ plAudio.currentTime=0; const p=plAudio.play(); if(p && p.catch) p.catch(()=>{}); return; }              // (one song again)
-  if(k>=0){ pl.hist.push(pl.q[pl.i]); if(pl.hist.length>200) pl.hist.shift(); plLoad(k,true); } else { plToggleIcon(); plMarkCards(); }
+  if(k>=0){ plHistPush(); plLoad(k,true); } else { plToggleIcon(); plMarkCards(); }
 });
 plAudio.addEventListener('error',()=>{ if(pl.loaded) plTrouble(pl.loaded,'error'); });
 ['playing','canplay'].forEach(ev=>plAudio.addEventListener(ev,()=>clearTimeout(pl.stallT)));
