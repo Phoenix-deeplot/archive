@@ -6982,7 +6982,7 @@ function lpSorted(items, id){
 const lpShownItems=()=>{ const cur=lpCur(); if(!cur) return state.lp.tab==='rec' ? lpRecItems() : []; return lpSorted(lpGroupItems(cur, cur==='pod' ? state.lp.show : '').items, cur); };
 function lpEnsure(){                                                                                 // the lists that the page on the screen needs are asked for (the daily picks for the radio, the chart that is shown, the list that was opened)
   if(!listenApi()) return; lpIndex(); const L=state.lp;
-  if(L.mode!=='podcast' && L.tab==='rec'){ const d=lpGroups().find(g=>g.type==='music' && g.kind==='daily'); if(d) lpLoad(d.id); }
+  if(!lpPodMode() && L.tab==='rec'){ const d=lpGroups().find(g=>g.type==='music' && g.kind==='daily'); if(d) lpLoad(d.id); }
   const cur=lpCur(); if(cur && cur!=='pod' && !cur.startsWith('my:')) lpLoad(cur);
 }
 function lpDate(){ const ymd=String((state.lp.idx && state.lp.idx.date) || today()).split('-').map(Number), dd=new Date(ymd[0],ymd[1]-1,ymd[2]); return isNaN(dd) ? '' : dd.toLocaleDateString(state.lang==='zh' ? 'zh-CN' : 'en', {month:'long', day:'numeric'}); }
@@ -7011,7 +7011,7 @@ function lpCardHTML(x, playing){                                                
 }
 function lpItemsHTML(items, from, to){                                                               // the cards (or rows) from `from` to `to` of the list
   const now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '', playing=x=>!!now && now==='tmp:ls:'+x.id, part=items.slice(from,to);
-  return lpIsRows() || state.lp.mode!=='podcast' ? part.map(x=>listenRowHTML(x,playing(x))).join('') : part.map(x=>lpCardHTML(x,playing(x))).join('');          // (the cards are for the podcast side; songs are always rows)
+  return lpIsRows() || !lpPodMode() ? part.map(x=>listenRowHTML(x,playing(x))).join('') : part.map(x=>lpCardHTML(x,playing(x))).join('');          // (the cards are for the podcast side; songs are always rows)
 }
 function lpSortSel(cur){                                                                              // the sort of the list that is shown (a podcast chart: its own order, newest, length ...)
   const L=state.lp, pod=cur==='pod', isPod=lpTypeOf(cur)==='podcast';
@@ -7054,7 +7054,8 @@ function lpChartCur(){                                                          
   const r=L.cr && regs.includes(L.cr) ? L.cr : lpRegionPref()==='cn' && regs.includes('cn') ? 'cn' : regs.includes('west') ? 'west' : regs[0], list=by[r];
   return {regs, r, list, g:list.find(x=>x.id===L.cg) || list[0]};
 }
-function lpCur(){ const L=state.lp; if(L.mode==='podcast') return lpSel(); if(L.tab==='chart'){ const c=lpChartCur(); return c.g ? c.g.id : ''; } return L.open ? L.g : ''; }          // the list on the page ('' = the first or the third tab's own page)
+const lpPodMode=()=>state.lp.mode==='podcast' || !lpGroups().some(g=>g.type!=='podcast');                 // (the podcast side is shown when it was chosen, or when there is no music at all: the shows of the directory)
+function lpCur(){ const L=state.lp; if(lpPodMode()) return lpSel(); if(L.tab==='chart'){ const c=lpChartCur(); return c.g ? c.g.id : ''; } return L.open ? L.g : ''; }          // the list on the page ('' = the first or the third tab's own page)
 function lpRecItems(all){                                                                            // today's radio: a batch of the daily picks (another batch at "next batch")
   const d=(all||lpGroups()).find(g=>g.type==='music' && g.kind==='daily'); if(!d) return [];
   const items=lpGroupItems(d.id,'').items, n=items.length; if(!n) return [];
@@ -7098,7 +7099,7 @@ function lpMusicHTML(all){
 function lpHTML(){
   const L=state.lp, P=lpPods(), all=lpGroups();
   if(!all.length) return `<p class="hot-state">${esc(L.err || t('lpLoading'))}${L.err ? `<br><button class="btn" type="button" data-lp-retry>${esc(t('dirRetry'))}</button>` : ''}</p>`;
-  if(L.mode!=='podcast') return lpMusicHTML(all);
+  if(!lpPodMode()) return lpMusicHTML(all);
   const cur=lpSel(), mode=lpTypeOf(cur), order=lpOrder(mode), ci=order.findIndex(g=>g.id===cur), rows=lpIsRows();
   const hasPod=all.some(g=>g.type==='podcast'), hasMusic=all.some(g=>g.type!=='podcast'), modes=hasPod && hasMusic ? `<div class="lp-modes seg" role="tablist" aria-label="${esc(t('lsTitle'))}">${['music','podcast'].map(m=>`<button type="button" role="tab" aria-selected="${m===mode}" data-lp-mode="${m}">${esc(t('lpMode_'+m))}</button>`).join('')}</div>` : '';
   const vl=t(rows ? 'lpViewRows' : 'lpViewCards'), ctl=`<span class="lp-ctl">${lpSortSel(cur)}<button class="ibtn lp-view" type="button" data-lp-view title="${esc(vl)}" aria-label="${esc(vl)}">${rows ? ICON.list : ICON.grid}</button></span>`;
@@ -7173,7 +7174,7 @@ const LP_TABS=['rec','chart','disc'];
 function lpTab(k){ const L=state.lp; if(!LP_TABS.includes(k)) return; L.tab=k; L.open=false; L.mode='music'; L.shown=LP_PAGE; LS.set('lpTab',k); lpPaint(); lpEnsure(); lpToTop(); }
 function lpStep(d){                                                                                  // a swipe on a phone: on the music side the next / the previous tab, on the podcast side the next / the previous list of the strip
   const L=state.lp;
-  if(L.mode!=='podcast'){ const i=LP_TABS.indexOf(L.tab), k=LP_TABS[i+d]; if(k) lpTab(k); return; }
+  if(!lpPodMode()){ const i=LP_TABS.indexOf(L.tab), k=LP_TABS[i+d]; if(k) lpTab(k); return; }
   const ord=lpOrder(lpTypeOf(lpSel())), i=ord.findIndex(g=>g.id===lpSel()), n=ord[i+d]; if(n) lpSelect(n.id);
 }
 function lpSetMode(mode){                                                                            // the switch between music and podcasts: back to the list chosen last in that kind
@@ -7277,7 +7278,7 @@ function listenClick(e){
   if((b=q('[data-lp-ldel]'))){ const id=b.dataset.lpLdel.slice(5), a=lpLists(), l=a.find(y=>y.id===id); if(l && confirm(t('lpListDelAsk',l.name))){ lpListsSave(a.filter(y=>y.id!==id)); state.lp.g='my:lists'; lpPaint(); } return true; }
   if((b=q('[data-ls-like]'))){ const id=b.dataset.lsLike, on=lpLikeToggle(id); toast(t(on?'lsmLikedDone':'lsmUnlikedDone')); if(state.lp.g==='my:likes' && state.lp.open && !on) lpPaint(); return true; }
   if((b=q('[data-ls-more]'))){ lsMenuOpen(b.dataset.lsMore); return true; }
-  if((b=q('[data-lp-g]'))){ if(state.lp.mode==='podcast') lpSelect(b.dataset.lpG); else { lpPick(b.dataset.lpG); lpPaint(); lpEnsure(); lpToTop(); } return true; }
+  if((b=q('[data-lp-g]'))){ if(lpPodMode()) lpSelect(b.dataset.lpG); else { lpPick(b.dataset.lpG); lpPaint(); lpEnsure(); lpToTop(); } return true; }
   if((b=q('[data-lp-show]'))){ state.lp.show=b.dataset.lpShow; state.lp.shown=LP_PAGE; lpPaint(); return true; }
   if(q('[data-lp-more]')){ state.lp.more=!state.lp.more; lpPaint(); return true; }
   if(q('[data-lp-next]')){ lpNext(); return true; }
