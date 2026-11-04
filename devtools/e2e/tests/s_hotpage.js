@@ -22,13 +22,13 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
     await c.goto(BASE, 2800);
   };
   const toDir = async () => { await J(`document.querySelector('[data-space="dir"]').click()`); await sleep(1800); };
-  const openHot = async () => { await J(`document.querySelector('#cats [data-dhot]').click()`); await sleep(500); await waitFor(`document.querySelector('#dirReco .hot-plat')`); };
+  const openHot = async () => { await J(`document.querySelector('#cats [data-dhot]').click()`); await sleep(500); await waitFor(`document.querySelector('#dirReco [data-hot-view="boards"]')`); await J(`document.querySelector('#dirReco [data-hot-view="boards"]').click()`); await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0`); };
   const cols = () => J(`[...document.querySelectorAll('#dirReco .hot-col')].map(b=>b.textContent+(b.getAttribute('aria-selected')==='true'?'*':''))`);
-  const tabs = () => J(`[...document.querySelectorAll('#dirReco .hot-plat')].map(b=>b.textContent+(b.getAttribute('aria-selected')==='true'?'*':''))`);
+  const tabs = () => J(`[...document.querySelectorAll('#dirReco [data-hot-p]')].map(b=>b.textContent+(b.getAttribute('aria-expanded')==='true'?'*':''))`);
   const rows = () => J(`[...document.querySelectorAll('#dirReco .hot-row')].map(r=>({rank:r.querySelector('.hot-rank').textContent, top:r.querySelector('.hot-rank').classList.contains('hot-top'), title:r.querySelector('.hot-t').textContent, href:r.querySelector('.hot-t').href, note:(r.querySelector('.hot-n')||{}).textContent||'', side:(r.querySelector('.hot-side')||{}).textContent||'', alt:(r.querySelector('.hot-side a')||{}).textContent||''}))`);
   const head = () => J(`({h:(document.querySelector('#dirReco .hot-head h2')||{}).textContent, meta:(document.querySelector('#dirReco .hot-meta')||{}).textContent, state:(document.querySelector('#dirReco .hot-state')||{}).textContent||''})`);
   const clickTab = async (sel, text) => { await J(`[...document.querySelectorAll(${JSON.stringify(sel)})].find(b=>b.textContent.startsWith(${JSON.stringify(text)})).click()`); await sleep(350); };
-  const selectPlatform = async id => { const d=await get('/api/hot'), p=d.platforms.find(x=>x.id===id); if(!p) throw new Error('platform missing: '+id); await J(`(()=>{const b=document.querySelector('#dirReco [data-hot-c="${p.col}"]'); if(b)b.click(); else {const s=document.querySelector('#dirReco [data-hot-c-select]'); if(s){s.value=${JSON.stringify(p.col)};s.dispatchEvent(new Event('change',{bubbles:true}));}}})()`); await sleep(180); await J(`document.querySelector('#dirReco [data-hot-p="${id}"]')?.click()`); await sleep(350); };
+  const selectPlatform = async id => { const d=await get('/api/hot'), p=d.platforms.find(x=>x.id===id); if(!p) throw new Error('platform missing: '+id); await J(`document.querySelector('#dirReco [data-hot-c="${p.col}"]')?.click()`); await sleep(180); if(!(await J(`document.querySelector('#dirReco [data-hot-p="${id}"]')?.getAttribute('aria-expanded')==='true'`))) await J(`document.querySelector('#dirReco [data-hot-p="${id}"]')?.click()`); await sleep(350); };
   const asked = () => fetch(SVC + '/__hot_asked').then(r => r.json());
   await c.desktop(1280, 900, 1);
 
@@ -42,7 +42,8 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   const page = await J(`({cls:document.body.classList.contains('dir-hot'), disc:document.body.classList.contains('dir-discover'), title:document.querySelector('#viewTitle').textContent, bar:document.querySelector('#dirBar').hidden, grid:document.querySelector('#grid').children.length,
     cur:[...document.querySelectorAll('#cats .cat-btn[aria-current="true"]')].map(b=>b.textContent.trim()).join('|'), tags:getComputedStyle(document.querySelector('#tagbox')).display, shelves:getComputedStyle(document.querySelector('#dir')).display})`);
   ok('热榜 is a page of its own: the title, no toolbar, no cards below, the sidebar marks it (and hides the shelf list)', page.cls && !page.disc && page.title === '热榜' && page.bar && page.grid === 0 && page.cur === '热榜' && page.tags === 'none' && page.shelves === 'none', page);
-  await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0 && document.querySelectorAll('#dirReco .hot-focus-card').length>=2`);
+  await J(`document.querySelector('#dirReco [data-hot-view="mix"]').click()`);
+  await waitFor(`document.querySelectorAll('#dirReco .hot-mix-link').length>0 && document.querySelectorAll('#dirReco .hot-focus-card').length>=2`);
   const exposure = await waitAnalytics('experiment_exposure');
   ok('the active A/B experiment reports exposure with a stable control/treatment variant', exposure.some(x=>x.event_name==='experiment_exposure'&&['control','treatment'].includes(x.variant)) && ['cards','compact'].includes(await J(`document.querySelector('#dirReco .hot-focus').dataset.layout`)), exposure.filter(x=>x.event_name==='experiment_exposure'));
   await J(`document.querySelector('#dirReco .hot-focus-card')?.scrollIntoView({block:'center'}); document.addEventListener('click',e=>{if(e.target.closest('.hot-focus-card'))e.preventDefault();},{capture:true,once:true}); document.querySelector('#dirReco .hot-focus-card')?.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window}));`);
@@ -51,8 +52,16 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   ok('visible focus cards report one qualified impression and focus-card clicks are recorded', analyticsEvents.some(x=>x.event_name==='item_impression'&&String(x.content_key).startsWith('event:')) && analyticsEvents.some(x=>x.event_name==='item_click'&&String(x.content_key).startsWith('event:')), analyticsEvents.map(x=>[x.event_name,x.content_key]));
   analyticsEvents = await waitAnalytics('active_time');
   ok('active-time events count only foreground hot-page seconds and are sent in batches', analyticsEvents.some(x=>x.event_name==='active_time'&&x.active_seconds>=15), analyticsEvents.filter(x=>x.event_name==='active_time'));
-  const primary = await J(`({intro:!!document.querySelector('#dirReco .hot-intro'), modes:!!document.querySelector('#dirReco .hot-modebar'), today:/今日精选|Today’s picks/.test(document.querySelector('#dirReco').textContent), day:document.querySelector('#dirReco [data-hot-period="day"]')?.getAttribute('aria-pressed'), rows:document.querySelectorAll('#dirReco .hot-row').length, focus:document.querySelectorAll('#dirReco .hot-focus-card').length, focusTitle:document.querySelector('#dirReco .hot-focus-head h3')?.textContent, focusBeforeBoards:!!(document.querySelector('.hot-focus')?.compareDocumentPosition(document.querySelector('.hot-main')) & Node.DOCUMENT_POSITION_FOLLOWING)})`);
-  ok('hot page shows tracked stories under 今日焦点 above platform charts, without Today’s picks banner/tab', !primary.intro && !primary.modes && !primary.today && primary.day==='true' && primary.rows===12 && primary.focus>=2 && primary.focusTitle==='今日焦点' && primary.focusBeforeBoards, primary);
+  const primary = await J(`({views:[...document.querySelectorAll('#dirReco [data-hot-view]')].map(b=>[b.textContent,b.getAttribute('aria-pressed')]), picks:!!document.querySelector('#dirReco .hot-mixed'), focus:document.querySelector('#dirReco .hot-focus-head h3')?.textContent, ranked:document.querySelectorAll('#dirReco .hot-mix-link').length})`);
+  ok('the page opens on 今日精选, with distinct 今日精选 and 平台热榜 modes and ranked picks above 今日焦点', primary.views.length===2 && primary.views[0][1]==='true' && primary.picks && primary.focus==='今日焦点' && primary.ranked>0, primary);
+  await J(`document.querySelector('#dirReco [data-hot-view="boards"]').click()`);
+  await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0`);
+  const accordion = await J(`({cats:document.querySelectorAll('#dirReco .hot-col').length, boards:document.querySelectorAll('#dirReco [data-hot-board]').length, expanded:document.querySelectorAll('#dirReco [data-hot-board][aria-expanded="true"]').length, rows:document.querySelectorAll('#dirReco .hot-row').length})`);
+  ok('平台热榜 has one category rail and an accordion with only one expanded board and ten initial rows', accordion.cats>3 && accordion.boards>2 && accordion.expanded===1 && accordion.rows===10, accordion);
+  await J(`document.querySelector('#dirReco [data-hot-more]')?.click()`); await sleep(180);
+  ok('long boards append the next batch without an inner scroll area', await J(`document.querySelectorAll('#dirReco .hot-row').length>10 && getComputedStyle(document.querySelector('#dirReco .hot-board-body')).overflowY!=='auto'`));
+  await J(`document.querySelectorAll('#dirReco [data-hot-board]')[1].click()`); await sleep(220);
+  ok('opening another platform closes the previous board', await J(`document.querySelectorAll('#dirReco [data-hot-board][aria-expanded="true"]').length===1`));
   const expectedCats = ['综合热点','科技','AI 最新','金融财经','国际时事','娱乐','学习与专业提升','影音与社区'];
   let categoryLabels = await cols();
   ok('the updated interest categories are visible while shopping remains optional', expectedCats.every(x=>categoryLabels.some(s=>s.replace('*','')===x)) && !categoryLabels.some(s=>s.replace('*','')==='购物'), categoryLabels);
@@ -62,14 +71,14 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   await waitFor(`state.hot.period==='week' && document.querySelector('#dirReco [data-hot-period="week"]').getAttribute('aria-pressed')==='true'`);
   const weekDisplay = await J(`({period:state.hot.period,text:document.querySelector('#dirReco .hot-list').textContent,pressed:document.querySelector('#dirReco [data-hot-period="week"]').getAttribute('aria-pressed')})`);
   ok('weekly charts switch without exposing snapshot collection counts or developer copy', weekDisplay.period==='week' && !/积累真实榜单快照|正在积累|\b1\s*\/\s*7\b/.test(weekDisplay.text) && weekDisplay.pressed==='true', weekDisplay);
-  const partialWeek = await J(`(()=>{const p=document.querySelector('#dirReco .hot-plat[aria-selected="true"]').dataset.hotP;state.hot.data.set(p+'|week',{state:'ok',rows:[{title:'Weekly sample',url:'https://example.org/weekly/sample',heat:'',note:'',alt:'',date:''}],t:Date.now(),at:0,history:{available:true,complete:false,snapshots:2,required_days:7}});document.querySelector('#dirReco [data-hot-period="day"]').click();document.querySelector('#dirReco [data-hot-period="week"]').click();return {text:document.querySelector('#dirReco .hot-list').textContent,row:document.querySelector('#dirReco .hot-t')?.textContent}})()`);
+  const partialWeek = await J(`(()=>{const p=document.querySelector('#dirReco [data-hot-p][aria-expanded="true"]').dataset.hotP;state.hot.data.set(p+'|week',{state:'ok',rows:[{title:'Weekly sample',url:'https://example.org/weekly/sample',heat:'',note:'',alt:'',date:''}],t:Date.now(),at:0,history:{available:true,complete:false,snapshots:2,required_days:7}});document.querySelector('#dirReco [data-hot-period="day"]').click();document.querySelector('#dirReco [data-hot-period="week"]').click();return {text:document.querySelector('#dirReco .hot-list').textContent,row:document.querySelector('#dirReco .hot-t')?.textContent}})()`);
   ok('available weekly rows remain visible without developer snapshot progress', !/积累真实榜单快照|正在积累|\b1\s*\/\s*7\b/.test(partialWeek.text) && partialWeek.row === 'Weekly sample', partialWeek);
   await J(`document.querySelector('#dirReco [data-hot-period="day"]').click()`); await waitFor(`state.hot.period==='day' && document.querySelectorAll('#dirReco .hot-row').length>0`);
   await c.shot(require('../paths').SHOTS + '/hotpage_desktop.png');
   if (process.env.E2E_HOT_SMOKE === '1') {
     await c.mobile(390,844,2); await sleep(250);
-    const mobile = await J(`({sw:document.documentElement.scrollWidth,iw:innerWidth,select:getComputedStyle(document.querySelector('#dirReco .hot-cat-select')).display,platforms:document.querySelectorAll('#dirReco .hot-plat').length,list:document.querySelector('#dirReco .hot-list').getBoundingClientRect().width})`);
-    ok('phone chart page uses the compact category picker and stays within the viewport', mobile.sw<=mobile.iw && mobile.select!=='none' && mobile.platforms>0 && mobile.list<=mobile.iw, mobile);
+    const mobile = await J(`({sw:document.documentElement.scrollWidth,iw:innerWidth,cats:getComputedStyle(document.querySelector('#dirReco .hot-cols')).display,boards:document.querySelectorAll('#dirReco [data-hot-board]').length,open:document.querySelectorAll('#dirReco [data-hot-board][aria-expanded="true"]').length,list:document.querySelector('#dirReco .hot-list').getBoundingClientRect().width})`);
+    ok('phone chart page uses one visible category rail and accordion boards without page overflow', mobile.sw<=mobile.iw && mobile.cats!=='none' && mobile.boards>0 && mobile.open===1 && mobile.list<=mobile.iw, mobile);
     await c.shot(require('../paths').SHOTS + '/hotpage_boards_mobile.png');
     console.log(`\n${pass} passed, ${fail} failed`); c.close(); process.exit(fail ? 1 : 0);
   }
@@ -94,11 +103,11 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0 && document.querySelector('#dirReco .hot-head h2').textContent.startsWith('GitHub')`);
   const tech = await tabs();
   ok('another column: its platforms (GitHub first, then Juejin, V2EX, Hacker News ...)', tech[0] === 'GitHub Trending（今日）*' && tech.includes('Hacker News') && tech.includes('Product Hunt') && tech.includes('少数派'), tech);
-  await clickTab('#dirReco .hot-plat', 'Hacker News');
+  await clickTab('#dirReco .hot-board-trigger', 'Hacker News');
   await waitFor(`document.querySelector('#dirReco .hot-head h2').textContent==='Hacker News' && document.querySelectorAll('#dirReco .hot-row').length>0`);
   r = await rows();
   ok('a row can have a second link (the discussion), only where the list has one', r[0].alt === '讨论' && r[1].alt === '', [r[0].side, r[1].side]);
-  await clickTab('#dirReco .hot-plat', 'BBC'.slice(0, 0) + '少数派');
+  await clickTab('#dirReco .hot-board-trigger', 'BBC'.slice(0, 0) + '少数派');
   await waitFor(`document.querySelector('#dirReco .hot-head h2').textContent==='少数派' && document.querySelectorAll('#dirReco .hot-row').length>0`);
   r = await rows(); h = await head();
   ok('a list that is a feed has no rank: a dot instead, the date on the right, and the header says "newest first"', r[0].rank === '·' && /2026-10-26/.test(r[0].side) && !r[0].top && /按时间排列，最新在前/.test(h.meta), [r[0], h]);
@@ -112,7 +121,7 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   ok('an article list (a feed) is read in the page: the reader opens on a temporary item, the link was not followed', rd.reader && /^tmp:hot:/.test(rd.id) && rd.title === '项目 sspai 一' && rd.dp === true && rd.opened === 0, rd);
   await J(`document.querySelector('#readerBack').click()`); await sleep(500);
   ok('and back is the same list', (await head()).h === '少数派' && await J(`document.querySelector('#reader').hidden`));
-  await clickTab('#dirReco .hot-plat', 'Product Hunt');
+  await clickTab('#dirReco .hot-board-trigger', 'Product Hunt');
   await waitFor(`document.querySelector('#dirReco .hot-head h2').textContent==='Product Hunt'`);
   await J(`window.__dp=[]; document.querySelector('#dirReco .hot-t').click()`); await sleep(300);
   ok('a platform’s own list that is not articles (Product Hunt) is not read in the page: the click is left to the browser (a tab of its own)', (await J(`window.__dp[0]`)) === false && await J(`document.querySelector('#reader').hidden`) && (await J(`document.querySelector('#dirReco .hot-t').target`)) === '_blank');
@@ -122,7 +131,7 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   await clickTab('#dirReco .hot-col', '综合热点');
   await waitFor(`document.querySelector('#dirReco .hot-head h2').textContent==='微博热搜'`);
   await clickTab('#dirReco .hot-col', '科技');
-  await clickTab('#dirReco .hot-plat', 'GitHub');
+  await clickTab('#dirReco .hot-board-trigger', 'GitHub');
   await waitFor(`document.querySelector('#dirReco .hot-head h2').textContent.startsWith('GitHub') && document.querySelectorAll('#dirReco .hot-row').length>0`);
   ok('"订阅这个榜单" is on the header', (await J(`(document.querySelector('#dirReco [data-hot-sub]')||{}).textContent`)) === '订阅这个榜单');
   await J(`document.querySelector('#dirReco [data-hot-sub]').click()`); await sleep(1500);
@@ -133,10 +142,10 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
 
   // ================================================ E. a list that cannot be read / is slow / comes back
   await get('/__hot?fail=lobsters');
-  await clickTab('#dirReco .hot-plat', 'Lobsters');
+  await clickTab('#dirReco .hot-board-trigger', 'Lobsters');
   await waitFor(`document.querySelector('#dirReco .hot-state')`);
   h = await head();
-  ok('a list the service cannot read: the page says so (and why) with a retry button; the other tabs are fine', /这个榜单现在读不到/.test(h.state) && /HTTP 500/.test(h.state) && await J(`!!document.querySelector('#dirReco [data-hot-refresh].btn') && document.querySelectorAll('#dirReco .hot-plat').length>3`), h);
+  ok('a list the service cannot read: the page says so (and why) with a retry button; the other boards remain available', /这个榜单现在读不到/.test(h.state) && /HTTP 500/.test(h.state) && await J(`!!document.querySelector('#dirReco [data-hot-refresh].btn') && document.querySelectorAll('#dirReco [data-hot-p]').length>3`), h);
   await get('/__hot?'); await J(`document.querySelector('#dirReco .hot-state [data-hot-refresh]').click()`);
   await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0`);
   ok('"重试" asks again and the list is there', (await rows())[0].title === '项目 lobsters 一');
@@ -145,7 +154,7 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   const slow = await J(`({busy:document.querySelector('#dirReco .hot-list').getAttribute('aria-busy'), rows:document.querySelectorAll('#dirReco .hot-row').length})`);
   ok('a refresh in progress keeps the old rows on screen (busy for screen readers)', slow.busy === 'true' && slow.rows === 12, slow);
   await waitFor(`document.querySelector('#dirReco .hot-list').getAttribute('aria-busy')==='false'`);
-  await clickTab('#dirReco .hot-plat', 'V2EX'); await sleep(250);
+  await clickTab('#dirReco .hot-board-trigger', 'V2EX'); await sleep(250);
   ok('a slow list not asked for before: a loading line until it comes', /正在读取榜单/.test((await head()).state));
   await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0`);
   await get('/__hot?');
@@ -248,14 +257,16 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   await c.mobile(390, 844, 2);
   await fresh('zh'); await toDir();
   await J(`document.querySelector('#dirReco [data-dr-hot]').click()`); await sleep(600);
+  await J(`document.querySelector('#dirReco [data-hot-view="boards"]')?.click()`);
   await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0`);
   await c.shot(require('../paths').SHOTS + '/hotpage_phone.png');
   await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0`);
-  const ph = await J(`(()=>{ const q=s=>document.querySelector(s), pl=q('#dirReco .hot-plats'), cat=q('#dirReco .hot-cat-select'), r=q('#dirReco .hot-row'), t=q('#dirReco .hot-t').getBoundingClientRect(), side=q('#dirReco .hot-side');
-    return {sw:document.documentElement.scrollWidth, iw:innerWidth, dir:getComputedStyle(pl).flexDirection, pos:getComputedStyle(pl).position, tabH:Math.round(q('#dirReco .hot-plat').getBoundingClientRect().height), colH:Math.round(cat.getBoundingClientRect().height), catDisplay:getComputedStyle(cat).display,
-      listTop:Math.round(q('#dirReco .hot-list').getBoundingClientRect().top), platsBottom:Math.round(pl.getBoundingClientRect().bottom), sideBelow: side ? side.getBoundingClientRect().top >= t.bottom - 2 : null, titleW:Math.round(t.width), drawer:document.body.classList.contains('drawer')}; })()`);
-  ok('phone: no sideways page scrolling; categories use one select and platform tabs sit above the list', ph.sw <= ph.iw && ph.dir === 'row' && ph.pos === 'static' && ph.tabH >= 40 && ph.colH >= 40 && ph.catDisplay !== 'none' && ph.platsBottom <= ph.listTop + 2, ph);
-  ok('phone: the heat goes under the title and the title has the width of the row', ph.sideBelow === true && ph.titleW > 250 && !ph.drawer, ph);
+  const ph = await J(`(()=>{ const q=s=>document.querySelector(s), cat=q('#dirReco .hot-cols'), board=q('#dirReco [data-hot-board][aria-expanded="true"]'), body=q('#dirReco .hot-board-body'), r=q('#dirReco .hot-row'), t=q('#dirReco .hot-t').getBoundingClientRect(), side=q('#dirReco .hot-side');
+    return {sw:document.documentElement.scrollWidth, iw:innerWidth, catDisplay:getComputedStyle(cat).display, catFlex:getComputedStyle(cat).flexDirection, boardH:Math.round(board.getBoundingClientRect().height), catH:Math.round(cat.getBoundingClientRect().height), boards:document.querySelectorAll('#dirReco [data-hot-board]').length, open:document.querySelectorAll('#dirReco [data-hot-board][aria-expanded="true"]').length,
+      sideBelow: side ? side.getBoundingClientRect().top >= t.bottom - 2 : null, titleW:Math.round(t.width), innerScroll:body.scrollHeight>body.clientHeight+2, drawer:document.body.classList.contains('drawer')}; })()`);
+  ok('phone: one horizontal category rail, vertical accordion boards, one open chart and no page overflow', ph.sw<=ph.iw && ph.catDisplay!=='none' && ph.catFlex==='row' && ph.catH>=34 && ph.boards>1 && ph.open===1 && ph.boardH>=44 && !ph.innerScroll, ph);
+  ok('phone: the heat goes under the title and the title has the width of the row', ph.sideBelow===true && ph.titleW>250 && !ph.drawer, ph);
+  ok('bottom bar has discovery, hot lists, the existing add action and shelf; no personal tab', await J(`!!document.querySelector('#tabbar [data-space="dir"]')&&!!document.querySelector('#tabbar [data-hot-nav]')&&!!document.querySelector('#tabbar #tbPlus')&&!!document.querySelector('#tabbar [data-space="mine"]')&&!document.querySelector('#tabbar [data-me]')`));
   ok('phone: reached from the discovery page without opening the sidebar', await J(`document.body.classList.contains('dir-hot')`));
   await c.shot(require('../paths').SHOTS + '/hotpage_phone.png');
   await c.desktop(1280, 900, 1);

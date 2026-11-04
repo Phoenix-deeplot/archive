@@ -559,6 +559,24 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .hot-mode{min-height:40px;padding:7px 14px;border:1px solid var(--rule);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
 .hot-mode[aria-selected="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg);font-weight:650}
 .hot-cat-select{display:none;width:100%;min-height:44px;border:1px solid var(--rule);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;padding:7px 10px}
+.hot-views{display:flex;gap:3px;width:max-content;max-width:100%;padding:4px;margin:0 0 14px;border:1px solid var(--rule);border-radius:12px;background:var(--surface)}
+.hot-views button{min-height:40px;padding:7px 15px;border:0;border-radius:9px;background:transparent;color:var(--muted);font:inherit;font-size:14px;white-space:nowrap;cursor:pointer}
+.hot-views button[aria-pressed="true"]{background:var(--ink);color:var(--bg);font-weight:650}
+.hot-board-list{display:grid;gap:8px}
+.hot-board-card{overflow:hidden;border:1px solid var(--rule);border-radius:12px;background:var(--surface)}
+.hot-board-trigger{display:flex;align-items:center;gap:10px;width:100%;min-height:60px;padding:10px 13px;border:0;background:transparent;color:var(--ink);text-align:left;font:inherit;cursor:pointer}
+.hot-board-trigger:hover{background:color-mix(in srgb,var(--accent) 4%,var(--surface))}
+.hot-board-icon{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:10px;background:color-mix(in srgb,var(--accent) 10%,var(--surface));color:var(--accent);font-size:13px;font-weight:750}
+.hot-board-copy{flex:1;min-width:0}
+.hot-board-copy strong{display:block;font-size:14px;line-height:1.35}
+.hot-board-copy small{display:block;margin-top:3px;color:var(--muted);font-size:11.5px;line-height:1.4}
+.hot-board-chevron{flex:0 0 auto;color:var(--muted);font-size:18px;transition:transform .16s ease}
+.hot-board-card[aria-expanded="true"] .hot-board-chevron{transform:rotate(90deg)}
+.hot-board-body{padding:0 12px 12px;border-top:1px solid var(--rule)}
+.hot-board-actions{display:flex;flex-wrap:wrap;align-items:center;gap:7px;padding:9px 0}
+.hot-board-actions>a{color:var(--accent);font-size:12px}
+.hot-board-preview{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.45;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hot-more-rows{display:block;margin:10px auto 0;min-height:40px;padding:7px 14px;border:1px solid var(--rule);border-radius:9px;background:var(--bg);color:var(--accent);font:inherit;font-size:13px;cursor:pointer}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .hot-period{display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--rule);border-radius:9px;background:var(--bg)}
 .hot-period button{min-height:32px;padding:4px 10px;border:0;border-radius:6px;background:transparent;color:var(--muted);font:inherit;font-size:12px;cursor:pointer;white-space:nowrap}
@@ -623,8 +641,10 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
   .hot-updated{width:auto;margin-left:auto;text-align:right}
   .hot-modebar{position:sticky;top:0;z-index:4;padding:5px 0;background:var(--bg)}
   .hot-mode{min-height:44px}
-  .hot-cols{display:none}
-  .hot-cat-select{display:block;margin:0 0 8px}
+  .hot-cols{display:flex;gap:7px;padding:2px 0 9px;margin:0 0 5px;scroll-padding-inline:12px}
+  .hot-col{min-height:38px;padding:5px 13px;font-size:13px}
+  .hot-views{position:sticky;top:0;z-index:4;width:100%;display:grid;grid-template-columns:1fr 1fr;padding:4px;background:var(--bg)}
+  .hot-views button{min-height:44px}
   .hot-period{width:100%;justify-content:stretch}
   .hot-period button{flex:1;min-height:38px}
   .hot-events{grid-template-columns:minmax(0,1fr);gap:8px}
@@ -1376,7 +1396,7 @@ body.dir-listen .ctl-box,body.dir-hot .ctl-box{display:none}
   .fl-dir .dir-bar{margin:0}
   .fl-dir .dir-pick{position:static;box-shadow:none;border:0;max-width:none;width:auto}
   #colPop .col-nav{display:block;padding:10px 14px}
-  body.sh-phone .tabbar{display:grid;grid-template-columns:1fr 72px 1fr;position:fixed;left:0;right:0;bottom:0;z-index:25;height:var(--tb);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--surface);border-top:1px solid var(--rule)}
+  body.sh-phone .tabbar{display:grid;grid-template-columns:1fr 1fr 72px 1fr;position:fixed;left:0;right:0;bottom:0;z-index:25;height:var(--tb);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--surface);border-top:1px solid var(--rule)}
   .tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;background:none;color:var(--muted);font:inherit;font-size:11.5px;cursor:pointer;min-height:56px}
   .tabbar button .icon{width:22px;height:22px}
   .tabbar button{position:relative}
@@ -1699,9 +1719,10 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
   </div>
 </dialog>
 <nav class="tabbar" id="tabbar" aria-label="Main">
-  <button type="button" data-space="mine" aria-pressed="true"><svg class="icon" viewBox="0 0 24 24"><path d="M5 4h4v16H5zM10 4h4v16h-4zM15.5 5.5l3.8-1 3 14.5-3.8 1z"/></svg><span data-i="spaceMine">我的书架</span></button>
-  <button type="button" class="tb-plus" id="tbPlus" data-i-aria="tbPlus"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
   <button type="button" data-space="dir" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg><span data-i="tbDiscover">发现世界</span></button>
+  <button type="button" data-hot-nav aria-pressed="false" data-i="hotSide"><svg class="icon" viewBox="0 0 24 24"><path d="M12 21c4.1 0 7-2.8 7-6.4 0-2.6-1.5-4.6-4.3-6.4.2 2-1 3.1-2.1 3.7.1-3.8-1.8-6.7-5.2-8.9.3 3.4-.4 5.3-1.6 7.1C4.7 12 5 13.1 5 14.7 5 18.4 7.8 21 12 21Z"/><path d="M12 18.5c1.7 0 2.9-1.1 2.9-2.6 0-1.1-.6-1.9-1.8-2.7-.1 1.1-.6 1.6-1.3 2-.3-1.4-1-2.2-2-2.9-.1 1.3-.7 2.1-.7 3.5 0 1.6 1.1 2.7 2.9 2.7Z"/></svg><span data-i="hotSide">热榜</span></button>
+  <button type="button" class="tb-plus" id="tbPlus" data-i-aria="tbPlus"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button type="button" data-space="mine" aria-pressed="true"><svg class="icon" viewBox="0 0 24 24"><path d="M5 4h4v16H5zM10 4h4v16h-4zM15.5 5.5l3.8-1 3 14.5-3.8 1z"/></svg><span data-i="spaceMine">我的书架</span></button>
 </nav>
 <dialog class="sheet" id="plusDlg" aria-label="添加">
   <div class="sheet-in">
@@ -3492,6 +3513,7 @@ function render(){
   const dirMode = dirOn();
   $('#spaceSwitch').hidden = !state.dirCfg;
   document.querySelectorAll('[data-space]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.space===(dirMode?'dir':'mine'))));
+  $('#tabbar [data-space="dir"]').setAttribute('aria-pressed',String(dirMode&&!state.dHot)); $('#tabbar [data-hot-nav]').setAttribute('aria-pressed',String(dirMode&&state.dHot)); $('#tabbar [data-space="mine"]').setAttribute('aria-pressed',String(!dirMode));
   $('#noteBtn').hidden=dirMode; $('#noteFab').hidden=dirMode && shellSel()!=='2';          // (the new shell writes a note from both spaces)
   const addTxt=t(dirMode?'submit':'add'); $('#addLbl').textContent=addTxt; $('#addBtn').title=addTxt; $('#addBtn').setAttribute('aria-label',addTxt);
   syncSubscribe();
@@ -6075,7 +6097,7 @@ state.ls={scene:String(LS.get('lsScene','')||'')};
 state.lp={idx:null, idxAt:0, busy:false, err:'', data:new Map(), pending:new Map(), g:String(LS.get('lpG','daily')||'daily'), mode:'music', g_music:String(LS.get('lpG_music','daily')||'daily'), g_podcast:String(LS.get('lpG_podcast','pod-hot')||'pod-hot'), show:'', shown:30, more:false, pods:null, podsKey:'', io:null,
   sort:(k=>['rank','new','dur','title','artist'].includes(k)?k:'rank')(LS.get('lpSort','rank'))};
 state.dListen=false;                    // today's listening: what the service said, when it was asked, the scene that is shown
-state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), view:'boards', mixBusy:false, mixRows:[], mixRun:0, period:LS.get('hotPeriod','day')==='week'?'week':'day', events:[], eventsAt:0, eventsBusy:false, eventsErr:'', eventsRun:0, region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
+state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), view:LS.get('hotView','mix')==='boards'?'boards':'mix', openId:'', visible:{}, mixBusy:false, mixRows:[], mixRun:0, period:LS.get('hotPeriod','day')==='week'?'week':'day', events:[], eventsAt:0, eventsBusy:false, eventsErr:'', eventsRun:0, region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
 const PUBLIC_ROUTES={discover:'/discover/',hot:'/hot/',listen:'/listen/',books:'/picks/books/',articles:'/picks/articles/',watch:'/watch/'};
 const publicRouteFromPath=()=>Object.keys(PUBLIC_ROUTES).find(k=>PUBLIC_ROUTES[k]===location.pathname)||'';
 const publicLabel=k=>({discover:['发现','Discover'],hot:['热榜','Trending'],listen:['今日听什么','Listen today'],books:['精选图书','Book picks'],articles:['精选文章','Article picks'],watch:['看什么','What to watch']}[k]||[])[state.lang==='zh'?0:1]||'';
@@ -6978,8 +7000,8 @@ const HOT_TTL=180000;
 const HOT_EVENTS_TTL=300000;
 const HOT_MIX_PER_COLUMN=1, HOT_MIX_LIMIT=30, HOT_MIX_ITEMS=18;
 const HOT_UI_COPY={
-  zh:{boards:n=>`平台榜单${n?` · ${n}`:''}`,day:'今日榜',week:'近 7 天',weekEmpty:'近 7 天暂时没有榜单数据。',focus:'今日焦点',focusSub:'跨平台持续追踪的重要热点',eventLoading:'正在汇总持续更新的热点事件……',eventErr:'热点追踪暂时不可用，请稍后重试。',eventEmpty:'暂时没有正在持续更新的热点事件。',eventRetry:'重试热点追踪',eventSources:n=>`${n} 个来源`,eventUpdated:m=>`最后更新 ${m}`,trendUp:'热度上升',trendDown:'热度回落',trendStable:'持续更新'},
-  en:{boards:n=>`Platform charts${n?` · ${n}`:''}`,day:'Today',week:'Last 7 days',weekEmpty:'No rankings are available for the last 7 days yet.',focus:'Today’s focus',focusSub:'Developing stories tracked across platforms',eventLoading:'Gathering developing stories…',eventErr:'Live topic tracking is temporarily unavailable.',eventEmpty:'No developing stories are available right now.',eventRetry:'Retry topic tracking',eventSources:n=>`${n} sources`,eventUpdated:m=>`Last updated ${m}`,trendUp:'Rising',trendDown:'Cooling',trendStable:'Developing'}
+  zh:{todayPicks:'今日精选',platformBoards:'平台热榜',boards:n=>`平台热榜${n?` · ${n}`:''}`,day:'今日榜',week:'近 7 天',weekEmpty:'近 7 天暂时没有榜单数据。',focus:'今日焦点',focusSub:'跨平台持续追踪的重要热点',eventLoading:'正在汇总持续更新的热点事件……',eventErr:'热点追踪暂时不可用，请稍后重试。',eventEmpty:'暂时没有正在持续更新的热点事件。',eventRetry:'重试热点追踪',eventSources:n=>`${n} 个来源`,eventUpdated:m=>`最后更新 ${m}`,trendUp:'热度上升',trendDown:'热度回落',trendStable:'持续更新',boardOpen:'展开榜单',boardClose:'收起榜单',boardLoading:'正在读取榜单……',boardPreview:'点击展开查看排名',moreRows:'再看 10 条',allRows:'已显示全部内容'},
+  en:{todayPicks:'Today’s picks',platformBoards:'Platform charts',boards:n=>`Platform charts${n?` · ${n}`:''}`,day:'Today',week:'Last 7 days',weekEmpty:'No rankings are available for the last 7 days yet.',focus:'Today’s focus',focusSub:'Developing stories tracked across platforms',eventLoading:'Gathering developing stories…',eventErr:'Live topic tracking is temporarily unavailable.',eventEmpty:'No developing stories are available right now.',eventRetry:'Retry topic tracking',eventSources:n=>`${n} sources`,eventUpdated:m=>`Last updated ${m}`,trendUp:'Rising',trendDown:'Cooling',trendStable:'Developing',boardOpen:'Show chart',boardClose:'Hide chart',boardLoading:'Loading chart…',boardPreview:'Tap to view ranking',moreRows:'Show 10 more',allRows:'All items shown'}
 };
 const hotUi=(k,...args)=>{ const v=(HOT_UI_COPY[state.lang==='en'?'en':'zh']||HOT_UI_COPY.zh)[k]; return typeof v==='function'?v(...args):v||k; };
 const hotName = o => state.lang==='en' ? (o.name_en||o.name) : o.name;
@@ -7142,7 +7164,8 @@ async function hotEventsEnsure(force){
   if(hotShown()) paintHot();
 }
 function hotEnsure(){                                                                              // the list that is shown is asked for, once it is missing or old
-  const h=state.hot; hotEventsEnsure(false); if(!h.idx){ if(!h.err) hotIndex(); return; }         // tracked stories remain above the chart list; a failed service is retried by its button
+  const h=state.hot; if(h.view==='mix') hotEventsEnsure(false); if(!h.idx){ if(!h.err) hotIndex(); return; }         // tracked stories remain above the chart list; a failed service is retried by its button
+  if(h.view==='mix') hotMixEnsure(false);
   const s=hotCur(); if(!s) return; const d=h.data.get(hotKey(s.cur));
   if(!d || (d.state==='ok' && Date.now()-d.t>HOT_TTL)) hotLoad(s.cur);
 }
@@ -7151,33 +7174,32 @@ function renderHotPage(){
   $('#viewTitle').textContent=t('hotTitle'); $('#viewSub').textContent=t('hotSub'); $('#source').textContent='';
   $('#dirReco').hidden=false; paintHot(); hotEnsure();
 }
-function hotRowHTML(r,i,ranked){
-  const u=httpUrl(r.url); if(!u) return ''; const platform=hotCur()&&hotCur().cur.id||'', itemKey='p:'+platform+':'+hashStr(String(r.url||r.title||'')).toString(36);
+function hotRowHTML(r,i,ranked,platformId){
+  const u=httpUrl(r.url); if(!u) return ''; const platform=platformId||(hotCur()&&hotCur().cur.id)||'', itemKey='p:'+platform+':'+hashStr(String(r.url||r.title||'')).toString(36);
   const alt=httpUrl(r.alt), side=(r.heat?`<span>${esc(r.heat)}</span>`:'') + (!ranked && r.date ? `<span>${esc(r.date)}</span>` : '') + (alt ? `<a href="${esc(alt)}" target="_blank" rel="nofollow ugc noopener noreferrer">${esc(t('hotTalk'))}</a>` : '');
   return `<li class="hot-row" data-analytics-key="${esc(itemKey)}" data-platform-id="${esc(platform)}"><span class="hot-rank${ranked && i<3 ? ' hot-top' : ''}" aria-hidden="${!ranked}">${ranked ? i+1 : '·'}</span><a class="hot-t" href="${esc(u)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-i="${i}">${esc(r.title)}</a>${state.lang==='zh' && r.title_zh ? `<p class="hot-n hot-tz" lang="zh">${esc(r.title_zh)}</p>` : ''}${r.note?`<p class="hot-n hot-note">${esc(r.note)}</p>`:''}${side?`<span class="hot-side">${side}</span>`:''}</li>`;
 }
 function hotBoardsHTML(){
-  const h=state.hot, s=hotCur();
-  if(!s) return `<div class="hot-list"><p class="hot-state">${esc(h.err || t('hotLoading'))}${h.err?`<br><button class="btn" type="button" data-hot-retry>${esc(t('dirRetry'))}</button>`:''}</p></div>`;
-  const cur=s.cur, d=h.data.get(hotKey(cur)), ranked=cur.ranked!==false, canSub=!!feedApi(), where=cur.regions ? (h.region!=='auto' ? h.region : (d && d.region) || '') : '';          // (where: the country of the list that is shown, once it is known)
-  const subUrl=hotFeed(cur,where,h.period), subbed=canSub && (!cur.regions || !!where) && subCols().some(c=>urlKey(c.feed.url)===urlKey(subUrl));
-  const pick = cur.regions ? `<select class="hot-region" data-hot-region aria-label="${esc(t('hotRegion'))}" title="${esc(t('hotRegion'))}"><option value="auto"${h.region==='auto'?' selected':''}>${esc(t('hotRegionAuto', h.region==='auto' && where ? hotCountry(where) : ''))}</option>${cur.regions.map(c=>[c,hotCountry(c)]).sort((a,b)=>a[1].localeCompare(b[1],state.lang==='zh'?'zh-Hans-CN':'en')).map(([c,n])=>`<option value="${esc(c)}"${h.region===c?' selected':''}>${esc(n)}</option>`).join('')}</select>` : '';
-  let body;
-  if(!d || (d.state==='load' && !(d.rows||[]).length)) body=`<p class="hot-state">${esc(t('hotLoading'))}</p>`;
-  else if(d.state==='err' && !(d.rows||[]).length) body=`<p class="hot-state">${esc(d.msg)}<br><button class="btn" type="button" data-hot-refresh>${esc(t('dirRetry'))}</button></p>`;
-  else if(h.period==='week' && !(d.history&&d.history.complete)) body=d.rows.length?`<ol class="hot-rows">${d.rows.map((r,i)=>hotRowHTML(r,i,ranked)).join('')}</ol>`:`<p class="hot-history-note">${esc(hotUi('weekEmpty'))}</p>`;
-  else if(!d.rows.length && h.period==='week') body=`<p class="hot-history-note">${esc(hotUi('weekEmpty'))}</p>`;
-  else if(!d.rows.length) body=`<p class="hot-state">${esc(t('hotEmpty'))}</p>`;
-  else body=`<ol class="hot-rows">${d.rows.map((r,i)=>hotRowHTML(r,i,ranked)).join('')}</ol>`;
-  const meta=[hotTrackName(cur),cur.via ? t('hotVia',cur.via) : '', d && d.at ? t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))) : '', ranked ? '' : t('hotNewest')].filter(Boolean).join(' · '), columns=hotActiveColumns();
-  return `<div class="hot"><label class="sr-only" for="hotCatSelect">${esc(hotUi('boards',columns.length))}</label><select id="hotCatSelect" class="hot-cat-select" data-hot-c-select aria-label="${esc(hotUi('boards',columns.length))}">${columns.map(c=>`<option value="${esc(c.id)}"${c.id===s.col.id?' selected':''}>${esc(hotName(c))}</option>`).join('')}</select><div class="hot-cols" role="tablist" aria-label="${esc(t('hotTitle'))}">${columns.map(c=>`<button class="hot-col" type="button" role="tab" aria-selected="${c.id===s.col.id}" data-hot-c="${esc(c.id)}">${esc(hotName(c))}</button>`).join('')}</div>`
-    + `<div class="hot-main"><nav class="hot-plats" role="tablist" aria-label="${esc(hotName(s.col))}">${s.plats.map(p=>`<button class="hot-plat" type="button" role="tab" aria-selected="${p.id===cur.id}" data-hot-p="${esc(p.id)}">${esc(hotName(p))}</button>`).join('')}</nav>`
-    + `<section class="hot-list" aria-live="polite" aria-busy="${!!(d && d.state==='load')}"><header class="hot-head"><h2>${esc(hotName(cur))}${where ? ' · '+esc(hotCountry(where)) : ''}</h2><span class="hot-meta">${esc(meta)}</span><span class="hot-acts">`
-    + `<span class="hot-period" role="group" aria-label="${esc(hotUi('boards',columns.length))}"><button type="button" data-hot-period="day" aria-pressed="${h.period==='day'}">${esc(hotUi('day'))}</button><button type="button" data-hot-period="week" aria-pressed="${h.period==='week'}">${esc(hotUi('week'))}</button></span>`
-    + (httpUrl(cur.home) ? `<a href="${esc(cur.home)}" target="_blank" rel="nofollow ugc noopener noreferrer">${esc(t('hotHome'))}</a>` : '')
-    + pick + `<button class="btn dr-act" type="button" data-hot-refresh>${esc(t('hotRefresh'))}</button>`
-    + (canSub ? `<button class="btn dr-act" type="button" data-hot-sub title="${esc(t('hotFollowTip'))}" ${subbed || (cur.regions && !where) ?'disabled':''}>${esc(t(subbed?'hotFollowed':'hotFollow'))}</button>` : '')
-    + `</span></header>${body}</section></div></div>`;
+  const h=state.hot, columns=hotActiveColumns(), col=columns.find(c=>c.id===h.sel.c)||columns[0];
+  if(!col) return `<div class="hot-list"><p class="hot-state">${esc(h.err || t('hotLoading'))}${h.err?`<br><button class="btn" type="button" data-hot-retry>${esc(t('dirRetry'))}</button>`:''}</p></div>`;
+  const plats=(h.idx.platforms||[]).filter(p=>p.col===col.id).slice().sort((a,b)=>Number(b.lang===(state.lang==='en'?'en':'zh'))-Number(a.lang===(state.lang==='en'?'en':'zh')));
+  if(!plats.some(p=>p.id===h.openId)) h.openId=plats[0]&&plats[0].id||'';
+  const cards=plats.map(p=>{
+    const d=h.data.get(hotKey(p)), open=p.id===h.openId, rows=d&&Array.isArray(d.rows)?d.rows:[], ranked=p.ranked!==false, where=p.regions?(h.region!=='auto'?h.region:(d&&d.region)||''):'', canSub=!!feedApi(), subUrl=hotFeed(p,where,h.period), subbed=canSub&&(!p.regions||!!where)&&subCols().some(c=>urlKey(c.feed.url)===urlKey(subUrl)), visible=Math.max(10,Number(h.visible[hotKey(p)])||10), preview=rows.length?String(rows[0].title_zh&&state.lang==='zh'?rows[0].title_zh:rows[0].title||''):hotUi('boardPreview');
+    let body='';
+    if(open){
+      if(!d||d.state==='load'&&!rows.length) body=`<p class="hot-state">${esc(hotUi('boardLoading'))}</p>`;
+      else if(d.state==='err'&&!rows.length) body=`<p class="hot-state">${esc(d.msg||t('hotErr'))}<br><button class="btn" type="button" data-hot-refresh>${esc(t('dirRetry'))}</button></p>`;
+      else if(h.period==='week'&&!(d.history&&d.history.complete)&&!rows.length) body=`<p class="hot-history-note">${esc(hotUi('weekEmpty'))}</p>`;
+      else if(!rows.length) body=`<p class="hot-state">${esc(t('hotEmpty'))}</p>`;
+      else { const shown=rows.slice(0,visible); body=`<ol class="hot-rows">${shown.map((r,i)=>hotRowHTML(r,i,ranked,p.id)).join('')}</ol>`+(rows.length>visible?`<button class="hot-more-rows" type="button" data-hot-more="${esc(p.id)}">${esc(hotUi('moreRows'))}</button>`:`<p class="hot-board-preview">${esc(hotUi('allRows'))}</p>`); }
+      const region=p.regions?`<select class="hot-region" data-hot-region aria-label="${esc(t('hotRegion'))}" title="${esc(t('hotRegion'))}"><option value="auto"${h.region==='auto'?' selected':''}>${esc(t('hotRegionAuto',h.region==='auto'&&where?hotCountry(where):''))}</option>${p.regions.map(c=>[c,hotCountry(c)]).sort((a,b)=>a[1].localeCompare(b[1],state.lang==='zh'?'zh-Hans-CN':'en')).map(([c,n])=>`<option value="${esc(c)}"${h.region===c?' selected':''}>${esc(n)}</option>`).join('')}</select>`:'';
+      body=`<header class="hot-head"><h2 class="sr-only">${esc(hotName(p))}${where?' · '+esc(hotCountry(where)):''}</h2><span class="hot-meta">${esc([hotTrackName(p),p.via?t('hotVia',p.via):'',d&&d.at?t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))):'',ranked?'':t('hotNewest')].filter(Boolean).join(' · '))}</span></header><div class="hot-board-actions"><span class="hot-period" role="group" aria-label="${esc(hotUi('platformBoards'))}"><button type="button" data-hot-period="day" aria-pressed="${h.period==='day'}">${esc(hotUi('day'))}</button><button type="button" data-hot-period="week" aria-pressed="${h.period==='week'}">${esc(hotUi('week'))}</button></span>${region}${httpUrl(p.home)?`<a href="${esc(p.home)}" target="_blank" rel="nofollow ugc noopener noreferrer">${esc(t('hotHome'))}</a>`:''}<button class="btn dr-act" type="button" data-hot-refresh>${esc(t('hotRefresh'))}</button>${canSub?`<button class="btn dr-act" type="button" data-hot-sub title="${esc(t('hotFollowTip'))}" ${subbed||(p.regions&&!where)?'disabled':''}>${esc(t(subbed?'hotFollowed':'hotFollow'))}</button>`:''}</div>${body}`;
+    }
+    const meta=[p.lang&&p.lang!==state.lang?(p.lang==='zh'?'中文':'English'):'',d&&d.at?t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))):''].filter(Boolean).join(' · ')||hotUi('boardPreview');
+    return `<section class="hot-board-card" data-hot-card="${esc(p.id)}" aria-expanded="${open}"><button class="hot-board-trigger" type="button" data-hot-board="${esc(p.id)}" data-hot-p="${esc(p.id)}" aria-expanded="${open}"><span class="hot-board-icon" aria-hidden="true">${esc((hotName(p)||'?').slice(0,2))}</span><span class="hot-board-copy"><strong>${esc(hotName(p))}</strong><small>${esc(meta)}</small>${!open?`<span class="hot-board-preview">${esc(preview)}</span>`:''}</span><span class="hot-board-chevron" aria-hidden="true">›</span></button>${open?`<div class="hot-board-body hot-list" aria-live="polite" aria-busy="${!!(d&&d.state==='load')}">${body}</div>`:''}</section>`;
+  }).join('');
+  return `<div class="hot"><div class="hot-cols" role="tablist" aria-label="${esc(t('hotTitle'))}">${columns.map(c=>`<button class="hot-col" type="button" role="tab" aria-selected="${c.id===col.id}" data-hot-c="${esc(c.id)}">${esc(hotName(c))}</button>`).join('')}</div><div class="hot-board-list">${cards||`<p class="hot-state">${esc(t('hotEmpty'))}</p>`}</div></div>`;
 }
 function hotEventTime(value){
   if(value===null||value===undefined||value==='') return '';
@@ -7224,7 +7246,8 @@ function hotMixHTML(){
   return `<section class="hot-mixed" aria-live="polite" aria-busy="${!!h.mixBusy}">${status?`<p class="hot-mix-status">${esc(status)}</p>`:''}${content}</section>`;
 }
 function hotHTML(){
-  return `<div class="hot">${hotFocusHTML()}${hotBoardsHTML()}</div>`;
+  const view=state.hot.view==='boards'?'boards':'mix';
+  return `<div class="hot"><div class="hot-views" role="group" aria-label="${esc(t('hotTitle'))}"><button type="button" data-hot-view="mix" aria-pressed="${view==='mix'}">${esc(hotUi('todayPicks'))}</button><button type="button" data-hot-view="boards" aria-pressed="${view==='boards'}">${esc(hotUi('platformBoards'))}</button></div>${view==='boards'?hotBoardsHTML():`${hotMixHTML()}${hotFocusHTML()}`}</div>`;
 }
 function hotSetView(view){
   if(view!=='mix'&&view!=='boards') return;
@@ -7250,8 +7273,10 @@ function hotClick(e){                                                           
   const mixA=e.target.closest('a[data-hot-mix-i]'); if(mixA){ const x=state.hot.mixRows[+mixA.dataset.hotMixI]; if(x) hotOpenItem(e,x.row,x.platform); return true; }
   const period=e.target.closest('[data-hot-period]'); if(period){ hotSetPeriod(period.dataset.hotPeriod); return true; }
   if(e.target.closest('[data-hot-events-retry]')){ hotEventsEnsure(true); return true; }
+  const more=e.target.closest('[data-hot-more]'); if(more){ const p=state.hot.idx&&state.hot.idx.platforms.find(x=>x.id===more.dataset.hotMore); if(p){ state.hot.visible[hotKey(p)]=(Number(state.hot.visible[hotKey(p)])||10)+10; paintHot(); } return true; }
+  const board=e.target.closest('[data-hot-board]'); if(board){ const h=state.hot,p=h.idx&&h.idx.platforms.find(x=>x.id===board.dataset.hotBoard); if(p){ h.openId=h.openId===p.id?'':p.id; if(h.openId){ h.sel.c=p.col; if(!h.sel.p||typeof h.sel.p!=='object') h.sel.p={}; h.sel.p[p.col]=p.id; hotSave(); paintHot(); hotLoad(p,false); } else paintHot(); } return true; }
   const c=e.target.closest('[data-hot-c]');
-  if(c){ state.hot.sel.c=c.dataset.hotC; hotSave(); hotShow(`[data-hot-c="${CSS.escape(c.dataset.hotC)}"]`); return true; }
+  if(c){ const h=state.hot; h.sel.c=c.dataset.hotC; const s=hotCur(); h.openId=s&&s.cur?s.cur.id:''; hotSave(); hotShow(`[data-hot-c="${CSS.escape(c.dataset.hotC)}"]`); return true; }
   const p=e.target.closest('[data-hot-p]');
   if(p){ const s=hotCur(); if(s){ if(!state.hot.sel.p || typeof state.hot.sel.p!=='object') state.hot.sel.p={}; state.hot.sel.p[s.col.id]=p.dataset.hotP; state.hot.sel.c=s.col.id; hotSave(); hotShow(`[data-hot-p="${CSS.escape(p.dataset.hotP)}"]`); } return true; }
   if(e.target.closest('[data-hot-retry]')){ state.hot.err=''; paintHot(); hotIndex(true); return true; }
@@ -7265,12 +7290,12 @@ function hotClick(e){                                                           
     return true;
   }
   const a=e.target.closest('a[data-hot-i]'); if(!a) return false;                                  // a row: the platform's page in a tab, or (where the platform's pages are articles) the text in the reader
-  const s=hotCur(), d=s && state.hot.data.get(hotKey(s.cur)), r=d && d.rows && d.rows[+a.dataset.hotI];
-  if(r && e.button===0 && !(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey) && richOpen({title:r.title, url:r.url, img:r.img, body:r.body||'', note:r.note, heat:r.heat, from:hotName(s.cur), lang:s.cur.lang, hot:true, kw:!!s.cur.kw, read:!!s.cur.read, date:r.date})){ e.preventDefault(); return true; }
-  if(r && s.cur.read && feedApi() && e.button===0 && !(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)){
+  const id=a.closest('[data-hot-card]')?.dataset.hotCard||a.closest('[data-platform-id]')?.dataset.platformId||'', platform=state.hot.idx&&state.hot.idx.platforms.find(x=>x.id===id), d=platform&&state.hot.data.get(hotKey(platform)), r=d&&d.rows&&d.rows[+a.dataset.hotI];
+  if(r && platform && e.button===0 && !(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey) && richOpen({title:r.title, url:r.url, img:r.img, body:r.body||'', note:r.note, heat:r.heat, from:hotName(platform), lang:platform.lang, hot:true, kw:!!platform.kw, read:!!platform.read, date:r.date})){ e.preventDefault(); return true; }
+  if(r && platform && platform.read && feedApi() && e.button===0 && !(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)){
     e.preventDefault();
     const id='tmp:hot:'+hashStr(urlKey(r.url)).toString(36);
-    if(!state.tmp.has(id)) state.tmp.set(id,{id, source:'tmp', type:'link', url:r.url, title:r.title, summary:r.note||'', keywords:[], lang:s.cur.lang==='zh'?'zh':'en', date:r.date||today(), category:'notes', from:hotName(s.cur)});
+    if(!state.tmp.has(id)) state.tmp.set(id,{id, source:'tmp', type:'link', url:r.url, title:r.title, summary:r.note||'', keywords:[], lang:platform.lang==='zh'?'zh':'en', date:r.date||today(), category:'notes', from:hotName(platform)});
     openReader(id);
   }
   return true;
@@ -8398,6 +8423,7 @@ $('#tagbox').addEventListener('click',e=>{
   const tg=e.target.closest('[data-tag]'); if(tg) pickTag(tg.dataset.tag);
 });
 document.querySelectorAll('[data-space]').forEach(b=>b.addEventListener('click',()=>setSpace(b.dataset.space)));
+$('#tabbar [data-hot-nav]').addEventListener('click',()=>publicGo('hot'));
 $('.view-head').addEventListener('click',e=>{                        // the active filters above the cards: click one to drop it
   const c=e.target.closest('[data-clear]'); if(!c) return;
   const k=c.dataset.clear; if(k==='tag') state.tag=''; else if(k==='dtag') state.dTag=''; else if(k==='dshelf') state.dShelf=''; else if(k==='dpick') clearPick();
@@ -8550,7 +8576,7 @@ function shLayout(){
   if(!on) return;
   shTheme();
   { const sl=so.selectedOptions && so.selectedOptions[0]; $('#flSum').textContent=(sl ? sl.textContent : '')+' · '+t(state.view==='grid' ? 'viewIsCards' : 'viewIsList'); }
-  $('#tabbar [data-space="dir"]').hidden=!state.dirCfg; $('#tabbar').classList.toggle('one',!state.dirCfg);
+  $('#tabbar [data-space="dir"]').hidden=!state.dirCfg; $('#tabbar [data-hot-nav]').hidden=!state.dirCfg; $('#tabbar [data-space="dir"]').setAttribute('aria-pressed',String(dirOn()&&!state.dHot)); $('#tabbar [data-hot-nav]').setAttribute('aria-pressed',String(dirOn()&&state.dHot)); $('#tabbar [data-space="mine"]').setAttribute('aria-pressed',String(!dirOn())); $('#tabbar').classList.toggle('one',!state.dirCfg);
   $('#flTagRow').hidden=!phone || !$('#flTag').children.length || $('#tagbox').hidden;
   const chip=$('#colChip'), hasCol=!$('#colNav').hidden && !dirOn();
   chip.hidden=!phone || !hasCol; if(phone && hasCol){ const c=(state.cols||[]).find(x=>x.id===state.col); chip.innerHTML=esc((c ? t('colChip')+'：'+cut(c.name,10) : t('colChip'))+' ▾')+(state.col!=='all' ? `<span class="col-x" data-colclear role="button" tabindex="0" aria-label="${esc(t('colClear'))}">✕</span>` : ''); chip.classList.toggle('on',state.col!=='all'); }
