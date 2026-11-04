@@ -10,7 +10,7 @@ const r = cp.spawnSync('python', ['-X', 'utf8', path.join(HERE, 'make_demo.py'),
 ok('the demo builds with --seo', r.status === 0, (r.stdout + r.stderr).slice(-400));
 const dist = path.join(out, 'dist');
 const read = p => { try { return fs.readFileSync(path.join(dist, p), 'utf8'); } catch (e) { return null; } };
-const S = [['discover', '发现', true], ['hot', '热榜', true], ['listen', '今日听什么', true], ['picks/books', '精选图书', false], ['picks/articles', '精选文章', true], ['watch', '看什么', true]];
+const S = [['discover', '发现', true], ['hot', '今日精选与平台热榜', true], ['listen', '今日听什么', true], ['picks/books', '精选图书', false], ['picks/articles', '精选文章', true], ['watch', '看什么', true]];
 const sitemap = read('sitemap.xml') || '', urls = (read('urls.txt') || '').split('\n');
 ok('sitemap URL fields are readable on separate, indented lines', /\n  <url>\n    <loc>https:\/\/example\.test\//.test(sitemap) && /\n    <lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>\n  <\/url>/.test(sitemap) && !/<url><loc>/.test(sitemap), sitemap.slice(0, 500));
 
@@ -23,6 +23,7 @@ for (const [rel, label, indexed] of S) {
   const inMap = sitemap.includes(`<loc>https://example.test/${rel}/</loc>`), inUrls = urls.includes(`https://example.test/${rel}/`);
   ok(`/${rel}/ ${indexed ? 'is in the sitemap and in urls.txt, and may be indexed' : 'is NOT in the sitemap or urls.txt and says noindex (nothing to recommend yet)'}`, indexed ? inMap && inUrls && !/name="robots" content="noindex/.test(h) : !inMap && !inUrls && /name="robots" content="noindex/.test(h), { inMap, inUrls });
 }
+ok('/hot/ SEO description explains today picks, tracked events, and cross-platform charts', (read('hot/index.html') || '').includes('今日精选') && (read('hot/index.html') || '').includes('持续追踪'));
 ok('"精选文章" is called the same in the side list as on its page (one word for the section, the owner’s)', (fs.readFileSync(path.join(SRC, 'index.html'), 'utf8').match(/articles:\['([^']*)','([^']*)'\]/) || [])[1] === '精选文章');
 for (const f of ['AGENTS.md', 'CLAUDE.md', 'README.md', 'PROMO.md', 'site.json', 'serve.py', 'seo.py', 'build_index.py', 'vercel.json']) ok(`${f} is not in the published site`, !fs.existsSync(path.join(dist, f)));
 for (const d of ['docs', 'devtools']) ok(`${d}/ is not in the published site`, !fs.existsSync(path.join(dist, d)));
