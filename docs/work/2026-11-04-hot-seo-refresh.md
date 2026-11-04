@@ -1,6 +1,6 @@
 # 热榜回归与搜索入口优化（2026-11-04）
 
-状态：规划中；未开发、未推送、未部署
+状态：实现中；未合并、未推送、未部署。微信小程序榜按用户要求暂缓。
 
 ## 1. 任务清单（用户）
 
@@ -19,7 +19,7 @@
 
 | 任务 | 负责 | 分支 / worktree | 会改的文件 | 不许碰 |
 |---|---|---|---|---|
-| 今日精选/平台榜单结构、SEO 公共页内容与前端验收 | Codex | `codex/hot-seo-refresh` · `E:\Ztree\wt\codex-hot-seo-refresh` | `index.html`、`seo.py`、`devtools/e2e/tests/s_hotpage.js`、必要时 `devtools/e2e/tests/s_seo.js` | 用户现有未提交/未跟踪文件、书架与阅读器、小程序目录、线上服务/环境变量、shelf-directory 仓库 |
+| 今日精选/平台榜单结构、SEO 公共页内容与前端验收 | Codex | `codex/hot-seo-refresh` · `C:\Users\Wu\.codex\worktrees\hot-seo-refresh\my-archive` | `index.html`、`seo.py`、`devtools/e2e/tests/s_hotpage.js`、必要时 `devtools/e2e/tests/s_seo.js` | 用户现有未提交/未跟踪文件、书架与阅读器、小程序目录、线上服务/环境变量、shelf-directory 仓库 |
 | 热点事件故障与榜单来源 | Codex | 独立仓库分支/ worktree，见 `shelf-directory/docs/work/2026-11-04-hot-sources.md` | 由后端计划限定 | 不改 `my-archive` 文件、现有用户数据、线上配置 |
 
 前置：在各仓库 master 上只提交对应规划文件；用户确认两份规划后，才创建工作分支/worktree并改业务代码。保留当前 master 工作区已有修改。
@@ -63,7 +63,13 @@
 - 已检查 `git status` 与最近提交；保留 master 中既有变更和未跟踪文件。
 - 已核对：小红书、B 站、抖音已经在后端源定义中；X、Polymarket 和微信小程序榜尚未发现实现。
 - 当前页面的热点追踪来自事件接口；事件无数据时今日焦点为空，当前 SEO 页面描述较泛。
-- 等用户确认规划后再建立 worktree 并开发。
+
+### 实施记录（隔离分支）
+
+- `/hot/` 默认恢复为「今日精选」：热点追踪置顶、跨平台推荐混合流独立取数；「平台榜单」保留分类、原始名次和今日/近 7 天切换。
+- 已删除用户指出的两句页面介绍文案；SEO 公共页 title、description、H1、no-script 文本同步描述今日精选、热点追踪与平台榜单。
+- 已更新热榜端到端验收及 SEO 分页测试。浏览器测试 61 项通过；语法、重复函数、SEO 构建测试通过。
+- 微信小程序榜本轮不做；Google Play 没有可用的官方全商店排行 API，暂不采用易碎的页面抓取，等待正式数据服务后再接入。
 
 ## 4. 合并记录
 
