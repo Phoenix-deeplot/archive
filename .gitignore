@@ -15,6 +15,10 @@ __pycache__
 dist/
 .indexnow-state.json
 marked.LICENSE.md
+.claude/
+/RSS_*.md
+/PROMO.md
+docs/promo/
 
 
 # vercel.json 不要放进忽略列表（vercel 命令行在没有 .vercelignore 时按本文件过滤上传）
