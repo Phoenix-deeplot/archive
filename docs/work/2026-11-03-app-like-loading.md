@@ -1,6 +1,6 @@
 # “发现世界”像 app 一样打开：本机留一份、先显示再更新、提前开始下载（2026-11-03）
 
-状态：**已确认（用户 2026-11-03：“可以”）**，开发中。这一步只做 A + B；C（页面壳子秒开，要动 Service Worker）和 D（回到应用自动刷新、下拉刷新、“已更新”提示）以后分别做。
+状态：已合并（2026-11-04，用户说“合并”）；未推送、未部署。C（页面壳子秒开）和 D（回到应用刷新 / 下拉刷新 / “已更新”提示）还没做
 
 ## 1. 任务清单（用户）
 
@@ -75,3 +75,10 @@
 - 合并顺序：
 - 合并后的测试结果：
 - 删除的分支和 worktree：
+
+## 4. 合并记录
+
+- 合并顺序（2026-11-04，`--no-ff`，没推送、没部署）：`claude/ignore-noise` → `claude/test-speed` → `claude/test-settle` → `claude/app-like-loading`；每个分支合并前先并入最新 master（只有 `app-like-loading` 有一处冲突：`run_all.ps1` 里测试列表那一行，取 master 的新版本再把 `s_dirkeep` 加进整套列表）。
+- 合并后的测试结果：整套 `run_all.ps1`（在并入全部三个先合的分支之后的 `app-like-loading` 上跑）29 个测试、0 个新的失败、4 行已知失败（`s_read` 停在第 92 行、`s_reco` 两项、`s_sync` 的 B 项）、用时 24.6 分钟；Codex 的 `s_reader_usability` 12 项通过；合并到 master 之后的快速集（`-Quick`）10 个测试全部通过，用时 7.4 分钟。这个分支自己的验证：`s_dirkeep` 20 项。
+- 删除的分支和 worktree：`claude/app-like-loading` 和 `E:\\Ztree\\wt\\claude-app-like-loading`。
+- 上线要用户做：`vercel --prod`（页面才有新的加载方式）；第一次打开还要等网络，从第二次起才是秒开。
