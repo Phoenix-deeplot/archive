@@ -34,7 +34,7 @@ FEED_TOC_MAX, FEED_TOC_TITLE = 30, 60
 CONVERTED = 'converted'                # the readable HTML / data of PDFs and articles (convert.py): copied per published item, never as a whole folder
 PUBLIC_SECTIONS = (
     ('discover', 'discover', '发现', '发现适合今天阅读的文章、节目与来源，在公共目录浏览最新推荐。', True),
-    ('hot', 'hot', '热榜', '浏览正在受到关注的内容与平台热榜，打开原始来源继续阅读。', True),
+    ('hot', 'hot', '今日精选与平台热榜', '浏览微博、知乎、B站、抖音等中文及海外平台榜单，查看跨平台今日精选与持续追踪的热点事件。', True),
     ('listen', 'listen', '今日听什么', '每天发现音乐歌单与播客节目；可用的试听和播放方式以来源授权为准。', True),
     ('picks/books', 'books', '精选图书', '查看公共目录审核过的图书推荐。书目尚未上线，暂不收录空栏目。', False),
     ('picks/articles', 'articles', '精选文章', '文章页先展示精选文章，再浏览全部文章；卡片仍按文章类型、来源和标签分类。', True),
