@@ -77,7 +77,17 @@
 
 ### claude
 
-（第一步等用户确认规划后开始。）
+分支 `claude/books-page`（`E:\Ztree\wt\claude-books-page`，`index.html` 和测试）和 `claude/books-lists`（`E:\Ztree\wt\claude-books-lists`，`shelf-directory` 的书单数据）。预览：`http://127.0.0.1:8831/`（发现世界 → 精选图书），用 `preview_books.ps1` 起。
+
+- 第 1 点：`#updNote` 全站去掉（元素、样式、`updAt` / `updGo` 两句话、↻ 的点击处理都删了；`updNoteSync` 只剩切换 `html.ptr`）；精选图书页不显示 `#dirBar`，不再调用 `renderDirBar`，`dirList` 在这一页不套用节目 / 栏目 / 平台 / 领域 / 视图的筛选（`booksPage()` = `dLanding==='books'` 且没有选书架和标签）。
+- 第 2 点：`dirMetaLine` / `dirXCoverHTML` / `dirCardHTML` / `dirRowHTML` 里精选图书走新分支：不再有“站长推荐”（`dirWhy` 对精选图书不返回 pick）、“书籍”、书架名、书架标记、授权、标签；一行只有语言 · 作者 · 来源（`BOOK_SRC` 里认得的站写名字，其余写网址）· 章数 · “读到 第 3 回 · 12%”；封面底边 `.bk-prog` 细线；作者名是按钮（`data-bauthor`）。简介留着。
+- 第 3 点：`closeReader` 不再 `openBook`，说明文字（zh / en）去掉“关掉阅读页会回到这张章节表”。
+- 第 5 点：`renderDir` 不再画侧栏标签盒（`#tagbox` 隐藏）。
+- 第 4 点：`booksPage` 上的书单一排（最多 4 张，“全部 N 张书单 ▾”展开）、类别一排（`BOOK_GENRES`，按 `genre` 或标签推，只列有书的、只有一类时不显示）、作者筛选；`state.dList` / `dGenre` / `dAuthor` 不写 `localStorage`；`dirBuild` 校验并带上 `booklists`；书单里的书按书单的顺序排，每本有 `why` 一行。点击由一个捕获阶段的 `document` 监听处理（`data-blist` / `data-bgenre` / `data-bauthor` / `data-blmore`）。
+- 书单数据（`shelf-directory`）：`registry/booklists.json`（8 张书单，每本书中英文各一句）、`aggregate.load_booklists`（校验、把书编号换成目录里的 `id`、跳过目录没有的书并在构建日志里说明、不足两本的整张跳过）、`directory.json` 的 `booklists`、`tests/test_booklists.py`（真实书单的每本书都在 `books.json` 里）、README B6b 一条；`genre` 后端没有做，前端按标签推，以后服务端给了就以它为准。
+- 测试：新增 `s_bookpage.js`（进快速集）；改了 `s_books`（关阅读页不再弹窗、卡片不写授权）、`s_bookcards`（卡片没有徽标，读到哪里带百分比和细线）、`s_first`（侧栏没有标签盒）、`s_swkeep`（没有 `#updNote`，用 `state.dirAt` 和 `dirRefresh` 查回到页面和下拉刷新）。
+- 文档：README（发现世界一段、精选图书一段、新的“精选图书页”一段、回到应用时自动更新）、使用指南 zh / en（新的“精选图书”一条）、页面里的更新说明（zh / en 各一条）。
+- 没有做：顶栏的排序下拉（“最新发布”）在这一页还在，书按“页面语言在前、热度、书名”排；要藏起来是一行 CSS，等用户说。
 
 ### codex
 
