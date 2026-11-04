@@ -123,6 +123,19 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await J(`document.querySelector('#lpRoot [data-lp-mode="music"]').click()`); await sleep(500);
   ok('back to music: the tab that was open', await J(`document.querySelector('#lpRoot .lp-tab[aria-selected="true"]').textContent`) === '发现');
 
+  // ------------------------------------------------ the copy of the last visit
+  await tab('rec');                                                                                  // (the tab that is open is the one that is shown at the next visit)
+  await fetch(SVC + '/__listen?mode=ok&delay=6000');
+  await c.goto(BASE, 0);
+  const t1 = Date.now();
+  const early = await waitFor(`document.querySelectorAll('#lsBlock .ls-row').length>0`, 5000);
+  ok('at the next visit the small block shows songs at once, from the copy of the last visit, while the service is slow (it answers after six seconds)', early && Date.now() - t1 < 4500, Date.now() - t1);
+  await J(`document.querySelector('#cats [data-dlisten]').click()`);
+  ok('...and so does the page: the tabs and the songs of the first tab', await waitFor(`document.querySelector('#lpRoot .lp-tabs') && document.querySelectorAll('#lpRoot .ls-row').length>0`, 4000));
+  await sleep(6500);
+  ok('when the service answers the songs are the new ones (the page was not blanked meanwhile)', await J(`document.querySelectorAll('#lpRoot .ls-row').length>0 && state.lp.data.get('daily|zh').state==='ok'`));
+  await fetch(SVC + '/__listen?mode=ok&delay=0');
+
   // ------------------------------------------------ a phone
   await c.mobile(390, 844, 2);
   await fresh('zh');
