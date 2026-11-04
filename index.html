@@ -994,6 +994,9 @@ body.has-player .fab{bottom:calc(var(--pl-h) + 16px + env(safe-area-inset-bottom
 .pl-btn .icon{width:22px;height:22px}
 .pl-btn.sk{font-size:12.5px;font-weight:700;border-radius:10px;width:46px;font-variant-numeric:tabular-nums}
 .pl-btn.pl-rate{width:auto;min-width:48px;padding:0 10px;border-radius:999px;font-size:13px;font-weight:700;border:1px solid var(--rule)}
+.pl-btn.pl-mode{display:none}
+body.pl-music .pl-btn.pl-mode{display:grid}
+body.pl-music .pl-btn.sk,body.pl-music .pl-btn.pl-rate{display:none}
 .pl-main{width:48px;height:48px;background:var(--ink);color:var(--bg)}
 .pl-main:hover{background:var(--ink);opacity:.88}
 @media (pointer:coarse){.pl-vol{display:none}}
@@ -1123,6 +1126,42 @@ body.has-player.pl-folded{--pl-h:0px}
 .pl-queue li.cur .t{color:var(--accent);font-weight:600}
 .pl-queue li button{width:44px;height:44px;border:0;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;padding:0}
 .pl-queue li button:hover{color:var(--ink)}
+dialog.plp{width:min(520px,100%);max-width:100%;margin:auto auto 0;border:0;border-radius:20px 20px 0 0;background:var(--surface);color:var(--ink);padding:0;max-height:min(88dvh,780px);font-family:var(--sans)}
+dialog.plp::backdrop{background:rgba(10,14,18,.45)}
+.plp-in{display:flex;flex-direction:column;max-height:inherit;position:relative}
+.plp-top{display:flex;align-items:center;gap:2px;padding:8px 10px 2px;flex:none}
+.plp-top h2{flex:1;margin:0;text-align:center;font-family:var(--sans);font-size:15px;font-weight:600}
+.plp-ic{width:44px;height:44px;border:0;background:none;color:var(--ink);border-radius:50%;display:grid;place-items:center;cursor:pointer;padding:0;flex:none}
+.plp-ic:hover{background:var(--rule)}
+.plp-ic .icon{width:22px;height:22px}
+.plp-body{overflow-y:auto;padding:4px 18px 18px}
+.plp .pl-hero{margin:4px 0 6px;gap:12px}
+.plp .pl-hero img,.plp .pl-hero .pl-letter{width:60px;height:60px;border-radius:8px}
+.plp .pl-hero-t b{font-size:17px;font-weight:600}
+.plp .pl-hero-t span{font-size:13px}
+.plp-qh{display:flex;align-items:center;gap:8px;margin:12px 0 0;border-top:1px solid var(--rule)}
+.plp-qh h3{margin:0;font-size:15px;font-weight:600;font-family:var(--sans)}
+.plp-qn{font-size:12.5px;color:var(--muted);flex:1}
+.plp-clear{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 6px;border:0;background:none;color:var(--muted);font:inherit;font-size:13.5px;cursor:pointer}
+.plp-clear:hover{color:var(--ink)}
+.plp-clear .icon{width:17px;height:17px}
+.plp-set{position:absolute;inset:0;background:var(--surface);border-radius:20px 20px 0 0;padding:8px 18px 18px;overflow-y:auto;z-index:2}
+.plp-set[hidden]{display:none}
+.plp-set-h{display:flex;align-items:center;justify-content:space-between;min-height:48px}
+.plp-set-h b{font-size:16px;font-weight:600}
+.plp-row{padding:12px 0;border-bottom:1px solid var(--rule)}
+.plp-row[hidden]{display:none}
+.plp-row .l{font-size:14.5px;font-weight:600}
+.plp-row .d{font-size:12.5px;color:var(--muted);margin-top:2px}
+.plp-tg{display:flex;align-items:center;gap:12px}
+.plp-tg>div:first-child{flex:1}
+.plp-sw{width:46px;height:28px;border-radius:14px;border:0;background:var(--rule);position:relative;cursor:pointer;flex:none;padding:0}
+.plp-sw:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--surface);transition:left .15s}
+.plp-sw.on{background:var(--ink)}
+.plp-sw.on:after{left:21px}
+.plp-foot{display:flex;flex-direction:column;align-items:flex-start;padding-top:8px}
+.plp-link{border:0;background:none;color:var(--muted);font:inherit;font-size:13.5px;min-height:44px;padding:0;text-align:left;cursor:pointer}
+.plp-link:hover{color:var(--ink)}
 .pl-empty{color:var(--muted);font-size:14px;margin:6px 0 0}
 .rc-play{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:4px 12px;margin:0 8px 0 0}
 .rc-play .icon{width:14px;height:14px}
@@ -1716,6 +1755,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
   </div>
   <div class="pl-mid">
     <div class="pl-ctl">
+      <button class="pl-btn pl-mode" type="button" id="plMode" data-pl="mode"></button>
       <button class="pl-btn pl-pn" type="button" id="plPrev" data-pl="prev" data-i-aria="plPrev"><svg class="icon fill" viewBox="0 0 24 24"><path d="M6.5 5h2v14h-2zM19 5.5v13L9.5 12z"/></svg></button>
       <button class="pl-btn sk" type="button" data-pl="back" data-i-aria="plBack">−15</button>
       <button class="pl-btn pl-main" type="button" id="plToggle" data-pl="toggle"></button>
@@ -1758,25 +1798,36 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     </div>
   </div>
 </dialog>
-<dialog id="plDlg" aria-labelledby="plDlgTitle">
-  <div class="dlg">
-    <div class="dlg-head"><h2 id="plDlgTitle" data-i="plNowLbl">正在播放</h2></div>
-    <div class="dlg-body">
+<dialog id="plDlg" class="plp" aria-labelledby="plDlgTitle">
+  <div class="plp-in">
+    <div class="plp-top">
+      <button class="plp-ic" type="button" data-plp="collapse" data-i-aria="plCollapse"><svg class="icon" viewBox="0 0 24 24"><path d="M6 10l6 6 6-6"/></svg></button>
+      <h2 id="plDlgTitle" data-i="plNowLbl">正在播放</h2>
+      <button class="plp-ic" type="button" id="plSetBtn" data-plp="set" aria-expanded="false" data-i-aria="plSetTip"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8"/></svg></button>
+      <button class="plp-ic" type="button" id="plShut" data-i-aria="plShut"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="plp-body">
       <div class="pl-now" id="plNow"></div>
+      <div class="pl-line d"><span class="pl-t" id="plDT0">0:00</span><input class="pl-seek" id="plSeekD" type="range" min="0" max="1000" step="1" value="0" data-i-aria="plSeek"><span class="pl-t" id="plDT1">0:00</span></div>
       <div class="pl-dctl">
+        <button class="pl-btn pl-mode" type="button" id="plModeD" data-pl="mode"></button>
         <button class="pl-btn pl-pn2" type="button" data-pl="prev" data-i-aria="plPrev"><svg class="icon fill" viewBox="0 0 24 24"><path d="M6.5 5h2v14h-2zM19 5.5v13L9.5 12z"/></svg></button>
         <button class="pl-btn sk" type="button" data-pl="back" data-i-aria="plBack">−15</button>
         <button class="pl-btn pl-main" type="button" id="plToggleD" data-pl="toggle"></button>
         <button class="pl-btn sk" type="button" data-pl="fwd" data-i-aria="plFwd">+30</button>
         <button class="pl-btn pl-pn2" type="button" data-pl="next" data-i-aria="plNextEp"><svg class="icon fill" viewBox="0 0 24 24"><path d="M15.5 5h2v14h-2zM5 5.5v13L14.5 12z"/></svg></button>
       </div>
-      <div class="pl-line d"><span class="pl-t" id="plDT0">0:00</span><input class="pl-seek" id="plSeekD" type="range" min="0" max="1000" step="1" value="0" data-i-aria="plSeek"><span class="pl-t" id="plDT1">0:00</span></div>
-      <h3 data-i="focusTitle">专注模式</h3><div class="pl-chips"><button type="button" data-pl="focus" data-i="focusOpen">全屏只留图案和声音</button></div>
-      <h3 data-i="plSpeed">倍速</h3><div class="pl-chips" id="plRates"></div>
-      <h3 data-i="plSleep">定时关闭</h3><div class="pl-chips" id="plSleeps"></div>
-      <h3 data-i="plNext">播放列表</h3><ol class="pl-queue" id="plList"></ol>
+      <div class="plp-qh"><h3 data-i="plNext">播放列表</h3><span class="plp-qn" id="plQn"></span><button class="plp-clear" type="button" id="plClear"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg><span data-i="plClearS">清空</span></button></div>
+      <ol class="pl-queue" id="plList"></ol>
     </div>
-    <div class="dlg-foot"><button class="btn" type="button" id="plClear" data-i="plClear">清空列表</button><button class="btn danger" type="button" id="plShut" data-i="plShut">关闭播放器</button><button class="btn primary" type="button" id="plDone" data-i="plDone">完成</button></div>
+    <div class="plp-set" id="plSetSheet" hidden>
+      <div class="plp-set-h"><b data-i="plSetT">播放设置</b><button class="plp-ic" type="button" data-plp="setx" data-i-aria="plSetClose"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+      <div class="plp-row"><div class="l" data-i="plSrcL">音源</div><div class="pl-chips" id="plSrcs"></div></div>
+      <div class="plp-row plp-tg"><div><div class="l" data-i="plDataL">手机流量下省流量</div><div class="d" data-i="plDataD">不自动播放大文件（无损约 30–50 MB）</div></div><button class="plp-sw" type="button" id="plDataSw" role="switch" data-i-aria="plDataL"></button></div>
+      <div class="plp-row"><div class="l" data-i="plSleep">定时关闭</div><div class="pl-chips" id="plSleeps"></div></div>
+      <div class="plp-row" id="plRatesRow"><div class="l" data-i="plSpeed">倍速</div><div class="pl-chips" id="plRates"></div></div>
+      <div class="plp-foot"><button class="plp-link" type="button" data-pl="focus" data-i="plFocusL">专注模式 ›</button><button class="plp-link" type="button" id="plWipe" data-i="plWipe">清除这台设备上的听歌记录</button></div>
+    </div>
   </div>
 </dialog>
 
@@ -2495,6 +2546,10 @@ Object.assign(I18N.zh,{trMenuScreen:'翻译本屏', trMenuAll:'翻译本章', tr
 Object.assign(I18N.en,{trMenuScreen:'Translate this screen', trMenuAll:'Translate this chapter', trMenuToc:'Translate the contents', trMenuCycle:x=>`Showing: ${x} (click to switch)`, trLeft:n=>`About ${n} characters left to translate today`, trAllDone:'This page is translated already', trTocNone:'There are no contents to translate here', trTocDone:'The contents are translated', bookTrBtn:'Translate the summary'});
 Object.assign(I18N.zh,{pinTip:'固定在左边', unpinTip:'取消固定', eyeLbl:'护眼', eye_follow:'跟随系统', eye_sepia:'米黄', eye_green:'护眼绿', eye_dark:'深色', eyeTip:x=>`护眼：现在是“${x}”，点一下换下一种`, eyeNow:x=>`护眼：${x}`, fsNow:n=>`字号 ${n}%`, pgPrev:'上一页', pgNext:'下一页', fsSmaller:'缩小字号', fsBigger:'放大字号', rbarTip:'字号和页码'});
 Object.assign(I18N.en,{pinTip:'Pin at the left', unpinTip:'Unpin', eyeLbl:'Eye care', eye_follow:'Follow system', eye_sepia:'Sepia', eye_green:'Green', eye_dark:'Dark', eyeTip:x=>`Eye care: now "${x}", click for the next`, eyeNow:x=>`Eye care: ${x}`, fsNow:n=>`Text size ${n}%`, pgPrev:'Previous page', pgNext:'Next page', fsSmaller:'Smaller text', fsBigger:'Bigger text', rbarTip:'Text size and page'});
+Object.assign(I18N.zh,{plCollapse:'收起', plSetTip:'播放设置', plSetT:'播放设置', plSetClose:'关闭设置', plSrcL:'音源', plSrc_whole:'整首优先', plSrc_speed:'速度优先', plSrc_free:'只用免费合规源', plDataL:'手机流量下省流量', plDataD:'不自动播放大文件（无损约 30–50 MB）', plClearS:'清空', plQnSongs:n=>`${n} 首`, plQnEps:n=>`${n} 集`, plFocusL:'专注模式 ›', plWipe:'清除这台设备上的听歌记录', plWiped:'听歌记录已清除', plCleared:'已清空', plUndo:'撤销'});
+Object.assign(I18N.en,{plCollapse:'Fold', plSetTip:'Player settings', plSetT:'Player settings', plSetClose:'Close settings', plSrcL:'Source', plSrc_whole:'Whole songs first', plSrc_speed:'Fastest first', plSrc_free:'Free sources only', plDataL:'Spare mobile data', plDataD:'Big files (lossless, 30–50 MB) are not played by themselves', plClearS:'Clear', plQnSongs:n=>`${n} songs`, plQnEps:n=>`${n} episodes`, plFocusL:'Focus mode ›', plWipe:'Clear what this device remembers of listening', plWiped:'Listening history cleared', plCleared:'Cleared', plUndo:'Undo'});
+Object.assign(I18N.zh,{plMode_list:'列表循环', plMode_one:'单曲循环', plMode_shuffle:'随机播放', plMode_order:'顺序播放', plSlow:'这个音源加载有点慢，再等一下', plBigAsk:mb=>`这首歌的文件很大（约 ${mb} MB），现在是手机流量`, plBigGo:'仍然播放'});
+Object.assign(I18N.en,{plMode_list:'Repeat the list', plMode_one:'Repeat one', plMode_shuffle:'Shuffle', plMode_order:'In order', plSlow:'This source is slow to load; waiting a little longer', plBigAsk:mb=>`This file is big (about ${mb} MB) and you are on mobile data`, plBigGo:'Play anyway'});
 Object.assign(I18N.zh,{newVer:'有新版本了', newVerGo:'刷新', newVerLater:'以后再说', updAt:w=>`已更新 ${w}`, updBusy:'更新中…', updGo:'现在更新', pullDown:'下拉刷新', pullGo:'松开刷新', pullOk:'已更新', pullOff:'没连上网，还是上次的'});
 Object.assign(I18N.en,{newVer:'A new version is ready', newVerGo:'Refresh', newVerLater:'Not now', updAt:w=>`Updated ${w}`, updBusy:'Updating…', updGo:'Update now', pullDown:'Pull to refresh', pullGo:'Release to refresh', pullOk:'Updated', pullOff:'No connection: still the last one'});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
@@ -4800,8 +4855,13 @@ $('#introLink').addEventListener('click',()=>{ document.body.classList.remove('d
 /* ================= the player: an episode's sound plays on at the foot of the page while you read or look around =================
    The sound is played from where its publisher put it (nothing passes through this site, nothing is stored); what is kept here is the list, the speed, the volume and how far every episode was heard (this browser only). */
 const PL_BACK=15, PL_FWD=30, PL_RATES=[.75,1,1.25,1.5,1.75,2], PL_SLEEPS=[0,15,30,60,-1], PL_KEEP=400;
+const PL_MODES=['list','one','shuffle','order'], PL_SRCS=['whole','speed','free'], PL_FREE=new Set(['audius','jamendo','apple','deezer']);          // play modes (music only); which sounds to prefer; the sources that are free to play (Apple and Deezer: the 30-second previews they publish)
+const PL_STALL_MS=Math.max(1500,+LS.get('plStallMs',8000)||8000);                                     // a sound that has not begun to play after this long is given up for the next one of the song
 const plAudio=$('#plAudio'), plDlg=$('#plDlg');
-const pl={q:[], i:-1, rate:1, sleepAt:0, sleepEnd:false, sleepMin:0, loaded:'', want:0, savedAt:0, shown:'', drag:false};              // q: ids of the episodes; q[i] is the one in the bar
+const pl={q:[], i:-1, rate:1, sleepAt:0, sleepEnd:false, sleepMin:0, loaded:'', want:0, savedAt:0, shown:'', drag:false, mode:'list', cands:[], ci:0, stallT:0, hist:[], bigOk:new Set(), pre:'', preA:null};              // q: ids of the episodes; q[i] is the one in the bar
+pl.mode=(m=>PL_MODES.includes(m)?m:'list')(LS.get('plMode','list'));
+const plSet=(s=>({src:PL_SRCS.includes(s.src)?s.src:'whole', data:s.data!==false, lyr:s.lyr!==false}))(LS.get('plSet',{}) || {});          // the few settings of the player: which sounds to prefer, spare the mobile data, show the words
+const plSetSave=()=>LS.set('plSet',{src:plSet.src, data:plSet.data, lyr:plSet.lyr});
 const fmtDur=s=>{ s=Math.max(0,Math.floor(+s||0)); const h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(x).padStart(2,'0'); };
 function plAudioOf(it){ return it && it.type==='link' && it.audio && httpUrl(it.audio.url) ? it.audio : null; }
 const plFind=id=>state.items.find(x=>x.id===id) || state.tmp.get(id) || null;                        // (an episode of the shelf, or one that is only being played: a recommended podcast, a card of the directory)
@@ -4809,6 +4869,24 @@ const plItem=id=>{ const it=plFind(id); return plAudioOf(it) ? it : null; };
 const plCur=()=>pl.i>=0 ? plItem(pl.q[pl.i]) : null;
 const plPlaying=()=>!!pl.loaded && !plAudio.paused;
 const plSrc=u=>location.protocol==='https:' ? u.replace(/^http:/i,'https:') : u;                      // on an https page a sound must come over https (many hosts offer both)
+const plIsMusic=it=>!!it && String(it.id).startsWith('tmp:ls:') && !it.pod;                          // a song of today's listening: it has a play mode (an episode has the speed and the jumps instead)
+const plMode=()=>plIsMusic(plCur()) ? pl.mode : 'order';                                              // (an episode: on to the next one, and stop at the end)
+const plCellular=()=>{ try{ const c=navigator.connection; return !!c && (c.saveData===true || c.type==='cellular' || /^(slow-2g|2g|3g)$/.test(c.effectiveType||'')); }catch(e){ return false; } };
+const plBlocked=(c,id)=>plSet.data && c.big===true && plCellular() && !pl.bigOk.has(id);                // a big file on mobile data is not played by itself
+function plCands(it){                                                                                  // the sounds one song can be played from, in the order to try them (a song with one sound has one)
+  const a=plAudioOf(it); if(!a) return [];
+  let cs=(Array.isArray(it.cands) ? it.cands : []).filter(c=>c && httpUrl(c.audio));
+  if(!cs.length) cs=[{p:'', k:it.preview?'preview':'full', audio:a.url, net:'any', big:false}];
+  if(plSet.src==='free') cs=cs.filter(c=>!c.p || PL_FREE.has(c.p));
+  const home=LS.get('lpRegion', state.lang==='zh'?'cn':'global')==='cn' ? 'cn' : 'global';
+  const rank=c=>[plSet.src==='speed' ? +(c.big===true) : 0, c.k==='preview' ? 1 : 0, c.net==='any' || c.net===home ? 0 : 1];     // (whole before preview, a sound near the reader before one far away; "speed first": the small ones before the big ones)
+  return cs.map((c,i)=>({c,i,r:rank(c)})).sort((x,y)=>{ for(let k=0;k<3;k++) if(x.r[k]!==y.r[k]) return x.r[k]-y.r[k]; return x.i-y.i; }).map(x=>x.c);
+}
+const PL_MODE_ICON={                                                                                  // the play mode, one picture each: the list again, one song again, shuffled, in order and stop
+  list:'<svg class="icon" viewBox="0 0 24 24"><path d="M4 11V9a3 3 0 0 1 3-3h11M15 3l3 3-3 3M20 13v2a3 3 0 0 1-3 3H6M9 21l-3-3 3-3"/></svg>',
+  one:'<svg class="icon" viewBox="0 0 24 24"><path d="M4 11V9a3 3 0 0 1 3-3h11M15 3l3 3-3 3M20 13v2a3 3 0 0 1-3 3H6M9 21l-3-3 3-3M11 10.5l1.5-1V14.5"/></svg>',
+  shuffle:ICON.shuffle,
+  order:'<svg class="icon" viewBox="0 0 24 24"><path d="M4 7h10M4 12h10M4 17h6M18 7v10M15.5 14.5L18 17l2.5-2.5"/></svg>'};
 const plProgMap=()=>LS.get('plProg',{});
 const plPlain=h=>{ try{ return new DOMParser().parseFromString(String(h||''),'text/html').body.textContent.replace(/[ \t]+/g,' ').replace(/\n\s*\n+/g,'\n').trim(); }catch(e){ return ''; } };
 function plPct(it){ const p=plProgMap()[it.id]; if(!p) return 0; const d=p[1]||(plAudioOf(it)||{}).dur||0; return p[2] ? 100 : d ? Math.min(100,Math.round(p[0]/d*100)) : 0; }
@@ -4817,7 +4895,7 @@ function plProgSave(it, at, dur, done){
   const ks=Object.keys(m); if(ks.length>PL_KEEP) ks.sort((a,b)=>m[a][3]-m[b][3]).slice(0,ks.length-PL_KEEP).forEach(k=>delete m[k]);
   LS.set('plProg',m);
 }
-function plSave(){ const it=plCur(); LS.set('pl',{q:pl.q, cur:it?it.id:'', t:Math.floor((pl.loaded?plAudio.currentTime:pl.want)||0), rate:pl.rate}); }
+function plSave(){ const it=plCur(); LS.set('pl',{q:pl.q, cur:it?it.id:'', t:Math.floor((pl.loaded?plAudio.currentTime:pl.want)||0), rate:pl.rate, closed:pl.closed?1:0}); }
 function plShow(it){ const col=state.cols.find(c=>c.id===it.collection); return (col && col.name) || it.from || hostOf(it.url); }
 function plToggleIcon(){ const on=plPlaying(), l=t(on?'plPause':'plPlay'); ['#plToggle','#plToggleD','#plMiniToggle','#fcToggle','#rfToggle'].forEach(s=>{ const b=$(s); b.innerHTML=on?ICON.pause:ICON.play; b.title=l; b.setAttribute('aria-label',l); }); }
 function plMarkCards(){
@@ -4825,7 +4903,7 @@ function plMarkCards(){
   document.querySelectorAll('.card[data-id]').forEach(c=>{ const p=c.querySelector('.cover .play'); if(!p) return; const me=c.dataset.id===cur; c.classList.toggle('is-playing',me); p.innerHTML=me&&on?ICON.pause:ICON.play; });
   listenMark();
 }
-function plNav(){ $('#plPrev').disabled = pl.i<0; $('#plNext').disabled = pl.i<0 || pl.i>=pl.q.length-1; document.querySelectorAll('#plDlg [data-pl="next"]').forEach(b=>{ b.disabled=$('#plNext').disabled; }); document.querySelectorAll('#plDlg [data-pl="prev"]').forEach(b=>{ b.disabled=$('#plPrev').disabled; }); }
+function plNav(){ $('#plPrev').disabled = pl.i<0; $('#plNext').disabled = pl.i<0 || plNextIdx(false)<0; document.querySelectorAll('#plDlg [data-pl="next"]').forEach(b=>{ b.disabled=$('#plNext').disabled; }); document.querySelectorAll('#plDlg [data-pl="prev"]').forEach(b=>{ b.disabled=$('#plPrev').disabled; }); }
 function plTick(){
   const it=plCur(); if(!it) return; const a=plAudioOf(it), cur=pl.loaded?(plAudio.currentTime||0):pl.want, dur=pl.loaded && plAudio.duration>0 && isFinite(plAudio.duration) ? plAudio.duration : (a.dur||0);
   const tm=fmtDur(cur)+(dur?' / '+fmtDur(dur):''), v=dur?Math.round(Math.min(cur/dur,1)*1000):0;
@@ -4835,9 +4913,10 @@ function plTick(){
   if(plDlg.open){ $('#plDT0').textContent=fmtDur(cur); $('#plDT1').textContent=dur?fmtDur(dur):'--:--'; }
 }
 function plRender(){
-  const it=plCur(), bar=$('#player');
+  const it=pl.closed ? null : plCur(), bar=$('#player');                                              // (closed with ×: the list is kept, the bar is not shown until something is played)
   const had=document.body.classList.contains('has-player');
-  bar.hidden=!it; $('#plMini').hidden=!it; document.body.classList.toggle('has-player',!!it);
+  bar.hidden=!it; $('#plMini').hidden=!it; document.body.classList.toggle('has-player',!!it); document.body.classList.toggle('pl-music',plIsMusic(it));
+  document.querySelectorAll('[data-pl="mode"]').forEach(b=>{ b.innerHTML=PL_MODE_ICON[pl.mode]; b.title=t('plMode_'+pl.mode); b.setAttribute('aria-label',t('plMode_'+pl.mode)); });
   if(it && !had && !pl.mini && !$('#reader').hidden) plFold(true,true);                              // a sound starts while a text is open: the bar comes folded (it unfolds when the reader closes)
   if(!it){ pl.shown=''; plMarkCards(); return; }
   $('#plTitle').textContent=it.title; $('#plRate').textContent=pl.rate+'×'; $('#plMiniOpen').title=t('plExpand')+' · '+it.title;
@@ -4854,22 +4933,75 @@ function plSessionState(){
   navigator.mediaSession.playbackState=plAudio.paused?'paused':'playing';
   try{ if(pl.loaded && plAudio.duration>0 && isFinite(plAudio.duration)) navigator.mediaSession.setPositionState({duration:plAudio.duration, playbackRate:plAudio.playbackRate||1, position:Math.min(plAudio.currentTime||0,plAudio.duration)}); }catch(e){}
 }
+function plStart(go){                                                                                  // the sound pl.cands[pl.ci] of the song in the bar: loaded, put where it was left, played when asked for, and given up for the next sound of the song when nothing comes of it
+  const c=pl.cands[pl.ci], id=pl.loaded; if(!c || !id) return;
+  clearTimeout(pl.stallT); pl.go=!!go;
+  plAudio.src=plSrc(c.audio); plAudio.defaultPlaybackRate=pl.rate; plAudio.playbackRate=pl.rate; plAudio.load();
+  const meta=()=>{ plAudio.removeEventListener('loadedmetadata',meta); if(pl.want>0 && plAudio.duration>pl.want+2) plAudio.currentTime=pl.want; };
+  plAudio.addEventListener('loadedmetadata',meta);
+  if(go){
+    const p=plAudio.play(); if(p && p.catch) p.catch(()=>{ plToggleIcon(); });
+    pl.stallT=setTimeout(()=>{ if(pl.loaded===id && plAudio.readyState<3 && !plAudio.paused) plTrouble(id,'stall'); },PL_STALL_MS);
+  }
+}
+function plTrouble(id, why){                                                                          // this sound does not play (an error, nothing for a few seconds, a length that is not the song's): the next sound of the song; none left: the song is given up (or, if it is only slow, waited for)
+  if(pl.loaded!==id) return;
+  clearTimeout(pl.stallT);
+  if(pl.ci<pl.cands.length-1){ if(plAudio.currentTime>3) pl.want=plAudio.currentTime; pl.ci++; plStart(pl.go); return; }
+  if(why==='stall'){ toast(t('plSlow')); return; }
+  plFailed(id);
+}
+function plFailed(id){
+  const it=plItem(id); pl.loaded=''; pl.want=0; plToggleIcon(); plMarkCards();
+  if(id.startsWith('tmp:ls:') && pl.i<pl.q.length-1){ toast(t('lsSkip',cut(it ? it.title : '',24))); plNext(); return; }                 // a song of today's listening that the platform does not give out: on to the next one
+  if(it) toast(t('plFail'), it.url ? t('plOpenOrig') : undefined, it.url ? ()=>window.open(it.url,'_blank','noopener,noreferrer') : undefined);
+}
+function plLenCheck(){                                                                                // the length of the sound is not the song's (a cut, a wrong song): the next sound, when there is one
+  const it=plCur(), c=pl.cands[pl.ci]; if(!it || !c || c.k==='preview' || pl.ci>=pl.cands.length-1) return;
+  const want=plAudioOf(it).dur, d=plAudio.duration;
+  if(want>0 && isFinite(d) && d>0 && Math.abs(d-want)>Math.max(8,want*.15)) plTrouble(pl.loaded,'len');
+}
 function plLoad(i, go, at){
   const id=pl.q[i], it=plItem(id);
   if(!it){ pl.q.splice(i,1); if(i>=pl.q.length) i=pl.q.length-1; if(i<0){ plStop(); return; } return plLoad(i,go,at); }              // gone from the shelf meanwhile
-  pl.i=i;
+  pl.i=i; pl.pre=''; pl.preA=null; pl.closed=false;
   const prog=plProgMap()[id], start = at!==undefined ? at : prog && !prog[2] && prog[0]>5 ? Math.max(0,prog[0]-3) : 0;                    // where it was left, a little before
-  pl.want=start; pl.loaded=id;
-  plAudio.src=plSrc(plAudioOf(it).url); plAudio.defaultPlaybackRate=pl.rate; plAudio.playbackRate=pl.rate; plAudio.load();
-  const meta=()=>{ plAudio.removeEventListener('loadedmetadata',meta); if(pl.want>0 && plAudio.duration>pl.want+2) plAudio.currentTime=pl.want; };
-  plAudio.addEventListener('loadedmetadata',meta);
-  if(go){ const p=plAudio.play(); if(p && p.catch) p.catch(()=>{ plToggleIcon(); }); }
+  const all=plCands(it), cs=all.filter(c=>!plBlocked(c,id));
+  pl.want=start; pl.cands=cs; pl.ci=0;
+  if(!cs.length){
+    pl.loaded=''; plAudio.pause(); plAudio.removeAttribute('src'); plAudio.load();
+    plSession(it); plRender(); plSave(); if(plDlg.open) plSheet();
+    if(all.length){ const mb=Math.max(1,Math.round((all[0].size||30e6)/1048576)); toast(t('plBigAsk',mb), t('plBigGo'), ()=>{ pl.bigOk.add(id); plLoad(pl.q.indexOf(id),true,start); }); }          // (only a big file is left and this is mobile data: asked for, not played by itself)
+    else plFailed(id);
+    return;
+  }
+  pl.loaded=id; plStart(go);
   if(it.unread) markRead(id);
   plSession(it); plRender(); plSave(); if(plDlg.open) plSheet();
 }
+function plNewRound(){ pl.hist=[]; pl.sn=null; }                                                       // a shuffle starts afresh: when the mode is chosen, when the list is another
+function plNextIdx(auto){                                                                              // the place in the list that follows: by the play mode (auto: the song ended by itself); -1 = nothing follows
+  const n=pl.q.length, m=plMode(); if(n<1 || pl.i<0) return -1;
+  if(m==='one' && auto) return pl.i;
+  if(m==='shuffle' && n>1){
+    const cur=pl.q[pl.i]; if(pl.sn && pl.sn.from===cur && pl.q.includes(pl.sn.to)) return pl.q.indexOf(pl.sn.to);               // (the same answer for the song that is prepared and for the one that is played)
+    const seen=new Set(pl.hist.concat([cur])); let left=pl.q.filter(x=>!seen.has(x));
+    if(!left.length){ pl.hist=[]; left=pl.q.filter(x=>x!==cur); }
+    pl.sn={from:cur, to:left[Math.floor(Math.random()*left.length)]}; return pl.q.indexOf(pl.sn.to);
+  }
+  if(pl.i<n-1) return pl.i+1;
+  return m==='order' ? -1 : 0;
+}
+function plPrefetch(){                                                                                // half way through a song the beginning of the next one is asked for, so that it starts at once
+  if(!plIsMusic(plCur()) || !pl.loaded) return;
+  const d=plAudio.duration, c=plAudio.currentTime; if(!(d>0 && isFinite(d)) || (c/d<.5 && d-c>20)) return;
+  const k=plNextIdx(true); if(k<0 || k===pl.i) return; const id=pl.q[k]; if(pl.pre===id) return; pl.pre=id;
+  const it=plItem(id), cs=it ? plCands(it).filter(x=>!x.big) : []; if(!cs.length) return;
+  try{ const a=new Audio(); a.preload='metadata'; a.src=plSrc(cs[0].audio); pl.preA=a; }catch(e){}
+}
 function plStop(){
   plAudio.pause(); plAudio.removeAttribute('src'); plAudio.load();
-  Object.assign(pl,{q:[], i:-1, loaded:'', want:0, shown:'', sleepAt:0, sleepEnd:false, sleepMin:0}); LS.set('pl',{q:[],cur:'',t:0,rate:pl.rate});
+  Object.assign(pl,{q:[], i:-1, loaded:'', want:0, shown:'', sleepAt:0, sleepEnd:false, sleepMin:0, closed:false}); clearTimeout(pl.stallT); plNewRound(); LS.set('pl',{q:[],cur:'',t:0,rate:pl.rate});
   if('mediaSession' in navigator){ try{ navigator.mediaSession.metadata=null; navigator.mediaSession.playbackState='none'; }catch(e){} }
   plRender();
 }
@@ -4879,8 +5011,12 @@ function plToggle(){
   if(plAudio.paused){ const p=plAudio.play(); if(p && p.catch) p.catch(()=>{}); } else { pl.sleepAt=0; pl.sleepMin=0; plAudio.pause(); }
 }
 function plSkip(d){ if(!pl.loaded) return; const dur=plAudio.duration; plAudio.currentTime=Math.max(0, Math.min(isFinite(dur)&&dur>0?dur-1:1e9, (plAudio.currentTime||0)+d)); plTick(); }
-function plNext(){ if(pl.i<pl.q.length-1) plLoad(pl.i+1,true); }
-function plPrev(){ if(pl.loaded && plAudio.currentTime>5){ plAudio.currentTime=0; return; } if(pl.i>0) plLoad(pl.i-1,true); else if(pl.loaded) plAudio.currentTime=0; }
+function plNext(){ const k=plNextIdx(false); if(k<0) return; if(k!==pl.i || pl.q.length===1){ pl.hist.push(pl.q[pl.i]); if(pl.hist.length>200) pl.hist.shift(); } plLoad(k,true); }
+function plPrev(){
+  if(pl.loaded && plAudio.currentTime>5){ plAudio.currentTime=0; return; }
+  if(plMode()==='shuffle' && pl.hist.length){ const k=pl.q.indexOf(pl.hist.pop()); if(k>=0){ plLoad(k,true); return; } }                 // (shuffled: the song that was before)
+  if(pl.i>0) plLoad(pl.i-1,true); else if(pl.loaded) plAudio.currentTime=0;
+}
 function plSetRate(r){ pl.rate=r; plAudio.defaultPlaybackRate=r; plAudio.playbackRate=r; $('#plRate').textContent=r+'×'; plSave(); plSessionState(); if(plDlg.open) plSheet(); }
 function plPlay(id){
   if(!plItem(id)) return;
@@ -4904,6 +5040,9 @@ function plSheet(){                                                             
   } else $('#plNow').innerHTML='';
   $('#plRates').innerHTML=PL_RATES.map(r=>`<button type="button" data-plrate="${r}" aria-pressed="${r===pl.rate}">${r}×</button>`).join('');
   $('#plSleeps').innerHTML=PL_SLEEPS.map(m=>`<button type="button" data-plsleep="${m}" aria-pressed="${m===pl.sleepMin}">${esc(m===0?t('plSleepOff'):m<0?t('plSleepEnd'):t('plSleepMin',m))}</button>`).join('');
+  $('#plSrcs').innerHTML=PL_SRCS.map(s=>`<button type="button" data-plsrc="${s}" aria-pressed="${s===plSet.src}">${esc(t('plSrc_'+s))}</button>`).join('');
+  const sw=$('#plDataSw'); sw.setAttribute('aria-checked',String(plSet.data)); sw.classList.toggle('on',plSet.data);
+  $('#plRatesRow').hidden=plIsMusic(it); $('#plQn').textContent=pl.q.length ? t(plIsMusic(it)?'plQnSongs':'plQnEps',pl.q.length) : '';
   const rows=pl.q.map((id,i)=>[id,i,plItem(id)]).filter(x=>x[2]);
   $('#plList').innerHTML = rows.length ? rows.map(([id,i,x])=>`<li class="${i===pl.i?'cur':''}" data-plid="${esc(id)}"><span class="t" data-plgo="${esc(id)}" title="${esc(x.title)}">${i===pl.i?'▶ ':''}${esc(x.title)}</span><span class="pl-dur">${plAudioOf(x).dur?esc(fmtDur(plAudioOf(x).dur)):''}</span><button type="button" data-plrm="${esc(id)}" title="${esc(t('plRemove'))}" aria-label="${esc(t('plRemove'))}"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></li>`).join('') : `<li class="pl-empty">${esc(t('plEmpty'))}</li>`;
   plToggleIcon(); plNav(); plTick();
@@ -4915,30 +5054,30 @@ function plRemove(id){
 }
 function plAct(k){
   if(k==='toggle') plToggle(); else if(k==='back') plSkip(-PL_BACK); else if(k==='fwd') plSkip(PL_FWD); else if(k==='prev') plPrev(); else if(k==='next') plNext();
+  else if(k==='mode'){ pl.mode=PL_MODES[(PL_MODES.indexOf(pl.mode)+1)%PL_MODES.length]; plNewRound(); LS.set('plMode',pl.mode); toast(t('plMode_'+pl.mode)); plRender(); plNav(); }
   else if(k==='rate') plSetRate(PL_RATES[(PL_RATES.indexOf(pl.rate)+1)%PL_RATES.length]);
-  else if(k==='menu'){ if(!plDlg.open) plDlg.showModal(); plSheet(); }
+  else if(k==='menu'){ pl.popAt=Date.now(); if(!plDlg.open){ plDlg.showModal(); $('#plSetSheet').hidden=true; } plSheet(); }
   else if(k==='fold') plFold(true); else if(k==='expand') plFold(false); else if(k==='focus') focusOpen();
   else if(k==='notes'){ const it=plCur(); if(it){ plDlg.close(); markRead(it.id); openReader(it.id); } }
 }
 plAudio.addEventListener('timeupdate',()=>{
-  plTick(); const now=Date.now(), it=plCur();
+  plTick(); plPrefetch(); const now=Date.now(), it=plCur();
   if(it && now-pl.savedAt>5000){ pl.savedAt=now; plProgSave(it,plAudio.currentTime,plAudio.duration||0,false); plSave(); plSessionState(); }
   if(pl.sleepAt && now>=pl.sleepAt){ pl.sleepAt=0; pl.sleepMin=0; plAudio.pause(); toast(t('plSleepDone')); fcDone(); }
 });
 plAudio.addEventListener('play',()=>{ plToggleIcon(); plMarkCards(); plSessionState(); });
 plAudio.addEventListener('pause',()=>{ const it=plCur(); if(it && pl.loaded && !plAudio.ended) plProgSave(it,plAudio.currentTime,plAudio.duration||0,false); plSave(); plToggleIcon(); plMarkCards(); plSessionState(); });
-plAudio.addEventListener('loadedmetadata',()=>{ plTick(); plSessionState(); });
+plAudio.addEventListener('loadedmetadata',()=>{ plTick(); plSessionState(); plLenCheck(); });
 plAudio.addEventListener('durationchange',plTick);
 plAudio.addEventListener('ended',()=>{
   const it=plCur(); if(it) plProgSave(it,plAudio.duration||0,plAudio.duration||0,true);
   if(pl.sleepEnd){ pl.sleepEnd=false; pl.sleepMin=0; plToggleIcon(); plMarkCards(); return; }
-  if(pl.i<pl.q.length-1) plLoad(pl.i+1,true); else { plToggleIcon(); plMarkCards(); }
+  const k=plNextIdx(true);
+  if(k>=0 && k===pl.i && plMode()==='one'){ plAudio.currentTime=0; const p=plAudio.play(); if(p && p.catch) p.catch(()=>{}); return; }              // (one song again)
+  if(k>=0){ pl.hist.push(pl.q[pl.i]); if(pl.hist.length>200) pl.hist.shift(); plLoad(k,true); } else { plToggleIcon(); plMarkCards(); }
 });
-plAudio.addEventListener('error',()=>{
-  if(!pl.loaded) return; const id=pl.loaded, it=plItem(id); pl.loaded=''; pl.want=0; plToggleIcon(); plMarkCards();
-  if(id.startsWith('tmp:ls:') && pl.i<pl.q.length-1){ toast(t('lsSkip',cut(it ? it.title : '',24))); plNext(); return; }                 // a song of today's listening that the platform does not give out: on to the next one
-  if(it) toast(t('plFail'), it.url ? t('plOpenOrig') : undefined, it.url ? ()=>window.open(it.url,'_blank','noopener,noreferrer') : undefined);
-});
+plAudio.addEventListener('error',()=>{ if(pl.loaded) plTrouble(pl.loaded,'error'); });
+['playing','canplay'].forEach(ev=>plAudio.addEventListener(ev,()=>clearTimeout(pl.stallT)));
 $('#player').addEventListener('click',e=>{ const b=e.target.closest('[data-pl]'); if(b) plAct(b.dataset.pl); });
 $('#plMini').addEventListener('click',e=>{ const b=e.target.closest('[data-pl]'); if(b) plAct(b.dataset.pl); });
 /* folding: by a finger (the tab, a swipe down: remembered), or by the page itself (a text is opened to read, five minutes of silence: only until that is over). It never closes the player; closing is in the "now playing" page. */
@@ -4967,6 +5106,10 @@ function plSeekInput(e){
 { const v=Math.max(0,Math.min(100,+LS.get('plVol',100)||0)); plAudio.volume=v/100; $('#plVol').value=v; }
 $('#plVol').addEventListener('input',e=>{ plAudio.volume=e.target.value/100; LS.set('plVol',+e.target.value); });
 plDlg.addEventListener('click',e=>{
+  const p=e.target.closest('[data-plp]');
+  if(p){ const k=p.dataset.plp; if(k==='collapse') plDlg.close(); else { const open=k==='set' ? $('#plSetSheet').hidden : false; $('#plSetSheet').hidden=!open; $('#plSetBtn').setAttribute('aria-expanded',String(open)); } return; }
+  const sr=e.target.closest('[data-plsrc]'); if(sr){ plSet.src=sr.dataset.plsrc; plSetSave(); plSheet(); return; }
+  if(e.target.closest('#plDataSw')){ plSet.data=!plSet.data; plSetSave(); plSheet(); return; }
   const c=e.target.closest('[data-pl]'); if(c && c.dataset.pl!=='menu' && c.dataset.pl!=='rate'){ plAct(c.dataset.pl); return; }
   const r=e.target.closest('[data-plrate]'); if(r){ plSetRate(+r.dataset.plrate); return; }
   const s=e.target.closest('[data-plsleep]');
@@ -4974,9 +5117,31 @@ plDlg.addEventListener('click',e=>{
   const g=e.target.closest('[data-plgo]'); if(g){ const k=pl.q.indexOf(g.dataset.plgo); if(k>=0 && k!==pl.i) plLoad(k,true); else if(k===pl.i) plToggle(); return; }
   const x=e.target.closest('[data-plrm]'); if(x){ plRemove(x.dataset.plrm); if(!pl.q.length) plDlg.close(); return; }
 });
-$('#plDone').addEventListener('click',()=>plDlg.close());
-$('#plClear').addEventListener('click',()=>{ const cur=pl.i>=0?pl.q[pl.i]:''; pl.q=cur?[cur]:[]; pl.i=cur?0:-1; plSave(); plSheet(); });
-$('#plShut').addEventListener('click',()=>{ plDlg.close(); plStop(); });
+/* the popup: the player itself (no page of its own). ⌄ folds it (the sound goes on), × closes the player (the sound stops, the bar goes, the list is kept), "clear" empties the list (and can be taken back).
+   It folds by itself when a finger is put outside of it, and after three minutes without a touch, a scroll or a key. */
+const PL_POP_IDLE_MS=180000;
+pl.popAt=0;
+['pointerdown','keydown','touchstart','wheel','scroll','input'].forEach(ev=>plDlg.addEventListener(ev,()=>{ pl.popAt=Date.now(); },{passive:true,capture:true}));
+setInterval(()=>{ if(plDlg.open && Date.now()-pl.popAt>=PL_POP_IDLE_MS) plDlg.close(); },1000);
+plDlg.addEventListener('close',()=>{ $('#plSetSheet').hidden=true; $('#plSetBtn').setAttribute('aria-expanded','false'); });
+plDlg.addEventListener('click',e=>{ if(e.target===plDlg) plDlg.close(); });                           // (a tap on what is behind the popup)
+function plClose(){                                                                                    // × : stop, hide the bar, keep the list (the next song played comes into it)
+  plAudio.pause(); clearTimeout(pl.stallT); pl.loaded=''; plAudio.removeAttribute('src'); plAudio.load();
+  pl.closed=true; plSave(); plRender();
+  if('mediaSession' in navigator){ try{ navigator.mediaSession.playbackState='none'; }catch(e){} }
+}
+function plClearAll(){                                                                                 // "clear": the whole list goes (the song that plays too); "undo" in the toast brings it back, paused
+  if(!pl.q.length) return;
+  const snap={q:pl.q.slice(), i:pl.i, t:Math.floor((pl.loaded?plAudio.currentTime:pl.want)||0)};
+  plStop(); plDlg.close();
+  toast(t('plCleared'), t('plUndo'), ()=>{ pl.q=snap.q.filter(id=>plItem(id)); pl.i=pl.q.length ? Math.min(Math.max(snap.i,0),pl.q.length-1) : -1; pl.want=snap.t; pl.closed=false; plNewRound(); plRender(); plSave(); });
+}
+$('#plClear').addEventListener('click',plClearAll);
+$('#plShut').addEventListener('click',()=>{ plDlg.close(); plClose(); });
+$('#plWipe').addEventListener('click',()=>{                                                            // what this browser remembers of the listening goes (the songs liked and the play lists stay: they were made on purpose)
+  LS.set('lpRecent',[]); const m=plProgMap(); Object.keys(m).forEach(k=>{ if(k.startsWith('tmp:ls:')) delete m[k]; }); LS.set('plProg',m);
+  toast(t('plWiped'));
+});
 $('#readerPlay').addEventListener('click',()=>{ if(state.readingId) plPlay(state.readingId); });
 new MutationObserver(()=>plMarkCards()).observe($('#grid'),{childList:true});                        // (a card made again keeps its "playing" look)
 window.addEventListener('pagehide',()=>{ const it=plCur(); if(it && pl.loaded) plProgSave(it,plAudio.currentTime,plAudio.duration||0,false); plSave(); });
@@ -5059,7 +5224,7 @@ $('#rfPill').addEventListener('click',e=>{
 });
 function plRestore(){                                                                                // the list and the place of the last visit: waiting in the bar, paused (a page may not start a sound by itself)
   const s=LS.get('pl',null); if(!s || !Array.isArray(s.q)) return;
-  pl.q=s.q.map(String).filter(id=>plItem(id)); pl.rate=PL_RATES.includes(+s.rate)?+s.rate:1;
+  pl.q=s.q.map(String).filter(id=>plItem(id)); pl.rate=PL_RATES.includes(+s.rate)?+s.rate:1; pl.closed=!!s.closed;
   const k=pl.q.indexOf(String(s.cur||'')); pl.i=pl.q.length ? (k>=0?k:0) : -1; pl.want=k>=0 ? Math.max(0,+s.t||0) : 0;
   plRender();
 }
@@ -6614,10 +6779,15 @@ const lpKey=id=>id+'|'+state.lang;                                              
 function listenClean(x){                                                                           // one song as the service says it -> ours (only the fields that are used, https pictures, a sound that has an address), or null
   const s=v=>typeof v==='string' ? v : '';
   if(!x || typeof x!=='object' || !s(x.id) || !s(x.title)) return null;
-  const stream=x.mode==='stream' && !!httpUrl(x.audio);
+  const cs=(Array.isArray(x.cands) ? x.cands.slice(0,8) : []).map(c=>{                              // the other sounds of the song (a whole one, a preview ...): only those a player can play
+    if(!c || typeof c!=='object' || !httpUrl(c.audio)) return null;
+    return {p:s(c.p).slice(0,20), k:c.k==='preview'?'preview':'full', audio:httpUrl(c.audio), net:c.net==='global'?'global':c.net==='any'?'any':'cn', big:c.big===true, size:+c.size>0?Math.floor(+c.size):0, dl:c.dl===true, lyr:c.lyr===true, lic:cut(s(c.lic),30)};
+  }).filter(Boolean);
+  const first=httpUrl(x.audio) || (cs[0] ? cs[0].audio : '');
+  const stream=x.mode==='stream' && !!first;
   if(!stream && x.mode!=='embed') return null;
-  return {id:s(x.id).slice(0,60), title:cut(s(x.title),120), artist:cut(s(x.artist),80), cover:s(x.cover).startsWith('https://')?s(x.cover):'', dur:+x.dur>0?Math.floor(+x.dur):0, mode:stream?'stream':'embed',
-          audio:stream?httpUrl(x.audio):'', url:httpUrl(x.url), lic:cut(s(x.lic),30), from:cut(s(x.from),30), net:x.net==='global'?'global':'cn', preview:x.preview===true, date:/^\d{4}-\d{2}-\d{2}$/.test(s(x.date))?x.date:'', show:s(x.show).slice(0,20)};
+  return {id:s(x.id).slice(0,60), title:cut(s(x.title),120), artist:cut(s(x.artist),80), cover:s(x.cover).startsWith('https://')?s(x.cover):'', dur:+x.dur>0?Math.floor(+x.dur):0, mode:stream?'stream':'embed', cands:cs,
+          audio:stream?first:'', url:httpUrl(x.url), lic:cut(s(x.lic),30), from:cut(s(x.from),30), net:x.net==='global'?'global':'cn', preview:x.preview===true, date:/^\d{4}-\d{2}-\d{2}$/.test(s(x.date))?x.date:'', show:s(x.show).slice(0,20)};
 }
 function lpCleanGroup(g){
   const s=v=>typeof v==='string' ? v : '';
@@ -6649,6 +6819,7 @@ function lpLoad(id, force){                                                     
     try{
       const r=await fetch(api+'?g='+encodeURIComponent(id)+'&lang='+state.lang,{credentials:'omit'}), d=await r.json().catch(()=>null), g=d && d.ok ? d.group : null;
       const items=g && Array.isArray(g.items) ? g.items.slice(0,240).map(listenClean).filter(Boolean) : [];
+      const pod=lpTypeOf(id)==='podcast'; items.forEach(x=>{ x.pod=pod; });                              // (an episode has the speed and the jumps, a song has the play mode)
       if(!items.length) throw Object.assign(new Error('empty'), {svc:d && !d.ok ? (state.lang==='zh' ? d.message : d.message_en) : ''});
       L.data.set(key,{state:'ok', t:Date.now(), items, sub:cut(String(g.sub||''),120), sub_en:cut(String(g.sub_en||''),120)});
     }catch(e){ L.data.set(key,{state:'err', t:Date.now(), items:old && old.items || [], msg:e.svc || t('lpErr')}); }
@@ -6664,7 +6835,7 @@ function lpPods(){                                                              
   for(const it of d.items){
     if(!it.audio || !httpUrl(it.audio.url) || state.vote[it.id]===-1) continue;
     const sh=state.shelfMap.get(it.shelf), name=(sh && sh.name) || hostOf(it.url), date=String(it.date||'');
-    eps.push({id:'pod:'+it.id, title:it.title, artist:name, cover:String(it.image||'').startsWith('https://')?it.image:'', dur:+it.audio.dur>0?Math.floor(+it.audio.dur):0, mode:'stream', audio:httpUrl(it.audio.url), url:httpUrl(it.url), lic:'', from:name, net:'cn', preview:false, date, show:it.shelf});
+    eps.push({id:'pod:'+it.id, title:it.title, artist:name, cover:String(it.image||'').startsWith('https://')?it.image:'', dur:+it.audio.dur>0?Math.floor(+it.audio.dur):0, mode:'stream', audio:httpUrl(it.audio.url), url:httpUrl(it.url), lic:'', from:name, net:'cn', preview:false, pod:true, date, show:it.shelf});
     const s=by.get(it.shelf) || {id:it.shelf, name, n:0, date:''}; s.n++; if(date>s.date) s.date=date; by.set(it.shelf,s);
   }
   eps.sort((a,b)=>b.date.localeCompare(a.date));
@@ -6818,7 +6989,7 @@ function listenMark(){ const cur=pl.i>=0 ? pl.q[pl.i] : '', on=plPlaying(); docu
 function listenTmp(x){                                                                              // a song as the player takes it (an item that is only being played, kept nowhere)
   const id='tmp:ls:'+x.id;
   if(!state.tmp.get(id)) state.tmp.set(id,{id, source:'tmp', type:'link', url:x.id.startsWith('pod:') ? x.url : '', title:x.title, summary:x.lic ? [x.artist, x.lic, x.lic.includes(x.from) ? '' : x.from].filter(Boolean).join(' · ') : '', image:x.cover||'',
-    audio:{url:x.audio, type:'audio/mpeg', dur:x.dur||0}, keywords:[], lang:'', date:x.date||'', category:'notes', from:x.artist||x.from});
+    audio:{url:x.audio, type:'audio/mpeg', dur:x.dur||0}, cands:x.cands||[], pod:!!x.pod, preview:!!x.preview, keywords:[], lang:'', date:x.date||'', category:'notes', from:x.artist||x.from});
   return id;
 }
 function listenGo(id, list){                                                                         // a song of `list`: it plays in the bar, and the songs after it in the list follow (what was in the bar's list stays); a video opens in its platform's player
