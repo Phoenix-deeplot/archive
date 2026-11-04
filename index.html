@@ -402,13 +402,18 @@ body.noting{overflow:hidden}
 .ls-chips{margin:0 0 8px}
 .ls-sub{margin:0 0 6px}
 .ls-rows{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px}
-.ls-row{display:flex;align-items:center;border-bottom:1px solid var(--rule);min-width:0}
-.ls-main{flex:1;min-width:0;display:grid;grid-template-columns:44px minmax(0,1fr) 36px;gap:12px;align-items:center;text-align:left;border:0;background:none;color:inherit;font:inherit;padding:8px 4px;min-height:60px;cursor:pointer}
-.ls-cv{width:44px;height:44px;border-radius:8px;overflow:hidden;background:var(--surface);display:grid;place-items:center;font-family:var(--serif);font-size:18px;color:var(--muted)}
+.ls-row{display:flex;align-items:center;border-bottom:1px solid var(--rule);min-width:0;font-family:var(--sans)}
+.ls-main{flex:1;min-width:0;display:grid;grid-template-columns:28px 48px minmax(0,1fr) auto;gap:12px;align-items:center;text-align:left;border:0;background:none;color:inherit;font:inherit;padding:6px 0;min-height:60px;cursor:pointer}
+.ls-row.nonum .ls-main{grid-template-columns:48px minmax(0,1fr) auto}
+.ls-n{display:grid;place-items:center;font-size:16px;font-variant-numeric:tabular-nums;color:var(--muted)}
+.ls-n em{font-style:normal}
+.ls-n.top{color:var(--accent);font-weight:500}
+.ls-cv{position:relative;width:48px;height:48px;border-radius:6px;overflow:hidden;background:var(--surface);display:grid;place-items:center;font-size:18px;color:var(--muted)}
 .ls-cv img{width:100%;height:100%;object-fit:cover;display:block}
 .ls-tx{min-width:0}
-.ls-t{display:block;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ls-m{display:flex;margin-top:2px;font-size:12px;color:var(--muted);overflow:hidden;white-space:nowrap}
+.ls-t{display:block;font-size:16px;font-weight:500;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ls-pv{font-style:normal;font-weight:400;font-size:11px;line-height:1;vertical-align:2px;margin-left:6px;padding:2px 5px;border:1px solid var(--rule);border-radius:4px;color:var(--muted)}
+.ls-m{display:flex;margin-top:2px;font-size:13px;color:var(--muted);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .ls-w{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .ls-x{flex:none}
 .ls-ic{width:36px;height:36px;border-radius:50%;border:1px solid var(--rule);display:grid;place-items:center;color:var(--ink)}
@@ -417,6 +422,22 @@ body.noting{overflow:hidden}
 .ls-row.is-playing .ls-t{color:var(--accent)}
 .ls-row.is-playing .ls-ic{background:var(--accent);border-color:var(--accent);color:var(--bg)}
 .ls-src{flex:0 0 auto;display:grid;place-items:center;min-width:44px;min-height:44px;font-size:14px;color:var(--muted);text-decoration:none}
+.ls-like,.ls-more{flex:none;width:44px;height:44px;border:0;background:none;color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0;border-radius:50%}
+.ls-like:hover,.ls-more:hover{color:var(--ink);background:var(--rule)}
+.ls-like .icon,.ls-more .icon{width:20px;height:20px}
+.ls-like[aria-pressed="true"]{color:var(--accent)}
+.ls-like[aria-pressed="true"] .icon{fill:currentColor}
+.ls-bars{display:none;align-items:flex-end;justify-content:center;gap:2px;height:14px}
+.ls-bars b{width:3px;background:var(--accent);border-radius:1px;animation:lsbar .9s ease-in-out infinite}
+.ls-bars b:nth-child(1){height:60%}
+.ls-bars b:nth-child(2){height:100%;animation-delay:.25s}
+.ls-bars b:nth-child(3){height:45%;animation-delay:.5s}
+@keyframes lsbar{50%{transform:scaleY(.4)}}
+.ls-row.is-playing .ls-n em{display:none}
+.ls-row.is-playing .ls-n .ls-bars{display:flex}
+.ls-row.nonum.is-playing .ls-cv .ls-bars{display:flex;position:absolute;inset:0;align-items:center;background:rgba(0,0,0,.45)}
+.ls-row.nonum.is-playing .ls-cv .ls-bars b{background:#fff}
+@media (prefers-reduced-motion:reduce){.ls-bars b{animation:none}}
 @media(max-width:820px){.ls-rows{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:620px){.ls>.dr-note:not(.ls-sub){display:none}}
 /* the listening page: one row (music / podcasts, the sort, cards / rows), ONE strip of lists, and the songs straight under it; the title and its subtitle in one line */
@@ -461,6 +482,55 @@ body.dir-listen .view-head p,body.dir-hot .view-head p{font-size:14px}
 .lp-sc.is-playing .lp-t{color:var(--accent)}
 .lp-sc.is-playing .lp-pl{background:var(--accent)}
 .lp-src{position:absolute;top:0;right:0;min-width:36px;min-height:36px;color:#fff;background:rgba(0,0,0,.4);border-radius:0 10px 0 10px;font-size:13px}
+/* the music side: tabs, regions, my things, the radio, shelves and card grids; one family of letters (the system's sans) all over the listening page */
+.lp,.lp-songs,.lsm{font-family:var(--sans)}
+.lp-region{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border:1px solid var(--rule);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;font-size:13.5px;cursor:pointer}
+.lp-region .icon{width:16px;height:16px;color:var(--muted)}
+.lp-tabs{display:flex;border-bottom:1px solid var(--rule);margin:0 0 6px}
+.lp-tab{flex:1;max-width:180px;min-height:46px;border:0;background:none;color:var(--muted);font:inherit;font-size:16px;cursor:pointer;border-bottom:2px solid transparent}
+.lp-tab[aria-selected="true"]{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
+.lp-regs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 4px}
+.lp-reg{min-height:40px;padding:0 16px;border:1px solid var(--rule);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+.lp-reg[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.lp-cg{font:inherit;font-size:14px;min-height:40px;border:1px solid var(--rule);border-radius:8px;background:var(--bg);color:var(--ink);padding:0 8px;margin:4px 0}
+.lp-h{margin:18px 0 8px;font-family:var(--sans);font-size:15px;font-weight:600}
+.lp-mine{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 4px}
+.lp-mc{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:64px;padding:10px 12px;border:1px solid var(--rule);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;text-align:left}
+.lp-mc b{font-size:15px;font-weight:500}
+.lp-mc span{font-size:12.5px;color:var(--muted)}
+.lp-hero{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0 4px;padding:14px 16px;border-radius:14px;background:var(--surface);border:1px solid var(--rule)}
+.lp-hero-t{flex:1;min-width:140px;display:grid;gap:2px}
+.lp-hero-t b{font-size:17px;font-weight:600}
+.lp-hero-t span{font-size:13px;color:var(--muted)}
+.lp-hero-a{display:flex;gap:8px}
+.lp-hero-a .btn{display:inline-flex;align-items:center;gap:6px;min-height:44px}
+.lp-hero-a .btn .icon{width:16px;height:16px}
+.lp-shelf{display:flex;gap:12px;overflow-x:auto;padding:2px 0 8px;scroll-snap-type:x proximity;scrollbar-width:none}
+.lp-shelf::-webkit-scrollbar{display:none}
+.lp-gc{flex:0 0 112px;display:grid;gap:6px;border:0;background:none;padding:0;color:var(--ink);font:inherit;text-align:left;cursor:pointer;scroll-snap-align:start}
+.lp-gg .lp-gc{flex:none;width:auto}
+.lp-gcv{display:grid;place-items:center;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:hsl(var(--h) 45% 55% / .22);color:var(--ink)}
+.lp-gcv img{width:100%;height:100%;object-fit:cover}
+.lp-gcv b{font-size:22px;font-weight:600}
+.lp-gct{font-size:13.5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lp-gg{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:12px 10px}
+.lp-moreb2{margin:10px 0 0;min-height:44px;border:1px solid var(--rule);background:var(--bg);color:var(--ink);border-radius:999px;padding:0 18px;font:inherit;font-size:14px;cursor:pointer}
+.lp-back{margin-left:-10px}
+.lp-rows{grid-template-columns:minmax(0,1fr);max-width:820px}
+.lp-songs-h h3{font-family:var(--sans);font-weight:600}
+@media(max-width:620px){.lp-tab{max-width:none}.lp-gg{grid-template-columns:repeat(3,minmax(0,1fr))}.lp-mine{gap:6px}.lp-mc{padding:8px 10px}}
+.lsm-head{display:flex;align-items:center;gap:12px;padding:16px 18px 10px;border-bottom:1px solid var(--rule)}
+.lsm-body{padding:4px 8px 14px;overflow-y:auto}
+.lsm-act{display:flex;align-items:center;gap:14px;width:100%;min-height:52px;padding:0 10px;border:0;background:none;color:var(--ink);font:inherit;font-size:16px;text-align:left;cursor:pointer;border-radius:8px}
+.lsm-act:hover{background:var(--rule)}
+.lsm-act .icon{width:22px;height:22px;color:var(--muted);flex:none}
+.lsm-act .r{margin-left:auto;font-size:12.5px;color:var(--muted)}
+.lsm-dot{width:28px;height:28px;border-radius:6px;background:var(--rule);display:grid;place-items:center;font-size:13px;flex:none}
+.lsm-new{display:flex;gap:8px;padding:10px}
+.lsm-new input{flex:1;min-width:0;min-height:44px;border:1px solid var(--rule);border-radius:8px;background:var(--bg);color:var(--ink);padding:0 10px;font:inherit;font-size:15px}
+.plp-like{flex:none;color:var(--muted)}
+.plp-like[aria-pressed="true"]{color:var(--accent)}
+.plp-like[aria-pressed="true"] .icon{fill:currentColor}
 @media(max-width:620px){
   body.dir-listen .view-head,body.dir-hot .view-head{padding:12px 0 6px}
   .lp-strip{flex-wrap:nowrap;overflow-x:auto;margin:0 -16px 4px;padding:2px 16px;scrollbar-width:none}
@@ -994,6 +1064,9 @@ body.has-player .fab{bottom:calc(var(--pl-h) + 16px + env(safe-area-inset-bottom
 .pl-btn .icon{width:22px;height:22px}
 .pl-btn.sk{font-size:12.5px;font-weight:700;border-radius:10px;width:46px;font-variant-numeric:tabular-nums}
 .pl-btn.pl-rate{width:auto;min-width:48px;padding:0 10px;border-radius:999px;font-size:13px;font-weight:700;border:1px solid var(--rule)}
+.pl-btn.pl-mode{display:none}
+body.pl-music .pl-btn.pl-mode{display:grid}
+body.pl-music .pl-btn.sk,body.pl-music .pl-btn.pl-rate{display:none}
 .pl-main{width:48px;height:48px;background:var(--ink);color:var(--bg)}
 .pl-main:hover{background:var(--ink);opacity:.88}
 @media (pointer:coarse){.pl-vol{display:none}}
@@ -1150,6 +1223,42 @@ body.has-player.pl-folded{--pl-h:0px}
 .pl-queue li.cur .t{color:var(--accent);font-weight:600}
 .pl-queue li button{width:44px;height:44px;border:0;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;padding:0}
 .pl-queue li button:hover{color:var(--ink)}
+dialog.plp{width:min(520px,100%);max-width:100%;margin:auto auto 0;border:0;border-radius:20px 20px 0 0;background:var(--surface);color:var(--ink);padding:0;max-height:min(88dvh,780px);font-family:var(--sans)}
+dialog.plp::backdrop{background:rgba(10,14,18,.45)}
+.plp-in{display:flex;flex-direction:column;max-height:inherit;position:relative}
+.plp-top{display:flex;align-items:center;gap:2px;padding:8px 10px 2px;flex:none}
+.plp-top h2{flex:1;margin:0;text-align:center;font-family:var(--sans);font-size:15px;font-weight:600}
+.plp-ic{width:44px;height:44px;border:0;background:none;color:var(--ink);border-radius:50%;display:grid;place-items:center;cursor:pointer;padding:0;flex:none}
+.plp-ic:hover{background:var(--rule)}
+.plp-ic .icon{width:22px;height:22px}
+.plp-body{overflow-y:auto;padding:4px 18px 18px}
+.plp .pl-hero{margin:4px 0 6px;gap:12px}
+.plp .pl-hero img,.plp .pl-hero .pl-letter{width:60px;height:60px;border-radius:8px}
+.plp .pl-hero-t b{font-size:17px;font-weight:600}
+.plp .pl-hero-t span{font-size:13px}
+.plp-qh{display:flex;align-items:center;gap:8px;margin:12px 0 0;border-top:1px solid var(--rule)}
+.plp-qh h3{margin:0;font-size:15px;font-weight:600;font-family:var(--sans)}
+.plp-qn{font-size:12.5px;color:var(--muted);flex:1}
+.plp-clear{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 6px;border:0;background:none;color:var(--muted);font:inherit;font-size:13.5px;cursor:pointer}
+.plp-clear:hover{color:var(--ink)}
+.plp-clear .icon{width:17px;height:17px}
+.plp-set{position:absolute;inset:0;background:var(--surface);border-radius:20px 20px 0 0;padding:8px 18px 18px;overflow-y:auto;z-index:2}
+.plp-set[hidden]{display:none}
+.plp-set-h{display:flex;align-items:center;justify-content:space-between;min-height:48px}
+.plp-set-h b{font-size:16px;font-weight:600}
+.plp-row{padding:12px 0;border-bottom:1px solid var(--rule)}
+.plp-row[hidden]{display:none}
+.plp-row .l{font-size:14.5px;font-weight:600}
+.plp-row .d{font-size:12.5px;color:var(--muted);margin-top:2px}
+.plp-tg{display:flex;align-items:center;gap:12px}
+.plp-tg>div:first-child{flex:1}
+.plp-sw{width:46px;height:28px;border-radius:14px;border:0;background:var(--rule);position:relative;cursor:pointer;flex:none;padding:0}
+.plp-sw:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--surface);transition:left .15s}
+.plp-sw.on{background:var(--ink)}
+.plp-sw.on:after{left:21px}
+.plp-foot{display:flex;flex-direction:column;align-items:flex-start;padding-top:8px}
+.plp-link{border:0;background:none;color:var(--muted);font:inherit;font-size:13.5px;min-height:44px;padding:0;text-align:left;cursor:pointer}
+.plp-link:hover{color:var(--ink)}
 .pl-empty{color:var(--muted);font-size:14px;margin:6px 0 0}
 .rc-play{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:4px 12px;margin:0 8px 0 0}
 .rc-play .icon{width:14px;height:14px}
@@ -1736,6 +1845,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
   </div>
   <div class="pl-mid">
     <div class="pl-ctl">
+      <button class="pl-btn pl-mode" type="button" id="plMode" data-pl="mode"></button>
       <button class="pl-btn pl-pn" type="button" id="plPrev" data-pl="prev" data-i-aria="plPrev"><svg class="icon fill" viewBox="0 0 24 24"><path d="M6.5 5h2v14h-2zM19 5.5v13L9.5 12z"/></svg></button>
       <button class="pl-btn sk" type="button" data-pl="back" data-i-aria="plBack">−15</button>
       <button class="pl-btn pl-main" type="button" id="plToggle" data-pl="toggle"></button>
@@ -1778,28 +1888,45 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     </div>
   </div>
 </dialog>
-<dialog id="plDlg" aria-labelledby="plDlgTitle">
-  <div class="dlg">
-    <div class="dlg-head"><h2 id="plDlgTitle" data-i="plNowLbl">正在播放</h2></div>
-    <div class="dlg-body">
+<dialog id="plDlg" class="plp" aria-labelledby="plDlgTitle">
+  <div class="plp-in">
+    <div class="plp-top">
+      <button class="plp-ic" type="button" data-plp="collapse" data-i-aria="plCollapse"><svg class="icon" viewBox="0 0 24 24"><path d="M6 10l6 6 6-6"/></svg></button>
+      <h2 id="plDlgTitle" data-i="plNowLbl">正在播放</h2>
+      <button class="plp-ic" type="button" id="plSetBtn" data-plp="set" aria-expanded="false" data-i-aria="plSetTip"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8"/></svg></button>
+      <button class="plp-ic" type="button" id="plShut" data-i-aria="plShut"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="plp-body">
       <div class="pl-now" id="plNow"></div>
+      <div class="pl-line d"><span class="pl-t" id="plDT0">0:00</span><input class="pl-seek" id="plSeekD" type="range" min="0" max="1000" step="1" value="0" data-i-aria="plSeek"><span class="pl-t" id="plDT1">0:00</span></div>
       <div class="pl-dctl">
+        <button class="pl-btn pl-mode" type="button" id="plModeD" data-pl="mode"></button>
         <button class="pl-btn pl-pn2" type="button" data-pl="prev" data-i-aria="plPrev"><svg class="icon fill" viewBox="0 0 24 24"><path d="M6.5 5h2v14h-2zM19 5.5v13L9.5 12z"/></svg></button>
         <button class="pl-btn sk" type="button" data-pl="back" data-i-aria="plBack">−15</button>
         <button class="pl-btn pl-main" type="button" id="plToggleD" data-pl="toggle"></button>
         <button class="pl-btn sk" type="button" data-pl="fwd" data-i-aria="plFwd">+30</button>
         <button class="pl-btn pl-pn2" type="button" data-pl="next" data-i-aria="plNextEp"><svg class="icon fill" viewBox="0 0 24 24"><path d="M15.5 5h2v14h-2zM5 5.5v13L14.5 12z"/></svg></button>
       </div>
-      <div class="pl-line d"><span class="pl-t" id="plDT0">0:00</span><input class="pl-seek" id="plSeekD" type="range" min="0" max="1000" step="1" value="0" data-i-aria="plSeek"><span class="pl-t" id="plDT1">0:00</span></div>
-      <h3 data-i="focusTitle">专注模式</h3><div class="pl-chips"><button type="button" data-pl="focus" data-i="focusOpen">全屏只留图案和声音</button></div>
-      <h3 data-i="plSpeed">倍速</h3><div class="pl-chips" id="plRates"></div>
-      <h3 data-i="plSleep">定时关闭</h3><div class="pl-chips" id="plSleeps"></div>
-      <h3 data-i="plNext">播放列表</h3><ol class="pl-queue" id="plList"></ol>
+      <div class="plp-qh"><h3 data-i="plNext">播放列表</h3><span class="plp-qn" id="plQn"></span><button class="plp-clear" type="button" id="plClear"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg><span data-i="plClearS">清空</span></button></div>
+      <ol class="pl-queue" id="plList"></ol>
     </div>
-    <div class="dlg-foot"><button class="btn" type="button" id="plClear" data-i="plClear">清空列表</button><button class="btn danger" type="button" id="plShut" data-i="plShut">关闭播放器</button><button class="btn primary" type="button" id="plDone" data-i="plDone">完成</button></div>
+    <div class="plp-set" id="plSetSheet" hidden>
+      <div class="plp-set-h"><b data-i="plSetT">播放设置</b><button class="plp-ic" type="button" data-plp="setx" data-i-aria="plSetClose"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+      <div class="plp-row"><div class="l" data-i="plSrcL">音源</div><div class="pl-chips" id="plSrcs"></div></div>
+      <div class="plp-row plp-tg"><div><div class="l" data-i="plDataL">手机流量下省流量</div><div class="d" data-i="plDataD">不自动播放大文件（无损约 30–50 MB）</div></div><button class="plp-sw" type="button" id="plDataSw" role="switch" data-i-aria="plDataL"></button></div>
+      <div class="plp-row"><div class="l" data-i="plSleep">定时关闭</div><div class="pl-chips" id="plSleeps"></div></div>
+      <div class="plp-row" id="plRatesRow"><div class="l" data-i="plSpeed">倍速</div><div class="pl-chips" id="plRates"></div></div>
+      <div class="plp-foot"><button class="plp-link" type="button" data-pl="focus" data-i="plFocusL">专注模式 ›</button><button class="plp-link" type="button" id="plWipe" data-i="plWipe">清除这台设备上的听歌记录</button></div>
+    </div>
   </div>
 </dialog>
 
+<dialog id="lsMenu" class="plp lsm" aria-label="">
+  <div class="plp-in">
+    <div class="lsm-head" id="lsmHead"></div>
+    <div class="lsm-body" id="lsmBody"></div>
+  </div>
+</dialog>
 <dialog id="bkDlg" aria-labelledby="bkTitle">
   <div class="dlg">
     <div class="dlg-head"><h2 id="bkTitle" data-i="bkTitle">备份与恢复</h2></div>
@@ -2515,6 +2642,12 @@ Object.assign(I18N.zh,{trMenuScreen:'翻译本屏', trMenuAll:'翻译本章', tr
 Object.assign(I18N.en,{trMenuScreen:'Translate this screen', trMenuAll:'Translate this chapter', trMenuToc:'Translate the contents', trMenuCycle:x=>`Showing: ${x} (click to switch)`, trLeft:n=>`About ${n} characters left to translate today`, trAllDone:'This page is translated already', trTocNone:'There are no contents to translate here', trTocDone:'The contents are translated', bookTrBtn:'Translate the summary'});
 Object.assign(I18N.zh,{pinTip:'固定在左边', unpinTip:'取消固定', eyeLbl:'护眼', eye_follow:'跟随系统', eye_sepia:'米黄', eye_green:'护眼绿', eye_dark:'深色', eyeTip:x=>`护眼：现在是“${x}”，点一下换下一种`, eyeNow:x=>`护眼：${x}`, fsNow:n=>`字号 ${n}%`, pgPrev:'上一页', pgNext:'下一页', fsSmaller:'缩小字号', fsBigger:'放大字号', rbarTip:'字号和页码'});
 Object.assign(I18N.en,{pinTip:'Pin at the left', unpinTip:'Unpin', eyeLbl:'Eye care', eye_follow:'Follow system', eye_sepia:'Sepia', eye_green:'Green', eye_dark:'Dark', eyeTip:x=>`Eye care: now "${x}", click for the next`, eyeNow:x=>`Eye care: ${x}`, fsNow:n=>`Text size ${n}%`, pgPrev:'Previous page', pgNext:'Next page', fsSmaller:'Smaller text', fsBigger:'Bigger text', rbarTip:'Text size and page'});
+Object.assign(I18N.zh,{lpTab_rec:'推荐', lpTab_chart:'榜单', lpTab_disc:'发现', lpRegionCn:'国内', lpRegionGlobal:'国际', lpRegionTip:'国内 / 国际：先推荐哪里的歌', lpRadio:'今日电台', lpRadioPlay:'播放', lpRadioN:n=>`${n} 首`, lpBatch:'换一批', lpShelf:'精选歌单', lpForYou:'为你推荐', lpMyLikes:'我喜欢的', lpMyRecent:'最近播放', lpMyLists:'我的歌单', lpStyles:'风格', lpScenes:'场景', lpMoreStyles:n=>`更多风格（${n}）`, lpLessStyles:'收起', lpBack:'返回', lpR_cn:'中国', lpR_west:'欧美', 'lpR_jp-kr':'日韩', lpR_global:'全球', lpChartPick:'换一个榜单', lsLike:'喜欢', lsLiked:'取消喜欢', lsMore:'更多', lsmNext:'下一首播放', lsmAdd:'加入歌单', lsmLike:'喜欢', lsmUnlike:'取消喜欢', lsmNo:'不想听这类', lsmNextDone:s=>`下一首播放：${s}`, lsmNoDone:'已隐藏这首，以后少推荐类似的', lsmLikedDone:'已加入“我喜欢的”', lsmUnlikedDone:'已取消喜欢', lsmAdded:n=>`已加入“${n}”`, lsmHave:'歌单里已经有这首了', lsmNewList:'新建歌单', lsmNewPh:'新歌单的名字', lsmCreate:'新建并加入', lsmListN:n=>`${n} 首`, lpListDef:n=>`歌单 ${n}`, lpNoLists:'还没有歌单。在歌曲的 ⋯ 里点“加入歌单”就会建一个。', lpEmptyList:'这里还没有歌曲', lpListRename:'重命名', lpListDelete:'删除', lpListDelAsk:n=>`删除歌单“${n}”？`, lpListNewBtn:'新建歌单', lpListName:'歌单的名字'});
+Object.assign(I18N.en,{lpTab_rec:'For you', lpTab_chart:'Charts', lpTab_disc:'Discover', lpRegionCn:'China', lpRegionGlobal:'World', lpRegionTip:'China / World: whose songs to suggest first', lpRadio:'Today’s radio', lpRadioPlay:'Play', lpRadioN:n=>`${n} songs`, lpBatch:'Next batch', lpShelf:'Play lists', lpForYou:'For you', lpMyLikes:'Liked songs', lpMyRecent:'Recently played', lpMyLists:'My play lists', lpStyles:'Styles', lpScenes:'Scenes', lpMoreStyles:n=>`More styles (${n})`, lpLessStyles:'Fewer', lpBack:'Back', lpR_cn:'China', lpR_west:'West', 'lpR_jp-kr':'Japan · Korea', lpR_global:'World', lpChartPick:'Another chart', lsLike:'Like', lsLiked:'Unlike', lsMore:'More', lsmNext:'Play next', lsmAdd:'Add to a play list', lsmLike:'Like', lsmUnlike:'Unlike', lsmNo:'Not this kind', lsmNextDone:s=>`Plays next: ${s}`, lsmNoDone:'Hidden, and fewer like it from now on', lsmLikedDone:'Added to “Liked songs”', lsmUnlikedDone:'Unliked', lsmAdded:n=>`Added to “${n}”`, lsmHave:'It is in the play list already', lsmNewList:'New play list', lsmNewPh:'Name of the new play list', lsmCreate:'Create and add', lsmListN:n=>`${n} songs`, lpListDef:n=>`Play list ${n}`, lpNoLists:'No play lists yet. “Add to a play list” in the ⋯ of a song makes one.', lpEmptyList:'No songs here yet', lpListRename:'Rename', lpListDelete:'Delete', lpListDelAsk:n=>`Delete the play list “${n}”?`, lpListNewBtn:'New play list', lpListName:'Name of the play list'});
+Object.assign(I18N.zh,{plCollapse:'收起', plSetTip:'播放设置', plSetT:'播放设置', plSetClose:'关闭设置', plSrcL:'音源', plSrc_whole:'整首优先', plSrc_speed:'速度优先', plSrc_free:'只用免费合规源', plDataL:'手机流量下省流量', plDataD:'不自动播放大文件（无损约 30–50 MB）', plClearS:'清空', plQnSongs:n=>`${n} 首`, plQnEps:n=>`${n} 集`, plFocusL:'专注模式 ›', plWipe:'清除这台设备上的听歌记录', plWiped:'听歌记录已清除', plCleared:'已清空', plUndo:'撤销'});
+Object.assign(I18N.en,{plCollapse:'Fold', plSetTip:'Player settings', plSetT:'Player settings', plSetClose:'Close settings', plSrcL:'Source', plSrc_whole:'Whole songs first', plSrc_speed:'Fastest first', plSrc_free:'Free sources only', plDataL:'Spare mobile data', plDataD:'Big files (lossless, 30–50 MB) are not played by themselves', plClearS:'Clear', plQnSongs:n=>`${n} songs`, plQnEps:n=>`${n} episodes`, plFocusL:'Focus mode ›', plWipe:'Clear what this device remembers of listening', plWiped:'Listening history cleared', plCleared:'Cleared', plUndo:'Undo'});
+Object.assign(I18N.zh,{plMode_list:'列表循环', plMode_one:'单曲循环', plMode_shuffle:'随机播放', plMode_order:'顺序播放', plSlow:'这个音源加载有点慢，再等一下', plBigAsk:mb=>`这首歌的文件很大（约 ${mb} MB），现在是手机流量`, plBigGo:'仍然播放'});
+Object.assign(I18N.en,{plMode_list:'Repeat the list', plMode_one:'Repeat one', plMode_shuffle:'Shuffle', plMode_order:'In order', plSlow:'This source is slow to load; waiting a little longer', plBigAsk:mb=>`This file is big (about ${mb} MB) and you are on mobile data`, plBigGo:'Play anyway'});
 Object.assign(I18N.zh,{newVer:'有新版本了', newVerGo:'刷新', newVerLater:'以后再说', updBusy:'更新中…', pullDown:'下拉刷新', pullGo:'松开刷新', pullOk:'已更新', pullOff:'没连上网，还是上次的'});
 Object.assign(I18N.en,{newVer:'A new version is ready', newVerGo:'Refresh', newVerLater:'Not now', updBusy:'Updating…', pullDown:'Pull to refresh', pullGo:'Release to refresh', pullOk:'Updated', pullOff:'No connection: still the last one'});
 Object.assign(I18N.zh,{bkSub:'人工挑选、可以免费读的书和刊物', bkLists:'书单', bkListN:n=>`${n} 本`, bkListsMore:n=>`全部 ${n} 张书单 ▾`, bkListsLess:'收起 ▴', bkBackAll:'‹ 精选图书', bkAuthorChip:'作者：',
@@ -4778,9 +4911,10 @@ const CHANGELOG=[{v:'2026-10-22',
       'PDF 现在有“阅读版”：站长用 build_index.py --convert 转一次（用 serve.py 时，启动、上传和复制进 library/ 的文件会自动转），你自己在浏览器里添加或打开的 PDF 也会在你的浏览器里转（用 pdf.js，数据不出你的设备，转好存在文件旁边）。转出来的 PDF 像文章一样在阅读器里读（阅读设置、目录、主题、手机小屏都能用），顶栏的“原 PDF / 阅读版”一键切换；扫描件或转不出文字的 PDF 仍然是原 PDF。站点自己的文件只转一次，读和搜都是静态文件，服务器不多花力气。',
       '搜索框里新增“搜正文”开关：打开后连书里的文字一起搜（我的书架里：站长转好的 PDF 和网页笔记、你添加的文本 / 网页文件、连接的文件夹、订阅里保存的文章，全部在你的浏览器里完成，不上传任何东西），结果带上下文片段和“第 N 页”，点开直接跳到那一处并标亮。公共目录不这样搜：那里只搜书籍信息页上写的内容：标题、作者、语言、页数、目录、摘要和关键词。',
       '公共目录里的书可以带作者、页数和目录（站点的订阅源会写出来；从书架提交“书籍”时自动带上），卡片上显示作者和页数，搜索也能按作者、目录里的词和页数找到。',
-      '公共目录里“音频”换成了“今日听什么”（侧栏）：标题和副标题在一行里；下面一行是“音乐 / 播客”开关，右边是排序和“卡片 / 列表”按钮；再下面是一条标签——当天的榜单和歌单（每日推荐、华语 / 欧美 / 韩流 / 日系热歌榜、Deezer 的榜单歌单；播客是各国播客榜）在前，风格（摇滚、说唱、电子、爵士、古典、放松……）或播客分类（新闻、商业、故事、英语学习……）在后，手机上可以左右滑，在歌曲上左右滑动就换到下一个 / 上一个。标签下面直接是歌曲和节目，默认是列表，每行只写标题、来源、热度（榜单里的名次）和“试听”（只有试听片段才写），不再写时长和“站内播放”。每个榜单备有 200 项，一次显示 30 项，滚到快到底自动再加 30 项；都在页面底部的播放条里一首接一首放，放不了的自动跳过。歌曲来自 Deezer 和 Apple Music 的榜单（每首 30 秒试听，Apple 的行尾 ↗ 去 Apple Music 听全曲）、Audius（整首）、Jamendo（整首，只用允许在有广告的网站上使用的授权），播客是 Apple 播客榜上节目的最新一集（整集，声音直接来自节目自己的服务器），站长开了直连时还有网易云的整首歌。内容按界面语言排：英文系统的手机推荐的是欧美歌和英语播客榜。发现页上只留一小块“今日听什么”，点“进入”去完整的页面；“今日 3 件值得看”也缩小了。大家同一天看到的一样，不记录你听了什么。',
+      '公共目录里“音频”换成了“今日听什么”（侧栏）：标题和副标题在一行里；下面一行是“音乐 / 播客”开关，右边是排序和“卡片 / 列表”按钮；再下面是一条标签——当天的榜单和歌单（每日推荐、华语 / 欧美 / 韩流 / 日系热歌榜、Deezer 的榜单歌单；播客是各国播客榜）在前，风格（摇滚、说唱、电子、爵士、古典、放松……）或播客分类（新闻、商业、故事、英语学习……）在后，手机上可以左右滑，在歌曲上左右滑动就换到下一个 / 上一个。标签下面直接是歌曲和节目，默认是列表，每行只写标题、来源、热度（榜单里的名次）和“试听”（只有试听片段才写），不再写时长和“站内播放”。每个榜单备有 200 项，一次显示 30 项，滚到快到底自动再加 30 项；都在页面底部的播放条里一首接一首放，放不了的自动跳过。歌曲来自 Deezer 和 Apple Music 的榜单（每首 30 秒试听，Apple 的行尾 ↗ 去 Apple Music 听全曲）、Audius（整首）、Jamendo（整首，只用允许在有广告的网站上使用的授权），播客是 Apple 播客榜上节目的最新一集（整集，声音直接来自节目自己的服务器），站长开了直连时还有网易云的整首歌。内容按界面语言排：英文系统的手机推荐的是欧美歌和英语播客榜。发现页上只留一小块“今日听什么”，点“进入”去完整的页面；“今日 3 件值得看”也缩小了。大家同一天看到的一样；你喜欢的、放过的歌只记在你这台设备上（设置里可以一键清除）。',
       '新增“专注模式”（学习、冥想）：点歌曲列表上的“专注”、播放条上的 ◎ 或“正在播放”页里的“专注模式”，整个屏幕只剩一个缓慢变化的图案（呼吸 / 极光 / 暗）和一行小字歌名，并自动放整首的歌或整集的节目（30 秒试听不算）；按钮 4 秒不碰就隐去，碰一下屏幕再出来：上一首 / 暂停 / 下一首、音乐 ↔ 播客、定时（15 / 25 / 45 / 60 分钟）、换图案；Esc 或 × 退出，声音继续。读文章时，阅读栏上的“专注阅读”（手机在“Aa 阅读设置”里）收起所有按钮，只留正文和右下角一个小条（暂停、下一首、图案页、退出），进入时自动放，在小条里暂停过，下次就不自动放。',
       '页面更简洁：公共目录顶部不再有“共 N 条，来自 N 个书架，更新于…”那行计数；界面语言只留“自动”和一个“中 / EN”按钮（点一下换成另一种）；公共目录的“显示更多”滚到底自动加载。',
+      '“今日听什么”重做：音乐分成“推荐 / 榜单 / 发现”三个标签（国内 ⇄ 国际决定先推荐哪里的歌；榜单一排地区，发现里风格和场景分开），一首歌只留封面、歌名、艺人、♥ 和 ⋯（下一首播放、加入歌单、喜欢、不想听这类）；喜欢的歌、自己建的歌单、最近播放只记在这台设备上。点一首歌就把这张列表放进播放条；一首歌有好几个音源时，放不出来或几秒没有声音会自动换下一个，整首的排在试听前面；音乐的播放条用“列表循环 / 单曲循环 / 随机 / 顺序”代替倍速（播客仍有倍速）；播放器的弹窗就是播放器：左上收起、右上 × 关闭播放器、列表标题处“清空”（可撤销），点弹窗外面或 3 分钟不动会自动收起，设置只有音源、省流量、定时关闭三项。',
       '精选图书页改简单了：没有“节目 / 栏目 / 平台”那套筛选，没有“已更新”那行字（发现世界所有页面都去掉了），侧栏里的标签列表也去掉了；标题下是站长手挑的几张“书单”（点一张只看这张里的书，每本有一句推荐理由）和一排类别（小说、哲学、科学、技术、杂志……），点书名下的作者名可以看他的全部书。书的卡片上不再写“站长推荐”“书籍”、授权和标签，只有语言、作者、来源、章数、喜欢、热度、收藏，读过的书写“读到 第 3 回 · 12%”，封面底边有一条细线。读书时点返回就是返回，不再弹出章节表。'],
   en:['New: “Back up & restore”: export the files, collections, subscriptions and reading places you added into one file, and restore it when you change device or fear a loss.',
       'Subscribed and saved links can now be read in the page: when a feed carries the full text it is shown at once; otherwise, and for any article link you paste and for the articles of the public directory, the original page is read and shown here and kept in your browser. Pages that need a login or do not let programs read them still open the original site (the card says “Original only”).',
@@ -4816,9 +4950,10 @@ const CHANGELOG=[{v:'2026-10-22',
       'PDFs now have a “reader view”: the owner converts once with build_index.py --convert (with serve.py a file is converted at start-up, when uploaded, and when copied into library/), and a PDF you add or open in your own browser is converted there too (with pdf.js; nothing leaves your device, the result is kept beside the file). A converted PDF reads like an article in the reader (reading settings, contents, themes and a phone’s small screen all work), with one click on “Original PDF / Reader view” in the top bar to switch; a scanned PDF, or one no text can be made of, stays the original PDF. The site’s own files are converted once; reading and searching are static files, so the server does no extra work.',
       'New in the search box: a “Full text” switch. On, the words inside books are searched too (in My shelf: the owner’s converted PDFs and web notes, the text / web files you added, the connected folder, and the articles kept from subscriptions; all done in your browser, nothing is uploaded); results show a snippet and “Page N”, and a click opens the document at that place with the word marked. The public directory is not searched like this: there only what a book’s information page says is searched: title, author, language, pages, contents, summary and keywords.',
       'A book in the public directory can carry an author, pages and contents (a site’s feed writes them; submitting a “Book” from your shelf brings them along); the card shows the author and pages, and the search finds a book by its author, a word of its contents, or its pages.',
-      'In the public space “Audio” is now “What to listen to today” (sidebar): the title and its subtitle are one line; below, a Music | Podcasts switch with the sort and the cards / rows button on the right; then one strip of choices — the charts and play lists of the day (the daily picks, Chinese / Western / Korean / Japanese hits, Deezer’s lists; for podcasts the charts of several countries) first, then the styles (rock, hip-hop, electronic, jazz, classical, chill …) or the podcast categories (news, business, stories, learn English …); on a phone it scrolls sideways and a swipe left or right on the songs moves to the next or previous list. The songs and shows are straight under the strip, as rows by default; a row says only the title, who it is by, how hot it is (its place in a chart) and “Preview” (only for a preview piece), no length and no “Plays here”. Every list holds 200 entries, thirty are shown and the next thirty are added by themselves near the end of the page; they play one after the other in the bar at the foot of the page, and one that cannot be played is skipped. Songs come from the charts of Deezer and Apple Music (30-second previews; the ↗ at the end of an Apple row goes to Apple Music for the whole song), Audius (whole songs), Jamendo (whole songs, only licences that allow a site with ads), podcasts are the newest episode of the shows in Apple’s podcast charts (the whole episode, the sound comes from the show’s own server), and with the owner’s direct play on also whole songs from NetEase. What comes first follows the interface language: on an English phone it is Western songs and the US and UK podcast charts. The discovery page keeps a small “What to listen to today” block; “Open” takes you to the whole page; “3 to read today” is smaller too. Everybody sees the same lists on the same day; what you listen to is not recorded.',
+      'In the public space “Audio” is now “What to listen to today” (sidebar): the title and its subtitle are one line; below, a Music | Podcasts switch with the sort and the cards / rows button on the right; then one strip of choices — the charts and play lists of the day (the daily picks, Chinese / Western / Korean / Japanese hits, Deezer’s lists; for podcasts the charts of several countries) first, then the styles (rock, hip-hop, electronic, jazz, classical, chill …) or the podcast categories (news, business, stories, learn English …); on a phone it scrolls sideways and a swipe left or right on the songs moves to the next or previous list. The songs and shows are straight under the strip, as rows by default; a row says only the title, who it is by, how hot it is (its place in a chart) and “Preview” (only for a preview piece), no length and no “Plays here”. Every list holds 200 entries, thirty are shown and the next thirty are added by themselves near the end of the page; they play one after the other in the bar at the foot of the page, and one that cannot be played is skipped. Songs come from the charts of Deezer and Apple Music (30-second previews; the ↗ at the end of an Apple row goes to Apple Music for the whole song), Audius (whole songs), Jamendo (whole songs, only licences that allow a site with ads), podcasts are the newest episode of the shows in Apple’s podcast charts (the whole episode, the sound comes from the show’s own server), and with the owner’s direct play on also whole songs from NetEase. What comes first follows the interface language: on an English phone it is Western songs and the US and UK podcast charts. The discovery page keeps a small “What to listen to today” block; “Open” takes you to the whole page; “3 to read today” is smaller too. Everybody sees the same lists on the same day; the songs you like or played are kept on this device only (one tap clears them in the settings).',
       'New: “Focus mode” (for studying or meditating). Press “Focus” above the song list, ◎ in the player bar, or “Focus mode” in the “Now playing” page: the whole screen holds only a slowly changing pattern (Breath / Aurora / Dark) and the title in small letters, and a whole song or a whole episode starts by itself (30-second previews do not count). The buttons disappear after four seconds and come back at a touch: previous / pause / next, music ↔ podcasts, a timer (15 / 25 / 45 / 60 minutes), the pattern; Esc or × leaves it and the sound goes on. While reading, “Focus reading” in the reader’s bar (on a phone in the “Aa” settings) hides every button and leaves the text and a small pill at the bottom right (pause, next, the pattern page, leave); the sound starts by itself, unless you paused it in the pill last time.',
       'A simpler page: the public directory no longer starts with the count line “N items from N shelves, updated …”; the interface language is “Auto” and one button (中 / EN) that switches to the other language; “Show more” in the directory loads by itself at the end of the page.',
+      '“What to listen to today” was rebuilt: the music side has three tabs, “For you / Charts / Discover” (China ⇄ World says whose songs come first; the charts are one row of regions, Discover keeps styles and scenes apart), and a song is only a cover, a title, an artist, a heart and a ⋯ (play next, add to a play list, like, not this kind); the songs you like, the play lists you make and what you played last are kept on this device only. A click on a song makes its list the list of the bar; when a song has several sounds and one cannot be played, or stays silent for a few seconds, the next one is tried (a whole sound before a preview); the bar of music has “repeat the list / repeat one / shuffle / in order” instead of the speed (podcasts keep the speed); the popup of the player is the player: fold at the top left, × at the top right closes it, “Clear” at the list (can be undone), a tap outside or three minutes without a touch fold it, and there are three settings: the source, spare the data, the timer.',
       'The page of the picked books is simpler: no “Programs / Columns / Platforms” filters, no “Updated” line (gone from every page of the public space), and the list of tags in the side is gone; under the title come a few hand-made “book lists” (tap one and only its books are shown, each with a line on why) and a row of genres (fiction, philosophy, science, tech, magazines …); the name of an author under a title shows all his books. A book’s card no longer says “Owner’s pick”, “Book”, the licence or tags, only the language, author, source, chapters, like, heat and bookmark; a book you have begun says “At Chapter 3 · 12%” and has a thin line along its cover. Tapping back in a book just goes back: the list of chapters no longer pops up.']}];
 const guideItem = () => state.items.find(x=>(x.source==='static'||x.source==='server') && /(^|\/)notes\/guide\/index\.html$/.test(x.id));
 const canAsk=()=>!!state.dirCfg && !LS.get('dirIntroOff',0) && !state.dPickT.size;               // the question "what do you feel like reading?" is for somebody who has not answered it, where the site has a public space
@@ -4872,8 +5007,13 @@ $('#introLink').addEventListener('click',()=>{ document.body.classList.remove('d
 /* ================= the player: an episode's sound plays on at the foot of the page while you read or look around =================
    The sound is played from where its publisher put it (nothing passes through this site, nothing is stored); what is kept here is the list, the speed, the volume and how far every episode was heard (this browser only). */
 const PL_BACK=15, PL_FWD=30, PL_RATES=[.75,1,1.25,1.5,1.75,2], PL_SLEEPS=[0,15,30,60,-1], PL_KEEP=400;
+const PL_MODES=['list','one','shuffle','order'], PL_SRCS=['whole','speed','free'], PL_FREE=new Set(['audius','jamendo','apple','deezer']);          // play modes (music only); which sounds to prefer; the sources that are free to play (Apple and Deezer: the 30-second previews they publish)
+const PL_STALL_MS=Math.max(1500,+LS.get('plStallMs',8000)||8000);                                     // a sound that has not begun to play after this long is given up for the next one of the song
 const plAudio=$('#plAudio'), plDlg=$('#plDlg');
-const pl={q:[], i:-1, rate:1, sleepAt:0, sleepEnd:false, sleepMin:0, loaded:'', want:0, savedAt:0, shown:'', drag:false};              // q: ids of the episodes; q[i] is the one in the bar
+const pl={q:[], i:-1, rate:1, sleepAt:0, sleepEnd:false, sleepMin:0, loaded:'', want:0, savedAt:0, shown:'', drag:false, mode:'list', cands:[], ci:0, stallT:0, hist:[], bigOk:new Set(), pre:'', preA:null};              // q: ids of the episodes; q[i] is the one in the bar
+pl.mode=(m=>PL_MODES.includes(m)?m:'list')(LS.get('plMode','list'));
+const plSet=(s=>({src:PL_SRCS.includes(s.src)?s.src:'whole', data:s.data!==false, lyr:s.lyr!==false}))(LS.get('plSet',{}) || {});          // the few settings of the player: which sounds to prefer, spare the mobile data, show the words
+const plSetSave=()=>LS.set('plSet',{src:plSet.src, data:plSet.data, lyr:plSet.lyr});
 const fmtDur=s=>{ s=Math.max(0,Math.floor(+s||0)); const h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(x).padStart(2,'0'); };
 function plAudioOf(it){ return it && it.type==='link' && it.audio && httpUrl(it.audio.url) ? it.audio : null; }
 const plFind=id=>state.items.find(x=>x.id===id) || state.tmp.get(id) || null;                        // (an episode of the shelf, or one that is only being played: a recommended podcast, a card of the directory)
@@ -4881,6 +5021,24 @@ const plItem=id=>{ const it=plFind(id); return plAudioOf(it) ? it : null; };
 const plCur=()=>pl.i>=0 ? plItem(pl.q[pl.i]) : null;
 const plPlaying=()=>!!pl.loaded && !plAudio.paused;
 const plSrc=u=>location.protocol==='https:' ? u.replace(/^http:/i,'https:') : u;                      // on an https page a sound must come over https (many hosts offer both)
+const plIsMusic=it=>!!it && String(it.id).startsWith('tmp:ls:') && !it.pod;                          // a song of today's listening: it has a play mode (an episode has the speed and the jumps instead)
+const plMode=()=>plIsMusic(plCur()) ? pl.mode : 'order';                                              // (an episode: on to the next one, and stop at the end)
+const plCellular=()=>{ try{ const c=navigator.connection; return !!c && (c.saveData===true || c.type==='cellular' || /^(slow-2g|2g|3g)$/.test(c.effectiveType||'')); }catch(e){ return false; } };
+const plBlocked=(c,id)=>plSet.data && c.big===true && plCellular() && !pl.bigOk.has(id);                // a big file on mobile data is not played by itself
+function plCands(it){                                                                                  // the sounds one song can be played from, in the order to try them (a song with one sound has one)
+  const a=plAudioOf(it); if(!a) return [];
+  let cs=(Array.isArray(it.cands) ? it.cands : []).filter(c=>c && httpUrl(c.audio));
+  if(!cs.length) cs=[{p:'', k:it.preview?'preview':'full', audio:a.url, net:'any', big:false}];
+  if(plSet.src==='free') cs=cs.filter(c=>!c.p || PL_FREE.has(c.p));
+  const home=LS.get('lpRegion', state.lang==='zh'?'cn':'global')==='cn' ? 'cn' : 'global';
+  const rank=c=>[plSet.src==='speed' ? +(c.big===true) : 0, c.k==='preview' ? 1 : 0, c.net==='any' || c.net===home ? 0 : 1];     // (whole before preview, a sound near the reader before one far away; "speed first": the small ones before the big ones)
+  return cs.map((c,i)=>({c,i,r:rank(c)})).sort((x,y)=>{ for(let k=0;k<3;k++) if(x.r[k]!==y.r[k]) return x.r[k]-y.r[k]; return x.i-y.i; }).map(x=>x.c);
+}
+const PL_MODE_ICON={                                                                                  // the play mode, one picture each: the list again, one song again, shuffled, in order and stop
+  list:'<svg class="icon" viewBox="0 0 24 24"><path d="M4 11V9a3 3 0 0 1 3-3h11M15 3l3 3-3 3M20 13v2a3 3 0 0 1-3 3H6M9 21l-3-3 3-3"/></svg>',
+  one:'<svg class="icon" viewBox="0 0 24 24"><path d="M4 11V9a3 3 0 0 1 3-3h11M15 3l3 3-3 3M20 13v2a3 3 0 0 1-3 3H6M9 21l-3-3 3-3M11 10.5l1.5-1V14.5"/></svg>',
+  shuffle:ICON.shuffle,
+  order:'<svg class="icon" viewBox="0 0 24 24"><path d="M4 7h10M4 12h10M4 17h6M18 7v10M15.5 14.5L18 17l2.5-2.5"/></svg>'};
 const plProgMap=()=>LS.get('plProg',{});
 const plPlain=h=>{ try{ return new DOMParser().parseFromString(String(h||''),'text/html').body.textContent.replace(/[ \t]+/g,' ').replace(/\n\s*\n+/g,'\n').trim(); }catch(e){ return ''; } };
 function plPct(it){ const p=plProgMap()[it.id]; if(!p) return 0; const d=p[1]||(plAudioOf(it)||{}).dur||0; return p[2] ? 100 : d ? Math.min(100,Math.round(p[0]/d*100)) : 0; }
@@ -4889,7 +5047,7 @@ function plProgSave(it, at, dur, done){
   const ks=Object.keys(m); if(ks.length>PL_KEEP) ks.sort((a,b)=>m[a][3]-m[b][3]).slice(0,ks.length-PL_KEEP).forEach(k=>delete m[k]);
   LS.set('plProg',m);
 }
-function plSave(){ const it=plCur(); LS.set('pl',{q:pl.q, cur:it?it.id:'', t:Math.floor((pl.loaded?plAudio.currentTime:pl.want)||0), rate:pl.rate}); }
+function plSave(){ const it=plCur(); LS.set('pl',{q:pl.q, cur:it?it.id:'', t:Math.floor((pl.loaded?plAudio.currentTime:pl.want)||0), rate:pl.rate, closed:pl.closed?1:0}); }
 function plShow(it){ const col=state.cols.find(c=>c.id===it.collection); return (col && col.name) || it.from || hostOf(it.url); }
 function plToggleIcon(){ const on=plPlaying(), l=t(on?'plPause':'plPlay'); ['#plToggle','#plToggleD','#plMiniToggle','#fcToggle','#rfToggle'].forEach(s=>{ const b=$(s); b.innerHTML=on?ICON.pause:ICON.play; b.title=l; b.setAttribute('aria-label',l); }); }
 function plMarkCards(){
@@ -4897,7 +5055,7 @@ function plMarkCards(){
   document.querySelectorAll('.card[data-id]').forEach(c=>{ const p=c.querySelector('.cover .play'); if(!p) return; const me=c.dataset.id===cur; c.classList.toggle('is-playing',me); p.innerHTML=me&&on?ICON.pause:ICON.play; });
   listenMark();
 }
-function plNav(){ $('#plPrev').disabled = pl.i<0; $('#plNext').disabled = pl.i<0 || pl.i>=pl.q.length-1; document.querySelectorAll('#plDlg [data-pl="next"]').forEach(b=>{ b.disabled=$('#plNext').disabled; }); document.querySelectorAll('#plDlg [data-pl="prev"]').forEach(b=>{ b.disabled=$('#plPrev').disabled; }); }
+function plNav(){ $('#plPrev').disabled = pl.i<0; $('#plNext').disabled = pl.i<0 || plNextIdx(false)<0; document.querySelectorAll('#plDlg [data-pl="next"]').forEach(b=>{ b.disabled=$('#plNext').disabled; }); document.querySelectorAll('#plDlg [data-pl="prev"]').forEach(b=>{ b.disabled=$('#plPrev').disabled; }); }
 function plTick(){
   const it=plCur(); if(!it) return; const a=plAudioOf(it), cur=pl.loaded?(plAudio.currentTime||0):pl.want, dur=pl.loaded && plAudio.duration>0 && isFinite(plAudio.duration) ? plAudio.duration : (a.dur||0);
   const tm=fmtDur(cur)+(dur?' / '+fmtDur(dur):''), v=dur?Math.round(Math.min(cur/dur,1)*1000):0;
@@ -4907,9 +5065,10 @@ function plTick(){
   if(plDlg.open){ $('#plDT0').textContent=fmtDur(cur); $('#plDT1').textContent=dur?fmtDur(dur):'--:--'; }
 }
 function plRender(){
-  const it=plCur(), bar=$('#player');
+  const it=pl.closed ? null : plCur(), bar=$('#player');                                              // (closed with ×: the list is kept, the bar is not shown until something is played)
   const had=document.body.classList.contains('has-player');
-  bar.hidden=!it; $('#plMini').hidden=!it; document.body.classList.toggle('has-player',!!it);
+  bar.hidden=!it; $('#plMini').hidden=!it; document.body.classList.toggle('has-player',!!it); document.body.classList.toggle('pl-music',plIsMusic(it));
+  document.querySelectorAll('[data-pl="mode"]').forEach(b=>{ b.innerHTML=PL_MODE_ICON[pl.mode]; b.title=t('plMode_'+pl.mode); b.setAttribute('aria-label',t('plMode_'+pl.mode)); });
   if(it && !had && !pl.mini && !$('#reader').hidden) plFold(true,true);                              // a sound starts while a text is open: the bar comes folded (it unfolds when the reader closes)
   if(!it){ pl.shown=''; plMarkCards(); return; }
   $('#plTitle').textContent=it.title; $('#plRate').textContent=pl.rate+'×'; $('#plMiniOpen').title=t('plExpand')+' · '+it.title;
@@ -4926,22 +5085,76 @@ function plSessionState(){
   navigator.mediaSession.playbackState=plAudio.paused?'paused':'playing';
   try{ if(pl.loaded && plAudio.duration>0 && isFinite(plAudio.duration)) navigator.mediaSession.setPositionState({duration:plAudio.duration, playbackRate:plAudio.playbackRate||1, position:Math.min(plAudio.currentTime||0,plAudio.duration)}); }catch(e){}
 }
+function plStart(go){                                                                                  // the sound pl.cands[pl.ci] of the song in the bar: loaded, put where it was left, played when asked for, and given up for the next sound of the song when nothing comes of it
+  const c=pl.cands[pl.ci], id=pl.loaded; if(!c || !id) return;
+  clearTimeout(pl.stallT); pl.go=!!go;
+  plAudio.src=plSrc(c.audio); plAudio.defaultPlaybackRate=pl.rate; plAudio.playbackRate=pl.rate; plAudio.load();
+  const meta=()=>{ plAudio.removeEventListener('loadedmetadata',meta); if(pl.want>0 && plAudio.duration>pl.want+2) plAudio.currentTime=pl.want; };
+  plAudio.addEventListener('loadedmetadata',meta);
+  if(go){
+    const p=plAudio.play(); if(p && p.catch) p.catch(()=>{ plToggleIcon(); });
+    pl.stallT=setTimeout(()=>{ if(pl.loaded===id && plAudio.readyState<3 && !plAudio.paused) plTrouble(id,'stall'); },PL_STALL_MS);
+  }
+}
+function plTrouble(id, why){                                                                          // this sound does not play (an error, nothing for a few seconds, a length that is not the song's): the next sound of the song; none left: the song is given up (or, if it is only slow, waited for)
+  if(pl.loaded!==id) return;
+  clearTimeout(pl.stallT);
+  if(pl.ci<pl.cands.length-1){ if(plAudio.currentTime>3) pl.want=plAudio.currentTime; pl.ci++; plStart(pl.go); return; }
+  if(why==='stall'){ toast(t('plSlow')); return; }
+  plFailed(id);
+}
+function plFailed(id){
+  const it=plItem(id); pl.loaded=''; pl.want=0; plToggleIcon(); plMarkCards();
+  if(id.startsWith('tmp:ls:') && pl.i<pl.q.length-1){ toast(t('lsSkip',cut(it ? it.title : '',24))); plNext(); return; }                 // a song of today's listening that the platform does not give out: on to the next one
+  if(it) toast(t('plFail'), it.url ? t('plOpenOrig') : undefined, it.url ? ()=>window.open(it.url,'_blank','noopener,noreferrer') : undefined);
+}
+function plLenCheck(){                                                                                // the length of the sound is not the song's (a cut, a wrong song): the next sound, when there is one
+  const it=plCur(), c=pl.cands[pl.ci]; if(!it || !c || c.k==='preview' || pl.ci>=pl.cands.length-1) return;
+  const want=plAudioOf(it).dur, d=plAudio.duration;
+  if(want>0 && isFinite(d) && d>0 && Math.abs(d-want)>Math.max(8,want*.15)) plTrouble(pl.loaded,'len');
+}
 function plLoad(i, go, at){
   const id=pl.q[i], it=plItem(id);
   if(!it){ pl.q.splice(i,1); if(i>=pl.q.length) i=pl.q.length-1; if(i<0){ plStop(); return; } return plLoad(i,go,at); }              // gone from the shelf meanwhile
-  pl.i=i;
+  pl.i=i; pl.pre=''; pl.preA=null; pl.closed=false;
   const prog=plProgMap()[id], start = at!==undefined ? at : prog && !prog[2] && prog[0]>5 ? Math.max(0,prog[0]-3) : 0;                    // where it was left, a little before
-  pl.want=start; pl.loaded=id;
-  plAudio.src=plSrc(plAudioOf(it).url); plAudio.defaultPlaybackRate=pl.rate; plAudio.playbackRate=pl.rate; plAudio.load();
-  const meta=()=>{ plAudio.removeEventListener('loadedmetadata',meta); if(pl.want>0 && plAudio.duration>pl.want+2) plAudio.currentTime=pl.want; };
-  plAudio.addEventListener('loadedmetadata',meta);
-  if(go){ const p=plAudio.play(); if(p && p.catch) p.catch(()=>{ plToggleIcon(); }); }
+  const all=plCands(it), cs=all.filter(c=>!plBlocked(c,id));
+  pl.want=start; pl.cands=cs; pl.ci=0;
+  if(!cs.length){
+    pl.loaded=''; plAudio.pause(); plAudio.removeAttribute('src'); plAudio.load();
+    plSession(it); plRender(); plSave(); if(plDlg.open) plSheet();
+    if(all.length){ const mb=Math.max(1,Math.round((all[0].size||30e6)/1048576)); toast(t('plBigAsk',mb), t('plBigGo'), ()=>{ pl.bigOk.add(id); plLoad(pl.q.indexOf(id),true,start); }); }          // (only a big file is left and this is mobile data: asked for, not played by itself)
+    else plFailed(id);
+    return;
+  }
+  pl.loaded=id; plStart(go);
+  if(plIsMusic(it)) lpRecentAdd(lpSeen.get(id.slice(7)));                                              // (the songs played last: "recent" on the first tab)
   if(it.unread) markRead(id);
   plSession(it); plRender(); plSave(); if(plDlg.open) plSheet();
 }
+function plNewRound(){ pl.hist=[]; pl.sn=null; }                                                       // a shuffle starts afresh: when the mode is chosen, when the list is another
+function plNextIdx(auto){                                                                              // the place in the list that follows: by the play mode (auto: the song ended by itself); -1 = nothing follows
+  const n=pl.q.length, m=plMode(); if(n<1 || pl.i<0) return -1;
+  if(m==='one' && auto) return pl.i;
+  if(m==='shuffle' && n>1){
+    const cur=pl.q[pl.i]; if(pl.sn && pl.sn.from===cur && pl.q.includes(pl.sn.to)) return pl.q.indexOf(pl.sn.to);               // (the same answer for the song that is prepared and for the one that is played)
+    const seen=new Set(pl.hist.concat([cur])); let left=pl.q.filter(x=>!seen.has(x)), fresh=false;
+    if(!left.length){ fresh=true; left=pl.q.filter(x=>x!==cur); }                                  // (every song was played: a new round. The history is cleared only when the move is made (plHistPush): this function is also asked half way through a song, for the prefetch, and "previous" must still find the songs before)
+    pl.sn={from:cur, to:left[Math.floor(Math.random()*left.length)], fresh}; return pl.q.indexOf(pl.sn.to);
+  }
+  if(pl.i<n-1) return pl.i+1;
+  return m==='order' ? -1 : 0;
+}
+function plPrefetch(){                                                                                // half way through a song the beginning of the next one is asked for, so that it starts at once
+  if(!plIsMusic(plCur()) || !pl.loaded) return;
+  const d=plAudio.duration, c=plAudio.currentTime; if(!(d>0 && isFinite(d)) || (c/d<.5 && d-c>20)) return;
+  const k=plNextIdx(true); if(k<0 || k===pl.i) return; const id=pl.q[k]; if(pl.pre===id) return; pl.pre=id;
+  const it=plItem(id), cs=it ? plCands(it).filter(x=>!x.big) : []; if(!cs.length) return;
+  try{ const a=new Audio(); a.preload='metadata'; a.src=plSrc(cs[0].audio); pl.preA=a; }catch(e){}
+}
 function plStop(){
   plAudio.pause(); plAudio.removeAttribute('src'); plAudio.load();
-  Object.assign(pl,{q:[], i:-1, loaded:'', want:0, shown:'', sleepAt:0, sleepEnd:false, sleepMin:0}); LS.set('pl',{q:[],cur:'',t:0,rate:pl.rate});
+  Object.assign(pl,{q:[], i:-1, loaded:'', want:0, shown:'', sleepAt:0, sleepEnd:false, sleepMin:0, closed:false}); clearTimeout(pl.stallT); plNewRound(); LS.set('pl',{q:[],cur:'',t:0,rate:pl.rate});
   if('mediaSession' in navigator){ try{ navigator.mediaSession.metadata=null; navigator.mediaSession.playbackState='none'; }catch(e){} }
   plRender();
 }
@@ -4951,8 +5164,13 @@ function plToggle(){
   if(plAudio.paused){ const p=plAudio.play(); if(p && p.catch) p.catch(()=>{}); } else { pl.sleepAt=0; pl.sleepMin=0; plAudio.pause(); }
 }
 function plSkip(d){ if(!pl.loaded) return; const dur=plAudio.duration; plAudio.currentTime=Math.max(0, Math.min(isFinite(dur)&&dur>0?dur-1:1e9, (plAudio.currentTime||0)+d)); plTick(); }
-function plNext(){ if(pl.i<pl.q.length-1) plLoad(pl.i+1,true); }
-function plPrev(){ if(pl.loaded && plAudio.currentTime>5){ plAudio.currentTime=0; return; } if(pl.i>0) plLoad(pl.i-1,true); else if(pl.loaded) plAudio.currentTime=0; }
+function plHistPush(){ if(pl.sn && pl.sn.fresh && pl.sn.from===pl.q[pl.i]) pl.hist=[]; pl.hist.push(pl.q[pl.i]); if(pl.hist.length>200) pl.hist.shift(); }          // the song that is left goes to the history (a shuffle that has played them all starts a new round here)
+function plNext(){ const k=plNextIdx(false); if(k<0) return; if(k!==pl.i || pl.q.length===1) plHistPush(); plLoad(k,true); }
+function plPrev(){
+  if(pl.loaded && plAudio.currentTime>5){ plAudio.currentTime=0; return; }
+  if(plMode()==='shuffle' && pl.hist.length){ const k=pl.q.indexOf(pl.hist.pop()); if(k>=0){ plLoad(k,true); return; } }                 // (shuffled: the song that was before)
+  if(pl.i>0) plLoad(pl.i-1,true); else if(pl.loaded) plAudio.currentTime=0;
+}
 function plSetRate(r){ pl.rate=r; plAudio.defaultPlaybackRate=r; plAudio.playbackRate=r; $('#plRate').textContent=r+'×'; plSave(); plSessionState(); if(plDlg.open) plSheet(); }
 function plPlay(id){
   if(!plItem(id)) return;
@@ -4971,11 +5189,14 @@ function plSheet(){                                                             
   const it=plCur();
   if(it){
     const raw=it.content ? plPlain(it.content) : '', notes=(raw.length>40 ? raw : (it.summary||raw||'')).slice(0,900), more=raw.length>900 || !!it.content || !!httpUrl(it.url);
-    $('#plNow').innerHTML=`<div class="pl-hero">${String(it.image||'').startsWith('https://') ? `<img src="${esc(it.image)}" alt="" referrerpolicy="no-referrer">` : `<span class="pl-letter">${esc(String(plShow(it)).slice(0,1)||'♪')}</span>`}<div class="pl-hero-t"><b>${esc(it.title)}</b><span>${esc(plShow(it))}${it.date?' · '+esc(String(it.date).slice(0,10)):''}</span></div></div>`
+    $('#plNow').innerHTML=`<div class="pl-hero">${String(it.image||'').startsWith('https://') ? `<img src="${esc(it.image)}" alt="" referrerpolicy="no-referrer">` : `<span class="pl-letter">${esc(String(plShow(it)).slice(0,1)||'♪')}</span>`}<div class="pl-hero-t"><b>${esc(it.title)}</b><span>${esc(plShow(it))}${it.date?' · '+esc(String(it.date).slice(0,10)):''}</span></div>${plIsMusic(it) ? `<button class="plp-ic plp-like" type="button" data-ls-like="${esc(it.id.slice(7))}" aria-pressed="${lpIsLiked(it.id.slice(7))}" title="${esc(t(lpIsLiked(it.id.slice(7))?'lsLiked':'lsLike'))}" aria-label="${esc(t(lpIsLiked(it.id.slice(7))?'lsLiked':'lsLike'))}">${ICON.heart}</button>` : ''}</div>`
       + (notes ? `<p class="pl-notes">${esc(notes)}${notes.length>=900?'…':''}</p>` : '') + (more ? `<p><button class="btn" type="button" data-pl="notes">${esc(t('plNotes'))}</button></p>` : '');
   } else $('#plNow').innerHTML='';
   $('#plRates').innerHTML=PL_RATES.map(r=>`<button type="button" data-plrate="${r}" aria-pressed="${r===pl.rate}">${r}×</button>`).join('');
   $('#plSleeps').innerHTML=PL_SLEEPS.map(m=>`<button type="button" data-plsleep="${m}" aria-pressed="${m===pl.sleepMin}">${esc(m===0?t('plSleepOff'):m<0?t('plSleepEnd'):t('plSleepMin',m))}</button>`).join('');
+  $('#plSrcs').innerHTML=PL_SRCS.map(s=>`<button type="button" data-plsrc="${s}" aria-pressed="${s===plSet.src}">${esc(t('plSrc_'+s))}</button>`).join('');
+  const sw=$('#plDataSw'); sw.setAttribute('aria-checked',String(plSet.data)); sw.classList.toggle('on',plSet.data);
+  $('#plRatesRow').hidden=plIsMusic(it); $('#plQn').textContent=pl.q.length ? t(plIsMusic(it)?'plQnSongs':'plQnEps',pl.q.length) : '';
   const rows=pl.q.map((id,i)=>[id,i,plItem(id)]).filter(x=>x[2]);
   $('#plList').innerHTML = rows.length ? rows.map(([id,i,x])=>`<li class="${i===pl.i?'cur':''}" data-plid="${esc(id)}"><span class="t" data-plgo="${esc(id)}" title="${esc(x.title)}">${i===pl.i?'▶ ':''}${esc(x.title)}</span><span class="pl-dur">${plAudioOf(x).dur?esc(fmtDur(plAudioOf(x).dur)):''}</span><button type="button" data-plrm="${esc(id)}" title="${esc(t('plRemove'))}" aria-label="${esc(t('plRemove'))}"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></li>`).join('') : `<li class="pl-empty">${esc(t('plEmpty'))}</li>`;
   plToggleIcon(); plNav(); plTick();
@@ -4987,30 +5208,30 @@ function plRemove(id){
 }
 function plAct(k){
   if(k==='toggle') plToggle(); else if(k==='back') plSkip(-PL_BACK); else if(k==='fwd') plSkip(PL_FWD); else if(k==='prev') plPrev(); else if(k==='next') plNext();
+  else if(k==='mode'){ pl.mode=PL_MODES[(PL_MODES.indexOf(pl.mode)+1)%PL_MODES.length]; plNewRound(); LS.set('plMode',pl.mode); toast(t('plMode_'+pl.mode)); plRender(); plNav(); }
   else if(k==='rate') plSetRate(PL_RATES[(PL_RATES.indexOf(pl.rate)+1)%PL_RATES.length]);
-  else if(k==='menu'){ if(!plDlg.open) plDlg.showModal(); plSheet(); }
+  else if(k==='menu'){ pl.popAt=Date.now(); if(!plDlg.open){ plDlg.showModal(); $('#plSetSheet').hidden=true; } plSheet(); }
   else if(k==='fold') plFold(true); else if(k==='expand') plFold(false); else if(k==='focus') focusOpen();
   else if(k==='notes'){ const it=plCur(); if(it){ plDlg.close(); markRead(it.id); openReader(it.id); } }
 }
 plAudio.addEventListener('timeupdate',()=>{
-  plTick(); const now=Date.now(), it=plCur();
+  plTick(); plPrefetch(); const now=Date.now(), it=plCur();
   if(it && now-pl.savedAt>5000){ pl.savedAt=now; plProgSave(it,plAudio.currentTime,plAudio.duration||0,false); plSave(); plSessionState(); }
   if(pl.sleepAt && now>=pl.sleepAt){ pl.sleepAt=0; pl.sleepMin=0; plAudio.pause(); toast(t('plSleepDone')); fcDone(); }
 });
 plAudio.addEventListener('play',()=>{ plToggleIcon(); plMarkCards(); plSessionState(); });
 plAudio.addEventListener('pause',()=>{ const it=plCur(); if(it && pl.loaded && !plAudio.ended) plProgSave(it,plAudio.currentTime,plAudio.duration||0,false); plSave(); plToggleIcon(); plMarkCards(); plSessionState(); });
-plAudio.addEventListener('loadedmetadata',()=>{ plTick(); plSessionState(); });
+plAudio.addEventListener('loadedmetadata',()=>{ plTick(); plSessionState(); plLenCheck(); });
 plAudio.addEventListener('durationchange',plTick);
 plAudio.addEventListener('ended',()=>{
   const it=plCur(); if(it) plProgSave(it,plAudio.duration||0,plAudio.duration||0,true);
   if(pl.sleepEnd){ pl.sleepEnd=false; pl.sleepMin=0; plToggleIcon(); plMarkCards(); return; }
-  if(pl.i<pl.q.length-1) plLoad(pl.i+1,true); else { plToggleIcon(); plMarkCards(); }
+  const k=plNextIdx(true);
+  if(k>=0 && k===pl.i && plMode()==='one'){ plAudio.currentTime=0; const p=plAudio.play(); if(p && p.catch) p.catch(()=>{}); return; }              // (one song again)
+  if(k>=0){ plHistPush(); plLoad(k,true); } else { plToggleIcon(); plMarkCards(); }
 });
-plAudio.addEventListener('error',()=>{
-  if(!pl.loaded) return; const id=pl.loaded, it=plItem(id); pl.loaded=''; pl.want=0; plToggleIcon(); plMarkCards();
-  if(id.startsWith('tmp:ls:') && pl.i<pl.q.length-1){ toast(t('lsSkip',cut(it ? it.title : '',24))); plNext(); return; }                 // a song of today's listening that the platform does not give out: on to the next one
-  if(it) toast(t('plFail'), it.url ? t('plOpenOrig') : undefined, it.url ? ()=>window.open(it.url,'_blank','noopener,noreferrer') : undefined);
-});
+plAudio.addEventListener('error',()=>{ if(pl.loaded) plTrouble(pl.loaded,'error'); });
+['playing','canplay'].forEach(ev=>plAudio.addEventListener(ev,()=>clearTimeout(pl.stallT)));
 $('#player').addEventListener('click',e=>{ const b=e.target.closest('[data-pl]'); if(b) plAct(b.dataset.pl); });
 $('#plMini').addEventListener('click',e=>{ const b=e.target.closest('[data-pl]'); if(b) plAct(b.dataset.pl); });
 /* folding: by a finger (the tab, a swipe down: remembered), or by the page itself (a text is opened to read, five minutes of silence: only until that is over). It never closes the player; closing is in the "now playing" page. */
@@ -5039,6 +5260,11 @@ function plSeekInput(e){
 { const v=Math.max(0,Math.min(100,+LS.get('plVol',100)||0)); plAudio.volume=v/100; $('#plVol').value=v; }
 $('#plVol').addEventListener('input',e=>{ plAudio.volume=e.target.value/100; LS.set('plVol',+e.target.value); });
 plDlg.addEventListener('click',e=>{
+  const p=e.target.closest('[data-plp]');
+  if(p){ const k=p.dataset.plp; if(k==='collapse') plDlg.close(); else { const open=k==='set' ? $('#plSetSheet').hidden : false; $('#plSetSheet').hidden=!open; $('#plSetBtn').setAttribute('aria-expanded',String(open)); } return; }
+  const sr=e.target.closest('[data-plsrc]'); if(sr){ plSet.src=sr.dataset.plsrc; plSetSave(); plSheet(); return; }
+  if(e.target.closest('#plDataSw')){ plSet.data=!plSet.data; plSetSave(); plSheet(); return; }
+  const lk=e.target.closest('[data-ls-like]'); if(lk){ lpLikeToggle(lk.dataset.lsLike); return; }
   const c=e.target.closest('[data-pl]'); if(c && c.dataset.pl!=='menu' && c.dataset.pl!=='rate'){ plAct(c.dataset.pl); return; }
   const r=e.target.closest('[data-plrate]'); if(r){ plSetRate(+r.dataset.plrate); return; }
   const s=e.target.closest('[data-plsleep]');
@@ -5046,9 +5272,31 @@ plDlg.addEventListener('click',e=>{
   const g=e.target.closest('[data-plgo]'); if(g){ const k=pl.q.indexOf(g.dataset.plgo); if(k>=0 && k!==pl.i) plLoad(k,true); else if(k===pl.i) plToggle(); return; }
   const x=e.target.closest('[data-plrm]'); if(x){ plRemove(x.dataset.plrm); if(!pl.q.length) plDlg.close(); return; }
 });
-$('#plDone').addEventListener('click',()=>plDlg.close());
-$('#plClear').addEventListener('click',()=>{ const cur=pl.i>=0?pl.q[pl.i]:''; pl.q=cur?[cur]:[]; pl.i=cur?0:-1; plSave(); plSheet(); });
-$('#plShut').addEventListener('click',()=>{ plDlg.close(); plStop(); });
+/* the popup: the player itself (no page of its own). ⌄ folds it (the sound goes on), × closes the player (the sound stops, the bar goes, the list is kept), "clear" empties the list (and can be taken back).
+   It folds by itself when a finger is put outside of it, and after three minutes without a touch, a scroll or a key. */
+const PL_POP_IDLE_MS=180000;
+pl.popAt=0;
+['pointerdown','keydown','touchstart','wheel','scroll','input'].forEach(ev=>plDlg.addEventListener(ev,()=>{ pl.popAt=Date.now(); },{passive:true,capture:true}));
+setInterval(()=>{ if(plDlg.open && Date.now()-pl.popAt>=PL_POP_IDLE_MS) plDlg.close(); },1000);
+plDlg.addEventListener('close',()=>{ $('#plSetSheet').hidden=true; $('#plSetBtn').setAttribute('aria-expanded','false'); });
+plDlg.addEventListener('click',e=>{ if(e.target===plDlg) plDlg.close(); });                           // (a tap on what is behind the popup)
+function plClose(){                                                                                    // × : stop, hide the bar, keep the list (the next song played comes into it)
+  plAudio.pause(); clearTimeout(pl.stallT); pl.loaded=''; plAudio.removeAttribute('src'); plAudio.load();
+  pl.closed=true; plSave(); plRender();
+  if('mediaSession' in navigator){ try{ navigator.mediaSession.playbackState='none'; }catch(e){} }
+}
+function plClearAll(){                                                                                 // "clear": the whole list goes (the song that plays too); "undo" in the toast brings it back, paused
+  if(!pl.q.length) return;
+  const snap={q:pl.q.slice(), i:pl.i, t:Math.floor((pl.loaded?plAudio.currentTime:pl.want)||0)};
+  plStop(); plDlg.close();
+  toast(t('plCleared'), t('plUndo'), ()=>{ pl.q=snap.q.filter(id=>plItem(id)); pl.i=pl.q.length ? Math.min(Math.max(snap.i,0),pl.q.length-1) : -1; pl.want=snap.t; pl.closed=false; plNewRound(); plRender(); plSave(); });
+}
+$('#plClear').addEventListener('click',plClearAll);
+$('#plShut').addEventListener('click',()=>{ plDlg.close(); plClose(); });
+$('#plWipe').addEventListener('click',()=>{                                                            // what this browser remembers of the listening goes (the songs liked and the play lists stay: they were made on purpose)
+  LS.set('lpRecent',[]); const m=plProgMap(); Object.keys(m).forEach(k=>{ if(k.startsWith('tmp:ls:')) delete m[k]; }); LS.set('plProg',m);
+  toast(t('plWiped'));
+});
 $('#readerPlay').addEventListener('click',()=>{ if(state.readingId) plPlay(state.readingId); });
 new MutationObserver(()=>plMarkCards()).observe($('#grid'),{childList:true});                        // (a card made again keeps its "playing" look)
 window.addEventListener('pagehide',()=>{ const it=plCur(); if(it && pl.loaded) plProgSave(it,plAudio.currentTime,plAudio.duration||0,false); plSave(); });
@@ -5131,7 +5379,7 @@ $('#rfPill').addEventListener('click',e=>{
 });
 function plRestore(){                                                                                // the list and the place of the last visit: waiting in the bar, paused (a page may not start a sound by itself)
   const s=LS.get('pl',null); if(!s || !Array.isArray(s.q)) return;
-  pl.q=s.q.map(String).filter(id=>plItem(id)); pl.rate=PL_RATES.includes(+s.rate)?+s.rate:1;
+  pl.q=s.q.map(String).filter(id=>plItem(id)); pl.rate=PL_RATES.includes(+s.rate)?+s.rate:1; pl.closed=!!s.closed;
   const k=pl.q.indexOf(String(s.cur||'')); pl.i=pl.q.length ? (k>=0?k:0) : -1; pl.want=k>=0 ? Math.max(0,+s.t||0) : 0;
   plRender();
 }
@@ -6140,7 +6388,8 @@ const dirBase = () => httpUrl(state.dirData && state.dirData.base) || state.dirC
 state.dView='all'; state.dTab=''; state.dTabs=LS.get('dirTabs','topic')==='plat' ? 'plat' : 'topic'; state.heat=null; state.heatAt=0; state.dirRead=LS.get('dirRead',{}); state.vote=LS.get('dirVote',{}); state.dPick=new Set((LS.get('dirPick',[])||[]).map(String)); state.dPickOpen=false; state.dPickQ=''; state.mixSeed=0; state.dPickT=new Set((LS.get('dirPickT',[])||[]).map(String)); state.dSub=''; state.dIntro=new Set(); state.dPlatMore=false; state.dPlatRest=0; state.dBrowse=false;
 state.ls={scene:String(LS.get('lsScene','')||'')};
 state.lp={idx:null, idxAt:0, busy:false, err:'', data:new Map(), pending:new Map(), g:String(LS.get('lpG','daily')||'daily'), mode:'music', g_music:String(LS.get('lpG_music','daily')||'daily'), g_podcast:String(LS.get('lpG_podcast','pod-hot')||'pod-hot'), show:'', shown:30, more:false, pods:null, podsKey:'', io:null,
-  sort:(k=>['rank','new','dur','title','artist'].includes(k)?k:'rank')(LS.get('lpSort','rank'))};
+  sort:(k=>['rank','new','dur','title','artist'].includes(k)?k:'rank')(LS.get('lpSort','rank')),
+  tab:(k=>['rec','chart','disc'].includes(k)?k:'rec')(LS.get('lpTab','rec')), open:false, cr:String(LS.get('lpCR','')||''), batch:0, styles:false};          // the music side has three tabs (for you / charts / discover); open: a list that was opened from the first or the third (a back arrow leaves it); cr: the region of the charts
 state.dListen=false;                    // today's listening: what the service said, when it was asked, the scene that is shown
 state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), view:LS.get('hotView','mix')==='boards'?'boards':'mix', mixBusy:false, mixRows:[], mixRun:0, period:LS.get('hotPeriod','day')==='week'?'week':'day', events:[], eventsAt:0, eventsBusy:false, eventsErr:'', eventsRun:0, region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
 const PUBLIC_ROUTES={discover:'/discover/',hot:'/hot/',listen:'/listen/',books:'/picks/books/',articles:'/picks/articles/',watch:'/watch/'};
@@ -6685,21 +6934,27 @@ function dirHomeHTML(){
    directory). A list has up to 200 entries; thirty are shown, and the next thirty come when the end is reached. Two places show it: a small block on the discovery page (#lsBlock) and the page of its own
    (#lpRoot, "今日听什么" in the sidebar). Nothing is kept here and nothing is counted. */
 const listenApi=()=>{ const b=hotBase(); return b ? b+'/api/listen' : ''; };
-const LP_STRIP=14, LP_FRESH=30*60000, LP_RETRY=60000, LP_PAGE=30, LP_KINDS=['daily','chart','list','style'];
+const LP_STRIP=14, LP_FRESH=30*60000, LP_RETRY=60000, LP_PAGE=30, LP_QMAX=240, LP_KINDS=['daily','chart','list','style','scene'];
 const lpName=g=>state.lang==='zh' ? g.name : (g.name_en||g.name);
 const lpKey=id=>id+'|'+state.lang;                                                                  // (what the service says depends on the reader's language)
 function listenClean(x){                                                                           // one song as the service says it -> ours (only the fields that are used, https pictures, a sound that has an address), or null
   const s=v=>typeof v==='string' ? v : '';
   if(!x || typeof x!=='object' || !s(x.id) || !s(x.title)) return null;
-  const stream=x.mode==='stream' && !!httpUrl(x.audio);
+  const cs=(Array.isArray(x.cands) ? x.cands.slice(0,8) : []).map(c=>{                              // the other sounds of the song (a whole one, a preview ...): only those a player can play
+    if(!c || typeof c!=='object' || !httpUrl(c.audio)) return null;
+    return {p:s(c.p).slice(0,20), k:c.k==='preview'?'preview':'full', audio:httpUrl(c.audio), net:c.net==='global'?'global':c.net==='any'?'any':'cn', big:c.big===true, size:+c.size>0?Math.floor(+c.size):0, dl:c.dl===true, lyr:c.lyr===true, lic:cut(s(c.lic),30)};
+  }).filter(Boolean);
+  const first=httpUrl(x.audio) || (cs[0] ? cs[0].audio : '');
+  const stream=x.mode==='stream' && !!first;
   if(!stream && x.mode!=='embed') return null;
-  return {id:s(x.id).slice(0,60), title:cut(s(x.title),120), artist:cut(s(x.artist),80), cover:s(x.cover).startsWith('https://')?s(x.cover):'', dur:+x.dur>0?Math.floor(+x.dur):0, mode:stream?'stream':'embed',
-          audio:stream?httpUrl(x.audio):'', url:httpUrl(x.url), lic:cut(s(x.lic),30), from:cut(s(x.from),30), net:x.net==='global'?'global':'cn', preview:x.preview===true, date:/^\d{4}-\d{2}-\d{2}$/.test(s(x.date))?x.date:'', show:s(x.show).slice(0,20)};
+  return {id:s(x.id).slice(0,60), title:cut(s(x.title),120), artist:cut(s(x.artist),80), cover:s(x.cover).startsWith('https://')?s(x.cover):'', dur:+x.dur>0?Math.floor(+x.dur):0, mode:stream?'stream':'embed', cands:cs,
+          audio:stream?first:'', url:httpUrl(x.url), lic:cut(s(x.lic),30), from:cut(s(x.from),30), net:x.net==='global'?'global':'cn', preview:x.preview===true, date:/^\d{4}-\d{2}-\d{2}$/.test(s(x.date))?x.date:'', show:s(x.show).slice(0,20)};
 }
 function lpCleanGroup(g){
   const s=v=>typeof v==='string' ? v : '';
   if(!g || typeof g!=='object' || !/^[A-Za-z0-9-]{2,40}$/.test(s(g.id)) || !LP_KINDS.includes(g.kind) || !s(g.name)) return null;
-  return {id:g.id, name:cut(s(g.name),40), name_en:cut(s(g.name_en)||s(g.name),50), kind:g.kind, type:g.type==='podcast'?'podcast':'music', net:g.net==='global'?'global':'cn', n:+g.n>0?Math.floor(+g.n):0};
+  return {id:g.id, name:cut(s(g.name),40), name_en:cut(s(g.name_en)||s(g.name),50), kind:g.kind, type:g.type==='podcast'?'podcast':'music', net:g.net==='global'?'global':'cn', n:+g.n>0?Math.floor(+g.n):0,
+          lang:s(g.lang).slice(0,4), region:['cn','jp-kr','west','global'].includes(g.region)?g.region:'', cover:s(g.cover).startsWith('https://')?s(g.cover):''};
 }
 function lpIndex(){                                                                                 // -> a promise that is done when the index is here (or could not be had)
   const api=listenApi(), L=state.lp; if(!api) return Promise.resolve();
@@ -6708,27 +6963,43 @@ function lpIndex(){                                                             
   L.busy=true; L.idxAt=Date.now(); L.err='';
   return L.idxP=lpIndexAsk(api);
 }
+/* what the service said last time is kept in this browser (Cache API "zt-listen", three days): the lists and the songs of a list are shown at once at the next visit, the network only brings the new ones */
+const LP_KEEP='zt-listen', LP_KEEP_AGE=3*86400000, lpKeepKey=(api,k)=>'https://listen.cache/'+encodeURIComponent(api)+'/'+encodeURIComponent(k);
+async function lpKeptGet(api,k){ try{ const c=await caches.open(LP_KEEP), r=await c.match(lpKeepKey(api,k)), o=r ? await r.json() : null; return o && o.v===1 && Date.now()-(+o.at||0)<LP_KEEP_AGE ? o.d : null; }catch(e){ return null; } }
+async function lpKeptPut(api,k,d){ try{ const c=await caches.open(LP_KEEP); await c.put(lpKeepKey(api,k), new Response(JSON.stringify({v:1, at:Date.now(), d}))); }catch(e){} }
 async function lpIndexAsk(api){
-  const L=state.lp;
+  const L=state.lp, lang=state.lang;
+  if(!L.idx) lpKeptGet(api,'idx|'+lang).then(k=>{                                                    // (the copy of the last visit: the lists at once, while the network is asked)
+    const gs=k && Array.isArray(k.groups) ? k.groups.slice(0,120).map(lpCleanGroup).filter(Boolean) : [];
+    if(!gs.length || L.idx || state.lang!==lang) return;
+    L.idx={date:String(k.date||''), lang, groups:gs}; lpPaint(); lsEnsure(); if($('#lpRoot')) lpEnsure();
+  });
   try{
-    const r=await fetch(api+'?lang='+state.lang,{credentials:'omit'}), d=await r.json().catch(()=>null), gs=(d && d.ok && Array.isArray(d.groups) ? d.groups : []).slice(0,120).map(lpCleanGroup).filter(Boolean);
+    const r=await fetch(api+'?lang='+lang,{credentials:'omit'}), d=await r.json().catch(()=>null), raw=d && d.ok && Array.isArray(d.groups) ? d.groups.slice(0,120) : [], gs=raw.map(lpCleanGroup).filter(Boolean);
     if(!gs.length) throw new Error('index');
-    L.idx={date:String(d.date||''), lang:state.lang, groups:gs};
+    L.idx={date:String(d.date||''), lang, groups:gs}; lpKeptPut(api,'idx|'+lang,{date:String(d.date||''), groups:raw});
   }catch(e){ if(!L.idx) L.err=t('lpErr'); }                                                        // (no service, no lists: the podcasts of the directory are still there)
-  L.busy=false; lpPaint(); lsEnsure();
+  L.busy=false; lpPaint(); lsEnsure(); if($('#lpRoot')) lpEnsure();
 }
+function lpClean(id, rawItems){ const pod=lpTypeOf(id)==='podcast', items=(Array.isArray(rawItems) ? rawItems : []).slice(0,240).map(listenClean).filter(Boolean); items.forEach(x=>{ x.pod=pod; }); return items; }          // (an episode has the speed and the jumps, a song has the play mode)
 function lpLoad(id, force){                                                                         // the songs of one list (asked for once in half an hour; a failure waits a minute); -> a promise
   const L=state.lp, api=listenApi(), key=lpKey(id), old=L.data.get(key);
   if(L.pending.has(key)) return L.pending.get(key);
   if(!api || (old && !force && ((old.state==='ok' && Date.now()-old.t<LP_FRESH) || (old.state==='err' && Date.now()-old.t<LP_RETRY)))) return Promise.resolve();
   L.data.set(key,{...(old||{}), state:'load', t:Date.now()});
+  if(!old) lpKeptGet(api,'g|'+key).then(k=>{                                                         // (the songs of the last visit: shown at once, while the network is asked)
+    const cur=L.data.get(key), items=k ? lpClean(id,k.items) : [];
+    if(!items.length || !cur || (cur.items && cur.items.length) || cur.state==='ok') return;
+    L.data.set(key,{...cur, items, sub:cut(String(k.sub||''),120), sub_en:cut(String(k.sub_en||''),120), kept:true}); lpPaint();
+  });
   const p=(async()=>{
     try{
       const r=await fetch(api+'?g='+encodeURIComponent(id)+'&lang='+state.lang,{credentials:'omit'}), d=await r.json().catch(()=>null), g=d && d.ok ? d.group : null;
-      const items=g && Array.isArray(g.items) ? g.items.slice(0,240).map(listenClean).filter(Boolean) : [];
+      const items=g ? lpClean(id,g.items) : [];
       if(!items.length) throw Object.assign(new Error('empty'), {svc:d && !d.ok ? (state.lang==='zh' ? d.message : d.message_en) : ''});
       L.data.set(key,{state:'ok', t:Date.now(), items, sub:cut(String(g.sub||''),120), sub_en:cut(String(g.sub_en||''),120)});
-    }catch(e){ L.data.set(key,{state:'err', t:Date.now(), items:old && old.items || [], msg:e.svc || t('lpErr')}); }
+      lpKeptPut(api,'g|'+key,{items:g.items.slice(0,240), sub:String(g.sub||''), sub_en:String(g.sub_en||'')});
+    }catch(e){ const cur=L.data.get(key); L.data.set(key,{state:'err', t:Date.now(), items:(cur && cur.items) || (old && old.items) || [], msg:e.svc || t('lpErr')}); }          // (a failure keeps what is shown: the songs of the last visit stay)
     L.pending.delete(key); lpPaint();
   })();
   L.pending.set(key,p); lpPaint(); return p;
@@ -6741,7 +7012,7 @@ function lpPods(){                                                              
   for(const it of d.items){
     if(!it.audio || !httpUrl(it.audio.url) || state.vote[it.id]===-1) continue;
     const sh=state.shelfMap.get(it.shelf), name=(sh && sh.name) || hostOf(it.url), date=String(it.date||'');
-    eps.push({id:'pod:'+it.id, title:it.title, artist:name, cover:String(it.image||'').startsWith('https://')?it.image:'', dur:+it.audio.dur>0?Math.floor(+it.audio.dur):0, mode:'stream', audio:httpUrl(it.audio.url), url:httpUrl(it.url), lic:'', from:name, net:'cn', preview:false, date, show:it.shelf});
+    eps.push({id:'pod:'+it.id, title:it.title, artist:name, cover:String(it.image||'').startsWith('https://')?it.image:'', dur:+it.audio.dur>0?Math.floor(+it.audio.dur):0, mode:'stream', audio:httpUrl(it.audio.url), url:httpUrl(it.url), lic:'', from:name, net:'cn', preview:false, pod:true, date, show:it.shelf});
     const s=by.get(it.shelf) || {id:it.shelf, name, n:0, date:''}; s.n++; if(date>s.date) s.date=date; by.set(it.shelf,s);
   }
   eps.sort((a,b)=>b.date.localeCompare(a.date));
@@ -6752,8 +7023,31 @@ const lpAvailable=()=>moduleOn('listen') && (!!listenApi() || !!lpPods());
 const lpDirTile=()=>{ const P=lpPods(); return P ? {id:'pod', name:t('lpDirShows'), name_en:t('lpDirShows'), kind:'list', type:'podcast', net:'cn', n:P.eps.length} : null; };    // (the shows of the directory are a list of the podcasts side)
 const lpGroups=()=>{ const g=state.lp.idx ? state.lp.idx.groups : [], d=lpDirTile(); return d ? g.concat([d]) : g; };
 const lpTypeOf=id=>{ const g=lpGroups().find(x=>x.id===id); return g ? g.type : 'music'; };
+/* ---- what the reader keeps of the music (this browser only, nothing is sent): the songs liked, the play lists made by hand, the songs played last, the songs not wanted */
+const lpSeen=new Map();                                                                               // id -> the song as the page has it (a song that was seen can be liked or put in a list)
+const lpSongKeep=x=>({id:x.id, title:x.title, artist:x.artist||'', cover:x.cover||'', dur:x.dur||0, mode:'stream', audio:x.audio, url:x.url||'', lic:x.lic||'', from:x.from||'', net:x.net||'cn', preview:!!x.preview, cands:(x.cands||[]).slice(0,6), pod:false, date:'', show:''});
+const lpArr=k=>{ const a=LS.get(k,[]); return Array.isArray(a) ? a.filter(x=>x && typeof x==='object' && x.id && httpUrl(x.audio)) : []; };
+const lpLikes=()=>lpArr('lpLikes'), lpRecent=()=>lpArr('lpRecent');
+const lpIsLiked=id=>lpLikes().some(x=>x.id===id);
+const lpLists=()=>{ const a=LS.get('lpLists',[]); return Array.isArray(a) ? a.filter(l=>l && l.id && typeof l.name==='string' && Array.isArray(l.songs)).map(l=>({id:String(l.id), name:l.name, songs:l.songs.filter(x=>x && x.id && httpUrl(x.audio))})) : []; };
+const lpListsSave=a=>LS.set('lpLists',a);
+const lpNo=()=>{ const o=LS.get('lpNo',{}); return {ids:Array.isArray(o.ids)?o.ids.map(String):[], artists:o.artists && typeof o.artists==='object' ? o.artists : {}}; };
+function lpLikeToggle(id){
+  const x=lpSeen.get(id); if(!x) return false;
+  let a=lpLikes(); a=a.some(y=>y.id===id) ? a.filter(y=>y.id!==id) : [lpSongKeep(x)].concat(a);
+  LS.set('lpLikes',a.slice(0,2000)); lpLikeSync(); return a.some(y=>y.id===id);
+}
+function lpLikeSync(){ document.querySelectorAll('[data-ls-like]').forEach(b=>{ const on=lpIsLiked(b.dataset.lsLike); b.setAttribute('aria-pressed',String(on)); b.title=t(on?'lsLiked':'lsLike'); b.setAttribute('aria-label',b.title); }); }
+function lpRecentAdd(x){ if(!x) return; LS.set('lpRecent',[lpSongKeep(x)].concat(lpRecent().filter(y=>y.id!==x.id)).slice(0,100)); }
+function lpNoAdd(x){ const o=lpNo(); if(!o.ids.includes(x.id)) o.ids.push(x.id); if(x.artist) o.artists[x.artist]=(+o.artists[x.artist]||0)+1; o.ids=o.ids.slice(-1000); LS.set('lpNo',o); }
+function lpListNew(name){ const a=lpLists(), l={id:Date.now().toString(36)+Math.floor(Math.random()*1296).toString(36), name:cut(String(name||'').trim()||t('lpListDef',a.length+1),30), songs:[]}; a.push(l); lpListsSave(a); return l; }
+function lpListAdd(listId, x){ const a=lpLists(), l=a.find(y=>y.id===listId); if(!l || !x) return false; if(l.songs.some(y=>y.id===x.id)) return false; l.songs.push(lpSongKeep(x)); l.songs=l.songs.slice(-500); lpListsSave(a); return true; }
+function lpMyTitle(id){ return id==='my:likes' ? t('lpMyLikes') : id==='my:recent' ? t('lpMyRecent') : id==='my:lists' ? t('lpMyLists') : (lpLists().find(l=>'my:l:'+l.id===id)||{}).name||''; }
 function lpGroupItems(id, show){                                                                     // -> {state, items, sub, msg} of a list; "pod": all the episodes of one show, or the newest one of each show
   const L=state.lp;
+  if(id==='my:likes') return {state:'ok', items:lpLikes(), sub:''};
+  if(id==='my:recent') return {state:'ok', items:lpRecent(), sub:''};
+  if(id.startsWith('my:l:')){ const l=lpLists().find(y=>'my:l:'+y.id===id); return {state:'ok', items:l ? l.songs : [], sub:''}; }
   if(id==='pod'){
     const P=lpPods(); if(!P) return {state:'ok', items:[], sub:''};
     const seen=new Set(), items=show ? P.eps.filter(x=>x.show===show) : P.eps.filter(x=>!seen.has(x.show) && seen.add(x.show));
@@ -6761,7 +7055,8 @@ function lpGroupItems(id, show){                                                
   }
   const d=L.data.get(lpKey(id));
   if(d && d.items && !d.ranked){ const g=lpGroups().find(x=>x.id===id); if(g){ d.ranked=true; if(g.kind==='chart') d.items.forEach((x,i)=>{ x.hot=i+1; }); } }          // (in a chart the place in the chart is how hot a song is)
-  return d ? {state:d.state, items:d.items||[], sub:state.lang==='zh' ? d.sub : d.sub_en, msg:d.msg} : {state:'none', items:[], sub:''};
+  const no=new Set(lpNo().ids);                                                                      // (the songs the reader said they do not want are not in the lists)
+  return d ? {state:d.state, items:(d.items||[]).filter(x=>!no.has(x.id)), sub:state.lang==='zh' ? d.sub : d.sub_en, msg:d.msg} : {state:'none', items:[], sub:''};
 }
 function lpSel(){                                                                                    // the list that is shown: the chosen one, or the first one there is
   const L=state.lp, gs=lpGroups(), ids=gs.map(g=>g.id), idxOk=L.idx || L.err || !listenApi();
@@ -6779,16 +7074,27 @@ function lpSorted(items, id){
   if(k==='artist') return items.slice().sort((a,b)=>a.artist.localeCompare(b.artist,loc) || a.title.localeCompare(b.title,loc));
   return items;                                                                                      // (the service's order, or the newest episode first)
 }
-const lpShownItems=()=>{ const cur=lpSel(); return lpSorted(lpGroupItems(cur, cur==='pod' ? state.lp.show : '').items, cur); };
-function lpEnsure(){ if(!listenApi()) return; lpIndex(); const cur=lpSel(); if(cur && cur!=='pod') lpLoad(cur); }
+const lpShownItems=()=>{ const cur=lpCur(); if(!cur) return state.lp.tab==='rec' ? lpRecItems() : []; return lpSorted(lpGroupItems(cur, cur==='pod' ? state.lp.show : '').items, cur); };
+function lpEnsure(){                                                                                 // the lists that the page on the screen needs are asked for (the daily picks for the radio, the chart that is shown, the list that was opened)
+  if(!listenApi()) return; lpIndex(); const L=state.lp;
+  if(!lpPodMode() && L.tab==='rec'){ const d=lpGroups().find(g=>g.type==='music' && g.kind==='daily'); if(d) lpLoad(d.id); }
+  const cur=lpCur(); if(cur && cur!=='pod' && !cur.startsWith('my:')) lpLoad(cur);
+}
 function lpDate(){ const ymd=String((state.lp.idx && state.lp.idx.date) || today()).split('-').map(Number), dd=new Date(ymd[0],ymd[1]-1,ymd[2]); return isNaN(dd) ? '' : dd.toLocaleDateString(state.lang==='zh' ? 'zh-CN' : 'en', {month:'long', day:'numeric'}); }
 function lpMeta(x){ return [x.artist || x.from, x.hot ? '🔥 '+t('lpRank',x.hot) : '', x.preview ? t('lsPreviewS') : '', x.net==='global' ? t('lsGlobal') : ''].filter(Boolean); }          // (who it is by, how hot it is (the place in a chart), "preview" when it is one, "overseas": nothing else)
 const lpIsRows=()=> LS.get('lpView','rows')!=='cards';                                              // (rows by default: a chart is read down a list; the cards are one tap away; the shelf's own view choice is not touched)
-function listenRowHTML(x, playing){                                                                 // a song as a row: cover, title, what it is (artist · length · whole song / preview · licence), a play mark, a link to its page
+const LP_BARS='<i class="ls-bars" aria-hidden="true"><b></b><b></b><b></b></i>';                       // (the little bars that dance on the row that plays)
+function listenRowHTML(x, playing){                                                                 // a song as a row: [rank] cover, title (a small "preview" when it is one), artist, ♥ and ⋯; an episode keeps a play mark and a link to its page
+  lpSeen.set(x.id,x);
   const stream=x.mode==='stream';
   const cv=x.cover ? `<img src="${esc(x.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span>${esc(String(x.artist||x.title).slice(0,1)||'♪')}</span>`;
-  const src=stream && x.url ? `<a class="ls-src" href="${esc(x.url)}" target="_blank" rel="nofollow ugc noopener noreferrer" title="${esc(t('lsSrc',x.from||hostOf(x.url)))}" aria-label="${esc(t('lsSrc',x.from||hostOf(x.url)))}">↗</a>` : '';
-  return `<li class="ls-row${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}"><span class="ls-cv">${cv}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}</b><span class="ls-m"><span class="ls-w">${esc(lpMeta(x)[0]||'')}</span>${lpMeta(x).length>1 ? `<span class="ls-x"> · ${esc(lpMeta(x).slice(1).join(' · '))}</span>` : ''}</span></span><span class="ls-ic" aria-hidden="true">${ICON.play}</span></button>${src}</li>`;
+  if(x.pod || !stream){
+    const src=stream && x.url ? `<a class="ls-src" href="${esc(x.url)}" target="_blank" rel="nofollow ugc noopener noreferrer" title="${esc(t('lsSrc',x.from||hostOf(x.url)))}" aria-label="${esc(t('lsSrc',x.from||hostOf(x.url)))}">↗</a>` : '';
+    return `<li class="ls-row nonum${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}"><span class="ls-cv">${cv}${LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}</b><span class="ls-m"><span class="ls-w">${esc(lpMeta(x)[0]||'')}</span>${lpMeta(x).length>1 ? `<span class="ls-x"> · ${esc(lpMeta(x).slice(1).join(' · '))}</span>` : ''}</span></span><span class="ls-ic" aria-hidden="true">${ICON.play}</span></button>${src}</li>`;
+  }
+  const liked=lpIsLiked(x.id), num=x.hot>0;
+  return `<li class="ls-row${num?'':' nonum'}${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}">${num ? `<span class="ls-n${x.hot<=3?' top':''}"><em>${x.hot}</em>${LP_BARS}</span>` : ''}<span class="ls-cv">${cv}${num?'':LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}${x.preview ? `<em class="ls-pv">${esc(t('lsPreviewS'))}</em>` : ''}</b><span class="ls-m">${esc(x.artist||x.from)}</span></span></button>`
+    + `<button class="ls-like" type="button" data-ls-like="${esc(x.id)}" aria-pressed="${liked}" title="${esc(t(liked?'lsLiked':'lsLike'))}" aria-label="${esc(t(liked?'lsLiked':'lsLike'))}">${ICON.heart}</button><button class="ls-more" type="button" data-ls-more="${esc(x.id)}" aria-haspopup="dialog" title="${esc(t('lsMore'))}" aria-label="${esc(t('lsMore'))}">${ICON.more}</button></li>`;
 }
 function lpCardHTML(x, playing){                                                                     // a song as a card: a square cover with a play mark, the title, the artist, one line of what it is
   const stream=x.mode==='stream';
@@ -6800,7 +7106,7 @@ function lpCardHTML(x, playing){                                                
 }
 function lpItemsHTML(items, from, to){                                                               // the cards (or rows) from `from` to `to` of the list
   const now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '', playing=x=>!!now && now==='tmp:ls:'+x.id, part=items.slice(from,to);
-  return lpIsRows() ? part.map(x=>listenRowHTML(x,playing(x))).join('') : part.map(x=>lpCardHTML(x,playing(x))).join('');
+  return lpIsRows() || !lpPodMode() ? part.map(x=>listenRowHTML(x,playing(x))).join('') : part.map(x=>lpCardHTML(x,playing(x))).join('');          // (the cards are for the podcast side; songs are always rows)
 }
 function lpSortSel(cur){                                                                              // the sort of the list that is shown (a podcast chart: its own order, newest, length ...)
   const L=state.lp, pod=cur==='pod', isPod=lpTypeOf(cur)==='podcast';
@@ -6811,19 +7117,84 @@ function lpSortSel(cur){                                                        
 function lpSongsHTML(cur, groups){
   const L=state.lp, pod=cur==='pod', info=lpGroupItems(cur, pod ? L.show : ''), g=groups.find(x=>x.id===cur), isPod=lpTypeOf(cur)==='podcast';
   const P=pod ? lpPods() : null, show=pod && L.show && P ? P.shows.find(s=>s.id===L.show) : null;
-  const title=pod && show ? show.name : g ? lpName(g) : '';
+  const title=pod && show ? show.name : g ? lpName(g) : lpMyTitle(cur);
+  const back=!isPod && L.open && L.tab!=='chart' ? `<button class="plp-ic lp-back" type="button" data-lp-back aria-label="${esc(t('lpBack'))}">${LP_BACK}</button>` : '';
+  const ops=cur.startsWith('my:l:') ? `<button class="btn dr-act" type="button" data-lp-lrename="${esc(cur)}">${esc(t('lpListRename'))}</button><button class="btn dr-act" type="button" data-lp-ldel="${esc(cur)}">${esc(t('lpListDelete'))}</button>` : '';
   if(info.state==='none' || (info.state==='load' && !info.items.length)) return `<section class="lp-songs" aria-busy="true"><p class="hot-state">${esc(t('lpLoading'))}</p></section>`;
   if(info.state==='err' && !info.items.length) return `<section class="lp-songs"><p class="hot-state">${esc(info.msg||t('lpErr'))}<br><button class="btn" type="button" data-lp-retry>${esc(t('dirRetry'))}</button></p></section>`;
-  const items=lpSorted(info.items, cur), rows=lpIsRows();
-  const body=!items.length ? `<p class="hot-state">${esc(t('hotEmpty'))}</p>` : rows ? `<ol class="ls-rows lp-rows">${lpItemsHTML(items,0,L.shown)}</ol>` : `<div class="lp-grid">${lpItemsHTML(items,0,L.shown)}</div>`;
-  return `<section class="lp-songs"><header class="lp-songs-h"><h3>${esc(title)}</h3><span class="lp-acts"><button class="btn dr-act" type="button" data-lp-focus="${esc(cur)}">${esc(t('focusBtn'))}</button><button class="btn dr-act" type="button" data-lp-all="${esc(cur)}">${ICON.play}<span>${esc(t('lpPlayAll'))}</span></button></span>`
+  const items=lpSorted(info.items, cur), rows=!isPod || lpIsRows();
+  const body=!items.length ? `<p class="hot-state">${esc(t(cur.startsWith('my:') ? 'lpEmptyList' : 'hotEmpty'))}</p>` : rows ? `<ol class="ls-rows lp-rows">${lpItemsHTML(items,0,L.shown)}</ol>` : `<div class="lp-grid">${lpItemsHTML(items,0,L.shown)}</div>`;
+  return `<section class="lp-songs"><header class="lp-songs-h">${back}<h3>${esc(title)}</h3><span class="lp-acts">${isPod ? `<button class="btn dr-act" type="button" data-lp-focus="${esc(cur)}">${esc(t('focusBtn'))}</button>` : ''}${ops}<button class="btn dr-act primary" type="button" data-lp-all="${esc(cur)}">${ICON.play}<span>${esc(t('lpPlayAll'))}</span></button></span>`
     + `<p class="lp-info"><span class="lp-n">${esc(t(isPod ? 'lpEps' : 'lpCount', items.length))}</span>${info.sub ? `<span class="lp-sub">${esc(info.sub)}</span>` : ''}</p></header>` + body + lpEndHTML(items.length, L.shown) + `</section>`;
 }
 const lpEndHTML=(n, shown)=> n>shown ? `<div class="lp-end" data-lp-end><button class="btn" type="button" data-lp-next>${esc(t('lpMoreItems',Math.min(shown,n),n))}</button></div>` : '';
 function lpOrder(mode){ const mine=lpGroups().filter(g=>g.type===mode); return mine.filter(g=>g.kind!=='style').concat(mine.filter(g=>g.kind==='style')); }          // (the lists of the day first, then the styles / categories: one row of choices)
+/* ---- the music side: three tabs (for you / charts / discover) instead of one strip of dozens of chips. For you: my things, today's radio, shelves of play lists; charts: one row of regions and the chart of the region;
+   discover: styles and scenes as cards. A list opened from the first or the third has a back arrow. The podcast side keeps its strip of lists. */
+const LP_REGIONS=['cn','west','jp-kr','global'], LP_SCENES=['chill','focus','sleep','workout','commute','study'];
+const LP_BACK='<svg class="icon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>', LP_SWAP='<svg class="icon" viewBox="0 0 24 24"><path d="M7 7h12M16 4l3 3-3 3M17 17H5M8 14l-3 3 3 3"/></svg>';
+const lpRegionPref=()=>LS.get('lpRegion', state.lang==='zh'?'cn':'global')==='cn' ? 'cn' : 'global';
+const lpIsChart=g=>g.kind==='chart' || /^(nep-|dzp-(3155776842|1313621735|1111142221)$)/.test(g.id);          // (a chart: a place in it is how hot a song is; until the service says so by kind, the lists of the top of Deezer and NetEase are charts too)
+const lpIsScene=g=>g.kind==='scene' || LP_SCENES.includes(g.id);
+function lpRegionOf(g){                                                                              // the region of a chart: what the service says, else by its name / language
+  if(g.region) return g.region;
+  const id=g.id; if(id==='hot-cn') return 'cn'; if(id==='kr' || id==='jp') return 'jp-kr';
+  if(id==='hot-west' || id==='dzp-1313621735' || id==='dzp-1111142221') return 'west'; if(id==='dzp-3155776842') return 'global';
+  return g.lang==='zh' ? 'cn' : g.lang==='en' ? 'west' : 'global';
+}
+function lpChartCur(){                                                                               // -> {regs: the regions that have a chart, r: the region shown, list: its charts, g: the chart shown}
+  const by={cn:[], west:[], 'jp-kr':[], global:[]}, L=state.lp;
+  lpGroups().filter(g=>g.type==='music' && lpIsChart(g)).forEach(g=>by[lpRegionOf(g)].push(g));
+  const regs=LP_REGIONS.filter(r=>by[r].length); if(!regs.length) return {regs, r:'', list:[], g:null};
+  const r=L.cr && regs.includes(L.cr) ? L.cr : lpRegionPref()==='cn' && regs.includes('cn') ? 'cn' : regs.includes('west') ? 'west' : regs[0], list=by[r];
+  return {regs, r, list, g:list.find(x=>x.id===L.cg) || list[0]};
+}
+const lpPodMode=()=>state.lp.mode==='podcast' || !lpGroups().some(g=>g.type!=='podcast');                 // (the podcast side is shown when it was chosen, or when there is no music at all: the shows of the directory)
+function lpCur(){ const L=state.lp; if(lpPodMode()) return lpSel(); if(L.tab==='chart'){ const c=lpChartCur(); return c.g ? c.g.id : ''; } return L.open ? L.g : ''; }          // the list on the page ('' = the first or the third tab's own page)
+function lpRecItems(all){                                                                            // today's radio: a batch of the daily picks (another batch at "next batch")
+  const d=(all||lpGroups()).find(g=>g.type==='music' && g.kind==='daily'); if(!d) return [];
+  const items=lpGroupItems(d.id,'').items, n=items.length; if(!n) return [];
+  const start=(state.lp.batch*LP_PAGE)%n, out=items.slice(start,start+LP_PAGE); return out.length<LP_PAGE ? out.concat(items.slice(0,LP_PAGE-out.length)) : out;
+}
+function lpGcCard(g){ const h=Math.abs(hashStr(g.id))%360; return `<button class="lp-gc" type="button" data-lp-g="${esc(g.id)}" style="--h:${h}"><span class="lp-gcv">${g.cover ? `<img src="${esc(g.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<b>${esc(Array.from(lpName(g)).slice(0,2).join(''))}</b>`}</span><span class="lp-gct">${esc(lpName(g))}</span></button>`; }
+function lpRecHTML(all){
+  const d=all.find(g=>g.type==='music' && g.kind==='daily'), info=d ? lpGroupItems(d.id,'') : {state:'none', items:[]}, now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '';
+  const mine=[['my:likes',lpLikes().length],['my:recent',lpRecent().length],['my:lists',lpLists().length]].map(([id,n])=>`<button class="lp-mc" type="button" data-lp-my="${id}"><b>${esc(lpMyTitle(id))}</b><span>${n}</span></button>`).join('');
+  const shelves=all.filter(g=>g.type==='music' && g.kind==='list' && !lpIsChart(g)).slice(0,12), items=lpRecItems(all);
+  const hero=`<div class="lp-hero"><div class="lp-hero-t"><b>${esc(t('lpRadio'))}</b><span>${esc(t(lpRegionPref()==='cn'?'lpRegionCn':'lpRegionGlobal'))} · ${esc(t('lpRadioN',items.length))}</span></div><span class="lp-hero-a"><button class="btn primary" type="button" data-lp-radio>${ICON.play}<span>${esc(t('lpRadioPlay'))}</span></button><button class="btn" type="button" data-lp-batch>${esc(t('lpBatch'))}</button></span></div>`;
+  const shelf=shelves.length ? `<h3 class="lp-h">${esc(t('lpShelf'))}</h3><div class="lp-shelf">${shelves.map(lpGcCard).join('')}</div>` : '';
+  const body=items.length ? `<h3 class="lp-h">${esc(t('lpForYou'))}</h3><ol class="ls-rows lp-rows">${items.map(x=>listenRowHTML(x, !!now && now==='tmp:ls:'+x.id)).join('')}</ol>`
+    : info.state==='err' ? `<p class="hot-state">${esc(info.msg||t('lpErr'))}<br><button class="btn" type="button" data-lp-retry>${esc(t('dirRetry'))}</button></p>` : `<p class="hot-state">${esc(t('lpLoading'))}</p>`;
+  return `<div class="lp-mine">${mine}</div>${hero}${shelf}${body}`;
+}
+function lpDiscHTML(all){
+  const L=state.lp, music=all.filter(g=>g.type==='music'), scenes=music.filter(lpIsScene), styles=music.filter(g=>g.kind==='style' && !lpIsScene(g)), shown=L.styles ? styles : styles.slice(0,8);
+  const grid=a=>`<div class="lp-gg">${a.map(lpGcCard).join('')}</div>`;
+  return `<h3 class="lp-h">${esc(t('lpStyles'))}</h3>${grid(shown)}${styles.length>8 ? `<button class="lp-moreb2" type="button" data-lp-styles aria-expanded="${L.styles}">${esc(L.styles ? t('lpLessStyles') : t('lpMoreStyles',styles.length-8))}</button>` : ''}${scenes.length ? `<h3 class="lp-h">${esc(t('lpScenes'))}</h3>${grid(scenes)}` : ''}`;
+}
+function lpChartHTML(all){
+  const c=lpChartCur(), L=state.lp; if(!c.g) return `<p class="hot-state">${esc(L.err||t('lpLoading'))}</p>`;
+  const regs=`<div class="lp-regs" role="tablist" aria-label="${esc(t('lpTab_chart'))}">${c.regs.map(r=>`<button class="lp-reg" type="button" role="tab" aria-selected="${r===c.r}" data-lp-cr="${r}">${esc(t('lpR_'+r))}</button>`).join('')}</div>`;
+  const pick=c.list.length>1 ? `<select class="lp-cg" data-lp-cg aria-label="${esc(t('lpChartPick'))}">${c.list.map(g=>`<option value="${esc(g.id)}"${g.id===c.g.id?' selected':''}>${esc(lpName(g))}</option>`).join('')}</select>` : '';
+  return regs+pick+lpSongsHTML(c.g.id, all);
+}
+function lpListsHTML(){                                                                              // "my play lists": a row each, and a button for a new one
+  const ls=lpLists();
+  return `<section class="lp-songs"><header class="lp-songs-h"><button class="plp-ic lp-back" type="button" data-lp-back aria-label="${esc(t('lpBack'))}">${LP_BACK}</button><h3>${esc(t('lpMyLists'))}</h3><span class="lp-acts"><button class="btn dr-act" type="button" data-lp-newlist>${esc(t('lpListNewBtn'))}</button></span></header>`
+    + (ls.length ? `<ol class="ls-rows lp-rows">${ls.map(l=>`<li class="ls-row nonum"><button class="ls-main" type="button" data-lp-my="my:l:${esc(l.id)}"><span class="ls-cv"><span>${esc(Array.from(l.name)[0]||'♪')}</span></span><span class="ls-tx"><b class="ls-t">${esc(l.name)}</b><span class="ls-m">${esc(t('lsmListN',l.songs.length))}</span></span></button></li>`).join('')}</ol>` : `<p class="hot-state">${esc(t('lpNoLists'))}</p>`) + `</section>`;
+}
+function lpMusicHTML(all){
+  const L=state.lp, hasPod=all.some(g=>g.type==='podcast');
+  const modes=hasPod ? `<div class="lp-modes seg" role="tablist" aria-label="${esc(t('lsTitle'))}">${['music','podcast'].map(m=>`<button type="button" role="tab" aria-selected="${m==='music'}" data-lp-mode="${m}">${esc(t('lpMode_'+m))}</button>`).join('')}</div>` : '';
+  const region=`<button class="lp-region" type="button" data-lp-region title="${esc(t('lpRegionTip'))}" aria-label="${esc(t('lpRegionTip'))}"><span>${esc(t(lpRegionPref()==='cn'?'lpRegionCn':'lpRegionGlobal'))}</span>${LP_SWAP}</button>`;
+  const tabs=LP_TABS.map(k=>`<button class="lp-tab" type="button" role="tab" aria-selected="${k===L.tab}" data-lp-tab="${k}">${esc(t('lpTab_'+k))}</button>`).join('');
+  const body=L.tab==='chart' ? lpChartHTML(all) : L.open ? (L.g==='my:lists' ? lpListsHTML() : lpSongsHTML(L.g, all)) : L.tab==='disc' ? lpDiscHTML(all) : lpRecHTML(all);
+  return `<div class="lp"><div class="lp-bar">${modes}<span class="lp-ctl">${region}</span></div><nav class="lp-tabs" role="tablist" aria-label="${esc(t('lsTitle'))}">${tabs}</nav>${body}</div>`;
+}
 function lpHTML(){
   const L=state.lp, P=lpPods(), all=lpGroups();
   if(!all.length) return `<p class="hot-state">${esc(L.err || t('lpLoading'))}${L.err ? `<br><button class="btn" type="button" data-lp-retry>${esc(t('dirRetry'))}</button>` : ''}</p>`;
+  if(!lpPodMode()) return lpMusicHTML(all);
   const cur=lpSel(), mode=lpTypeOf(cur), order=lpOrder(mode), ci=order.findIndex(g=>g.id===cur), rows=lpIsRows();
   const hasPod=all.some(g=>g.type==='podcast'), hasMusic=all.some(g=>g.type!=='podcast'), modes=hasPod && hasMusic ? `<div class="lp-modes seg" role="tablist" aria-label="${esc(t('lsTitle'))}">${['music','podcast'].map(m=>`<button type="button" role="tab" aria-selected="${m===mode}" data-lp-mode="${m}">${esc(t('lpMode_'+m))}</button>`).join('')}</div>` : '';
   const vl=t(rows ? 'lpViewRows' : 'lpViewCards'), ctl=`<span class="lp-ctl">${lpSortSel(cur)}<button class="ibtn lp-view" type="button" data-lp-view title="${esc(vl)}" aria-label="${esc(vl)}">${rows ? ICON.list : ICON.grid}</button></span>`;
@@ -6883,25 +7254,46 @@ function renderListenPage(){
   $('#viewTitle').textContent=t('lsTitle'); $('#viewSub').textContent=t('lsSub'); $('#source').textContent='';
   $('#dirReco').hidden=false; $('#dirReco').innerHTML='<div id="lpRoot"></div>'; lpPaint(); lpEnsure();
 }
-function lpPick(id){ const L=state.lp; L.g=id; L.show=''; L.shown=LP_PAGE; L.mode=lpTypeOf(id); L['g_'+L.mode]=id; LS.set('lpG',id); LS.set('lpG_'+L.mode,id); }
+function lpPick(id){
+  const L=state.lp; L.g=id; L.show=''; L.shown=LP_PAGE; L.mode=id.startsWith('my:') ? 'music' : lpTypeOf(id); L['g_'+L.mode]=id; LS.set('lpG',id); LS.set('lpG_'+L.mode,id);
+  if(L.mode==='music'){                                                                              // (on the music side a list is shown under the tab it belongs to: a chart under the charts, any other one opened from the first or the third)
+    const g=lpGroups().find(x=>x.id===id);
+    if(g && lpIsChart(g)){ L.tab='chart'; L.cr=lpRegionOf(g); L.cg=id; L.open=false; LS.set('lpTab','chart'); LS.set('lpCR',L.cr); }
+    else { if(L.tab==='chart') L.tab='rec'; L.open=true; LS.set('lpTab',L.tab); }
+  }
+}
 function lpOpen(id){ lpPick(id); dirGoHome(); state.dListen=true; state.dLimit=DIR_PAGE; render(); window.scrollTo({top:0}); }
 function lpToTop(){ const bar=$('#lpRoot .lp-bar'); if(!bar) return; const y=bar.getBoundingClientRect().top+window.scrollY-72; if(window.scrollY>y+8) window.scrollTo({top:Math.max(0,y)}); }          // (a list chosen from far down the page starts at its top, under the bar)
 function lpSelect(id){ lpPick(id); lpPaint(); lpEnsure(); lpToTop(); }
-function lpStep(d){ const ord=lpOrder(lpTypeOf(lpSel())), i=ord.findIndex(g=>g.id===lpSel()), n=ord[i+d]; if(n) lpSelect(n.id); }          // (a swipe on a phone: the next / the previous list of the strip)
-function lpSetMode(mode){                                                                            // the switch between music and podcasts: back to the list chosen last in that kind
-  const L=state.lp, gs=lpGroups(), want=L['g_'+mode], ok=gs.find(g=>g.id===want && g.type===mode) || gs.find(g=>g.type===mode); if(ok) lpSelect(ok.id);
+const LP_TABS=['rec','chart','disc'];
+function lpTab(k){ const L=state.lp; if(!LP_TABS.includes(k)) return; L.tab=k; L.open=false; L.mode='music'; L.shown=LP_PAGE; LS.set('lpTab',k); lpPaint(); lpEnsure(); lpToTop(); }
+function lpStep(d){                                                                                  // a swipe on a phone: on the music side the next / the previous tab, on the podcast side the next / the previous list of the strip
+  const L=state.lp;
+  if(!lpPodMode()){ const i=LP_TABS.indexOf(L.tab), k=LP_TABS[i+d]; if(k) lpTab(k); return; }
+  const ord=lpOrder(lpTypeOf(lpSel())), i=ord.findIndex(g=>g.id===lpSel()), n=ord[i+d]; if(n) lpSelect(n.id);
 }
+function lpSetMode(mode){                                                                            // the switch between music and podcasts: back to the list chosen last in that kind
+  const L=state.lp;
+  if(mode==='music'){ L.mode='music'; L.open=false; L.shown=LP_PAGE; lpPaint(); lpEnsure(); lpToTop(); return; }
+  const gs=lpGroups(), want=L['g_'+mode], ok=gs.find(g=>g.id===want && g.type===mode) || gs.find(g=>g.type===mode); if(ok) lpSelect(ok.id);
+}
+function lpRegionFlip(){ const L=state.lp; LS.set('lpRegion', lpRegionPref()==='cn' ? 'global' : 'cn'); L.cr=''; L.cg=''; LS.set('lpCR',''); L.batch=0; lpPaint(); lpEnsure(); }
+function lpGoMy(id){ const L=state.lp; L.g=id; L.open=true; L.mode='music'; L.shown=LP_PAGE; if(L.tab==='chart') L.tab='rec'; lpPaint(); lpToTop(); }
 function listenMark(){ const cur=pl.i>=0 ? pl.q[pl.i] : '', on=plPlaying(); document.querySelectorAll('[data-ls-row]').forEach(r=>r.classList.toggle('is-playing', on && cur==='tmp:ls:'+r.dataset.lsRow)); }
 function listenTmp(x){                                                                              // a song as the player takes it (an item that is only being played, kept nowhere)
-  const id='tmp:ls:'+x.id;
+  const id='tmp:ls:'+x.id; lpSeen.set(x.id,x);
   if(!state.tmp.get(id)) state.tmp.set(id,{id, source:'tmp', type:'link', url:x.id.startsWith('pod:') ? x.url : '', title:x.title, summary:x.lic ? [x.artist, x.lic, x.lic.includes(x.from) ? '' : x.from].filter(Boolean).join(' · ') : '', image:x.cover||'',
-    audio:{url:x.audio, type:'audio/mpeg', dur:x.dur||0}, keywords:[], lang:'', date:x.date||'', category:'notes', from:x.artist||x.from});
+    audio:{url:x.audio, type:'audio/mpeg', dur:x.dur||0}, cands:x.cands||[], pod:!!x.pod, preview:!!x.preview, keywords:[], lang:'', date:x.date||'', category:'notes', from:x.artist||x.from});
   return id;
 }
 function listenGo(id, list){                                                                         // a song of `list`: it plays in the bar, and the songs after it in the list follow (what was in the bar's list stays); a video opens in its platform's player
   const x=(list||[]).find(i=>i.id===id); if(!x) return;
   if(x.mode==='stream'){
     const ids=list.filter(i=>i.mode==='stream').map(listenTmp), k=ids.indexOf('tmp:ls:'+id), rest=ids.slice(k+1).filter(i=>!pl.q.includes(i));
+    if(!x.pod){                                                                                      // a song: the list it is in becomes the list of the bar, from this song (as in a music app); "play next" is what puts a song in between
+      if(!(pl.q.length===ids.length && ids.every((v,j)=>pl.q[j]===v))){ pl.q=ids.slice(0,LP_QMAX); plNewRound(); }
+      const at=pl.q.indexOf('tmp:ls:'+id); pl.closed=false; plLoad(at>=0 ? at : 0, true); return;
+    }
     plPlay(ids[k]);
     if(rest.length && pl.i>=0){ pl.q.splice(pl.i+1,0,...rest); plSave(); plRender(); if(plDlg.open) plSheet(); }
     return;
@@ -6911,11 +7303,55 @@ function listenGo(id, list){                                                    
 }
 async function lpPlayGroup(id){                                                                      // "play all": the first song of the list, the others after it
   const L=state.lp;
-  if(id!=='pod') await lpLoad(id);
+  if(id!=='pod' && !id.startsWith('my:')) await lpLoad(id);
   let items=lpGroupItems(id, id==='pod' && id===L.g ? L.show : '').items;
   if(id===lpSel()) items=lpSorted(items, id);                                                        // (the order on the screen)
   const first=items.find(x=>x.mode==='stream' || x.mode==='embed'); if(first) listenGo(first.id, items);
 }
+/* ---- the menu of one song (its ⋯): play next, add to a play list (a second view of the same sheet), like, not this kind. It comes from below. */
+const lsMenu=$('#lsMenu');
+const LSM_ICON={next:'<svg class="icon" viewBox="0 0 24 24"><path d="M4 7h11M4 12h8M4 17h6M17 11v8M13.5 15h7"/></svg>', add:'<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>', ban:'<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/></svg>'};
+function lsMenuOpen(id, view){
+  const x=lpSeen.get(id); if(!x) return;
+  lsMenu.dataset.id=id; lsMenu.dataset.view=view||'main';
+  const cv=x.cover ? `<img src="${esc(x.cover)}" alt="" referrerpolicy="no-referrer">` : `<span>${esc(String(x.artist||x.title).slice(0,1)||'♪')}</span>`;
+  $('#lsmHead').innerHTML=`<span class="ls-cv">${cv}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}${x.preview ? `<em class="ls-pv">${esc(t('lsPreviewS'))}</em>` : ''}</b><span class="ls-m">${esc(x.artist||x.from)}</span></span>`;
+  const act=(k,ic,label)=>`<button class="lsm-act" type="button" data-lsm="${k}">${ic}<span>${esc(label)}</span></button>`, liked=lpIsLiked(id);
+  if(view==='add'){
+    const ls=lpLists();
+    $('#lsmBody').innerHTML=`<button class="lsm-act" type="button" data-lsm="back">${LP_BACK}<span>${esc(t('lpBack'))}</span></button>`
+      + ls.map(l=>`<button class="lsm-act" type="button" data-lsm-list="${esc(l.id)}"><span class="lsm-dot">${esc(Array.from(l.name)[0]||'♪')}</span><span>${esc(l.name)}</span><span class="r">${esc(t('lsmListN',l.songs.length))}</span></button>`).join('')
+      + `<form class="lsm-new" data-lsm-new><input type="text" maxlength="30" placeholder="${esc(t('lsmNewPh'))}" aria-label="${esc(t('lsmNewList'))}" autocomplete="off"><button class="btn primary" type="submit">${esc(t('lsmCreate'))}</button></form>`;
+  } else {
+    $('#lsmBody').innerHTML=act('next',LSM_ICON.next,t('lsmNext'))+act('add',LSM_ICON.add,t('lsmAdd'))+act('like',ICON.heart,t(liked?'lsmUnlike':'lsmLike'))+act('no',LSM_ICON.ban,t('lsmNo'));
+  }
+  if(!lsMenu.open) lsMenu.showModal();
+}
+function lpPlayNext(x){                                                                              // "play next": right after the song that plays (or, with nothing in the bar, play it)
+  const id=listenTmp(x);
+  if(!pl.q.length || pl.i<0 || pl.closed){ plPlay(id); return; }
+  const k=pl.q.indexOf(id); if(k===pl.i) return;
+  if(k>=0){ pl.q.splice(k,1); if(k<pl.i) pl.i--; }
+  pl.q.splice(pl.i+1,0,id); plNewRound(); plSave(); plRender(); if(plDlg.open) plSheet();
+}
+lsMenu.addEventListener('click',e=>{
+  if(e.target===lsMenu){ lsMenu.close(); return; }
+  const id=lsMenu.dataset.id, x=lpSeen.get(id); if(!x) return;
+  const b=e.target.closest('[data-lsm]'), li=e.target.closest('[data-lsm-list]');
+  if(li){ const l=lpLists().find(y=>y.id===li.dataset.lsmList); toast(lpListAdd(li.dataset.lsmList,x) ? t('lsmAdded',l?l.name:'') : t('lsmHave')); lsMenu.close(); if(state.lp.open) lpPaint(); return; }
+  if(!b) return; const k=b.dataset.lsm;
+  if(k==='back'){ lsMenuOpen(id); return; }
+  if(k==='add'){ lsMenuOpen(id,'add'); return; }
+  if(k==='next'){ lpPlayNext(x); toast(t('lsmNextDone',cut(x.title,24))); }
+  else if(k==='like'){ const on=lpLikeToggle(id); toast(t(on?'lsmLikedDone':'lsmUnlikedDone')); if(!on && state.lp.g==='my:likes' && state.lp.open) lpPaint(); }
+  else if(k==='no'){ lpNoAdd(x); toast(t('lsmNoDone')); document.querySelectorAll(`[data-ls-row="${CSS.escape(id)}"]`).forEach(r=>r.remove()); }
+  lsMenu.close();
+});
+lsMenu.addEventListener('submit',e=>{
+  const f=e.target.closest('[data-lsm-new]'); if(!f) return; e.preventDefault();
+  const x=lpSeen.get(lsMenu.dataset.id); if(!x) return;
+  const l=lpListNew(f.querySelector('input').value); lpListAdd(l.id,x); toast(t('lsmAdded',l.name)); lsMenu.close(); if(state.lp.open) lpPaint();
+});
 function listenClick(e){
   const q=s=>e.target.closest(s); let b;
   if((b=q('[data-ls-scene]'))){ state.ls.scene=b.dataset.lsScene; LS.set('lsScene',state.ls.scene); lpPaint(); lsEnsure(); return true; }
@@ -6924,7 +7360,20 @@ function listenClick(e){
   if(q('[data-lp-view]')){ LS.set('lpView', lpIsRows() ? 'cards' : 'rows'); state.lp.shown=LP_PAGE; lpPaint(); return true; }
   if((b=q('[data-lp-all]'))){ lpPlayGroup(b.dataset.lpAll); return true; }
   if((b=q('[data-lp-mode]'))){ lpSetMode(b.dataset.lpMode); return true; }
-  if((b=q('[data-lp-g]'))){ lpSelect(b.dataset.lpG); return true; }
+  if((b=q('[data-lp-tab]'))){ lpTab(b.dataset.lpTab); return true; }
+  if(q('[data-lp-region]')){ lpRegionFlip(); return true; }
+  if((b=q('[data-lp-cr]'))){ const L=state.lp; L.cr=b.dataset.lpCr; L.cg=''; L.shown=LP_PAGE; LS.set('lpCR',L.cr); lpPaint(); lpEnsure(); return true; }
+  if(q('[data-lp-back]')){ const L=state.lp; L.open=false; L.shown=LP_PAGE; lpPaint(); lpToTop(); return true; }
+  if(q('[data-lp-batch]')){ state.lp.batch++; lpPaint(); return true; }
+  if(q('[data-lp-radio]')){ const items=lpRecItems(); if(items.length) listenGo(items[0].id, items); return true; }
+  if(q('[data-lp-styles]')){ state.lp.styles=!state.lp.styles; lpPaint(); return true; }
+  if((b=q('[data-lp-my]'))){ lpGoMy(b.dataset.lpMy); return true; }
+  if(q('[data-lp-newlist]')){ const n=prompt(t('lpListName'),''); if(n!==null){ lpListNew(n); lpPaint(); } return true; }
+  if((b=q('[data-lp-lrename]'))){ const id=b.dataset.lpLrename.slice(5), a=lpLists(), l=a.find(y=>y.id===id); if(l){ const n=prompt(t('lpListName'),l.name); if(n!==null && n.trim()){ l.name=cut(n.trim(),30); lpListsSave(a); lpPaint(); } } return true; }
+  if((b=q('[data-lp-ldel]'))){ const id=b.dataset.lpLdel.slice(5), a=lpLists(), l=a.find(y=>y.id===id); if(l && confirm(t('lpListDelAsk',l.name))){ lpListsSave(a.filter(y=>y.id!==id)); state.lp.g='my:lists'; lpPaint(); } return true; }
+  if((b=q('[data-ls-like]'))){ const id=b.dataset.lsLike, on=lpLikeToggle(id); toast(t(on?'lsmLikedDone':'lsmUnlikedDone')); if(state.lp.g==='my:likes' && state.lp.open && !on) lpPaint(); return true; }
+  if((b=q('[data-ls-more]'))){ lsMenuOpen(b.dataset.lsMore); return true; }
+  if((b=q('[data-lp-g]'))){ if(lpPodMode()) lpSelect(b.dataset.lpG); else { lpPick(b.dataset.lpG); lpPaint(); lpEnsure(); lpToTop(); } return true; }
   if((b=q('[data-lp-show]'))){ state.lp.show=b.dataset.lpShow; state.lp.shown=LP_PAGE; lpPaint(); return true; }
   if(q('[data-lp-more]')){ state.lp.more=!state.lp.more; lpPaint(); return true; }
   if(q('[data-lp-next]')){ lpNext(); return true; }
@@ -7341,7 +7790,10 @@ $('#dPickList').addEventListener('change',e=>{ const ct=e.target.closest('[data-
 $('#dPickViews').addEventListener('click',e=>{ const b=e.target.closest('[data-dv]'); if(!b) return; state.dView=b.dataset.dv; state.dLimit=DIR_PAGE; render(); });
 document.addEventListener('click',e=>{ if(state.dPickOpen && !matchMedia('(max-width:760px)').matches && !e.composedPath().some(n=>n.id==='dPick' || n.id==='dPickBtn')){ state.dPickOpen=false; renderPick(); $('#dPickBtn').setAttribute('aria-expanded','false'); } });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape' && state.dPickOpen){ state.dPickOpen=false; renderPick(); $('#dPickBtn').setAttribute('aria-expanded','false'); $('#dPickBtn').focus(); } });
-$('#dirReco').addEventListener('change',e=>{ const sel=e.target.closest('[data-lp-sort]'); if(sel){ state.lp.sort=sel.value; state.lp.shown=LP_PAGE; LS.set('lpSort',sel.value); lpPaint(); } });
+$('#dirReco').addEventListener('change',e=>{
+  const sel=e.target.closest('[data-lp-sort]'); if(sel){ state.lp.sort=sel.value; state.lp.shown=LP_PAGE; LS.set('lpSort',sel.value); lpPaint(); return; }
+  const cg=e.target.closest('[data-lp-cg]'); if(cg){ state.lp.cg=cg.value; state.lp.shown=LP_PAGE; lpPaint(); lpEnsure(); }
+});
 $('#dirReco').addEventListener('click',e=>{
   if(listenClick(e)) return;
   if(hotClick(e)) return;
