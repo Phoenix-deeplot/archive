@@ -19,7 +19,7 @@
 
 | 任务 | 负责 | 分支 / worktree | 会改的文件 | 不许碰 |
 |---|---|---|---|---|
-| 今日精选/平台榜单结构、SEO 公共页内容与前端验收 | Codex | `codex/hot-seo-refresh` · `E:\Ztree\wt\codex-hot-seo-refresh` | `index.html`、`seo.py`、`devtools/e2e/tests/s_hotpage.js`、必要时 `devtools/e2e/tests/s_seo.js` | 用户现有未提交/未跟踪文件、书架与阅读器、小程序目录、线上服务/环境变量、shelf-directory 仓库 |
+| 今日精选/平台榜单结构、SEO 公共页内容与前端验收 | Codex | `codex/hot-seo-refresh` · `C:\Users\Wu\.codex\worktrees\hot-seo-refresh\my-archive` | `index.html`、`seo.py`、`devtools/e2e/tests/s_hotpage.js`、必要时 `devtools/e2e/tests/s_seo.js` | 用户现有未提交/未跟踪文件、书架与阅读器、小程序目录、线上服务/环境变量、shelf-directory 仓库 |
 | 热点事件故障与榜单来源 | Codex | 独立仓库分支/ worktree，见 `shelf-directory/docs/work/2026-11-04-hot-sources.md` | 由后端计划限定 | 不改 `my-archive` 文件、现有用户数据、线上配置 |
 
 前置：在各仓库 master 上只提交对应规划文件；用户确认两份规划后，才创建工作分支/worktree并改业务代码。保留当前 master 工作区已有修改。
