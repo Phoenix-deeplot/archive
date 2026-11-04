@@ -1,6 +1,6 @@
 # 页面壳子秒开、回到应用自动更新、快速集再提速（2026-11-04）
 
-状态：已确认（用户说“直接实现”），开发中
+状态：已合并（2026-11-04，用户说“除了小程序不合并，其他都合并”）；未推送、未部署
 
 ## 1. 任务清单（用户）
 
@@ -78,8 +78,14 @@
 
 ### claude
 
-（开发中）
+- **C + D（`claude/app-like-shell`，做完）**：`sw.js`：页面（`/`、`/index.html`，后面带什么都一样）和 `manifest.js` 先用本机的副本回答，同时 `cache:no-cache` 去核对，内容变了（先比 etag，不同再比 SHA-1）才存下来并给所有页面发 `zt-shell-updated`；第一次访问照常走网络；任何失败都退回副本 / 网络；页面可以发 `zt-check-shell` 叫它立刻核对；`VERSION` 没动。`index.html`：注册条件（https，或 localhost / 127.0.0.1 且 `localStorage['zt.sw']==='1'`）；`#newVer` 小条（刷新 / ✕，同一次打开只弹一次，点刷新前先存笔记）；离开超过 10 分钟再回到前台 → `appResume()`（叫 sw 核对 + 在发现世界里 `dirRefresh()`）；下拉刷新（手机、发现世界、页面在最顶端、竖向为主、超过 70px 松手，被动监听，`html.ptr` 关掉浏览器自带的下拉重载）；`#updNote`“已更新 12:30 ↻”（`state.dirAt`＝最近一次网络核对成功的时间，副本显示时先用副本的时间；更新中显示“更新中…”并转圈）；`loadDirectory(force)` 在 force 时也等热度。
+- **`s_swkeep`（新，36 项）**：真的在测试浏览器里注册 `sw.js`：没有开关不注册；第一次访问存壳子；第二次由 sw 接管、manifest.js 也存下；没变 = 没有小条；变了 = 先给旧页面（证明没等网络）、小条出现、新页面已存好；✕ 关闭后同一页面不再出现；`zt-check-shell`；下一次打开是新页面；点“刷新”换上新页面；服务器 404 时用副本不报错；带参数的地址不另存；发现世界的更新时间、↻、离开 3 分钟不核对 / 11 分钟核对、没变不重画；手机下拉（短拉弹回、横滑不算、长拉松手刷新、不在最顶端不拦）。连跑 5 次稳定。结束时注销 worker、清缓存、还原 `index.html`，不影响后面的测试；它在整套里排最后。
+- 过程中发现并改掉：“已更新”那一行最初占版面，把发现世界的标题撑高了 31px，`s_shell` 三项失败；改成挂在标题下面已有的空隙里（绝对定位，不占版面）后 76 项通过。
+- **E（`claude/test-settle2`，做完）**：`s_mobile`、`s_first`、`s_readerui`、`s_lang`、`s_hot` 里加载页面和点击后加载东西的固定等待换成 `settle`（页面自己计时器的、滑动之间的间隔保留 `sleep`）；`s_hot` 的 5.5 秒改成“等到第一条订阅内容出现”。`settle.js` 改为从 `performance.timeOrigin + performance.now()` 读最后一次变化的时间（`s_first` 把页面的时钟冻结了，用 `Date` 的话“页面安静”的判断是错的）。快速集 7.4 → 6.2 分钟（`s_mobile` 58→44 秒、`s_lang` 31→14、`s_first` 64→32、`s_readerui` 39→25、`s_hot` 29→14），结果与之前一样；**目标是约 5 分钟，没有达到**：剩下的时间主要在 `s_dir`（78–99 秒）、`s_bookpaged`（63 秒）、`s_shell`（44–52 秒）这几个本身就在做事的测试里。
 
 ## 4. 合并记录
 
-（合并时填）
+- 合并顺序（2026-11-04，`--no-ff`，没推送、没部署；用户说“除了小程序不合并，其他都合并”）：shelf-directory 仓库的 `codex/hot-seo-sources`；my-archive 仓库的 `codex/hot-seo-refresh` → `claude/test-settle2` → `claude/app-like-shell`。两个 Claude 分支合并前先并入最新 master（都没有冲突）；`codex/hot-seo-refresh` 合并时它在 11:57 又提交了一次（修热榜译题和说明文字重叠），一并进来了，它的 worktree 是干净的。合并 `index.html` 时用户没提交的百度验证那一行先 `git stash`、合并后 `git stash pop` 放回，现在仍是未提交状态。
+- 合并后的测试结果：整套 `run_all.ps1`（在并入全部分支之后的 `claude/app-like-shell` 上跑，它的文件树和合并后的 master 完全一致）30 个测试、0 个新的失败、4 行已知失败（`s_read` 停在第 92 行、`s_reco` 两项、`s_sync` 的 B 项）、用时 24.0 分钟；另外 `s_shell` 76 项、`s_seo_sections` 39 项、Codex 的 `s_reader_usability` 12 项（接到 8820 / 9444 上跑）全部通过；Codex 的 `s_hotpage` 61 项在整套里通过。shelf-directory：全部 724 个单测里 723 个通过，1 个失败（`tests.test_hotdetail … test_diag_says_why_a_platform_cannot_be_reached_from_here`，知乎的 host 已经改成 `plink.anyfeeder.com` 而测试还写着 `news-at.zhihu.com`）在合并前的 master 上就一样失败，不是这次带来的。
+- 删除的分支和 worktree：`claude/app-like-shell`（`E:\Ztree\wt\claude-app-like-shell`）、`claude/test-settle2`（`E:\Ztree\wt\claude-test-settle2`）、`codex/hot-seo-refresh`（`C:\Users\Wu\.codex\worktrees\hot-seo-refresh\my-archive`）；shelf-directory 的 `codex/hot-seo-sources`（`E:\Ztree\wt\codex-hot-seo-sources`）。
+- 上线要用户做：my-archive 的 `vercel --prod`（页面和 `sw.js` 才会换；访问者部署后的第一次打开看到的还是旧页面，点底部的小条或再打开一次才是新的）；shelf-directory 要部署后热榜才有 App Store / Polymarket 和 502 的变化；X 来源要用户在服务端设 `X_BEARER_TOKEN`（密钥我不碰、也不进仓库）。

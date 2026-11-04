@@ -1,6 +1,6 @@
 # 热榜回归与搜索入口优化（2026-11-04）
 
-状态：实现中；未合并、未推送、未部署。微信小程序榜按用户要求暂缓。
+状态：已合并（2026-11-04，用户说“除了小程序不合并，其他都合并”）；未推送、未部署。微信小程序榜按用户要求暂缓。
 
 ## 1. 任务清单（用户）
 
@@ -73,6 +73,6 @@
 
 ## 4. 合并记录
 
-- 合并顺序：待用户明确要求合并后填写。
-- 合并后的测试结果：待填写。
-- 删除的分支和 worktree：待填写。
+- 合并顺序（2026-11-04，`--no-ff`，没推送、没部署；用户说“除了小程序不合并，其他都合并”）：shelf-directory 仓库的 `codex/hot-seo-sources`；my-archive 仓库的 `codex/hot-seo-refresh` → `claude/test-settle2` → `claude/app-like-shell`。两个 Claude 分支合并前先并入最新 master（都没有冲突）；`codex/hot-seo-refresh` 合并时它在 11:57 又提交了一次（修热榜译题和说明文字重叠），一并进来了，它的 worktree 是干净的。合并 `index.html` 时用户没提交的百度验证那一行先 `git stash`、合并后 `git stash pop` 放回，现在仍是未提交状态。
+- 合并后的测试结果：整套 `run_all.ps1`（在并入全部分支之后的 `claude/app-like-shell` 上跑，它的文件树和合并后的 master 完全一致）30 个测试、0 个新的失败、4 行已知失败（`s_read` 停在第 92 行、`s_reco` 两项、`s_sync` 的 B 项）、用时 24.0 分钟；另外 `s_shell` 76 项、`s_seo_sections` 39 项、Codex 的 `s_reader_usability` 12 项（接到 8820 / 9444 上跑）全部通过；Codex 的 `s_hotpage` 61 项在整套里通过。shelf-directory：全部 724 个单测里 723 个通过，1 个失败（`tests.test_hotdetail … test_diag_says_why_a_platform_cannot_be_reached_from_here`，知乎的 host 已经改成 `plink.anyfeeder.com` 而测试还写着 `news-at.zhihu.com`）在合并前的 master 上就一样失败，不是这次带来的。
+- 删除的分支和 worktree：`codex/hot-seo-refresh` 和 `C:\Users\Wu\.codex\worktrees\hot-seo-refresh\my-archive`。
