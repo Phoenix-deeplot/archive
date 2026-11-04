@@ -63,7 +63,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   ok('the menu opens a sheet: speeds 0.75× … 2×, the sleep timer (不定时, 15, 30, 60 分钟, 本集结束) and the list', sheet.open && sheet.rates === '0.75×|1×|1.25×|1.5×|1.75×|2×' && sheet.sleeps === '不定时|15 分钟|30 分钟|60 分钟|本集结束' && sheet.list >= 1, sheet);
   await J(`document.querySelector('[data-plrate="1.5"]').click()`); await sleep(200);
   ok('1.5× is applied to the sound and kept', await J(`plAudio.playbackRate`) === 1.5 && await J(`LS.get('pl',{}).rate`) === 1.5 && await J(`document.querySelector('[data-plrate="1.5"]').getAttribute('aria-pressed')`) === 'true');
-  await J(`document.querySelector('#plDone').click()`); await sleep(200);
+  await J(`document.querySelector('[data-plp="collapse"]').click()`); await sleep(200);
 
   // ================================================ D. the list, and on to the next one
   await J(`${card(2)}.querySelector('[data-act="enqueue"]').click()`); await sleep(300);
@@ -89,7 +89,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await J(`document.querySelector('#plCover').click()`); await sleep(500);
   const np = await J(`({open:document.querySelector('#plDlg').open, title:document.querySelector('#plDlgTitle').textContent, hero:(document.querySelector('.pl-hero b')||{}).textContent, show:(document.querySelector('.pl-hero-t span')||{}).textContent, notes:(document.querySelector('.pl-notes')||{}).textContent||'', notesBtn:!!document.querySelector('#plNow [data-pl="notes"]'),
     ctl:[...document.querySelectorAll('#plDlg .pl-dctl .pl-btn')].map(b=>b.getAttribute('data-pl')).join(), seekD:!!document.querySelector('#plSeekD'), dt1:document.querySelector('#plDT1').textContent, cur:document.querySelector('#plTitle').textContent})`);
-  ok('the cover of the bar opens the "now playing" page: the title, the show, what the episode is about, and previous / −15 / play / +30 / next with a slider and the time', np.open && np.title === '正在播放' && np.hero === np.cur && /English Learning Show/.test(np.show) && np.notes.length > 20 && np.notesBtn && np.ctl === 'prev,back,toggle,fwd,next' && np.seekD && np.dt1 === '0:08', np);
+  ok('the cover of the bar opens the "now playing" page: the title, the show, what the episode is about, and (the play mode is for music only) previous / −15 / play / +30 / next with a slider and the time', np.open && np.title === '正在播放' && np.hero === np.cur && /English Learning Show/.test(np.show) && np.notes.length > 20 && np.notesBtn && np.ctl === 'mode,prev,back,toggle,fwd,next' && np.seekD && np.dt1 === '0:08', np);
   await J(`document.querySelector('#plToggleD').click()`); await sleep(500);
   ok('its play button plays (and both buttons say 暂停)', await J(`!plAudio.paused && document.querySelector('#plToggle').getAttribute('aria-label')==='暂停' && document.querySelector('#plToggleD').getAttribute('aria-label')==='暂停'`));
   await J(`document.querySelector('#plToggleD').click()`); await sleep(300);
@@ -105,8 +105,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await J(`plAudio.play(); 1`); await sleep(300);
 
   // ================================================ E. reading goes on beside it
-  await J(`document.querySelector('#plDone')&&1`);
-  const playingTitle = await J(`document.querySelector('#plTitle').textContent`);
+    const playingTitle = await J(`document.querySelector('#plTitle').textContent`);
   await J(`${card(0)}.querySelector('[data-act="notes"]').click()`);
   await waitFor(`!document.querySelector('#reader').hidden && ((document.querySelector('#frame').contentDocument||{body:{textContent:''}}).body.textContent||'').includes('Show notes')`, 12000);
   const rd = await J(`(()=>{ const r=document.querySelector('#reader').getBoundingClientRect(), p=document.querySelector('#player').getBoundingClientRect(); return {open:!document.querySelector('#reader').hidden, still:!plAudio.paused, title:document.querySelector('#plTitle').textContent, barBottom:Math.round(p.bottom), vh:innerHeight, readerBottom:Math.round(r.bottom), barTop:Math.round(p.top), text:(document.querySelector('#frame').contentDocument||{body:{textContent:''}}).body.textContent.includes('Show notes'), playBtn:!document.querySelector('#readerPlay').hidden}; })()`);
@@ -120,7 +119,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await J(`document.querySelector('[data-pl="menu"]').click()`); await sleep(300);
   await J(`document.querySelector('[data-plsleep="-1"]').click()`); await sleep(200);
   ok('"本集结束" is set (pressed)', await J(`document.querySelector('[data-plsleep="-1"]').getAttribute('aria-pressed')`) === 'true' && await J(`pl.sleepEnd`));
-  await J(`document.querySelector('#plDone').click()`); await sleep(200);
+  await J(`document.querySelector('[data-plp="collapse"]').click()`); await sleep(200);
   const curId = await J(`pl.q[pl.i]`);
   await J(`plAudio.currentTime=plAudio.duration-0.5`); await sleep(2500);
   ok('at the end of this episode it stops: paused, still the same episode, the next one did not start', await J(`plAudio.paused && pl.q[pl.i]`) === curId && await J(`!pl.sleepEnd`), [await J(`plAudio.paused`), await J(`pl.q[pl.i]===${JSON.stringify(curId)}`)]);
@@ -130,7 +129,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   ok('a 15-minute timer is set', sl.min === 15 && sl.at > 14 * 60000 && sl.at <= 15 * 60000, sl);
   await J(`pl.sleepAt=Date.now()-1; plAudio.currentTime=0; plAudio.play()`); await sleep(1800);
   ok('when the time is up the sound is paused and the page says so', await J(`plAudio.paused && pl.sleepAt===0`) && /到时间了/.test(await J(`document.querySelector('#toastMsg').textContent`)), await J(`document.querySelector('#toastMsg').textContent`));
-  await J(`document.querySelector('#plDone').click()`);
+  await J(`document.querySelector('[data-plp="collapse"]').click()`);
 
   // ================================================ G. the place of each episode, across a reload
   const e2 = await ep(2);
@@ -164,8 +163,15 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   const n0 = await J(`document.querySelectorAll('#plList li[data-plid]').length`);
   await J(`document.querySelector('#plList li:last-child [data-plrm]').click()`); await sleep(300);
   ok('an episode can be taken out of the list', await J(`document.querySelectorAll('#plList li[data-plid]').length`) === n0 - 1, [n0, await J(`document.querySelectorAll('#plList li[data-plid]').length`)]);
+  const nq = await J(`pl.q.length`);
+  await J(`document.querySelector('#plClear').click()`); await sleep(400);
+  ok('"清空" empties the list, stops the sound and takes the bar away, and the popup is folded', await J(`document.querySelector('#player').hidden && !document.body.classList.contains('has-player') && !plAudio.getAttribute('src') && pl.q.length===0 && LS.get('pl',{}).q.length===0 && !document.querySelector('#plDlg').open`));
+  ok('...and the page offers to take it back (撤销)', await J(`document.querySelector('#toastAct').textContent`) === '撤销', await J(`document.querySelector('#toastAct').textContent`));
+  await J(`document.querySelector('#toastAct').click()`); await sleep(400);
+  ok('撤销 brings the list back, with the bar, paused', await J(`pl.q.length`) === nq && await J(`!document.querySelector('#player').hidden && plAudio.paused`), [nq, await J(`pl.q.length`)]);
+  await J(`document.querySelector('[data-pl="menu"]').click()`); await sleep(300);
   await J(`document.querySelector('#plShut').click()`); await sleep(400);
-  ok('"关闭播放器" stops it, clears the list and takes the bar away (the page gets its room back)', await J(`document.querySelector('#player').hidden && !document.body.classList.contains('has-player') && !plAudio.getAttribute('src') && pl.q.length===0 && LS.get('pl',{}).q.length===0`));
+  ok('"×" (close the player) stops it and takes the bar away (the page gets its room back), and the list is kept for the next song', await J(`document.querySelector('#player').hidden && !document.body.classList.contains('has-player') && !plAudio.getAttribute('src') && pl.q.length===${nq} && LS.get('pl',{}).q.length===${nq} && LS.get('pl',{}).closed===1 && !document.querySelector('#plDlg').open`));
 
   // ================================================ K. English
   await fresh('en'); await subscribe();
@@ -181,10 +187,11 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
     return {x:document.documentElement.scrollWidth-document.documentElement.clientWidth, left:Math.round(p.left), right:Math.round(p.right), bottom:Math.round(p.bottom), vh:innerHeight, vw:innerWidth, btns, titleW:Math.round(title.width), pad:parseFloat(getComputedStyle(document.body).paddingBottom), cover:Math.round(document.querySelector('#plCover').getBoundingClientRect().height)}; })()`);
   ok('phone: the bar fits the screen edge to edge at the bottom, every button is at least 42×44, the title still has room, the page keeps room under its last card, nothing scrolls sideways', ph.x <= 1 && ph.left === 0 && ph.right === ph.vw && ph.bottom === ph.vh && ph.btns.every(([w, h]) => w >= 42 && h >= 44) && ph.titleW >= 90 && ph.pad >= 72, ph);
   await J(`document.querySelector('[data-pl="menu"]').click()`); await sleep(400);
-  const sh = await J(`(()=>{ const d=document.querySelector('#plDlg .dlg').getBoundingClientRect(); return {l:Math.round(d.left), r:Math.round(d.right), b:Math.round(d.bottom), vw:innerWidth, vh:innerHeight, chips:[...document.querySelectorAll('#plDlg .pl-chips button')].map(b=>Math.round(b.getBoundingClientRect().height)), x:document.documentElement.scrollWidth-document.documentElement.clientWidth}; })()`);
+  await J(`document.querySelector('[data-plp="set"]').click()`); await sleep(200);
+  const sh = await J(`(()=>{ const d=document.querySelector('#plDlg .plp-in').getBoundingClientRect(); return {l:Math.round(d.left), r:Math.round(d.right), b:Math.round(d.bottom), vw:innerWidth, vh:innerHeight, chips:[...document.querySelectorAll('#plDlg .pl-chips button')].map(b=>Math.round(b.getBoundingClientRect().height)), x:document.documentElement.scrollWidth-document.documentElement.clientWidth}; })()`);
   ok('phone: the sheet fits the screen and its buttons are at least 44px high', sh.l >= 0 && sh.r <= sh.vw && sh.b <= sh.vh && sh.chips.every(h => h >= 44) && sh.x <= 1, sh);
   await c.shot(require('../paths').SHOTS + '/pod_phone_sheet.png');
-  await J(`document.querySelector('#plDone').click()`); await sleep(300);
+  await J(`document.querySelector('[data-plp="collapse"]').click()`); await sleep(300);
   await c.shot(require('../paths').SHOTS + '/pod_phone.png');
   await c.desktop(1280, 900, 1);
   console.log(`\n${pass} passed, ${fail} failed`);

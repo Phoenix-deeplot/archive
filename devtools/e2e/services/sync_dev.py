@@ -63,7 +63,7 @@ if bookapi and not os.environ.get('E2E_REAL_BOOKS'):                    # (E2E_R
     bookapi.catalog = lambda: BOOKS
     bookapi.chapter_url = lambda ch, name: 'http://%s/wiki/%s' % (ch['s'], __import__('urllib.parse').parse.quote((ch['p'] + name).replace(' ', '_'), safe="/:()',;!*~"))
 STAT_STORE = syncapi.MemoryStore()                                      # the anonymous counters (a store of their own: /__peek only knows the sync keys)
-LISTEN = {'mode': 'ok', 'asked': 0, 'log': [], 'delay': 0, 'fail': set()}
+LISTEN = {'mode': 'ok', 'asked': 0, 'log': [], 'delay': 0, 'fail': set(), 'extra': False}      # extra: one more list, "fo-test", whose songs have several sounds each (/__listen?extra=1)
 POD = 'http://127.0.0.1:' + os.environ.get('E2E_POD_PORT', '8843')
 WORDS = ['Delta', 'Alpha', 'Echo', 'Charlie', 'Bravo', 'Foxtrot', 'Hotel', 'Golf', 'India', 'Juliet', 'Kilo', 'Lima', 'Mike', 'November', 'Oscar', 'Papa', 'Quebec', 'Romeo', 'Sierra', 'Tango', 'Uniform', 'Victor', 'Whiskey', 'Xray', 'Yankee', 'Zulu']
 
@@ -82,6 +82,8 @@ def listen_index(mode, lang='zh'):
     if mode == 'junk':
         groups = [{'id': 'bad id!', 'name': 'x', 'name_en': 'x', 'kind': 'style'}, {'id': 'weird-1', 'name': '怪', 'name_en': 'w', 'kind': 'weird'}, 'junk', None, {'id': 'no-name', 'name': '', 'kind': 'style'},
                   g('good', '好的', 'Good', 'style'), g('good2', '也好', 'Good too', 'chart'), g('goodpod', '好播客', 'Good pod', 'chart', 0, 'cn', 'podcast')]
+    if LISTEN['extra'] and mode != 'junk':
+        groups.append(g('fo-test', '候选音源', 'Candidate sounds', 'list', 8))
     order = {'daily': 0, 'chart': 1, 'list': 2, 'style': 3}
     groups = sorted([x for x in groups if isinstance(x, dict)] if mode != 'junk' else groups, key=lambda x: (order.get(x['kind'], 9), 0 if x.get('lang') in (lang, '*') else 1 if not x.get('lang') else 2) if isinstance(x, dict) else (9, 9)) if mode != 'junk' else groups
     return {'ok': True, 'date': '2026-10-28', 'updated': 0, 'lang': lang, 'groups': groups}
@@ -95,6 +97,18 @@ def listen_group(gid, mode, lang='zh'):
             {'id': 'x1', 'title': '<img src=x onerror=alert(1)>', 'artist': '<b>a</b>', 'cover': 'http://insecure.example/c.jpg', 'dur': 30, 'mode': 'stream', 'audio': POD + '/ep1.wav', 'url': 'javascript:alert(2)', 'lic': '', 'from': 'x', 'date': 'not a date', 'show': 'x' * 40},
             {'id': 'x2', 'title': 'bad sound', 'mode': 'stream', 'audio': 'javascript:alert(3)', 'url': 'https://example.org/'}, {'id': 'x3', 'title': 'bad mode', 'mode': 'script', 'audio': POD + '/ep1.wav'},
             {'id': '', 'title': 'no id', 'mode': 'embed', 'url': 'https://music.163.com/#/song?id=1'}, 'junk', None]}
+    if gid == 'fo-test' and LISTEN['extra']:                                     # songs with several sounds: how the bar goes from one sound to the next (see s_music_failover)
+        c = lambda p, k, path, **ex: {'p': p, 'k': k, 'audio': path if path.startswith('http') else POD + path, 'net': ex.pop('net', 'any'), **ex}
+        rows = [('Bad first', 200, [c('netease', 'full', '/missing.mp3'), c('audius', 'full', '/ep1.wav')]),                      # the first sound is gone (404): the second plays
+                ('Hangs first', 200, [c('bodian', 'full', 'http://127.0.0.1:%s/__hang.wav' % PORT), c('audius', 'full', '/ep2.wav')]),   # the first sound never answers: after a few seconds the second plays
+                ('Wrong length', 3000, [c('netease', 'full', '/ep1.wav'), c('audius', 'full', '/ep2.wav')]),                           # the first sound is a few seconds long, the song 50 minutes: the second is tried
+                ('Preview then whole', 6, [c('apple', 'preview', '/ep1.wav'), c('audius', 'full', '/ep3.wav')]),                        # a whole sound is tried before a preview (ep3 is 6 seconds long: the length of the song)
+                ('Big and small', 12, [c('bodian', 'full', '/ep1.wav', big=True, size=30000000), c('audius', 'full', '/ep2.wav')]),     # on mobile data the small one (ep1 is 12 seconds long)
+                ('Only big', 200, [c('bodian', 'full', '/ep3.wav', big=True, size=30000000)]),                                           # on mobile data it is asked for
+                ('Only bad', 200, [c('netease', 'full', '/missing2.mp3')]),                                                             # nothing plays: on to the next song
+                ('Last one', 200, [c('audius', 'full', '/ep1.wav')])]
+        items = [{'id': 'fo:%d' % i, 'title': 'fo %s' % name, 'artist': 'Artist F%d' % i, 'cover': '', 'dur': dur, 'mode': 'stream', 'audio': cs[0]['audio'], 'url': 'https://fo.example/track/%d' % i, 'lic': '', 'from': 'Test', 'cands': cs} for i, (name, dur, cs) in enumerate(rows)]
+        return {'id': gid, 'name': '候选音源', 'name_en': 'Candidate sounds', 'kind': 'list', 'type': 'music', 'net': 'cn', 'sub': '来源：Test', 'sub_en': 'From Test', 'items': items}
     if gid not in ids:
         return None
     x = next(y for y in listen_index('ok')['groups'] if y['id'] == gid)
@@ -262,8 +276,12 @@ class H(BaseHTTPRequestHandler):
             if g is None:
                 return self.reply(404, {'ok': False, 'error': 'none', 'message': '没有这个榜单', 'message_en': 'No such list'})
             return self.reply(200, {'ok': True, 'date': '2026-10-28', 'updated': 0, 'group': g})
+        if p.path == '/__hang.wav':                                           # a sound that never comes: the bar gives it up after a few seconds
+            time.sleep(40)
+            return
         if p.path == '/__listen':
             q = parse_qs(p.query)
+            LISTEN['extra'] = q.get('extra', [''])[0] == '1'
             LISTEN['mode'] = q.get('mode', ['ok'])[0]
             LISTEN['delay'] = int(q.get('delay', ['0'])[0] or 0)
             LISTEN['fail'] = {x for x in q.get('fail', [''])[0].split(',') if x}
