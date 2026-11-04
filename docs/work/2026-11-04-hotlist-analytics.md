@@ -32,9 +32,9 @@
 
 ### 统计与实验接口约定
 
-- 前端 `GET <SHELF_API>/api/analytics/config?experiment=hot-layout-v1` 获取活动实验和变体比例；分组按高熵随机匿名 ID 固定保存于本地，不读取账号、不以 IP 分组。
+- 前端 `GET <SHELF_API>/api/analytics/config?experiment=hot-layout-v1` 获取活动实验 `{id,status,allocation,variants:[{id,label}]}`；分组用本地匿名随机 ID 和 allocation 固定保存于本地，不读取账号、不以 IP 分组。
 - 前端用 `POST <SHELF_API>/api/analytics/events` 批量发事件：`experiment_exposure`、`item_impression`、`item_click`、`active_time`。曝光定义为卡片至少 50% 可见并持续 1 秒；有效停留只累计前台可见的秒数，每 15 秒增量上报，离页用 `sendBeacon` 补报。
-- 事件字段白名单：event_id、experiment_id、variant、anon_id_hash、session_id、module_slug、content_key、program_id/platform_id、locale、country_code、device_class、active_seconds、created_at。服务器只保留匿名 UUID 的 SHA-256/HMAC，永不存原始 IP、完整 User-Agent、搜索词或文章正文；请求需限体积、限频、校验 Origin/事件名。
+- 事件字段白名单：event_id、event_name、occurred_at、experiment_id、variant、anon_id、session_id、module_slug、content_key、program_id/platform_id、locale、country_code、device_class、active_seconds。浏览器发送随机 anon_id，服务端以 HMAC-SHA256 摘要后仅保存摘要，绝不存原始 ID、原始 IP、完整 User-Agent、搜索词或文章正文；请求需限体积、限频、校验 Origin/事件名。
 - 管理端复用现有密码会话：活动实验配置（control/variant、比例、开始/停止）及按时间、实验、语言、设备、栏目筛选的汇总。核心指标：有效曝光、去重点击率、前台有效停留中位数/均值、收藏/订阅等已存在事件；分母/去重口径在 UI 明示。
 - 数据库 migration 008 创建 `ops.analytics_experiments`、`ops.analytics_events` 和索引；原始事件设 90 天保留/可清理，汇总查询只读取允许的日期窗口。不允许从浏览器直连 PostgreSQL。无 DB/迁移缺失时公开埋点静默降级，管理页明确报错，不影响公共热榜。
 - API 路径与上述约定为前后端唯一接口；如需改变字段，先更新两个计划文件并同步主 agent。
@@ -56,6 +56,10 @@
 - my-archive：`s_hotpage` E2E（桌面/手机），JS 语法/重复函数检查，`git diff --check`。
 - 端口按 Codex 段 8900–8999、9450–9459；预览只在本地启动，不推送/部署。
 
+### 执行补充
+
+- 2026-11-04：前后端确认公开配置的 `allocation` 是 `{variant_id: percentage}` 映射；事件提交字段使用随机 `anon_id`，由服务端 HMAC-SHA256 后存摘要。目录接口可返回可信 `locale_hint.country_code`，地区榜在自动模式下省略 `region` 参数，由服务端据可信代理国家码选择，并接受浏览器明确手选值覆盖。
+
 ### 风险与限制
 
 - 现有两个热榜预览分支仍在等待用户检查；本任务从其提交继续建子分支，原 worktree 和已启动的 8920 预览不改动。
@@ -69,6 +73,9 @@
 
 - 已检查两个 master 工作区最近提交和状态；my-archive 的 `index.html` / manifest 及未跟踪文件、shelf-directory 的 `.gitignore` 均为用户已有改动，保持不动。
 - 用户确认本计划方向后，先在各 master 仅提交本计划，再开隔离 worktree；不会合并此前预览分支到 master。
+- 2026-11-04：已在 UI worktree 增加匿名随机分组与事件批量上报、前台停留计时、卡片曝光观察、点击统计、紧凑布局 A/B 变体；用户选择语言优先展示对应语言的平台，自动地区不向 API 发送固定国家值，交由可信服务端地区提示决定。启用 DNT/GPC 时不启动埋点。
+- 已更新隐私政策，说明本地实验 ID、事件字段、HMAC 匿名化、90 天计划保留及 DNT/GPC 行为；E2E 服务 fixture 和热榜测试已覆盖实验事件。
+- 检查：`syntax_check.py` 和 `dup_funcs.py` 通过，`git diff --check` 通过；浏览器 E2E 尚未确认通过，当前 `s_hotpage` 在进入热榜阶段卡住，待排查测试 rig 导航/接口基线问题后复测。
 
 ### Codex worker
 

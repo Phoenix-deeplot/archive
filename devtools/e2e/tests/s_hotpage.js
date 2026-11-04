@@ -7,6 +7,7 @@ const ORIGIN = `http://127.0.0.1:${APP_PORT}`, BASE = ORIGIN + '/', SVC = `http:
 let pass = 0, fail = 0;
 const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name); } else { fail++; console.log('FAIL', name, extra === undefined ? '' : JSON.stringify(extra).slice(0, 700)); } };
 const get = p => fetch(SVC + p).then(r => r.json());
+const waitAnalytics = async name => { const until=Date.now()+20000; let events=[]; do { events=await get('/__analytics_events'); if(events.some(x=>x.event_name===name)) return events; await sleep(160); } while(Date.now()<until); return events; };
 
 (async () => {
   writeDir();
@@ -42,6 +43,14 @@ const get = p => fetch(SVC + p).then(r => r.json());
     cur:[...document.querySelectorAll('#cats .cat-btn[aria-current="true"]')].map(b=>b.textContent.trim()).join('|'), tags:getComputedStyle(document.querySelector('#tagbox')).display, shelves:getComputedStyle(document.querySelector('#dir')).display})`);
   ok('热榜 is a page of its own: the title, no toolbar, no cards below, the sidebar marks it (and hides the shelf list)', page.cls && !page.disc && page.title === '热榜' && page.bar && page.grid === 0 && page.cur === '热榜' && page.tags === 'none' && page.shelves === 'none', page);
   await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0 && document.querySelectorAll('#dirReco .hot-focus-card').length>=2`);
+  const exposure = await waitAnalytics('experiment_exposure');
+  ok('the active A/B experiment reports exposure with a stable control/treatment variant', exposure.some(x=>x.event_name==='experiment_exposure'&&['control','treatment'].includes(x.variant)) && ['cards','compact'].includes(await J(`document.querySelector('#dirReco .hot-focus').dataset.layout`)), exposure.filter(x=>x.event_name==='experiment_exposure'));
+  await J(`document.querySelector('#dirReco .hot-focus-card')?.scrollIntoView({block:'center'}); document.addEventListener('click',e=>{if(e.target.closest('.hot-focus-card'))e.preventDefault();},{capture:true,once:true}); document.querySelector('#dirReco .hot-focus-card')?.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window}));`);
+  await waitFor(`document.querySelector('#dirReco .hot-focus-card')?.dataset.analyticsKey`);
+  let analyticsEvents = await waitAnalytics('item_click');
+  ok('visible focus cards report one qualified impression and focus-card clicks are recorded', analyticsEvents.some(x=>x.event_name==='item_impression'&&String(x.content_key).startsWith('event:')) && analyticsEvents.some(x=>x.event_name==='item_click'&&String(x.content_key).startsWith('event:')), analyticsEvents.map(x=>[x.event_name,x.content_key]));
+  analyticsEvents = await waitAnalytics('active_time');
+  ok('active-time events count only foreground hot-page seconds and are sent in batches', analyticsEvents.some(x=>x.event_name==='active_time'&&x.active_seconds>=15), analyticsEvents.filter(x=>x.event_name==='active_time'));
   const primary = await J(`({intro:!!document.querySelector('#dirReco .hot-intro'), modes:!!document.querySelector('#dirReco .hot-modebar'), today:/今日精选|Today’s picks/.test(document.querySelector('#dirReco').textContent), day:document.querySelector('#dirReco [data-hot-period="day"]')?.getAttribute('aria-pressed'), rows:document.querySelectorAll('#dirReco .hot-row').length, focus:document.querySelectorAll('#dirReco .hot-focus-card').length, focusTitle:document.querySelector('#dirReco .hot-focus-head h3')?.textContent, focusBeforeBoards:!!(document.querySelector('.hot-focus')?.compareDocumentPosition(document.querySelector('.hot-main')) & Node.DOCUMENT_POSITION_FOLLOWING)})`);
   ok('hot page shows tracked stories under 今日焦点 above platform charts, without Today’s picks banner/tab', !primary.intro && !primary.modes && !primary.today && primary.day==='true' && primary.rows===12 && primary.focus>=2 && primary.focusTitle==='今日焦点' && primary.focusBeforeBoards, primary);
   const expectedCats = ['综合热点','科技','AI 最新','金融财经','国际时事','娱乐','学习与专业提升','影音与社区'];

@@ -126,6 +126,7 @@ def listen_group(gid, mode, lang='zh'):
 
 
 HOT = {'down': False, 'fail': set(), 'delay': 0, 'asked': [], 'events': 'ok'}  # events: ok | empty | fail; deterministic event-response control for the browser tests
+ANALYTICS = {'enabled': True, 'events': []}
 NUMS = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二']
 
 
@@ -197,6 +198,25 @@ PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8840
 class H(BaseHTTPRequestHandler):
     def route(self, method):
         p = urlsplit(self.path)
+        if p.path == '/api/analytics/config' and method == 'GET':
+            if not ANALYTICS['enabled']:
+                return self.reply(200, {'ok': True, 'experiment': {'id': 'hot-layout-v1', 'status': 'off', 'allocation': {}, 'variants': []}})
+            return self.reply(200, {'ok': True, 'experiment': {'id': 'hot-layout-v1', 'status': 'active', 'allocation': {'control': 50, 'treatment': 50}, 'variants': [{'id': 'control', 'label': 'Cards'}, {'id': 'treatment', 'label': 'Compact'}]}})
+        if p.path == '/api/analytics/events':
+            if method == 'OPTIONS':
+                self.send_response(204); self.cors(); self.end_headers(); return
+            if method != 'POST': return self.reply(405, {'ok': False, 'error': 'method'})
+            try: payload = json.loads(self.rfile.read(int(self.headers.get('Content-Length') or 0)) or b'{}')
+            except (ValueError, TypeError): payload = {}
+            events = payload.get('events', []) if isinstance(payload, dict) else []
+            if isinstance(events, list): ANALYTICS['events'].extend(x for x in events if isinstance(x, dict))
+            return self.reply(200, {'ok': True, 'accepted': len(events) if isinstance(events, list) else 0})
+        if p.path == '/__analytics':
+            q = parse_qs(p.query)
+            if q.get('reset'): ANALYTICS['events'].clear()
+            if 'enabled' in q: ANALYTICS['enabled'] = q['enabled'][0] != '0'
+            return self.json({'ok': True, 'enabled': ANALYTICS['enabled']})
+        if p.path == '/__analytics_events': return self.json(ANALYTICS['events'])
         if p.path == '/api/feed':
             return feedapi.respond(self, ENV, method)
         if p.path == '/api/submit':                                          # a stand-in for the submission service: addresses with "listed" / "pending" in them are answered like the real one

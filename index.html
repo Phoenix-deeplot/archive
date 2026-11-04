@@ -577,6 +577,9 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .hot-focus-card strong{display:-webkit-box;overflow:hidden;font:700 15px/1.4 var(--serif);-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .hot-focus-card p{display:-webkit-box;overflow:hidden;margin:5px 0 7px;color:var(--muted);font-size:12px;line-height:1.45;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .hot-focus-meta{color:var(--muted);font-size:11px}
+.hot-focus[data-layout="compact"] .hot-focus-grid{display:flex;overflow-x:auto;gap:8px;padding:1px 0 6px;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.hot-focus[data-layout="compact"] .hot-focus-card{flex:0 0 min(31%,300px);min-height:0;scroll-snap-align:start;padding:10px 12px}
+.hot-focus[data-layout="compact"] .hot-focus-card p{display:none}
 .hot-mix-title{margin:0 0 10px;font:700 18px/1.35 var(--serif);color:var(--ink)}
 .hot-mix-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:20px}
 .hot-mix-card{position:relative;min-width:0;min-height:160px;overflow:hidden;padding:16px 16px 14px;border:1px solid var(--rule);border-radius:14px;background:var(--surface);box-shadow:0 2px 8px rgba(20,36,32,.045)}
@@ -629,6 +632,8 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
   .hot-event-title{font-size:16px}
   .hot-focus{margin-bottom:12px}
   .hot-focus-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .hot-focus[data-layout="compact"] .hot-focus-grid{display:flex;gap:8px}
+  .hot-focus[data-layout="compact"] .hot-focus-card{flex:0 0 min(78vw,310px);min-height:0}
   .hot-focus-card{padding:10px}
   .hot-focus-card strong{font-size:13px}
   .hot-focus-card p{font-size:11px}
@@ -6979,15 +6984,83 @@ const HOT_UI_COPY={
 const hotUi=(k,...args)=>{ const v=(HOT_UI_COPY[state.lang==='en'?'en':'zh']||HOT_UI_COPY.zh)[k]; return typeof v==='function'?v(...args):v||k; };
 const hotName = o => state.lang==='en' ? (o.name_en||o.name) : o.name;
 const hotShown = () => dirOn() && state.dHot && dirIsHome() && !!hotBase();
+const HOT_EXPERIMENT='hot-layout-v1', hotAnalytics={anon:'',session:'',variant:'control',enabled:false,configBusy:false,observer:null,seen:new Set(),timers:new Map(),activeAt:0,activeSeconds:0,flushTimer:0};
+function hotUuid(){ return crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16);}); }
+function hotAnalyticsId(){
+  try{ let id=localStorage.getItem('zt_hot_anon'); if(!id){ id=hotUuid(); localStorage.setItem('zt_hot_anon',id); } return id; }catch(e){ return ''; }
+}
+function hotSessionId(){ try{ let id=sessionStorage.getItem('zt_hot_session'); if(!id){ id=hotUuid(); sessionStorage.setItem('zt_hot_session',id); } return id; }catch(e){ return ''; } }
+function hotExperimentVariant(experiment,anon){
+  const variants=Array.isArray(experiment.variants)?experiment.variants:[]; if(!variants.length) return 'control'; const saved=String(LS.get('hotExperiment:'+HOT_EXPERIMENT,'')||''); if(saved&&variants.some(v=>String(v.id)===saved)) return saved; const allocation=experiment.allocation&&typeof experiment.allocation==='object'?experiment.allocation:{};
+  let n=hashStr(anon||'anonymous')>>>0, total=variants.reduce((sum,v)=>sum+Math.max(0,Number(allocation[v.id])||0),0); if(!total) total=variants.length;
+  let point=n%total;
+  for(const v of variants){ const weight=Number.isFinite(+allocation[v.id])&&+allocation[v.id]>0?+allocation[v.id]:(total===variants.length?1:0); if(point<weight){ const selected=String(v.id||'control'); LS.set('hotExperiment:'+HOT_EXPERIMENT,selected); return selected; } point-=weight; }
+  const selected=String(variants[0].id||'control'); LS.set('hotExperiment:'+HOT_EXPERIMENT,selected); return selected;
+}
+async function hotAnalyticsConfig(){
+  if(hotAnalytics.configBusy||hotAnalytics.enabled||!hotBase()||navigator.doNotTrack==='1'||navigator.globalPrivacyControl===true) return;
+  hotAnalytics.configBusy=true;
+  try{
+    hotAnalytics.anon=hotAnalyticsId(); hotAnalytics.session=hotSessionId(); if(!hotAnalytics.anon) return;
+    const res=await fetch(hotBase()+'/api/analytics/config?experiment='+encodeURIComponent(HOT_EXPERIMENT),{credentials:'omit',cache:'no-store'}), body=await res.json();
+    const experiment=body&&body.experiment; if(!body||!body.ok||!experiment||experiment.status!=='active') return;
+    hotAnalytics.variant=hotExperimentVariant(experiment,hotAnalytics.anon); hotAnalytics.enabled=true;
+    hotAnalyticsSend('experiment_exposure','hot-layout-v1',{content_key:HOT_EXPERIMENT});
+    if(hotShown()) paintHot();
+  }catch(e){ /* analytics must never block the hot-list UI */ }
+  finally{ hotAnalytics.configBusy=false; }
+}
+function hotAnalyticsContext(){
+  const idx=state.hot.idx||{}, country=idx.locale_hint&&idx.locale_hint.country_code||idx.country_code||'';
+  return {experiment_id:HOT_EXPERIMENT,variant:hotAnalytics.variant,module_slug:'hot',anon_id:hotAnalytics.anon,session_id:hotAnalytics.session,locale:state.lang==='en'?'en':'zh',country_code:/^[A-Z]{2}$/.test(country)?country:null,device_class:matchMedia('(max-width:760px)').matches?'mobile':'desktop'};
+}
+function hotAnalyticsQueue(){ if(!hotAnalytics.queue) hotAnalytics.queue=[]; return hotAnalytics.queue; }
+function hotAnalyticsSource(el){ const out={}; if(el&&el.dataset.platformId) out.platform_id=el.dataset.platformId; if(el&&el.dataset.programId) out.program_id=el.dataset.programId; return out; }
+const hotAnalyticsKey=value=>String(value||'').replace(/[^A-Za-z0-9:_-]/g,'-').slice(0,120);
+async function hotAnalyticsSend(eventName,contentKey,extra={}){
+  if(!hotAnalytics.enabled||!hotAnalytics.anon||!hotBase()) return;
+  const event={event_id:hotUuid(),event_name:eventName,occurred_at:new Date().toISOString(),...hotAnalyticsContext(),content_key:String(contentKey||''),...extra};
+  // The service hashes anon_id with its server-side HMAC key and never stores the raw ID.
+  hotAnalyticsQueue().push(event); if(hotAnalytics.flushTimer) clearTimeout(hotAnalytics.flushTimer); if(hotAnalyticsQueue().length>=8) hotAnalyticsFlush(false); else hotAnalytics.flushTimer=setTimeout(()=>hotAnalyticsFlush(false),700);
+}
+function hotAnalyticsFlush(beacon){
+  const queue=hotAnalyticsQueue(); if(!queue.length||!hotBase()) return;
+  if(hotAnalytics.flushTimer){ clearTimeout(hotAnalytics.flushTimer); hotAnalytics.flushTimer=0; }
+  const payload=JSON.stringify({events:queue.splice(0,20)}), url=hotBase()+'/api/analytics/events';
+  try{ if(beacon&&navigator.sendBeacon){ navigator.sendBeacon(url,new Blob([payload],{type:'text/plain;charset=UTF-8'})); return; } fetch(url,{method:'POST',headers:{'content-type':'application/json'},body:payload,credentials:'omit',keepalive:true}).catch(()=>{}); }catch(e){}
+}
+function hotAnalyticsObserve(){
+  if(hotAnalytics.observer){ hotAnalytics.observer.disconnect(); hotAnalytics.observer=null; }
+  for(const timer of hotAnalytics.timers.values()) clearTimeout(timer); hotAnalytics.timers.clear();
+  if(!hotAnalytics.enabled||!hotShown()||!('IntersectionObserver' in window)) return;
+  hotAnalytics.observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+    const el=entry.target,key=el.dataset.analyticsKey||''; if(!key||entry.intersectionRatio<.5||hotAnalytics.seen.has(key)) return;
+    if(hotAnalytics.timers.has(key)) return;
+    hotAnalytics.timers.set(key,setTimeout(()=>{ hotAnalytics.timers.delete(key); if(!el.isConnected||!hotShown()||document.visibilityState!=='visible'||hotAnalytics.seen.has(key)) return; const rect=el.getBoundingClientRect(); if(rect.width*rect.height && rect.top<innerHeight&&rect.bottom>0){ hotAnalytics.seen.add(key); hotAnalyticsSend('item_impression',key,hotAnalyticsSource(el)); } },1000));
+  }),{threshold:[.5]});
+  document.querySelectorAll('#dirReco [data-analytics-key]').forEach(el=>hotAnalytics.observer.observe(el));
+}
+function hotAnalyticsClick(e){
+  if(!hotAnalytics.enabled) return;
+  const el=e.target.closest('#dirReco [data-analytics-key]'); if(!el) return;
+  const key=el.dataset.analyticsKey||''; if(key) hotAnalyticsSend('item_click',key,hotAnalyticsSource(el));
+}
+function hotAnalyticsTick(){
+  if(!hotAnalytics.enabled) return;
+  const now=Date.now(), active=hotShown()&&!state.readingId&&document.visibilityState==='visible';
+  if(active){ if(!hotAnalytics.activeAt) hotAnalytics.activeAt=now; const elapsed=Math.min(30,Math.max(0,(now-hotAnalytics.activeAt)/1000)); hotAnalytics.activeSeconds+=elapsed; hotAnalytics.activeAt=now; if(hotAnalytics.activeSeconds>=15){ const seconds=Math.floor(hotAnalytics.activeSeconds); hotAnalytics.activeSeconds-=seconds; hotAnalyticsSend('active_time','hot',{active_seconds:seconds}); } }
+  else if(hotAnalytics.activeAt){ hotAnalytics.activeAt=0; const seconds=Math.floor(hotAnalytics.activeSeconds); hotAnalytics.activeSeconds-=seconds; if(seconds) hotAnalyticsSend('active_time','hot',{active_seconds:seconds}); hotAnalyticsFlush(true); }
+}
+if(!window.__hotAnalyticsListeners){ window.__hotAnalyticsListeners=true; document.addEventListener('visibilitychange',()=>hotAnalyticsTick()); window.addEventListener('pagehide',()=>{ hotAnalyticsTick(); hotAnalyticsFlush(true); }); setInterval(hotAnalyticsTick,5000); }
 const hotKey = p => p.id+'|'+state.hot.period+(p.regions?'|'+state.hot.region:'');                    // cache each period and country independently
 const hotFeed = (p,region,period='day') => hotBase()+'/api/hot?p='+encodeURIComponent(p.id)+(p.regions && region ? '&region='+encodeURIComponent(region) : '')+(period==='week'?'&period=week':'');
 const hotCountry = c => { try{ return new Intl.DisplayNames([state.lang==='zh'?'zh-Hans':'en'],{type:'region'}).of(c) || c; }catch(e){ return c; } };
-const paintHot = () => { $('#dirReco').innerHTML=hotHTML(); };
+const paintHot = () => { $('#dirReco').innerHTML=hotHTML(); hotAnalyticsObserve(); if(hotShown()) hotAnalyticsConfig(); };
 const hotActiveColumns = () => { const h=state.hot, cols=h.idx&&Array.isArray(h.idx.columns)?h.idx.columns:[], plats=h.idx&&Array.isArray(h.idx.platforms)?h.idx.platforms:[]; return cols.filter(c=>c.enabled!==false&&plats.some(p=>p.col===c.id)); };
 function hotCur(){                                                                                 // the column and the platform that are chosen (the first ones when what was remembered is gone)
   const h=state.hot, idx=h.idx, columns=hotActiveColumns(); if(!idx || !columns.length) return null;
   if(h.want){ const w=idx.platforms.find(x=>x.id===h.want); h.want=''; if(w){ h.sel.c=w.col; if(!h.sel.p || typeof h.sel.p!=='object') h.sel.p={}; h.sel.p[w.col]=w.id; hotSave(); } }          // (asked for by the way from a platform's tab)
-  const col=columns.find(c=>c.id===h.sel.c) || columns[0], plats=idx.platforms.filter(p=>p.col===col.id); if(!plats.length) return null;
+  const col=columns.find(c=>c.id===h.sel.c) || columns[0], locale=state.lang==='en'?'en':'zh', plats=idx.platforms.filter(p=>p.col===col.id).slice().sort((a,b)=>Number(b.lang===locale)-Number(a.lang===locale)); if(!plats.length) return null;
   const want=h.sel.p && typeof h.sel.p==='object' ? h.sel.p[col.id] : '';
   return {col, plats, cur:plats.find(p=>p.id===want) || plats[0]};
 }
@@ -7050,7 +7123,7 @@ async function hotLoad(p, fresh, limit){
   h.data.set(key,{...(old||{}), state:'load'}); if(hotShown()) paintHot();
   try{
     const n=Math.max(1,Math.min(50,Number(limit)||50));
-    const r=await fetch(base+'/api/hot?p='+encodeURIComponent(p.id)+'&format=json&n='+n+'&period='+encodeURIComponent(h.period)+(state.lang==='zh' && p.lang==='en' ? '&tr=zh' : '')+(p.regions ? '&region='+encodeURIComponent(h.region) : ''),{credentials:'omit', cache:fresh?'no-cache':'default'}), d=await r.json().catch(()=>null);
+    const r=await fetch(base+'/api/hot?p='+encodeURIComponent(p.id)+'&format=json&n='+n+'&period='+encodeURIComponent(h.period)+(state.lang==='zh' && p.lang==='en' ? '&tr=zh' : '')+(p.regions && h.region!=='auto' ? '&region='+encodeURIComponent(h.region) : ''),{credentials:'omit', cache:fresh?'no-cache':'default'}), d=await r.json().catch(()=>null);
     if(!d || !d.ok || !Array.isArray(d.items)){ const m=d && (state.lang==='zh' ? d.message : d.message_en); throw Object.assign(new Error(m || 'HTTP '+r.status), {svc:!!m}); }
     h.data.set(key,{state:'ok', rows:d.items, t:Date.now(), at:+d.updated||0, region:String(d.region||''), history:d.history||null, period:d.period||h.period});
   }catch(e){ h.data.set(key,{state:'err', rows:old && old.rows || [], t:Date.now(), msg:e.svc ? e.message : t('hotListErr',String(e.message||e))}); }       // (the service’s own sentence says what is wrong already)
@@ -7078,9 +7151,9 @@ function renderHotPage(){
   $('#dirReco').hidden=false; paintHot(); hotEnsure();
 }
 function hotRowHTML(r,i,ranked){
-  const u=httpUrl(r.url); if(!u) return '';
+  const u=httpUrl(r.url); if(!u) return ''; const platform=hotCur()&&hotCur().cur.id||'', itemKey='p:'+platform+':'+hashStr(String(r.url||r.title||'')).toString(36);
   const alt=httpUrl(r.alt), side=(r.heat?`<span>${esc(r.heat)}</span>`:'') + (!ranked && r.date ? `<span>${esc(r.date)}</span>` : '') + (alt ? `<a href="${esc(alt)}" target="_blank" rel="nofollow ugc noopener noreferrer">${esc(t('hotTalk'))}</a>` : '');
-  return `<li class="hot-row"><span class="hot-rank${ranked && i<3 ? ' hot-top' : ''}" aria-hidden="${!ranked}">${ranked ? i+1 : '·'}</span><a class="hot-t" href="${esc(u)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-i="${i}">${esc(r.title)}</a>${state.lang==='zh' && r.title_zh ? `<p class="hot-n hot-tz" lang="zh">${esc(r.title_zh)}</p>` : ''}${r.note?`<p class="hot-n hot-note">${esc(r.note)}</p>`:''}${side?`<span class="hot-side">${side}</span>`:''}</li>`;
+  return `<li class="hot-row" data-analytics-key="${esc(itemKey)}" data-platform-id="${esc(platform)}"><span class="hot-rank${ranked && i<3 ? ' hot-top' : ''}" aria-hidden="${!ranked}">${ranked ? i+1 : '·'}</span><a class="hot-t" href="${esc(u)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-i="${i}">${esc(r.title)}</a>${state.lang==='zh' && r.title_zh ? `<p class="hot-n hot-tz" lang="zh">${esc(r.title_zh)}</p>` : ''}${r.note?`<p class="hot-n hot-note">${esc(r.note)}</p>`:''}${side?`<span class="hot-side">${side}</span>`:''}</li>`;
 }
 function hotBoardsHTML(){
   const h=state.hot, s=hotCur();
@@ -7129,9 +7202,10 @@ function hotEventsHTML(){
   return `<section class="hot-events" aria-live="polite" aria-busy="${!!h.eventsBusy}">${cards}</section>${h.eventsErr?`<p class="hot-feedback">${esc(h.eventsErr)}</p>`:''}`;
 }
 function hotFocusHTML(){
-  const events=state.hot.events.slice(0,3), cards=events.map((ev,i)=>{ const it=Array.isArray(ev.items)?ev.items[0]||{}:{}, url=httpUrl(it.url||it.source_url||ev.url), title=String(ev.title||it.title||''), excerpt=String(it.excerpt||it.summary||it.note||''), count=Math.max(0,Number(ev.source_count)||((Array.isArray(ev.items)&&ev.items.length)||0)), updated=hotEventTime(ev.last_updated); if(!title) return ''; return `<a class="hot-focus-card" href="${esc(url||'#')}" ${url?'target="_blank" rel="nofollow ugc noopener noreferrer"':'data-hot-events-retry'}><span class="hot-focus-rank">${i+1}</span><span class="hot-event-category">${esc(hotEventCategory(ev.category))}</span><strong>${esc(title)}</strong>${excerpt?`<p>${esc(excerpt)}</p>`:''}<span class="hot-focus-meta">${esc(hotUi('eventSources',count))}${updated?' · '+esc(updated):''}</span></a>`; }).join('');
+  const events=state.hot.events.slice(0,3), cards=events.map((ev,i)=>{ const it=Array.isArray(ev.items)?ev.items[0]||{}:{}, url=httpUrl(it.url||it.source_url||ev.url), title=String(ev.title||it.title||''), excerpt=String(it.excerpt||it.summary||it.note||''), count=Math.max(0,Number(ev.source_count)||((Array.isArray(ev.items)&&ev.items.length)||0)), updated=hotEventTime(ev.last_updated), key=hotAnalyticsKey('event:'+String(ev.id||hashStr(title).toString(36))); if(!title) return ''; return `<a class="hot-focus-card" data-analytics-key="${esc(key)}" href="${esc(url||'#')}" ${url?'target="_blank" rel="nofollow ugc noopener noreferrer"':'data-hot-events-retry'}><span class="hot-focus-rank">${i+1}</span><span class="hot-event-category">${esc(hotEventCategory(ev.category))}</span><strong>${esc(title)}</strong>${excerpt?`<p>${esc(excerpt)}</p>`:''}<span class="hot-focus-meta">${esc(hotUi('eventSources',count))}${updated?' · '+esc(updated):''}</span></a>`; }).join('');
   const stateHtml=state.hot.eventsBusy&&!events.length?`<p class="hot-state">${esc(hotUi('eventLoading'))}</p>`:state.hot.eventsErr&&!events.length?`<p class="hot-state">${esc(state.hot.eventsErr)} <button class="btn" type="button" data-hot-events-retry>${esc(hotUi('eventRetry'))}</button></p>`:!events.length?`<p class="hot-state">${esc(hotUi('eventEmpty'))}</p>`:'';
-  return `<section class="hot-focus" aria-label="${esc(hotUi('focus'))}"><header class="hot-focus-head"><div><h3>${esc(hotUi('focus'))}</h3><p>${esc(hotUi('focusSub'))}</p></div></header>${cards?`<div class="hot-focus-grid">${cards}</div>`:stateHtml}</section>`;
+  const layout=hotAnalytics.enabled&&hotAnalytics.variant!=='control'?'compact':'cards';
+  return `<section class="hot-focus" data-layout="${layout}" aria-label="${esc(hotUi('focus'))}"><header class="hot-focus-head"><div><h3>${esc(hotUi('focus'))}</h3><p>${esc(hotUi('focusSub'))}</p></div></header>${cards?`<div class="hot-focus-grid">${cards}</div>`:stateHtml}</section>`;
 }
 function hotMixCardHTML(x,i,featured){
   const r=x.row,p=x.platform,url=httpUrl(r.url),title=x.displayTitle,original=state.lang==='zh'&&r.title_zh&&r.title_zh!==r.title?`<p class="hot-mix-note" lang="en">${esc(r.title)}</p>`:'',note=r.note&&String(r.note).trim()!==title?`<p class="hot-mix-note">${esc(r.note)}</p>`:'',source=[hotName(p),x.col?hotName(x.col):''].filter(Boolean).join(' · '),rank=p.ranked===false?hotUi('newest'):hotUi('rank',x.rank),readable=!!(p.read||p.kw||embedOf(url)||RICH_DETAIL.test(url)||String(r.body||'').length>=30),foot=[r.heat||'',r.date||'',readable?hotUi('siteRead'):hotUi('openSite')].filter(Boolean).map(v=>`<span>${esc(v)}</span>`).join('');
@@ -7169,6 +7243,7 @@ function hotOpenItem(e,r,p){
 function hotSave(){ LS.set('hotSel',state.hot.sel); }
 function hotShow(focus){ paintHot(); hotEnsure(); if(focus){ const el=document.querySelector(focus); if(el) el.focus({preventScroll:true}); } }
 function hotClick(e){                                                                              // everything inside the hot-list page; true when it was one of its own
+  hotAnalyticsClick(e);
   const mode=e.target.closest('[data-hot-view]'); if(mode){ hotSetView(mode.dataset.hotView); return true; }
   if(e.target.closest('[data-hot-mix-retry]')){ hotMixEnsure(true); return true; }
   const mixA=e.target.closest('a[data-hot-mix-i]'); if(mixA){ const x=state.hot.mixRows[+mixA.dataset.hotMixI]; if(x) hotOpenItem(e,x.row,x.platform); return true; }
