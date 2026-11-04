@@ -8,6 +8,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   const c = await connect(9444);
   c.autoDialog(true);
   await c.send('Network.enable'); await c.send('Network.setCacheDisabled', { cacheDisabled: true });
+  const settle = await require('../settle')(c);
   const J = expr => c.js(`(()=>{ const {state,idb,LS,loadAll,render,addCollection,openReader}=window.__zt||{}; return eval(${JSON.stringify(expr)}); })()`);
   const swipe = async (x1, y1, x2, y2, steps = 8, gap = 12) => {
     await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x1, y: y1 }] });
@@ -17,9 +18,9 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   };
   const fresh = async (lang, w, h, phone) => {
     if (phone) await c.mobile(w, h, 2); else await c.desktop(w, h, 1);
-    await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE, 1500);
+    await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE, 0); await settle(1500);
     await J(`localStorage.setItem('archive.lang', JSON.stringify('${lang}')); localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver', JSON.stringify('2026-10-22'))`);
-    await c.goto(BASE, 2500);
+    await c.goto(BASE, 0); await settle(2500);
   };
   const seed = () => J(`(async()=>{
     const cid=addCollection('三篇'); const mk=(id,extra)=>({id,path:'',category:'notes',filename:'',hash:'',title:'',summary:'一段摘要，手机上的两列卡片里不显示。',keywords:['k1','k2'],lang:'zh',minutes:1,pages:null,size:10,date:'2026-01-01',added:1,featured:false,hidden:false,cover:'',collection:cid,...extra});
@@ -37,14 +38,14 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   ok('the select offers publication date between recently added and recently read', opts.join(',') === 'recent:最近添加,date:发布日期,read:最近阅读,title:标题', opts);
   await J(`const s=document.querySelector('#sort'); s.value='date'; s.dispatchEvent(new Event('change',{bubbles:true}))`); await sleep(400);
   ok('publication date: 乙 (3-01), 甲 (1-05), 丙 (last year)', await order() === '乙甲丙', await order());
-  await c.goto(BASE, 2000);
+  await c.goto(BASE, 0); await settle(2000);
   ok('...and it is remembered after a reload', await J(`document.querySelector('#sort').value`) === 'date' && await order() === '乙甲丙', await order());
-  await J(`localStorage.setItem('archive.lang', JSON.stringify('en'))`); await c.goto(BASE, 2000);
+  await J(`localStorage.setItem('archive.lang', JSON.stringify('en'))`); await c.goto(BASE, 0); await settle(2000);
   ok('English label', await J(`[...document.querySelector('#sort').options].find(o=>o.value==='date').textContent`) === 'Publication date');
-  await J(`localStorage.setItem('archive.lang', JSON.stringify('zh'))`); await c.goto(BASE, 2000);
+  await J(`localStorage.setItem('archive.lang', JSON.stringify('zh'))`); await c.goto(BASE, 0); await settle(2000);
 
   // ------------------------------------------------ two columns on a phone
-  await J(`localStorage.setItem('archive.sort', JSON.stringify('recent'))`); await c.goto(BASE, 2000);
+  await J(`localStorage.setItem('archive.sort', JSON.stringify('recent'))`); await c.goto(BASE, 0); await settle(2000);
   const g = await J(`(()=>{ const grid=document.querySelector('#grid'), cs=getComputedStyle(grid), cards=[...document.querySelectorAll('.card')].map(x=>x.getBoundingClientRect()); const k=document.querySelector('.card');
     const vis=sel=>[...k.querySelectorAll(sel)].filter(b=>b.offsetParent!==null);
     return {cols:cs.gridTemplateColumns.split(' ').length, w:cards.map(r=>Math.round(r.width)), tops:cards.map(r=>Math.round(r.top)), sum:getComputedStyle(k.querySelector('.sum')||document.body).display, chips:getComputedStyle(k.querySelector('.chips')||document.body).display,
@@ -106,7 +107,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   // ------------------------------------------------ swipes in the reader
   await J(`localStorage.removeItem('archive.swipeHint')`);
   const coarse = await J(`matchMedia('(pointer:coarse)').matches`);
-  await J(`document.querySelector('.card-title a').click()`); await sleep(1800);
+  await J(`document.querySelector('.card-title a').click()`); await settle(1800);
   const first = await J(`({id:state.readingId, vis:state.visible.length, hint:LS.get('swipeHint',0), toast:document.querySelector('#toastMsg').textContent, coarse:matchMedia('(pointer:coarse)').matches})`);
   ok('reader opened on the first card (甲, newest added)', first.id === 'local:a' && first.vis === 3, first);
   ok('first time: the hint toast is shown once (touch screens only)', !coarse || (first.hint === 1 && /滑动/.test(first.toast)), first);

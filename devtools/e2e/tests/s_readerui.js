@@ -8,6 +8,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   const c = await connect(9444);
   c.autoDialog(true);
   await c.send('Network.enable'); await c.send('Network.setCacheDisabled', { cacheDisabled: true });
+  const settle = await require('../settle')(c);
   const J = expr => c.js(`(()=>{ const {state,idb,LS,loadAll,render,addCollection}=window.__zt||{}; return eval(${JSON.stringify(expr)}); })()`);
   const touch = async (x1, y1, x2, y2, steps = 6) => {
     await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x1, y: y1 }] });
@@ -18,9 +19,9 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   const tap = (x, y) => touch(x, y, x, y);
   const fresh = async (w, h, phone) => {
     if (phone) await c.mobile(w, h, 2); else await c.desktop(w, h, 1);
-    await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE, 1500);
+    await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE, 0); await settle(1500);
     await J(`localStorage.setItem('archive.lang', JSON.stringify('zh')); localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver', JSON.stringify('2026-10-22'))`);
-    await c.goto(BASE, 2500);
+    await c.goto(BASE, 0); await settle(2500);
     await J(`(async()=>{ const cid=addCollection('测试'); const mk=(id,extra)=>({id,path:'',category:'notes',filename:'',hash:'',title:'',summary:'摘要',keywords:[],lang:'zh',minutes:1,pages:null,size:10,date:'2026-01-01',added:1,featured:false,hidden:false,cover:'',collection:cid,...extra});
       await idb.put(mk('local:m',{type:'md',filename:'m.md',title:'甲：有目录的文章',added:300,data:'# 甲\\n\\n## 第一节\\n\\n'+'正文。'.repeat(120)+'\\n\\n## 第二节\\n\\n'+'正文。'.repeat(120)+'\\n\\n## 第三节\\n\\n'+'正文。'.repeat(120)}));
       const pdf=new Uint8Array(3000); pdf.set(new TextEncoder().encode('%PDF-1.4\\n')); for(let i=40;i<3000;i++) pdf[i]=i%251;
@@ -30,7 +31,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
     await sleep(500);
   };
   const open = id => J(`openReader('${id}')`).catch(() => null);
-  const openById = async id => { await J(`document.querySelector('.card[data-id="${id}"] .card-title a').click()`); await sleep(1800); };
+  const openById = async id => { await J(`document.querySelector('.card[data-id="${id}"] .card-title a').click()`); await settle(1800); };
   const closeReader = async () => { await J(`document.querySelector('#readerBack').click()`); await sleep(500); };
   const hidden = sel => J(`document.querySelector('${sel}').hidden`);
 

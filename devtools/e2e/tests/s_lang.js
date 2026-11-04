@@ -8,14 +8,15 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   const c = await connect(9444);
   c.autoDialog(true);
   await c.send('Network.enable'); await c.send('Network.setCacheDisabled', { cacheDisabled: true });
+  const settle = await require('../settle')(c);
   await c.desktop(1280, 900, 1);
   const J = expr => c.js(`(()=>{ const {state,LS}=window.__zt||{}; return eval(${JSON.stringify(expr)}); })()`);
   const intro = () => J(`localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver', JSON.stringify('2026-10-22'))`);
-  await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE, 1200);
+  await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE, 0); await settle(1200);
   const ua = await J(`navigator.userAgent`);
   const system = async lang => { await c.send('Emulation.setUserAgentOverride', { userAgent: ua, acceptLanguage: lang }); };
   const view = () => J(`({html:document.documentElement.lang, auto:state.langAuto, lang:state.lang, stored:localStorage.getItem('archive.lang'), pressed:[...document.querySelectorAll('.side-foot .seg button')].map(b=>(b.dataset.lang||'btn')+':'+(b.dataset.lang ? b.getAttribute('aria-pressed') : b.textContent)).join(','), autoLabel:document.querySelector('[data-lang="auto"]').textContent, nav:navigator.languages.join()})`);
-  const load = async (url) => { await c.goto(url || BASE, 2200); };
+  const load = async (url) => { if (url === 'about:blank') { await c.goto(url, 300); return; } await c.goto(url || BASE, 0); await settle(2200); };
 
   // 1. nothing chosen: the system's language
   await system('en-US,en'); await c.clearSite('http://127.0.0.1:8820'); await load('about:blank'); await load(); await intro(); await load();
