@@ -72,13 +72,9 @@
 
 - **A + B（做完，待预览）**：分支 `claude/app-like-loading`。`index.html`：①`dirBuild(d, ops)`（原来 `loadDirectory` 里“洗数据 + 准备”那一段，网络和本机副本共用）；②本机副本 `dirKeptGet` / `dirKeptPut`（Cache API `zt-dir`，版本 `DIR_KEEP_V`、地址 `base`、30 天过期；目录原文 + 运营数据一条，热度单独一条）；③`loadDirectory`：没数据时先读副本、建好就画（并立刻开始取热度），再等网络；网络回来的原文和运营数据与已显示的一样就什么都不做（`state.dirSrc` 比对），不一样才 `dirBuild` 重画并更新副本；运营服务没回答就沿用已知的运营数据；网络失败有数据就不报错；`state.dirBusy` 取代原来用 `dirState==='loading'` 当锁；④`loadHeat`：存副本，数字没变不重画；⑤`manifest.js` 后的小脚本 `window.__early`：知道目录地址就并行请求 `directory.json` 和（https 时）`/api/ops?public=1`，`loadDirectory` 取用（运营地址对得上才用）；⑥Google 字体样式表改成 `preload` + `onload`，`<noscript>` 兜底。`devtools/e2e/tests/s_dirkeep.js` 20 项（第一次、再次打开时目录被拖住、没变不重建、变了换上、网络失败、四种坏副本、运营数据隐藏、热度副本、请求只发一次、字体样式表）。README 写了。和规划一致，没有改别的函数。
 
-- 合并顺序：
-- 合并后的测试结果：
-- 删除的分支和 worktree：
-
 ## 4. 合并记录
 
 - 合并顺序（2026-11-04，`--no-ff`，没推送、没部署）：`claude/ignore-noise` → `claude/test-speed` → `claude/test-settle` → `claude/app-like-loading`；每个分支合并前先并入最新 master（只有 `app-like-loading` 有一处冲突：`run_all.ps1` 里测试列表那一行，取 master 的新版本再把 `s_dirkeep` 加进整套列表）。
 - 合并后的测试结果：整套 `run_all.ps1`（在并入全部三个先合的分支之后的 `app-like-loading` 上跑）29 个测试、0 个新的失败、4 行已知失败（`s_read` 停在第 92 行、`s_reco` 两项、`s_sync` 的 B 项）、用时 24.6 分钟；Codex 的 `s_reader_usability` 12 项通过；合并到 master 之后的快速集（`-Quick`）10 个测试全部通过，用时 7.4 分钟。这个分支自己的验证：`s_dirkeep` 20 项。
-- 删除的分支和 worktree：`claude/app-like-loading` 和 `E:\\Ztree\\wt\\claude-app-like-loading`。
+- 删除的分支和 worktree：`claude/app-like-loading` 和 `E:\Ztree\wt\claude-app-like-loading`。
 - 上线要用户做：`vercel --prod`（页面才有新的加载方式）；第一次打开还要等网络，从第二次起才是秒开。

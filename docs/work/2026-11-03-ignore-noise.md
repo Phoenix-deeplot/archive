@@ -61,6 +61,6 @@
 
 - 合并顺序（2026-11-04，`--no-ff`，没推送、没部署）：`claude/ignore-noise` → `claude/test-speed` → `claude/test-settle` → `claude/app-like-loading`；每个分支合并前先并入最新 master（只有 `app-like-loading` 有一处冲突：`run_all.ps1` 里测试列表那一行，取 master 的新版本再把 `s_dirkeep` 加进整套列表）。
 - 合并后的测试结果：整套 `run_all.ps1`（在并入全部三个先合的分支之后的 `app-like-loading` 上跑）29 个测试、0 个新的失败、4 行已知失败（`s_read` 停在第 92 行、`s_reco` 两项、`s_sync` 的 B 项）、用时 24.6 分钟；Codex 的 `s_reader_usability` 12 项通过；合并到 master 之后的快速集（`-Quick`）10 个测试全部通过，用时 7.4 分钟。这个分支自己的验证：临时目录里的真实构建（全拷 / 去掉 `.vercelignore` 排除的东西）都成功、`dist` 一模一样、根目录的 `.md` 不发布，`s_seo_sections` 38 项通过。
-- 删除的分支和 worktree：`claude/ignore-noise` 和 `E:\\Ztree\\wt\\claude-ignore-noise`。
-- 合并时的一处手工：合并会把 `docs/promo/` 和 `PROMO.md` 从 master 的文件夹里删掉（它们已退出 git），合并前备份到 `E:\\Ztree\\my-archive-private-backup\\`、合并后放回原处，逐字节核对一致；现在它们被 `.gitignore` 忽略。备份文件夹可以由用户自己删除。
+- 删除的分支和 worktree：`claude/ignore-noise` 和 `E:\Ztree\wt\claude-ignore-noise`。
+- 合并时的一处手工：合并会把 `docs/promo/` 和 `PROMO.md` 从 master 的文件夹里删掉（它们已退出 git），合并前备份到 `E:\Ztree\my-archive-private-backup\`、合并后放回原处，逐字节核对一致；现在它们被 `.gitignore` 忽略。备份文件夹可以由用户自己删除。
 - 上线要用户做：下一次 `vercel --prod` 起就按 `.vercelignore` 上传（不再带 `devtools/`、`docs/`、根目录的 md）；根目录的 `RSS_候选源清单_2026-10.md` 不会发布了。
