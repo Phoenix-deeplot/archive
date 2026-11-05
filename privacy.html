@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>隐私政策 · 知树阅读</title>
-<meta name="description" content="「知树阅读」如何处理访客信息：本站不设账号、不用 Cookie、不做第三方统计；说明浏览器本地数据、Google 字体和托管日志。">
+<meta name="description" content="知树阅读说明浏览器本地数据、热榜匿名使用统计、第三方资源和托管日志的处理方式。">
 <meta name="robots" content="index, follow">
 <style>
 body{margin:0;background:#FBFBF9;color:#1A2229;font:17px/1.85 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
@@ -20,15 +20,15 @@ nav.legal{margin-top:3em;padding-top:1em;border-top:1px solid #DDE1DF;font-size:
 </head>
 <body>
 <main class="doc">
-<p class="meta">最后更新：2026-10-23</p>
+<p class="meta">最后更新：2026-11-04</p>
 <h1>隐私政策</h1>
-<p>本站是一个静态网站：没有账号、评论或表单，不要求你提交任何个人信息。下面如实说明访问本站时会发生什么。</p>
+<p>本站不要求你注册账号，也没有评论或普通联系表单。下面如实说明访问本站时会发生什么。</p>
 
 <h2>本站不收集什么</h2>
 <ul>
 <li>不收集、不存储访客的姓名、邮箱等个人信息。</li>
 <li>本站自己不设置 Cookie。</li>
-<li>没有广告，也没有 Google Analytics 之类的第三方统计脚本。</li>
+<li>热榜页面会向本站目录服务发送匿名的曝光、点击和前台停留统计，用于评估内容与页面布局；不使用 Google Analytics 等第三方统计脚本。</li>
 </ul>
 
 <h2>托管服务商的访问日志</h2>
@@ -40,7 +40,8 @@ nav.legal{margin-top:3em;padding-top:1em;border-top:1px solid #DDE1DF;font-size:
 <li>浏览器的本地存储（localStorage）：界面语言、主题、列表和排序偏好、阅读设置（字号、行距、版面宽度、阅读颜色）、阅读进度、你加的书签、你点过的星标、置顶和隐藏、你调整过的分类、你建的合集的名字和当前选中的合集、你订阅的源的网址和上次更新的状态、封面选择、播客的播放列表、倍速和每一集听到哪里。</li>
 <li>浏览器的 IndexedDB：你在页面上“添加”的文件（仅保存在这个浏览器里），你在“公共目录”里“收藏”的链接（只有标题、摘要和网址），以及你“连接”的本机文件夹的授权信息。</li>
 <li>浏览器的缓存（Service Worker）：为了让你装到主屏幕后能离线阅读，本站会把你打开过的页面和文件（最多 120 个，单个不超过 15 MB）连同首页保存在你的浏览器里。这些只在你的设备上，不会发送到服务器；清除本站数据即可删除。</li>
-<li>使用时长：页面只在本地记一个“你在这个页面上用了多久”的数字（只算页面在前台、你有操作的时间），用来决定要不要问一次下面的问题；它不会发送到任何地方。</li>
+<li>一般使用时长：相关提示所需的时长只在本地记录；热榜页面的前台有效停留时间另按下文所述匿名汇总。</li>
+<li>热榜匿名标识：首次打开热榜时，浏览器可能在本地生成一个随机标识，用于在 A/B 页面实验中保持分组稳定；该标识不含姓名、邮箱或账号信息。</li>
 <li>备份与恢复：你点“导出”时，浏览器把上面这些数据打包成一个文件，保存到你自己的设备；点“恢复”时，浏览器读取你选的文件。备份文件只经过你的浏览器，不会发送到服务器。</li>
 <li>从别的 App“分享到知树阅读”（Android，装到主屏幕后）：被分享的文件和网址会先放在浏览器的一个临时缓存里，等你在页面上确认保存（或取消）后就清掉；它们只经过你的浏览器，不会发送到服务器。</li>
 </ul>
@@ -69,6 +70,11 @@ nav.legal{margin-top:3em;padding-top:1em;border-top:1px solid #DDE1DF;font-size:
 <h2>搜索引擎</h2>
 <p>本站允许 Google、Bing 等搜索引擎收录公开页面，站长会使用 Google Search Console 和 Bing Webmaster Tools 查看收录情况。这些工具提供的是页面层面的汇总数据，不会让站长看到某个具体访客。已隐藏的内容不会被发布。</p>
 
+<h2>热榜匿名统计与页面实验</h2>
+<p>当你打开热榜时，页面可能向知树阅读的目录服务发送热榜卡片曝光、点击，以及页面处于前台且可见时的停留秒数。页面可能随机分配到不同的热榜布局，以比较哪种更方便阅读；分组保存在本地，清除本站数据后会重新分配。我们统计汇总结果，不用这些数据识别你的身份，也不会据此建立跨网站画像。</p>
+<p>发送字段限于随机匿名标识、随机会话/事件编号、栏目与内容/平台编号、实验变体、语言、粗略设备类型、可选国家/地区代码、事件时间及有效停留秒数。浏览器发送的随机标识由服务端以密钥做 HMAC 摘要后保存；服务端不保存原始标识、完整 IP、完整 User-Agent、搜索词或文章正文。托管服务商仍可能按前述说明处理常规网络访问日志。事件记录计划保留不超过 90 天，之后清理；分析页面仅供经过后台认证的运营者查看汇总数据。</p>
+<p>如果浏览器开启“请勿跟踪”（Do Not Track）或“全球隐私控制”（GPC），页面不会启用这组热榜统计；你也可以不使用热榜，或清除浏览器中本站的本地数据以重置实验分组。埋点接口不可用时，热榜仍可正常使用。</p>
+
 <h2>儿童</h2>
 <p>本站不面向 13 岁以下儿童，也不会有意收集儿童的个人信息。</p>
 
@@ -77,7 +83,7 @@ nav.legal{margin-top:3em;padding-top:1em;border-top:1px solid #DDE1DF;font-size:
 
 <h2>政策变更</h2>
 <p>如果本站增加了新的功能（例如统计工具或评论），会先更新本页，并修改页首的“最后更新”日期。</p>
-<div class="en" lang="en"><strong>Privacy.</strong> This is a static site: no accounts, no forms, no cookies set by the site, no ads and no third-party analytics. Settings, reading progress, files you add and a folder you connect are stored only in your own browser and are never sent to the server. The host (Vercel) keeps ordinary server logs (IP address, user agent, pages, time); fonts are loaded from Google Fonts, so your browser contacts Google. If the public directory is enabled, opening it requests a data file from GitHub Pages and loads cover pictures straight from the listed sites (without a referrer), so those hosts see your IP address; links you save from it stay in your browser. If you subscribe to somebody's feed, the address is sent to the directory's update service, which reads the public feed for you (a page cannot read another site's feed itself) and returns titles, summaries and links; it keeps no list of subscriptions and nothing it read, and your subscriptions and their articles stay in your own browser. Hidden items are not published.</div>
+<div class="en" lang="en"><strong>Privacy.</strong> The site does not require an account and does not use third-party analytics. The hot-list page may send anonymous impression, click, and foreground-time events to our directory service to assess content and page layouts. A random browser identifier keeps A/B assignment stable; the service stores only an HMAC digest, not that raw identifier. Events are limited to random IDs, content/platform and experiment identifiers, language, coarse device class, optional country code, timestamps, and active seconds. We do not send search terms or article text, and the analytics service does not store full IP addresses or full user-agent strings. Hosting providers may still process ordinary request logs as described above. Event data is planned to be retained for no more than 90 days and is available only as aggregate analytics to authenticated operators. Clearing this site's browser data resets the experiment assignment. Analytics is not initialized when your browser sends Do Not Track or Global Privacy Control. If analytics is unavailable, the hot list continues to work. Settings, reading progress, files you add, and a folder you connect are otherwise stored only in your browser. Fonts are loaded from Google Fonts, so your browser contacts Google. If the public directory is enabled, opening it requests a data file from GitHub Pages and loads cover pictures straight from listed sites. Feed subscriptions are sent to the directory update service, which returns titles, summaries and links but does not retain your subscription list. Hidden items are not published.</div>
 <nav class="legal"><a href="/">首页</a> · <a href="/about.html">关于本站</a> · <a href="/privacy.html">隐私政策</a> · <a href="/terms.html">使用条款</a></nav>
 </main>
 </body>
