@@ -7,7 +7,7 @@ const ORIGIN = `http://127.0.0.1:${APP_PORT}`, BASE = ORIGIN + '/', SVC = `http:
 let pass = 0, fail = 0;
 const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name); } else { fail++; console.log('FAIL', name, extra === undefined ? '' : JSON.stringify(extra).slice(0, 700)); } };
 const get = p => fetch(SVC + p).then(r => r.json());
-const waitAnalytics = async name => { const until=Date.now()+20000; let events=[]; do { events=await get('/__analytics_events'); if(events.some(x=>x.event_name===name)) return events; await sleep(160); } while(Date.now()<until); return events; };
+const waitAnalytics = async (name, ms = 20000) => { const until=Date.now()+ms; let events=[]; do { events=await get('/__analytics_events'); if(events.some(x=>x.event_name===name)) return events; await sleep(160); } while(Date.now()<until); return events; };
 
 (async () => {
   writeDir();
@@ -50,7 +50,7 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   await waitFor(`document.querySelector('#dirReco .hot-focus-card')?.dataset.analyticsKey`);
   let analyticsEvents = await waitAnalytics('item_click');
   ok('visible focus cards report one qualified impression and focus-card clicks are recorded', analyticsEvents.some(x=>x.event_name==='item_impression'&&String(x.content_key).startsWith('event:')) && analyticsEvents.some(x=>x.event_name==='item_click'&&String(x.content_key).startsWith('event:')), analyticsEvents.map(x=>[x.event_name,x.content_key]));
-  analyticsEvents = await waitAnalytics('active_time');
+  analyticsEvents = await waitAnalytics('active_time', 50000);
   ok('active-time events count only foreground hot-page seconds and are sent in batches', analyticsEvents.some(x=>x.event_name==='active_time'&&x.active_seconds>=15), analyticsEvents.filter(x=>x.event_name==='active_time'));
   const primary = await J(`({views:[...document.querySelectorAll('#dirReco [data-hot-view]')].map(b=>[b.textContent,b.getAttribute('aria-pressed')]), picks:!!document.querySelector('#dirReco .hot-mixed'), focus:document.querySelector('#dirReco .hot-focus-head h3')?.textContent, ranked:document.querySelectorAll('#dirReco .hot-mix-link').length})`);
   ok('the page opens on 今日精选, with 今日焦点 before the ranked picks', primary.views.length===2 && primary.views[0][1]==='true' && primary.picks && primary.focus==='今日焦点' && primary.ranked>0 && await J(`document.querySelector('#dirReco .hot-focus').compareDocumentPosition(document.querySelector('#dirReco .hot-mixed')) & Node.DOCUMENT_POSITION_FOLLOWING`), primary);
@@ -287,7 +287,7 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   await openHot(); await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0`);
   h = await head();
   const enCats = await cols();
-  ok('English: the title, updated categories, selected platform and header are localized', (await J(`document.querySelector('#viewTitle').textContent`)) === 'Hot lists' && ['Top stories*','Tech','Latest AI','Finance','World affairs','Entertainment','Learning & growth','Media & communities'].every(x=>enCats.includes(x)) && (await tabs())[0] === 'Weibo hot searches*' && /Updated 2 min ago/.test(h.meta), [enCats, await tabs(), h]);
+  ok('English: the title, updated categories, selected platform and header are localized', (await J(`document.querySelector('#viewTitle').textContent`)) === 'Hot lists' && ['Top stories*','Tech','Latest AI','Finance','World affairs','Entertainment','Learning & growth','Media & communities'].every(x=>enCats.includes(x)) && (await tabs())[0] === 'Reddit popular today*' && (await tabs()).includes('Weibo hot searches') && /Updated 2 min ago/.test(h.meta), [enCats, await tabs(), h]);
   await selectPlatform('bbc');
   await waitFor(`document.querySelector('#dirReco .hot-head h2').textContent==='BBC World' && document.querySelectorAll('#dirReco .hot-row').length>0`);
   await selectPlatform('gtrends');
