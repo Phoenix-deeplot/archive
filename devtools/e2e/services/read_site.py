@@ -62,6 +62,9 @@ class H(BaseHTTPRequestHandler):
         p = self.path.split('?')[0]
         if p == '/__log':
             return self.send(200, json.dumps(LOG), 'application/json')
+        if p == '/__reset':                                           # (a test starts from an empty log: the requests of the tests before it are not its own)
+            LOG.clear()
+            return self.send(200, '{"ok":true}', 'application/json')
         if p in ('/blog/', '/blog'):
             return self.send(200, '<!doctype html><html><head><title>Excerpt Blog</title><link rel="alternate" type="application/rss+xml" href="/blog/feed.xml"></head><body><h1>Excerpt Blog</h1></body></html>')
         if p == '/blog/feed.xml':

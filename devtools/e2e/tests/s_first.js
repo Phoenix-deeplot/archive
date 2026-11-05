@@ -69,7 +69,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
 
   // ================================================ E/F. who is not new
   await visit('zh', `localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver','"2000-01-01"')`);
-  d = await dlg();
+  d = await dlg(); for (let i = 0; i < 20 && !d.open; i++) { await sleep(300); d = await dlg(); }          // (in a long run the page is slower to open it: wait for it, up to six seconds)
   ok('somebody back after an update gets the news only: "更新说明", no question, "知道了"', d.open && d.title === '更新说明' && d.news && d.close && !d.next && !d.ask, d);
   await J(`document.querySelector('#introDlg').close()`);
   await click('#introLink'); await sleep(400);

@@ -4,6 +4,7 @@ const BASE = 'http://127.0.0.1:8820/', SITE = 'http://127.0.0.1:8850';
 let pass = 0, fail = 0;
 const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name); } else { fail++; console.log('FAIL', name, extra === undefined ? '' : JSON.stringify(extra).slice(0, 500)); } };
 const log = async () => (await fetch(SITE + '/__log')).json();
+const resetLog = () => fetch(SITE + '/__reset').then(r => r.json());
 
 (async () => {
   const c = await connect(9444);
@@ -16,10 +17,12 @@ const log = async () => (await fetch(SITE + '/__log')).json();
     await J(`localStorage.setItem('archive.lang', JSON.stringify('${lang || 'zh'}'))` + (flags ? `; localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver', JSON.stringify('2026-10-22'))` : `; localStorage.removeItem('archive.intro'); localStorage.removeItem('archive.ver')`));
     await c.goto(BASE, 0); await settle(2500);
   };
+  const waitFrame = async (re, ms = 15000) => { const t0 = Date.now(); for (;;) { const v = await J(`(()=>{ const f=document.querySelector('#frame'), b=f && f.contentDocument && f.contentDocument.body; return /${re}/.test(b ? b.textContent : ''); })()`); if (v || Date.now() - t0 > ms) return v; await sleep(250); } };
   const stubOpen = () => J(`window.__opened=[]; window.open=function(u){ window.__opened.push(u); return null; }; 0`);
   const card = title => `[...document.querySelectorAll('.card')].find(c=>c.textContent.includes(${JSON.stringify(title)}))`;
 
   // ------------------------------------------------ subscribe to a feed that carries excerpts only
+  await resetLog();
   await fresh('zh');
   await J(`document.querySelector('#addBtn').click()`); await settle(400);
   await J(`document.querySelector('[data-atab="sub"]').click(); document.querySelector('#fsUrl').value='${SITE}/blog/'; document.querySelector('#fsFind').click()`); await settle(3000);
@@ -41,8 +44,8 @@ const log = async () => (await fetch(SITE + '/__log')).json();
   const loading = await J(`({open:!document.querySelector('#reader').hidden, text:document.querySelector('#frame').contentDocument.body.textContent, newTab:document.querySelector('#readerNew').href})`);
   ok('the reader opens at once and says it is reading (with the original one click away)', loading.open && /正在读取原文/.test(loading.text) && loading.newTab === SITE + '/slow', loading);
   await c.shot(require('../paths').SHOTS + '/read_loading.png');
-  await settle(4500);
-  const slow = await J(`({h1:(document.querySelector('#frame').contentDocument.querySelector('h1')||{}).textContent, text:/Lead time is the gap/.test(document.querySelector('#frame').contentDocument.body.textContent), kept:(state.items.find(x=>x.title==='A slow article')||{}).content.length>300, hash:location.hash})`);
+  await waitFrame('Lead time is the gap');
+  const slow = await J(`({h1:(document.querySelector('#frame').contentDocument.querySelector('h1')||{}).textContent, text:/Lead time is the gap/.test(document.querySelector('#frame').contentDocument.body.textContent), kept:((state.items.find(x=>x.title==='A slow article')||{}).content||'').length>300, found:state.items.filter(x=>x.title==='A slow article').length, hash:location.hash, body:document.querySelector('#frame').contentDocument.body.textContent.slice(0,160)})`);
   ok('then it shows the article, keeps its text, and the address of the page is that of the reader', slow.h1 === 'A slow article' && slow.text && slow.kept && /^#read\//.test(slow.hash), slow);
   await c.shot(require('../paths').SHOTS + '/read_article.png');
   await J(`document.querySelector('#readerBack').click()`); await settle(500);
@@ -64,7 +67,7 @@ const log = async () => (await fetch(SITE + '/__log')).json();
   await J(`document.querySelector('#readerBack').click()`); await settle(400);
 
   // ------------------------------------------------ a network trouble is not a verdict
-  await J(`${card('Nobody listens here')}.querySelector('.card-title a').click()`); await settle(11000);
+  await J(`${card('Nobody listens here')}.querySelector('.card-title a').click()`); await waitFrame('读不了', 30000);
   const net = await J(`({text:document.querySelector('#frame').contentDocument.body.textContent, noread:(state.items.find(x=>x.title==='Nobody listens here')||{}).noread||null})`);
   ok('a site that cannot be reached is told, but not remembered as unreadable (it is tried again next time)', /读不了/.test(net.text) && net.noread === null, net);
   await J(`document.querySelector('#readerBack').click()`); await settle(400);
@@ -89,8 +92,11 @@ const log = async () => (await fetch(SITE + '/__log')).json();
 
   // ------------------------------------------------ the public directory: its articles are read in the page too
   await J(`(()=>{ const d=state.dirData; d.items.unshift({id:'zz1',url:'${SITE}/a/2',title:'目录里的一篇文章',summary:'s',image:'',date:'2026-10-20',lang:'en',shelf:'',type:'article',tags:[]},{id:'zz2',url:'https://video.example/v',title:'目录里的视频',summary:'v',image:'',date:'2026-10-19',lang:'en',shelf:'',type:'video',tags:[]}); document.querySelector('[data-space="dir"]').click(); })()`); await settle(800);
+  // (the directory opens on its discovery page now, which shows a picked few: the whole list, narrowed by the search box to the two entries added above, has their cards)
+  await J(`document.querySelector('#cats [data-dtype="all"]').click()`); await settle(500);
+  await J(`(()=>{ const i=document.querySelector('#q'); i.value='目录里的'; i.dispatchEvent(new Event('input',{bubbles:true})); })()`); await settle(700);
   await stubOpen();
-  await J(`${card('目录里的一篇文章')}.querySelector('.card-title a').click()`); await sleep(4500);
+  await J(`${card('目录里的一篇文章')}.querySelector('.card-title a').click()`); await waitFrame('Lead time is the gap');
   const dir = await J(`({open:!document.querySelector('#reader').hidden, text:/Lead time is the gap/.test(document.querySelector('#frame').contentDocument.body.textContent), star:!document.querySelector('#readerStar'), mark:!document.querySelector('#readerMark'), opened:window.__opened.length, hash:location.hash, kept:state.items.some(x=>x.id==='tmp:zz1')})`);
   ok('a directory article is read in the reader (nothing opened, nothing put on the shelf, no star or bookmark of its own)', dir.open && dir.text && dir.star && dir.mark && dir.opened === 0 && !dir.kept, dir);
   await J(`document.querySelector('#readerBack').click()`); await sleep(600);
