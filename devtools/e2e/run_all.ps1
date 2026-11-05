@@ -19,11 +19,6 @@ function Rig {                                                          # (the b
 # Failures that were there before and are not the page's fault. They still run (most of their checks are good); a failing line that matches is written as "known" and counted apart, so that a new failure is not lost among them.
 # One row: the test, a pattern for the line (the text of the check, or "no result" when the test does not finish), and why. Take a row out when it is fixed.
 $known = @(
-    @{ test = 's_read';   match = 'pages were asked for honestly'; why = 'the log of the reading site also holds what the tests before it asked for' },
-    @{ test = 's_read';   match = 'no result';                     why = 'stops where it looks for the card of a directory article it added: the page that opens has no such card (line 92)' },
-    @{ test = 's_reco';   match = 'a row: name linking';           why = 'the text of the made-up blog differs from what the check expects' },
-    @{ test = 's_reco';   match = 'an item the directory lists already'; why = 'the same' },
-    @{ test = 's_sync';   match = 'B: the collection, its member'; why = 'the name of the subscription differs from what the check expects' },
     @{ test = 's_mobile'; match = 'publication date';              why = 'a counter of the fake stat service left by a test before it (it passes on a fresh rig, or after /__stat_reset?off=0)' }
 )
 $all = 's_read', 's_lang', 's_starter', 's_mobile', 's_reco', 's_readerui', 's_backup', 's_text', 's_sync', 's_notes', 's_notes_doc', 's_first', 's_dir', 's_hot', 's_hotpage', 's_rich', 's_tips', 's_player', 's_player2', 's_listen', 's_focus', 's_more', 's_books', 's_bookcache', 's_bookreader', 's_bookcards', 's_booktrans', 's_bookpaged', 's_bookpage', 's_public_bar', 's_feedback', 's_group', 's_dirkeep', 's_music_core', 's_music_failover', 's_music_modes', 's_music_list', 's_swkeep'

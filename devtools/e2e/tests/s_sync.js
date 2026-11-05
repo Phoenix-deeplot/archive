@@ -70,7 +70,7 @@ const post = (p) => fetch(SVC + p, { method: 'POST' }).then(r => r.json());
   ok('B: connected (lower case, spaces: fine); all 5 entries are here', bItems.length === 5 && byId['local:t1'].t === '机密笔记甲' && byId['local:link:s1'].t === '收藏的链接戊', bItems);
   ok('B: the texts are here already (fetched after the sync), decrypted and unchanged', await b(`['local:t1','local:t2','local:t3'].every(id=>state.items.find(x=>x.id===id).data!==undefined) && /SECRET-BODY-1/.test(state.items.find(x=>x.id==='local:t1').data) && /SECRET-BODY-3/.test(state.items.find(x=>x.id==='local:t3').data)`));
   ok('B: the PDF is a list entry only: no content, marked', byId['local:t4'] && !byId['local:t4'].has && byId['local:t4'].nd, byId['local:t4']);
-  ok('B: the collection, its member and the subscription came', await b(`state.cols.map(c=>c.name+(c.feed?'*':'')).join()`) === '我的合集,示例博客*', await b(`state.cols.map(c=>c.name).join()`));
+  ok('B: the collection, its member and the subscription came', await b(`state.cols.map(c=>c.name+(c.feed?'*':'')).join()`) === '我的合集,blog*', await b(`state.cols.map(c=>c.name).join()`));
   ok('B: reading place, bookmark and star came', await b(`state.progress['local:t1'].pct===42 && state.marks['local:t1'][0].label==='开头' && state.flags['notes/guide/index.html'].starred===true`));
   ok('B: the card of the PDF says "仅书单"', await b(`[...document.querySelectorAll('.card')].some(c=>/PDF 书丁/.test(c.textContent) && /仅书单/.test(c.textContent))`));
   await b(`document.querySelector('.card[data-id="local:t4"] .card-title a').click()`); await settleB(800);
