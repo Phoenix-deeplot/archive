@@ -496,6 +496,7 @@ body.dir-listen .view-head p,body.dir-hot .view-head p{font-size:14px}
 .lp-hero-a .btn .icon{width:16px;height:16px}
 .lp-shelf{display:flex;gap:12px;overflow-x:auto;padding:2px 0 8px;scroll-snap-type:x proximity;scrollbar-width:none}
 .lp-shelf::-webkit-scrollbar{display:none}
+@media (hover:hover) and (pointer:fine){.lp-shelf{scrollbar-width:thin;scrollbar-color:var(--rule) transparent}.lp-shelf::-webkit-scrollbar{display:block;height:8px}.lp-shelf::-webkit-scrollbar-thumb{background:var(--rule);border-radius:4px}}          /* (a mouse has no finger to slide a row with: a thin bar shows that there is more, shift + wheel moves it) */
 .lp-gc{flex:0 0 112px;display:grid;gap:6px;border:0;background:none;padding:0;color:var(--ink);font:inherit;text-align:left;cursor:pointer;scroll-snap-align:start}
 .lp-gg .lp-gc{flex:none;width:auto}
 .lp-gcv{display:grid;place-items:center;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:hsl(var(--h) 45% 55% / .22);color:var(--ink)}
