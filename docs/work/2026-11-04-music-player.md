@@ -156,6 +156,6 @@ GET /api/listen?diag=1
 
 ## 4. 合并记录
 
-- 合并顺序：
-- 合并后的测试结果：
-- 删除的分支和 worktree：
+- 合并顺序（用户说“合并”，2026-11-04）：`claude/music-core`（F1，前端）先合，`dfa3086`；`claude/books-page` 后合（它处理了和这里在更新说明、新增文字行、测试清单上的三处冲突，两边都留）。`shelf-directory` 这边没有改动。B1（Codex 的 `codex/music-sources`，后端）和 F2（`claude/music-reco`）还没开始。
+- 合并后的测试结果：合并前在 `claude/music-core` 上跑全套，34 项里只有一处新失败——`s_music_modes` 的“随机播放时‘上一首’回到刚才那首”，偶发（四次里三次失败）。原因是个小缺陷：随机播放把所有歌放过一遍后，“预取下一首”调用 `plNextIdx` 时顺手把历史清掉，之后点上一首就退回列表里的上一首。改成换歌时才清历史（`plHistPush`），连跑六次全过，提交 `1636334`。其余 33 项全绿，4 条已知的旧失败（`s_read` 第 92 行、`s_reco` 两条、`s_sync` 的 B）照旧。合并 `books-page` 之后又在合并后的树上跑了一次全套 35 项，除已知的 4 条外全绿（`s_lang` 因为电脑中途休眠超时，单独重跑 13 项全过）。
+- 删除的分支和 worktree：`claude/music-core`、`E:\Ztree\wt\claude-music-core`，预览服务（8830、8860–8863、8870）已停。
