@@ -467,7 +467,7 @@ body.dir-listen .view-head p,body.dir-hot .view-head p{font-size:14px}
 .lp-region{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border:1px solid var(--rule);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;font-size:13.5px;cursor:pointer}
 .lp-region .icon{width:16px;height:16px;color:var(--muted)}
 .lp-tabs{display:flex;gap:6px;margin:0}
-.lp-tab{flex:none;min-height:36px;padding:0 14px;border:1px solid var(--rule);border-radius:999px;background:var(--surface);color:var(--ink);font:inherit;font-size:13.5px;cursor:pointer;white-space:nowrap}
+.lp-tab{flex:none;min-height:40px;padding:0 14px;border:1px solid var(--rule);border-radius:999px;background:var(--surface);color:var(--ink);font:inherit;font-size:13.5px;cursor:pointer;white-space:nowrap}
 .lp-tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:500}
 .lp-regs{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:8px 0 4px;-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent);padding-right:24px}
 .lp-regs::-webkit-scrollbar{display:none}
@@ -477,7 +477,7 @@ body.dir-listen .view-head p,body.dir-hot .view-head p{font-size:14px}
 .lp-h{margin:18px 0 8px;font-family:var(--sans);font-size:15px;font-weight:600}
 .lp-secbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0 4px}
 .lp-secbar .lp-h{margin:0}
-.lp-refresh{width:36px;height:36px;color:var(--muted)}
+.lp-refresh{width:40px;height:40px;color:var(--muted)}
 .lp-shelf .lp-sc{flex:0 0 128px;scroll-snap-align:start}
 .lp-myv{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:var(--surface)!important;border:1px solid var(--rule)}
 .lp-myv i{display:grid;color:var(--muted)}
@@ -6603,7 +6603,7 @@ function renderDirBar(){                                                        
   const bkp=booksPage(); $('#dTabsMode').hidden=bkp;
   if(bkp){                                                                                         // the picked books: the genres are the tabs
     const have=new Set(dirList('genre').map(bookGenre));
-    $('#dTabs').innerHTML = have.size>=2 || state.dGenre ? `<button type="button" role="tab" data-bgenre="" aria-selected="${!state.dGenre}">${esc(t('all'))}</button>`+BOOK_GENRES.filter(g=>have.has(g) || g===state.dGenre).map(g=>`<button type="button" role="tab" data-bgenre="${g}" aria-selected="${state.dGenre===g}">${esc(t('bgn_'+g))}</button>`).join('') : '';
+    $('#dTabs').innerHTML = !state.dList && (have.size>=2 || state.dGenre) ? `<button type="button" role="tab" data-bgenre="" aria-selected="${!state.dGenre}">${esc(t('all'))}</button>`+BOOK_GENRES.filter(g=>have.has(g) || g===state.dGenre).map(g=>`<button type="button" role="tab" data-bgenre="${g}" aria-selected="${state.dGenre===g}">${esc(t('bgn_'+g))}</button>`).join('') : '';
     $('#dSubs').hidden=true; $('#dSubs').innerHTML='';
     return;
   }

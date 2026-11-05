@@ -1,5 +1,5 @@
-// e2e: the public directory page: the dropdown on BOTH sides (programs on the platform side, categories on the domain side, ticks narrow the page), domain tabs (an ARTICLE belongs to its own domain),
-// platform tabs (names of at most 7 characters, wrapping), the home page (today: a hero and two beside it; picks in a waterfall; programs worth following; the latest), the cards (a Xiaohongshu-style waterfall,
+// e2e: the public directory page: ONE row on a content page (columns | platforms and their tabs that slide sideways; no drop-down of programs or columns any more), domain tabs (an ARTICLE belongs to its own domain),
+// platform tabs (names of at most 7 characters, in one row), the home page (today: a hero and two beside it; picks in a waterfall; programs worth following; the latest), the cards (a Xiaohongshu-style waterfall,
 // a cover of its own without a picture, the summary / the heart / the eye / the flame on every card), the list / card button, like / dislike, the anonymous counters, a phone, English
 const { connect, sleep } = require('../cdp');
 const { writeDir } = require('../dir_fixture.js');
@@ -25,12 +25,7 @@ const N = 37;                                     // the fixture's entries
   const h2s = () => J(`[...document.querySelectorAll('#dirReco h2')].filter(h=>!h.closest('.ls')).map(h=>h.childNodes[0].textContent)`);
   const clickTab = async k => { await J(`document.querySelector('#dTabs [data-dtab="${k}"]').click()`); await sleep(350); };
   const mode = async m => { await J(`document.querySelector('[data-dtabs="${m}"]').click()`); await sleep(300); };
-  const openPanel = async () => { if (await J(`document.querySelector('#dPick').hidden`)) { await J(`document.querySelector('#dPickBtn').click()`); await sleep(300); } };
-  const closePanel = async () => { await J(`document.querySelector('#dPickDone').click()`); await sleep(200); };
-  const tick = async id => { await J(`(()=>{ const i=document.querySelector('#dPickList [data-pick="${id}"]'); i.checked=!i.checked; i.dispatchEvent(new Event('change',{bubbles:true})); })()`); await sleep(300); };
-  const tickT = async id => { await J(`(()=>{ const i=document.querySelector('#dPickList [data-pickt="${id}"]'); i.checked=!i.checked; i.dispatchEvent(new Event('change',{bubbles:true})); })()`); await sleep(300); };
-  const rows = () => J(`[...document.querySelectorAll('#dPickList .dp-row')].map(r=>r.querySelector('.dp-name').textContent)`);
-  const groupsOf = () => J(`[...document.querySelectorAll('#dPickList .dp-group')].map(g=>g.textContent)`);
+  const picked = () => J(`({p:LS.get('dirPick',[]).length, t:LS.get('dirPickT',[]).slice().sort().join()})`);
   const mixIds = () => J(`[...document.querySelectorAll('#dirReco .dr-mix .card')].map(x=>x.dataset.did)`);
   const aboveIds = () => J(`[...document.querySelectorAll('#dirReco .card')].map(x=>x.dataset.did)`);
   const aboveN = () => J(`state.dirAbove ? state.dirAbove.size : 0`);
@@ -50,7 +45,7 @@ const N = 37;                                     // the fixture's entries
   ok('today’s three are of three different programs', (await J(`new Set(${JSON.stringify(today3)}.map(id=>state.dirData.items.find(i=>i.id===id).shelf)).size`)) === 3, today3);
   const geo = await J(`(()=>{ const t=document.querySelector('#dirReco .today'), h=t.querySelector('.hero').getBoundingClientRect(), s=[...t.querySelectorAll('.tcard')].map(x=>x.getBoundingClientRect()); return {cols:getComputedStyle(t).gridTemplateColumns.split(' ').length, hh:Math.round(h.height), hw:Math.round(h.width), sw:s.map(r=>Math.round(r.width)), left:h.left<s[0].left, sameTop:Math.abs(h.top-s[0].top)<2, titleColor:getComputedStyle(t.querySelector('.hero .card-title a')).color, bm:[...t.querySelectorAll('.bm')].map(b=>[Math.round(b.getBoundingClientRect().width),Math.round(b.getBoundingClientRect().height)])}; })()`);
   ok('the hero is on the left and compact (two columns, about 200px tall, wider than the two beside it), its title is white on the picture, every bookmark is ≥ 44px', geo.cols === 2 && geo.hh >= 190 && geo.hh <= 230 && geo.hw > geo.sw[0] * 1.4 && geo.left && geo.sameTop && geo.titleColor === 'rgb(255, 255, 255)' && geo.bm.every(([w, h]) => w >= 44 && h >= 44), geo);
-  ok('nothing on the page scrolls sideways: no horizontal scroller on the home page, the tabs wrap', await J(`[...document.querySelectorAll('#dirReco *, #dTabs, #dirBar')].every(e=>{ const o=getComputedStyle(e).overflowX; return o!=='auto' && o!=='scroll'; })`));
+  ok('nothing on the page scrolls sideways: no horizontal scroller on the home page (the row of tabs of a content page slides on purpose, see below)', await J(`[...document.querySelectorAll('#dirReco *')].every(e=>{ const o=getComputedStyle(e).overflowX; return o!=='auto' && o!=='scroll'; })`));
   const mix = await mixIds();
   const mixInfo = await J(`(()=>{ const ids=${JSON.stringify(mix.slice(0, 6))}; const its=ids.map(id=>state.dirData.items.find(i=>i.id===id)); const per={}; its.forEach(i=>per[i.shelf]=(per[i.shelf]||0)+1); return {n:ids.length, uniq:new Set(${JSON.stringify(mix)}).size, all:${mix.length}, maxPerShelf:Math.max(...Object.values(per)), topics:new Set(its.flatMap(i=>i.topics)).size}; })()`);
   ok('the picks: 6 different cards (two whole rows of three), at most 2 of any one program, 3+ domains', mixInfo.n === 6 && mixInfo.uniq === 6 && mixInfo.all === 6 && mixInfo.maxPerShelf <= 2 && mixInfo.topics >= 3, mixInfo);
@@ -137,15 +132,11 @@ const N = 37;                                     // the fixture's entries
   await J(`document.querySelector('#viewBtn').click()`); await sleep(300);
   await clickTab('');
   await mode('plat');
-  ok('platform side: the FIXED platforms first (GitHub 7, 微博 6, YouTube 2, 知乎 2, Hacker News 2: names cut to 7 characters), then the five busiest DYNAMIC ones (an independent site is a platform of its own, named by its program; what readers shared is "其他"), the rest behind "更多 1 ▾"', (await tabs()).join('|') === '全部37|GitHub7|微博6|YouTube2|知乎2|Hacker…2|供应链周刊4|Money …4|Tech N…3|其他3|数码评测周报2|更多 1 ▾', await tabs());
-  await J(`document.querySelector('#dTabs [data-dplatmore]').click()`); await sleep(350);
-  ok('"更多" shows the other dynamic platform (每日新闻简报 2) and turns into "收起 ▴"; again, and it is folded', (await tabs()).includes('每日新闻简报2') && (await tabs()).slice(-1)[0] === '收起 ▴');
-  await J(`document.querySelector('#dTabs [data-dplatmore]').click()`); await sleep(350);
-  ok('and folded again', !(await tabs()).includes('每日新闻简报2') && (await tabs()).slice(-1)[0] === '更多 1 ▾');
+  ok('platform side: the FIXED platforms first (GitHub 7, 微博 6, YouTube 2, 知乎 2, Hacker News 2: names cut to 7 characters), then ALL the dynamic ones (an independent site is a platform of its own, named by its program; what readers shared is "其他"): one row, nothing behind "更多"', (await tabs()).join('|') === '全部37|GitHub7|微博6|YouTube2|知乎2|Hacker…2|供应链周刊4|Money …4|Tech N…3|其他3|数码评测周报2|每日新闻简报2', await tabs());
   ok('a cut name keeps its full name as the tooltip', await J(`[...document.querySelectorAll('#dTabs button')].find(b=>b.textContent.startsWith('Hacker')).title`) === 'Hacker News');
   ok('every tab label is at most 7 characters (plus its number)', await J(`[...document.querySelectorAll('#dTabs button')].every(b=>[...b.firstChild.textContent].length<=7)`));
-  const wrap = await J(`(()=>{ const t=document.querySelector('#dTabs'); return {wrap:getComputedStyle(t).flexWrap, ox:getComputedStyle(t).overflowX, fits:t.scrollWidth<=t.clientWidth+1}; })()`);
-  ok('the tabs wrap onto more lines instead of scrolling sideways', wrap.wrap === 'wrap' && wrap.ox === 'visible' && wrap.fits, wrap);
+  const wrap = await J(`(()=>{ const t=document.querySelector('#dTabs'); return {wrap:getComputedStyle(t).flexWrap, ox:getComputedStyle(t).overflowX, bar:document.documentElement.scrollWidth<=document.documentElement.clientWidth+1}; })()`);
+  ok('the tabs are ONE row that slides sideways (no wrapping, no folding), and the page itself does not', wrap.wrap === 'nowrap' && wrap.ox === 'auto' && wrap.bar, wrap);
   await clickTab('plat:zhihu');
   ok('the 知乎 tab: the two articles of a Zhihu column', (await titles()).join() === '知乎专栏一,知乎专栏二', await titles());
   await clickTab('plat:weibo');
@@ -154,77 +145,35 @@ const N = 37;                                     // the fixture's entries
   const mixP = await J(`(()=>{ const ids=[...document.querySelectorAll('#dirReco .dr-mix .card')].slice(0,6).map(x=>x.dataset.did); const its=ids.map(id=>state.dirData.items.find(i=>i.id===id)); return {n:ids.length, plats:new Set(its.map(i=>i.plat)).size}; })()`);
   ok('on the platform side the picks mix the platforms (the first 6 cards of 5 or more platforms)', mixP.n === 6 && mixP.plats >= 5, mixP);
 
-  // ---------------------------------------------- the dropdown, platform side: the programs
-  ok('platform side: the dropdown button is "节目", no number yet; the panel is closed', await J(`!document.querySelector('#dPickBtn').hidden && document.querySelector('#dPickBtn').textContent.trim().startsWith('节目') && document.querySelector('#dPickN').hidden && document.querySelector('#dPick').hidden`));
-  await openPanel();
-  const gs = await groupsOf();
-  ok('the panel lists every program (13), grouped by platform, blogs and sites last', (await rows()).length === 13 && gs.includes('GitHub') && gs.includes('微博') && gs.includes('Hacker News') && gs.slice(-1)[0] === '博客与网站', [await rows(), gs]);
-  ok('without counters the chips are 全部 and 站长推荐 only', await J(`[...document.querySelectorAll('#dPickViews button')].map(b=>b.textContent).join('|')`) === '全部|站长推荐');
-  await J(`(()=>{ const q=document.querySelector('#dPickQ'); q.value='微博'; q.dispatchEvent(new Event('input',{bubbles:true})); })()`); await sleep(250);
-  ok('the panel’s search narrows the programs', (await rows()).join() === '微博热搜', await rows());
-  await J(`(()=>{ const q=document.querySelector('#dPickQ'); q.value=''; q.dispatchEvent(new Event('input',{bubbles:true})); })()`); await sleep(250);
-  await tick('blogA'); await tick('ytC');
-  ok('ticking two programs: the button shows 2, only their 6 entries are listed, the home page steps aside, a chip says so', await J(`document.querySelector('#dPickN').textContent`) === '2' && (await titles()).length === 6 && await J(`document.querySelector('#dirReco').hidden`) && await J(`!!document.querySelector('#viewSub [data-clear="dpick"]')`), [await titles(), await J(`document.querySelector('#dPickN').textContent`)]);
-  ok('the tabs now count only what is ticked: YouTube 2, blogs and sites 4', (await tabs()).join('|') === '全部6|YouTube2|供应链周刊4', await tabs());
-  await closePanel();
-  ok('the choice is kept in this browser', await J(`LS.get('dirPick',[]).sort().join()`) === 'blogA,ytC');
-  await c.goto(BASE, 0); await settle(2500); await toDir();
-  ok('after a reload the platform side still shows only those two programs', (await titles()).length === 6 && await J(`document.querySelector('#dPickN').textContent`) === '2');
-  await mode('topic');
-  ok('on the domain side the ticked PROGRAMS do not apply (that side has its own dropdown, of columns): the home page, no chip, the button is "栏目" with no number', await J(`!document.querySelector('#dirReco').hidden && !document.querySelector('#viewSub [data-clear="dpick"]') && document.querySelector('#dPickBtn').textContent.trim().startsWith('栏目') && document.querySelector('#dPickN').hidden`));
-  await mode('plat');
-  await J(`document.querySelector('#viewSub [data-clear="dpick"]').click()`); await sleep(300);
-  ok('the chip takes the choice away (everything again, the home page is back)', await J(`!document.querySelector('#dirReco').hidden && document.querySelector('#dPickN').hidden`));
-  await clickTab('plat:github'); await openPanel();
-  ok('inside a platform tab the panel lists only that platform’s programs, flat', (await rows()).sort().join() === ['GitHub Trending（今日）', 'Repo Docs'].sort().join() && (await groupsOf()).length === 0, [await rows(), await groupsOf()]);
-  await tick('hotgh');
-  ok('ticking one program of the tab: only its 5 entries; the tab counts are about the ticked', (await titles()).length === 5 && (await tabs()).join('|') === '全部5|GitHub5', [await titles(), await tabs()]);
-  await J(`document.querySelector('#dPickClear').click()`); await sleep(300);
-  ok('"清除" takes all ticks away', await J(`LS.get('dirPick',[]).length===0 && document.querySelector('#dPickN').hidden`));
-  await closePanel(); await clickTab('');
-  await openPanel(); await tick('blogA'); await tick('ytC'); await closePanel();
-  await clickTab('plat:youtube'); await openPanel();
-  ok('a ticked program that is not in the tab is kept in view, under "已选（不在当前分类里）"', (await groupsOf()).includes('已选（不在当前分类里）') && (await rows()).includes('Some Channel') && (await rows()).includes('供应链周刊'), [await groupsOf(), await rows()]);
-  await J(`document.querySelector('#dPickClear').click()`); await sleep(300);
-  await closePanel(); await clickTab('');
+  // ---------------------------------------------- the picker of programs and of columns is gone: what an older version ticked is kept as an interest and hides nothing
+  ok('there is no dropdown any more: no "节目" / "栏目" button, no panel, no backdrop, no "更多"', await J(`!document.querySelector('#dPickBtn') && !document.querySelector('#dPick') && !document.querySelector('#dPickBack') && !document.querySelector('#dTabsMore')`));
+  await J(`localStorage.setItem('archive.dirPick', JSON.stringify(['blogA','ytC']))`); await c.goto(BASE, 0); await settle(2500); await toDir();
+  ok('programs ticked by an older version hide nothing: the home page is there and no chip says "已选"', await J(`!document.querySelector('#dirReco').hidden && !document.querySelector('#viewSub [data-clear="dpick"]')`));
+  await mode('plat'); await clickTab('plat:youtube');
+  ok('and a platform tab shows all of its entries (YouTube 2, not only the ticked program)', (await titles()).length === 2, await titles());
+  await clickTab(''); await mode('topic');
+  await J(`localStorage.removeItem('archive.dirPick')`);
 
-  // ---------------------------------------------- the dropdown, domain side: the categories
-  await mode('topic');
-  ok('domain side: the dropdown is there too, "栏目", closed, no number', await J(`!document.querySelector('#dPickBtn').hidden && document.querySelector('#dPickBtn').textContent.trim().startsWith('栏目') && document.querySelector('#dPickN').hidden && document.querySelector('#dPick').hidden`));
-  await openPanel();
-  const cats = await rows();
-  ok('the panel lists the columns that have articles, not programs; the search box is for columns', cats.join('|') === 'AI 与科技|全球正在发生|财经与商业|学习与研究|视频与创作者|读书与深度' && (await J(`document.querySelector('#dPickQ').placeholder`)) === '搜索栏目' && (await J(`document.querySelector('#dPickList .dp-row .dp-meta').textContent`)) === '17 篇', cats);
-  ok('the first is the biggest (AI 与科技), each row says how many articles', cats[0] === 'AI 与科技', cats);
-  await J(`(()=>{ const q=document.querySelector('#dPickQ'); q.value='财经'; q.dispatchEvent(new Event('input',{bubbles:true})); })()`); await sleep(250);
-  ok('the search narrows the columns', (await rows()).join() === '财经与商业', await rows());
-  await J(`(()=>{ const q=document.querySelector('#dPickQ'); q.value=''; q.dispatchEvent(new Event('input',{bubbles:true})); })()`); await sleep(250);
-  await tickT('tech'); await tickT('biz');
-  const tk = await J(`({n:document.querySelector('#dPickN').textContent, sum:document.querySelector('#dPickSum').textContent, home:document.querySelector('#dirReco').hidden, chip:(document.querySelector('#viewSub [data-clear="dpick"]')||{}).textContent, saved:LS.get('dirPickT',[]).sort().join()})`);
-  ok('ticking AI 与科技 and 财经与商业: the button shows 2, the footer says so, the home page stays (it becomes the reader’s own), a chip says so, the choice is saved', tk.n === '2' && /已选 2 个栏目/.test(tk.sum) && !tk.home && /已选 2 个栏目/.test(tk.chip) && tk.saved === 'biz,tech', tk);
-  ok('the page shows the articles of both (17 + 5 = 22) and the tabs only those two columns; what the sections above show is not repeated in the list', (await titles()).length === 22 - await aboveN() && (await tabs()).join('|') === '全部22|AI 与科技17|财经与商业5', [await titles(), await tabs(), await aboveN()]);
-  ok('the reader’s own home: today, one small section of each ticked column (3 cards, "更多 ›"), the programs of those columns, the latest', (await h2s()).join('|') === '今日 3 件值得看|继续探索|AI 与科技|财经与商业|值得订阅|最新更新' && await J(`[...document.querySelectorAll('#dirReco .dr-col')].every(s=>s.querySelectorAll('.card').length===3 && !!s.querySelector('[data-dr-colmore]'))`), await h2s());
-  await closePanel();
-  await c.goto(BASE, 0); await settle(2500); await toDir();
-  ok('after a reload the domain side still shows only the ticked columns', (await titles()).length === 22 - await aboveN() && await J(`document.querySelector('#dPickN').textContent`) === '2');
+  // ---------------------------------------------- columns ticked once (the first visit's question) are an interest: the home is the reader's own, the tabs and the list are everything
+  await J(`localStorage.setItem('archive.dirPickT', JSON.stringify(['tech','biz']))`); await c.goto(BASE, 0); await settle(2500); await toDir();
+  ok('two columns as interests: the home page is the reader\'s own (today, one small section of each, "更多 ›", the programs of those columns, the latest)', (await h2s()).join('|') === '今日 3 件值得看|继续探索|AI 与科技|财经与商业|值得订阅|最新更新' && await J(`[...document.querySelectorAll('#dirReco .dr-col')].every(s=>s.querySelectorAll('.card').length===3 && !!s.querySelector('[data-dr-colmore]'))`), await h2s());
+  ok('...but the tabs are all six columns and the list is not narrowed (no "已选 2 个栏目" chip)', (await tabs()).join('|') === '全部37|AI 与科技17|学习与研究2|财经与商业5|视频与创作者2|读书与深度1|全球正在发生8' && (await titles()).length === Math.min(24, N - await aboveN()) && await J(`!document.querySelector('#viewSub [data-clear="dpick"]')`), [await tabs(), await titles(), await aboveN()]);
   await J(`document.querySelector('#dirReco [data-dr-colmore="tech"]').click()`); await settle(400);
   ok('"更多 ›" of a section opens that column (17 articles)', await J(`state.dTab`) === 'col:tech' && (await titles()).length === 17, await titles());
   const scope = await J(`({chips:[...document.querySelectorAll('#viewSub .chip')].map(x=>x.textContent.replace('✕','').trim()), home:!!document.querySelector('#viewSub [data-clear="dhome"]')})`);
-  ok('one line says where you are (栏目：AI 与科技, and the ticked columns) and no "← 回到首页" button', !scope.home && scope.chips.some(x => x === '栏目：AI 与科技') && scope.chips.some(x => /已选 2 个栏目/.test(x)), scope);
+  ok('one line says where you are (栏目：AI 与科技), nothing about ticks, and no "← 回到首页" button', !scope.home && scope.chips.some(x => x === '栏目：AI 与科技') && !scope.chips.some(x => /已选/.test(x)), scope);
   await J(`document.querySelector('#dSubs [data-dsub="dev"]').click()`); await sleep(350);
   ok('inside the column, the domain is on the line too (领域：编程, 7 articles)', (await titles()).length === 7 && await J(`[...document.querySelectorAll('#viewSub .chip')].some(x=>x.textContent.includes('领域：编程'))`));
   await J(`document.querySelector('#cats [data-dbrowse="0"]').click()`); await settle(400);
-  ok('the sidebar’s "发现" clears the column, the domain and the rest at once (the ticked columns stay): the home page is back', await J(`!state.dTab && !state.dSub && !document.querySelector('#dirReco').hidden && !document.querySelector('#viewSub [data-clear="dhome"]') && state.dPickT.size===2`));
+  ok('the sidebar’s "发现" clears the column, the domain and the rest at once (the interests stay): the home page is back', await J(`!state.dTab && !state.dSub && !document.querySelector('#dirReco').hidden && !document.querySelector('#viewSub [data-clear="dhome"]') && state.dPickT.size===2`));
   await clickTab('col:biz');
-  ok('a tab inside the ticked ones narrows further', (await titles()).length === 5, await titles());
+  ok('a column tab narrows to its 5 articles', (await titles()).length === 5, await titles());
   await clickTab('');
   await mode('plat');
-  ok('on the platform side the ticked columns do not apply (everything, the home page), the button is "节目" again', await J(`!document.querySelector('#dirReco').hidden && document.querySelector('#dPickBtn').textContent.trim().startsWith('节目') && document.querySelector('#dPickN').hidden`));
+  ok('on the platform side the same interests do not change the page (everything, the home page)', await J(`!document.querySelector('#dirReco').hidden`));
   await mode('topic');
-  await J(`document.querySelector('#viewSub [data-clear="dpick"]').click()`); await sleep(300);
-  ok('the chip takes the columns away (the home page is back)', await J(`!document.querySelector('#dirReco').hidden && document.querySelector('#dPickN').hidden && LS.get('dirPickT',[]).length===0`));
-  await openPanel(); await tickT('world'); await J(`document.querySelector('#dPickClear').click()`); await sleep(300);
-  ok('"清除" in the panel takes the columns away too', await J(`LS.get('dirPickT',[]).length===0 && document.querySelector('#dPickN').hidden`));
-  await closePanel();
+  await J(`localStorage.removeItem('archive.dirPickT')`); await c.goto(BASE, 0); await settle(2500); await toDir();
+
 
   // a first visit: the question, the moods, the interests
   await fresh('zh', true);
@@ -284,12 +233,7 @@ const N = 37;                                     // the fixture's entries
   ok('in rows the numbers are on the line under the title (♥ is a button there too)', await J(`(()=>{ const c=document.querySelector('#grid .card[data-did="a1aaaaaaa1"]'); return !!c.querySelector('.xmeta .cstat.heart') && [...c.querySelectorAll('.xmeta .cstat:not(.fire):not(.heart)')].map(x=>x.textContent).join()==='40'; })()`));
   await J(`document.querySelector('#viewBtn').click()`); await sleep(300);
   await clickTab('');
-  await mode('plat'); await openPanel();
-  ok('now the panel offers the chips 全部 / 站长推荐 / 热门', await J(`[...document.querySelectorAll('#dPickViews button')].map(b=>b.textContent).join('|')`) === '全部|站长推荐|热门');
-  await J(`document.querySelector('#dPickViews [data-dv="hot"]').click()`); await sleep(300);
-  ok('"热门": only what has heat, hottest first', (await titles())[0] === 'Tech two' && (await titles()).length >= 4, await titles());
-  await J(`document.querySelector('#dPickViews [data-dv="all"]').click()`); await sleep(300);
-  await closePanel(); await mode('topic');
+  await mode('topic');
 
   // reading and liking in the reader
   await J(`document.querySelector('.card[data-did="a2aaaaaaa2"] .card-title a').click()`); await settle(2200);
@@ -336,13 +280,12 @@ const N = 37;                                     // the fixture's entries
   const ph0 = await J(`(()=>{ const h=document.querySelector('#dirReco .hero').getBoundingClientRect(); return {over:document.documentElement.scrollWidth-document.documentElement.clientWidth, bar:document.querySelector('#dirBar').offsetParent!==null, heroTop:Math.round(h.top), vh:innerHeight, viewBtn:getComputedStyle(document.querySelector('#viewBtn')).display, today:getComputedStyle(document.querySelector('#dirReco .today')).gridTemplateColumns.split(' ').length}; })()`);
   ok('phone: the discovery page has no toolbar, so the hero is on the first screen; no sideways scroll; today is one column; the card / list button is there', ph0.over <= 0 && !ph0.bar && ph0.heroTop < ph0.vh * 0.6 && ph0.today === 1 && ph0.viewBtn !== 'none', ph0);
   await J(`document.querySelector('#dirReco [data-dr-browse]').click()`); await settle(500);
-  const ph = await J(`(()=>{ const t=document.querySelector('#dTabs'), more=document.querySelector('#dTabsMore'); return {over:document.documentElement.scrollWidth-document.documentElement.clientWidth, folded:t.classList.contains('folded'), tabsH:Math.round(t.getBoundingClientRect().height), more:!more.hidden && more.textContent}; })()`);
-  ok('phone, the whole directory: no sideways scroll; the column tabs are two lines with "更多"', ph.over <= 0 && ph.folded && ph.tabsH <= 110 && /更多/.test(ph.more), ph);
-  const tgt = await J(`[...document.querySelectorAll('#dTabs button, #dTabsMode button, #dPickBtn, #dTabsMore')].filter(b=>b.offsetParent!==null).map(b=>Math.round(b.getBoundingClientRect().height))`);
-  ok('phone: the tabs, the 栏目 / 平台 switch, the dropdown button and "更多" are at least 44px tall', tgt.length >= 5 && tgt.every(h => h >= 44), tgt);
-  await J(`document.querySelector('#dTabsMore').click()`); await sleep(300);
-  ok('"更多" shows every domain (the tabs wrap onto more lines), "收起" folds them again', await J(`!document.querySelector('#dTabs').classList.contains('folded') && /收起/.test(document.querySelector('#dTabsMore').textContent) && document.querySelector('#dTabs').getBoundingClientRect().height>90`));
-  await J(`document.querySelector('#dTabsMore').click()`); await sleep(300);
+  const ph = await J(`(()=>{ const t=document.querySelector('#dTabs'); return {over:document.documentElement.scrollWidth-document.documentElement.clientWidth, wrap:getComputedStyle(t).flexWrap, ox:getComputedStyle(t).overflowX, tabsH:Math.round(t.getBoundingClientRect().height), slides:t.scrollWidth>t.clientWidth}; })()`);
+  ok('phone, the whole directory: no sideways scroll of the page; the column tabs are ONE row that slides (not two lines, no "更多"), and it is one line high', ph.over <= 0 && ph.wrap === 'nowrap' && ph.ox === 'auto' && ph.tabsH <= 60 && ph.slides, ph);
+  const tgt = await J(`[...document.querySelectorAll('#dTabs button, #dTabsMode button')].filter(b=>b.offsetParent!==null).map(b=>Math.round(b.getBoundingClientRect().height))`);
+  ok('phone: the tabs and the 栏目 / 平台 switch are at least 40px tall', tgt.length >= 5 && tgt.every(h => h >= 40), tgt);
+  const tools = await J(`(()=>{ const r=e=>e.getBoundingClientRect(), line=document.querySelector('#dirBar .dir-line'), box=document.querySelector('#ctlBox'), ids=[...box.children].filter(e=>e.offsetParent!==null).map(e=>e.id); return {inLine:!!box && line.contains(box), ids, tools:getComputedStyle(document.querySelector('#stTools')).display, panel:getComputedStyle(document.querySelector('#flPanel')).display, barW:Math.round(r(line).width), rightEdge:Math.round(r(box).right), vw:innerWidth, bar:Math.round(r(document.querySelector('header.top')).height)}; })()`);
+  ok('phone: the sort button, the language and the cards / rows button are at the right end of the same line (the language on the whole list), there is no row of tools and no filter panel, and the head is short', tools.inLine && tools.ids.join() === 'langFilter,sortBtn,viewBtn' && tools.tools === 'none' && tools.panel === 'none' && tools.rightEdge <= tools.vw && tools.bar <= 125, tools);
   await J(`document.querySelector('#cats [data-dbrowse="0"]').click()`); await settle(500);                  // (back to the discovery page: its cards are looked at next)
   const pr = await J(`(()=>{ const g=document.querySelector('#dirReco .dr-mix'), cs=[...g.querySelectorAll('.xcard')], k=cs[0], r=x=>x.getBoundingClientRect(), bm=r(k.querySelector('.card-foot [data-d="save"]')), cv=r(k.querySelector('.xcover')); return {cols:getComputedStyle(g).gridTemplateColumns.split(' ').length, wide:Math.round(r(cs[0]).width), same:Math.abs(r(cs[0]).width-r(cs[1]).width)<1 && Math.abs(r(cs[0]).top-r(cs[1]).top)<1, square:Math.abs(cv.width-cv.height)<2, title:getComputedStyle(k.querySelector('.card-title')).fontSize, chipsHidden:[...document.querySelectorAll('#dirReco .xcard .chips')].every(x=>getComputedStyle(x).display==='none'), ext:document.querySelectorAll('#grid .ext, #dirReco .ext').length, inside:[...document.querySelectorAll('#dirReco .xcard, #grid .xcard')].every(x=>r(x).right<=innerWidth+0.5), bm:[Math.round(bm.width),Math.round(bm.height)], footIn:bm.right<=r(k).right+0.5, grid:getComputedStyle(document.querySelector('#grid')).gridTemplateColumns.split(' ').length}; })()`);
   ok('phone: the cards are two in a row, aligned (same width and top), square covers, the title is 14px+, no open arrow, a 44px bookmark inside the card, everything inside the screen', pr.cols === 2 && pr.same && pr.square && parseFloat(pr.title) >= 14 && pr.chipsHidden && pr.ext === 0 && pr.inside && pr.footIn && pr.grid === 2 && pr.bm[0] >= 44 && pr.bm[1] >= 44, pr);
@@ -356,34 +299,18 @@ const N = 37;                                     // the fixture's entries
   ok('phone, the list button: one column of rows, a 44px bookmark, a one-line summary, nothing sideways', pl.cols === 1 && pl.bm[0] >= 44 && pl.bm[1] >= 44 && pl.over <= 0 && pl.inside && pl.sum, pl);
   await c.shot(require('../paths').SHOTS + '/dir_v2_phone_list.png');
   await J(`document.querySelector('#viewBtn').click()`); await settle(400);
-  await J(`document.querySelector('#dirReco [data-dr-browse]').click()`); await settle(500);                       // (the dropdown is on the second level)
-  await mode('plat');
-  await J(`document.querySelector('#dPickBtn').click()`); await settle(500);
-  const sheet = await J(`(()=>{ const p=document.querySelector('#dPick').getBoundingClientRect(); return {bottom:p.bottom, h:p.height, left:p.left, right:p.right, back:getComputedStyle(document.querySelector('#dPickBack')).display, ih:innerHeight}; })()`);
-  ok('phone: the panel is a sheet from the bottom (inside the screen, not taller than 78%), with a dimmed backdrop', Math.abs(sheet.bottom - sheet.ih) <= 1 && sheet.h <= sheet.ih * 0.79 && sheet.left === 0 && sheet.right === 390 && sheet.back === 'block', sheet);
-  const rowH = await J(`Math.min(...[...document.querySelectorAll('#dPickList .dp-row')].map(r=>r.getBoundingClientRect().height))`);
-  ok('phone: a row of the panel is big enough to tap (≥ 44px)', rowH >= 43.5, rowH);
-  ok('phone: while the sheet is open the page behind it does not scroll', await J(`getComputedStyle(document.body).overflow==='hidden'`));
-  await c.shot(require('../paths').SHOTS + '/dir_phone_panel.png');
-  await J(`document.querySelector('#dPickBack').click()`); await sleep(300);
-  ok('a tap on the backdrop closes the panel, and the page scrolls again', await J(`document.querySelector('#dPick').hidden && getComputedStyle(document.body).overflow!=='hidden'`));
-  await mode('topic');
-  await J(`document.querySelector('#dPickBtn').click()`); await settle(500);
-  ok('phone, domain side: the same sheet lists the columns', (await rows()).includes('AI 与科技') && await J(`!document.querySelector('#dPick').hidden`));
-  await J(`document.querySelector('#dPickBack').click()`); await sleep(300);
+  await J(`document.querySelector('#dirReco [data-dr-browse]').click()`); await settle(500);
   await clickTab('col:biz');
-  ok('phone: a column tab is cards too (5 of them), the tabs are not folded away from the chosen one', await J(`document.querySelectorAll('#grid .xcard').length`) === 5 && await J(`!document.querySelector('#dTabs').classList.contains('folded')`));
+  ok('phone: a column tab is cards too (5 of them)', await J(`document.querySelectorAll('#grid .xcard').length`) === 5);
   await clickTab('');
   await c.desktop(1280, 900, 1);
 
   // ================================================ D. English
   await fresh('en'); await toDir();
-  const en = await J(`({h2:[...document.querySelectorAll('#dirReco h2')].filter(h=>!h.closest('.ls')).map(h=>h.childNodes[0].textContent), tabs:[...document.querySelectorAll('#dTabs button')].map(b=>b.textContent).slice(0,3), lm:(document.querySelector('.card[data-did="a1aaaaaaa1"] .lm')||{}).textContent, why:(document.querySelector('.card[data-did="b2bbbbbbb2"] .why')||{}).textContent, btn:document.querySelector('#dPickBtn').textContent.trim()})`);
-  ok('English: the section titles, the column tabs (whole words), the language mark of a Chinese article (中文), the reason in English, the dropdown "Columns"', en.h2.join('|') === '3 to read today|Keep exploring|Editor’s picks|Worth following|Latest' && en.tabs[1].startsWith('AI & Tech') && en.lm === '中文' && en.why === 'Hot this week' && en.btn.startsWith('Columns'), en);
+  const en = await J(`({h2:[...document.querySelectorAll('#dirReco h2')].filter(h=>!h.closest('.ls')).map(h=>h.childNodes[0].textContent), tabs:[...document.querySelectorAll('#dTabs button')].map(b=>b.textContent).slice(0,3), lm:(document.querySelector('.card[data-did="a1aaaaaaa1"] .lm')||{}).textContent, why:(document.querySelector('.card[data-did="b2bbbbbbb2"] .why')||{}).textContent, mode:document.querySelector('#dTabsMode').textContent.replace(/\s+/g,' ').trim()})`);
+  ok('English: the section titles, the column tabs (whole words), the language mark of a Chinese article (中文), the reason in English, the switch "Columns Platforms"', en.h2.join('|') === '3 to read today|Keep exploring|Editor’s picks|Worth following|Latest' && en.tabs[1].startsWith('AI & Tech') && en.lm === '中文' && en.why === 'Hot this week' && /Columns/.test(en.mode), en);
   const dayEn = await J(`(()=>{ const ids=[...document.querySelectorAll('#grid .card[data-did]')].map(x=>x.dataset.did); const day=ids.map(id=>state.dirData.items.find(i=>i.id===id)).filter(i=>i.date==='2026-10-22'); return day.length ? {n:day.length, first:day[0].lang, langs:[...new Set(day.map(i=>i.lang))].join()} : null; })()`);
   ok('the page’s own language comes first inside a day (an English page: an English entry first)', dayEn && dayEn.first === 'en' && /zh/.test(dayEn.langs), dayEn);
-  await mode('plat');
-  ok('English: the button of the platform side is "Programs"', await J(`document.querySelector('#dPickBtn').textContent.trim().startsWith('Programs')`));
   await mode('topic');
   await c.shot(require('../paths').SHOTS + '/dir_desktop_en.png');
 
