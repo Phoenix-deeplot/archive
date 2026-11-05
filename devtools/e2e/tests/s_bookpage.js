@@ -50,7 +50,7 @@ const addBooks = () => {
   const card = title => `[...document.querySelectorAll('#grid .card')].find(c=>c.querySelector('.card-title a').textContent===${JSON.stringify(title)})`;
   const titles = () => J(`[...document.querySelectorAll('#grid .card .card-title a')].map(a=>a.textContent)`);
   const lists = () => J(`[...document.querySelectorAll('.bkp-list .bkp-name')].map(b=>b.textContent)`);
-  const tabs = () => J(`[...document.querySelectorAll('.bkp-tabs button')].map(b=>b.textContent+(b.getAttribute('aria-selected')==='true'?'*':'')).join('|')`);
+  const tabs = () => J(`[...document.querySelectorAll('#dirBar #dTabs [data-bgenre]')].map(b=>b.textContent+(b.getAttribute('aria-selected')==='true'?'*':'')).join('|')`);
   const head = () => J(`({title:document.querySelector('#viewTitle').textContent, sub:document.querySelector('#viewSub').textContent.trim()})`);
 
   addBooks();
@@ -61,9 +61,9 @@ const addBooks = () => {
   await J(`state.dPickT=new Set(['nothing-here']); state.dTabs='topic'; state.dTab=''; render()`);           // (a choice of the other pages must not reach this one)
   await toPage();
   const h0 = await head();
-  ok('the page is "精选图书" with one line under it, in place of the line "updated ..."', h0.title === '精选图书' && h0.sub === '人工挑选、可以免费读的书和刊物', h0);
+  ok('the page is "精选图书" and nothing under it (no explaining line, no line "updated ...")', h0.title === '精选图书' && h0.sub === '', h0);
   ok('there is no "已更新" line and no button for it, on this page and on the others', await J(`!document.querySelector('#updNote') && !document.querySelector('[data-dirrefresh]') && !/已更新/.test(document.querySelector('.view-head').textContent)`));
-  ok('no filter bar (节目 / 栏目 / 平台 and the tabs) on this page', await J(`document.querySelector('#dirBar').offsetParent===null && document.querySelector('#dPickBtn').offsetParent===null`));
+  ok('the row under the strip is the genres only: no 栏目 / 平台 switch, no dropdown of programs, and the row slides sideways (it does not wrap)', await J(`(()=>{ const t=document.querySelector('#dTabs'); return document.querySelector('#dirBar').offsetParent!==null && document.querySelector('#dTabsMode').offsetParent===null && !document.querySelector('#dPickBtn') && getComputedStyle(t).flexWrap==='nowrap' && getComputedStyle(t).overflowX==='auto'; })()`));
   ok('no list of tags in the side (the shelf list is still there)', await J(`getComputedStyle(document.querySelector('#tagbox')).display==='none' && !/标签/.test(document.querySelector('.side-scroll').innerText) && !!document.querySelector('#dir .shelf-row')`));
   ok('a choice of programs or domains made on the other pages does not hide the books here', (await titles()).length === 6, await titles());
   const tale = await J(`(()=>{ const c=${card('The Tale')}; return {badges:!!c.querySelector('.why, .ftype, .lic, .chips, .tag, .shelf-link, .mono-sm'), all:c.textContent.replace(/\\s+/g,' '), meta:c.querySelector('.xmeta').textContent, by:(c.querySelector('.bk-by')||{}).textContent, sum:!!c.querySelector('.sum'), go:(c.querySelector('.bk-go')||{}).textContent, heart:!!c.querySelector('.heart'), bm:!!c.querySelector('[data-d="save"]'), prog:!!c.querySelector('.bk-prog')}; })()`);
@@ -84,7 +84,7 @@ const addBooks = () => {
   const lh = await head();
   ok('a list: its name and its line are the heading, its books come in the order of the list, with the maker\'s line on each', lh.title === '入门' && lh.sub === '入门：先读这些' && (await titles()).join('|') === 'Short Story|论语|The Tale'
     && await J(`${card('Short Story')}.querySelector('.bk-why').textContent`) === '最短的一本' && await J(`!${card('The Tale')}.querySelector('.bk-why')`), [lh, await titles()]);
-  ok('in a list: a way back, no lists, no genres', await J(`!!document.querySelector('.bkp-back') && !document.querySelector('.bkp-list') && !document.querySelector('.bkp-tabs')`));
+  ok('in a list: a way back, no lists, no genres', await J(`!!document.querySelector('.bkp-back') && !document.querySelector('.bkp-list') && !document.querySelector('#dTabs [data-bgenre]')`));
   ok('the numbers beside the sidebar\'s types do not change inside a list', await J(`(()=>{ const n=[...document.querySelectorAll('#cats .cat-btn')].find(b=>b.dataset.dtype==='all'); return !!n && +n.querySelector('.n').textContent>=6; })()`));
   await c.shot(P.SHOTS + '/bookpage_list.png');
   await J(`document.querySelector('.bkp-back').click()`); await sleep(500);
@@ -108,7 +108,7 @@ const addBooks = () => {
 
   // ------------------------------------------------ the language of the page's top bar still counts
   await J(`document.querySelector('#langFilter [data-lf="zh"]').click()`); await sleep(500);
-  ok('the language filter of the top bar still works on this page: only Chinese books, and no row of genres when there is only one', (await titles()).sort().join('|') === '孙子兵法|论语' && await J(`!document.querySelector('.bkp-tabs')`), [await titles(), await J(`state.lf`)]);
+  ok('the language filter of the top bar still works on this page: only Chinese books, and no row of genres when there is only one', (await titles()).sort().join('|') === '孙子兵法|论语' && await J(`!document.querySelector('#dTabs [data-bgenre]')`), [await titles(), await J(`state.lf`)]);
   await J(`document.querySelector('#langFilter [data-lf="all"]').click()`); await sleep(400);
 
   // ------------------------------------------------ the progress of the reader
@@ -138,8 +138,8 @@ const addBooks = () => {
   // ------------------------------------------------ a phone
   await c.mobile(390, 780, 3); await sleep(500);
   await fresh(); await toPage();
-  const ph = await J(`(()=>{ const rs=[...document.querySelectorAll('.bkp-list')].map(b=>b.getBoundingClientRect()), tb=[...document.querySelectorAll('.bkp-tabs button')].map(b=>Math.round(b.getBoundingClientRect().height)); return {cols:new Set(rs.map(r=>Math.round(r.left))).size, right:Math.max(...rs.map(r=>r.right)), vw:innerWidth, tabH:Math.min(...tb), over:document.documentElement.scrollWidth>innerWidth, scroller:[...document.querySelectorAll('#dirReco *')].some(e=>{ const o=getComputedStyle(e).overflowX; return (o==='auto'||o==='scroll') && e.scrollWidth>e.clientWidth; })}; })()`);
-  ok('on a phone: two lists side by side, nothing sideways, the genres are finger-sized and wrap', ph.cols === 2 && ph.right <= ph.vw && ph.tabH >= 36 && !ph.over && !ph.scroller, ph);
+  const ph = await J(`(()=>{ const rs=[...document.querySelectorAll('.bkp-list')].map(b=>b.getBoundingClientRect()), tb=[...document.querySelectorAll('#dTabs [data-bgenre]')].map(b=>Math.round(b.getBoundingClientRect().height)); return {cols:new Set(rs.map(r=>Math.round(r.left))).size, right:Math.max(...rs.map(r=>r.right)), vw:innerWidth, tabH:Math.min(...tb), over:document.documentElement.scrollWidth>innerWidth, slide:getComputedStyle(document.querySelector('#dTabs')).overflowX, wrap:getComputedStyle(document.querySelector('#dTabs')).flexWrap, scroller:[...document.querySelectorAll('#dirReco *')].some(e=>{ const o=getComputedStyle(e).overflowX; return (o==='auto'||o==='scroll') && e.scrollWidth>e.clientWidth; })}; })()`);
+  ok('on a phone: two lists side by side, nothing sideways on the page, the genres are finger-sized (40 px) in one row that slides', ph.cols === 2 && ph.right <= ph.vw && ph.tabH >= 40 && !ph.over && !ph.scroller && ph.slide === 'auto' && ph.wrap === 'nowrap', ph);
   const hp = await J(`(()=>{ const h=${card('The Tale')}.querySelector('.cstat.heart').getBoundingClientRect(); return {w:Math.round(h.width), h:Math.round(h.height)}; })()`);
   ok('on a phone the heart is at least 44 px', hp.w >= 44 && hp.h >= 44, hp);
   await c.shot(P.SHOTS + '/bookpage_phone.png');
@@ -148,7 +148,7 @@ const addBooks = () => {
   // ------------------------------------------------ English
   await fresh('en'); await toPage();
   const he = await head();
-  ok('English: the heading, the line under it, the lists, the genres', he.title === 'Book picks' && /Hand-picked books/.test(he.sub) && (await lists()).join('|') === 'Start|Developers|Old books|Fiction' && (await tabs()) === 'All*|Fiction|Philosophy|Tech|Magazines', [he, await lists(), await tabs()]);
+  ok('English: the heading (nothing under it), the lists, the genres', he.title === 'Book picks' && he.sub === '' && (await lists()).join('|') === 'Start|Developers|Old books|Fiction' && (await tabs()) === 'All*|Fiction|Philosophy|Tech|Magazines', [he, await lists(), await tabs()]);
   const te = await J(`(()=>{ const c=${card('The Tale')}; return {meta:c.querySelector('.xmeta').textContent, all:c.textContent, badges:!!c.querySelector('.why, .ftype, .lic, .chips, .tag, .shelf-link, .mono-sm')}; })()`);
   ok('English: the card says "English" and "3 chapters", and has no badge and no licence', /English/.test(te.meta) && /3 chapters/.test(te.meta) && !te.badges && !/Public domain|Editor/i.test(te.all), te);
   await J(`document.querySelector('.bkp-list').click()`); await sleep(500);

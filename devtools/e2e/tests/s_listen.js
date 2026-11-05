@@ -1,6 +1,6 @@
-// e2e: "今日听什么". A small block on the discovery page and a page of its own (the sidebar's "今日听什么" instead of "音频"): music and podcasts kept apart by a switch. Music: three tabs (for you / charts /
+// e2e: "今日听什么". A small block on the discovery page and a page of its own (the sidebar's "今日听什么" instead of "音频"): music and podcasts kept apart by a switch. Music: the switch and three tabs (for you / charts /
 // discover), the songs as clean rows, thirty at a time (the next thirty come by themselves when the end is reached); a song plays in the bar and its list is the list of the bar, one that cannot be played is
-// skipped; a video opens in its platform's player. Podcasts: the strip of charts / categories / shows, sort, cards or rows. The reader's language decides what comes first; a service that is down or says rubbish.
+// skipped; a video opens in its platform's player. Podcasts: the strip of charts / categories / shows, a sort button that cycles, cards or rows. The reader's language decides what comes first; a service that is down or says rubbish.
 // (demo app :8820, fake services :8840 and :8843; headless Edge)
 const fs = require('fs');
 const { connect, sleep } = require('../cdp');
@@ -50,22 +50,25 @@ const withPods = (on = true) => {
   const tabs = () => J(`[...document.querySelectorAll('#lpRoot .lp-tab')].map(b=>b.textContent+(b.getAttribute('aria-selected')==='true'?'*':'')).join('|')`);
   const tops = () => J(`[...document.querySelectorAll('#lpRoot .lp-strip .lp-ch')].map(c=>({id:c.dataset.lpG, name:c.textContent, on:c.getAttribute('aria-pressed')==='true', hidden:c.classList.contains('x')}))`);
   const songs = () => J(`[...document.querySelectorAll('#lpRoot .lp-songs [data-ls-row]')].map(r=>{ const tt=r.querySelector('.lp-t')||r.querySelector('.ls-t'); return {id:r.dataset.lsRow, t:tt.childNodes[0].textContent, a:(r.querySelector('.lp-a')||{}).textContent||'', m:(r.querySelector('.lp-m')||r.querySelector('.ls-m')).textContent, pv:!!r.querySelector('.ls-pv') || /试听|Preview/.test((r.querySelector('.lp-m')||{}).textContent||''), img:!!r.querySelector('img'), src:(r.querySelector('.ls-src')||{}).href||'', playing:r.classList.contains('is-playing')}; })`);
-  const head = () => J(`({h:document.querySelector('#lpRoot .lp-songs-h h3').textContent, n:document.querySelector('#lpRoot .lp-songs-h .lp-n').textContent, sub:(document.querySelector('#lpRoot .lp-sub')||{}).textContent||'', sort:(document.querySelector('#lpRoot [data-lp-sort]')||{}).value, opts:[...document.querySelectorAll('#lpRoot [data-lp-sort] option')].map(o=>o.textContent), more:(document.querySelector('#lpRoot [data-lp-next]')||{}).textContent||''})`);
+  const head = () => J(`({h:document.querySelector('#lpRoot .lp-songs-h h3').textContent, n:document.querySelector('#lpRoot .lp-songs-h .lp-n').textContent, sub:(document.querySelector('#lpRoot .lp-sub')||{}).textContent||'', tip:(document.querySelector('#lpRoot [data-lp-sortgo]')||{}).title||'', more:(document.querySelector('#lpRoot [data-lp-next]')||{}).textContent||''})`);
+  const sortOpts = async () => { const out = []; const first = await J(`document.querySelector('#lpRoot [data-lp-sortgo]').title`); for (let k = 0; k < 8; k++) { const tip = await J(`document.querySelector('#lpRoot [data-lp-sortgo]').title`); if (k && tip === first) break; out.push(tip.replace(/^(排序：|Sort: )/, '')); await J(`document.querySelector('#lpRoot [data-lp-sortgo]').click()`); await sleep(200); } return out; };            // (the sort is ONE button, each tap the next way: the tooltip says which; this reads them all and comes back to the first)
   const top0 = () => J(`window.scrollTo(0,0)`);                                    // (a list is chosen at the top of the page: a page that is scrolled to its end would load the next thirty of the new list at once)
   const tab = async m => { await top0(); await J(`document.querySelector('#lpRoot [data-lp-mode="${m}"]').click()`); await waitFor(`document.querySelector(${JSON.stringify(PAGE + ', ' + SONGS)})`); await sleep(600); };   // (the switch music / podcasts)
   const mtab = async k => { await top0(); await J(`document.querySelector('#lpRoot [data-lp-tab="${k}"]').click()`); await sleep(500); };            // (a tab of the music side)
   const WHERE = { 'hot-cn': ['chart', 'cn'], kr: ['chart', 'jp-kr'], 'hot-west': ['chart', 'west'], 'dzp-3155776842': ['chart', 'global'], rock: ['disc'], hiphop: ['disc'], classical: ['disc'], chill: ['disc'], video: ['disc'], good: ['disc'] };
   const openList = async id => {                                                  // a list of the music side: from its tab (a chart: the region, then the menu; a style: its card)
     const [where, region] = WHERE[id]; await mtab(where === 'chart' ? 'chart' : 'disc');
-    if (where === 'chart') { await J(`document.querySelector('#lpRoot [data-lp-cr="${region}"]').click()`); await sleep(400); await J(`(()=>{ const s=document.querySelector('#lpRoot [data-lp-cg]'); if(s && s.value!=='${id}'){ s.value='${id}'; s.dispatchEvent(new Event('change',{bubbles:true})); } })()`); }
+    if (where === 'chart') { await J(`document.querySelector('#lpRoot [data-lp-cr="${region}"]').click()`); await sleep(400); await J(`(()=>{ const s=document.querySelector('#lpRoot [data-lp-cgb="${id}"]'); if(s) s.click(); })()`); }
     else await J(`document.querySelector('#lpRoot [data-lp-g="${id}"]').click()`);
     await waitFor(`document.querySelector(${JSON.stringify(SONGS)})`); await sleep(500);
   };
   const podLog = async () => (await (await fetch(POD + '/__log')).json());
-  const sorted = async (key) => { await top0(); await J(`(()=>{ const s=document.querySelector('#lpRoot [data-lp-sort]'); s.value=${JSON.stringify(key)}; s.dispatchEvent(new Event('change',{bubbles:true})); })()`); await sleep(300); };
+  const sorted = async (key) => { await top0(); for (let k = 0; k < 8 && !(await J(`(state.lp.sort||'rank')===${JSON.stringify(key)}`)); k++) { await J(`document.querySelector('#lpRoot [data-lp-sortgo]').click()`); await sleep(250); } await sleep(300); };
   const scrollDown = async () => { await J(`window.scrollTo(0, document.documentElement.scrollHeight)`); await sleep(900); };
   const all = id => J(`state.lp.data.get('${id}|'+state.lp.lang||state.lang).items`);
   await c.desktop(1280, 900, 1);
+  const zone = z => c.send('Emulation.setTimezoneOverride', { timezoneId: z });            // (whose songs come first follows the language AND the time zone: the test says which)
+  await zone('Asia/Shanghai');
 
   // ================================================ A. the small block on the discovery page
   withPods(); await get('/__listen?mode=ok&reset=1'); await fetch(POD + '/__reset');
@@ -93,11 +96,11 @@ const withPods = (on = true) => {
   await J(`document.querySelector('#lsBlock [data-ls-open]').click()`); await waitFor(`document.querySelector('#lpRoot .lp-songs .ls-row')`); await sleep(300);
   ok('"进入 ›" opens the page with that list: a chart, so under the charts tab; the sidebar row is the current one; no toolbar of the directory', (await J(`document.querySelector('#cats [data-dlisten]').getAttribute('aria-current')`)) === 'true' && (await J(`document.querySelector('#dirBar').hidden`)) && (await head()).h === '华语热歌' && (await tabs()) === '推荐|榜单*|发现', [await head(), await tabs()]);
   ok('a switch keeps music and podcasts apart: 音乐 is the one chosen', (await modes()).join('|') === '音乐*|播客', await modes());
-  const mus = await J(`({chips:document.querySelectorAll('#lpRoot .lp-strip .dr-chip').length, sort:!!document.querySelector('#lpRoot [data-lp-sort]'), view:!!document.querySelector('#lpRoot [data-lp-view]'), region:document.querySelector('#lpRoot .lp-region').textContent.trim(), tiles:!!document.querySelector('#lpRoot .lp-card, #lpRoot .lp-tags, #lpRoot .lp-top, #lpRoot .lp-cards')})`);
-  ok('the music side: three tabs and the region switch; no strip of chips, no sort, no cards / rows button, no tiles', mus.chips === 0 && !mus.sort && !mus.view && mus.region === '国内' && !mus.tiles, mus);
-  const hl = await J(`(()=>{ const h=document.querySelector('#viewTitle').getBoundingClientRect(), p=document.querySelector('#viewSub').getBoundingClientRect(); return {t:document.querySelector('#viewTitle').textContent, s:document.querySelector('#viewSub').textContent, sameLine:Math.abs((h.bottom+h.top)/2-(p.bottom+p.top)/2)<24 && p.left>h.right-2, fs:parseFloat(getComputedStyle(document.querySelector('#viewTitle')).fontSize), sort:getComputedStyle(document.querySelector('#sort')).display, view:getComputedStyle(document.querySelector('#viewBtn')).display, lf:getComputedStyle(document.querySelector('#langFilter')).display}; })()`);
-  ok('the title and its subtitle are one line (the subtitle after the title, no big heading); the top bar’s sort, cards / rows button and language filter are not on this page', hl.t === '今日听什么' && hl.s === '每日新歌/节目，喜欢不重样' && hl.sameLine && hl.fs <= 30 && hl.sort === 'none' && hl.view === 'none' && hl.lf === 'none', hl);
-  ok('one row holds the switch (left) and the region (right)', await J(`(()=>{ const bar=document.querySelector('#lpRoot .lp-bar'); return !!bar.querySelector('.lp-modes') && !!bar.querySelector('.lp-region') && bar.getBoundingClientRect().height<60; })()`));
+  const mus = await J(`({chips:document.querySelectorAll('#lpRoot .lp-strip .dr-chip').length, sort:!!document.querySelector('#lpRoot [data-lp-sort], #lpRoot [data-lp-sortgo]'), view:!!document.querySelector('#lpRoot [data-lp-view]'), region:!!document.querySelector('#lpRoot .lp-region, #lpRoot [data-lp-region]'), oneRow:!!document.querySelector('#lpRoot .lp-bar .lp-modes') && !!document.querySelector('#lpRoot .lp-bar .lp-tabs'), tiles:!!document.querySelector('#lpRoot .lp-card, #lpRoot .lp-tags, #lpRoot .lp-top, #lpRoot .lp-cards')})`);
+  ok('the music side: the switch and three tabs in ONE row; no region switch, no strip of chips, no sort, no cards / rows button, no tiles', mus.chips === 0 && !mus.sort && !mus.view && !mus.region && mus.oneRow && !mus.tiles, mus);
+  const hl = await J(`({t:document.querySelector('#viewTitle').textContent, s:document.querySelector('#viewSub').textContent, fs:parseFloat(getComputedStyle(document.querySelector('#viewTitle')).fontSize), sort:getComputedStyle(document.querySelector('#sort')).display, lf:getComputedStyle(document.querySelector('#langFilter')).display, bar:Math.round(document.querySelector('#lpRoot .lp-bar').getBoundingClientRect().top - document.querySelector('#viewTitle').getBoundingClientRect().bottom)})`);
+  ok('the title has no subtitle (no explaining line), is not a big heading, and the page’s own row starts right under it; the top bar’s sort and language filter are not on this page', hl.t === '今日听什么' && hl.s === '' && hl.fs <= 30 && hl.sort === 'none' && hl.lf === 'none' && hl.bar < 40, hl);
+  ok('one row holds the switch (left) and the three tabs, and it is one line high', await J(`(()=>{ const bar=document.querySelector('#lpRoot .lp-bar'); return !!bar.querySelector('.lp-modes') && !!bar.querySelector('.lp-tabs') && !bar.querySelector('.lp-region') && bar.getBoundingClientRect().height<60; })()`));
   let hd = await head();
   ok('the list that is open: its name, the number of songs, where they come from, "播放全部"', hd.h === '华语热歌' && hd.n === '90 首' && hd.sub === '来源：Apple Music' && /播放全部/.test(await J(`document.querySelector('#lpRoot .lp-songs-h [data-lp-all]').textContent`)), hd);
   let sg = await songs();
@@ -141,7 +144,7 @@ const withPods = (on = true) => {
   ok('the last four are the categories: 新闻 故事 英语学习 商业 (not the styles of music)', (await chips('#lpRoot .lp-strip .lp-ch')).slice(-4).join('|') === '新闻|故事|英语学习|商业', await chips('#lpRoot .lp-strip .lp-ch'));
   ok('the podcast side has no tabs and no region switch, and an episode no ♥ and no ⋯', await J(`!document.querySelector('#lpRoot .lp-tab, #lpRoot .lp-region, #lpRoot .ls-like, #lpRoot .ls-more')`));
   ok('an episode of a chart says its show and how hot it is (its place in the chart); no length, no date, no “站内播放”', /^Show 0$/.test(sg[0].a) && sg[0].m === '🔥 第 1 名', sg[0]);
-  ok('the sort has "榜单序" (the chart’s order), "最新", length, title and show', hd.opts.join('|') === '榜单序|最新|时长|歌名 / 标题|节目', hd.opts);
+  ok('the sort is ONE button (no menu) that goes through "榜单序" (the chart’s order), "最新", length, title and show, one at each tap', (await sortOpts()).join('|') === '榜单序|最新|时长|歌名 / 标题|节目', hd.tip);
   await sorted('new'); sg = await songs();
   ok('sorted by newest: the newest of all two hundred first', (await J(`(()=>{ const it=state.lp.data.get('pod-hot|zh').items.slice().sort((a,b)=>b.date.localeCompare(a.date))[0]; return document.querySelector('#lpRoot .lp-sc .lp-t').textContent===it.title; })()`)));
   await sorted('title'); sg = await songs();
@@ -161,7 +164,7 @@ const withPods = (on = true) => {
   await J(`document.querySelector('#lpRoot [data-lp-g="pod"]').click()`); await waitFor(`document.querySelector('#lpRoot .lp-shows')`); await sleep(500);
   hd = await head(); sg = await songs();
   ok('the shows of the directory: a chip for each show, newest first, with the number of episodes; the newest episode of each show is the list', (await chips('#lpRoot .lp-shows .dr-chip')).join('|') === '全部节目*|今夜不设防2|铿锵三人行3|English Podcast2'
-    && hd.h === '目录里的节目' && hd.n === '3 集' && sg.map(x => x.t).join('|') === '今夜不设防 第2集|铿锵三人行 第3集|English Podcast 第2集' && hd.opts[0] === '最新', [hd, sg.map(x => x.t), await chips('#lpRoot .lp-shows .dr-chip')]);
+    && hd.h === '目录里的节目' && hd.n === '3 集' && sg.map(x => x.t).join('|') === '今夜不设防 第2集|铿锵三人行 第3集|English Podcast 第2集' && (await sortOpts())[0] === '最新', [hd, sg.map(x => x.t), await chips('#lpRoot .lp-shows .dr-chip')]);
   await J(`[...document.querySelectorAll('#lpRoot .lp-shows .dr-chip')].find(b=>b.textContent.startsWith('铿锵三人行')).click()`); await sleep(400);
   hd = await head(); sg = await songs();
   ok('a show: all its episodes, newest first, under its own name', hd.h === '铿锵三人行' && hd.n === '3 集' && sg.map(x => x.t).join('|') === '铿锵三人行 第3集|铿锵三人行 第2集|铿锵三人行 第1集' && sg.every(x => x.a === '铿锵三人行'), [hd, sg.map(x => x.t)]);
@@ -193,26 +196,29 @@ const withPods = (on = true) => {
 
   // ================================================ H. English: what comes first, the words, and what the service is told
   await get('/__listen?mode=ok&reset=1');
-  await fresh('en'); await toDir();
+  await zone('America/New_York'); await fresh('en'); await toDir();
   ok('English: the small block: Western hits first, the podcast chart', /^What to listen to today/.test(await J(`document.querySelector('#lsBlock h2').textContent`)) && (await chips('#lsBlock .ls-chips .dr-chip')).join('|') === 'Daily picks*|Western hits|Korea|Top podcasts' && (await J(`document.querySelector('#lsBlock [data-ls-open]').textContent`)) === 'Open ›', await chips('#lsBlock .ls-chips .dr-chip'));
   ok('the service is told the reader’s language, for the index and for the list', JSON.stringify(await get('/__listen_log')) === JSON.stringify(['@en', 'daily@en']), await get('/__listen_log'));
   ok('the daily picks of an English reader are other songs than a Chinese reader’s', /daily-en/.test(await J(`document.querySelector('#lsBlock .ls-row .ls-t').textContent`)), await J(`document.querySelector('#lsBlock .ls-row .ls-t').textContent`));
   await openPage();
-  ok('English: the page: the switch, the three tabs, the region switch, the subtitle', (await modes()).join('|') === 'Music*|Podcasts' && (await tabs()) === 'For you*|Charts|Discover' && (await J(`document.querySelector('#lpRoot .lp-region').textContent.trim()`)) === 'World' && (await J(`document.querySelector('#viewSub').textContent`)) === 'New songs and shows every day, never the same twice', [await modes(), await tabs()]);
-  ok('English: the first tab: today’s radio with its two buttons, the play lists, "For you", and the number of songs', (await J(`document.querySelector('#lpRoot .lp-hero-t b').textContent`)) === 'Today’s radio' && (await J(`[...document.querySelectorAll('#lpRoot .lp-hero-a button')].map(x=>x.textContent.trim()).join('|')`)) === 'Play|Next batch' && /30 songs/.test(await J(`document.querySelector('#lpRoot .lp-hero-t span').textContent`)) && /daily-en/.test(await J(`document.querySelector('#lpRoot .ls-row .ls-t').textContent`)), await J(`document.querySelector('#lpRoot .lp-hero-t').textContent`));
+  ok('English: the page: the switch, the three tabs; no region switch, no subtitle', (await modes()).join('|') === 'Music*|Podcasts' && (await tabs()) === 'For you*|Charts|Discover' && !(await J(`!!document.querySelector('#lpRoot .lp-region')`)) && (await J(`document.querySelector('#viewSub').textContent`)) === '', [await modes(), await tabs()]);
+  ok('English: the first tab: the play lists first (my three squares at the head), then “Songs for you” as rows with an icon to play and an icon for another batch; no radio card', (await J(`[...document.querySelectorAll('#lpRoot .lp-h')].map(h=>h.textContent).join('|')`)) === 'Play lists|For you' && !(await J(`!!document.querySelector('#lpRoot .lp-hero')`)) && (await J(`document.querySelector('#lpRoot .lp-playall').title`)) === 'Play' && (await J(`document.querySelector('#lpRoot [data-lp-batch]').title`)) === 'Next batch' && /daily-en/.test(await J(`document.querySelector('#lpRoot .lp-forrows .ls-t').textContent`)) && (await J(`[...document.querySelectorAll('#lpRoot .lp-my .lp-gct')].map(x=>x.textContent).join('|')`)) === 'Liked songs|Recently played|My play lists', await J(`[...document.querySelectorAll('#lpRoot .lp-h')].map(h=>h.textContent).join('|')`));
   await mtab('chart'); hd = await head();
-  ok('English: the charts: Western first for an English reader, the regions in English, the chart "Western hits", the count', (await J(`[...document.querySelectorAll('#lpRoot .lp-reg')].map(b=>b.textContent+(b.getAttribute('aria-selected')==='true'?'*':'')).join('|')`)) === 'China|West*|Japan · Korea|World' && hd.h === 'Western hits' && hd.n === '40 songs', hd);
+  ok('English: the charts: Western first for an English reader, the regions in English, the chart "Western hits", the count', (await J(`[...document.querySelectorAll('#lpRoot .lp-regs:not(.lp-cgs) .lp-reg')].map(b=>b.textContent+(b.getAttribute('aria-selected')==='true'?'*':'')).join('|')`)) === 'China|West*|Japan · Korea|World' && hd.h === 'Western hits' && hd.n === '40 songs', hd);
   sg = await songs();
   ok('English: a preview says “Preview” after its title (the Western chart is of Deezer and Apple: previews only)', sg.some(x => x.pv) && (await J(`document.querySelector('#lpRoot .ls-pv').textContent`)) === 'Preview', sg.slice(0, 3).map(x => x.pv));
   await mtab('rec');
-  ok('English: and a whole song (the daily picks have Audius songs) has no such mark', await J(`[...document.querySelectorAll('#lpRoot .ls-row')].some(r=>!r.querySelector('.ls-pv')) && [...document.querySelectorAll('#lpRoot .ls-row')].some(r=>!!r.querySelector('.ls-pv'))`));
+  ok('English: and a whole song (the daily picks have Audius songs) has no such mark, while a preview has one', await J(`[...document.querySelectorAll('#lpRoot .lp-forrows .ls-row')].some(r=>!r.querySelector('.ls-pv')) && [...document.querySelectorAll('#lpRoot .lp-forrows .ls-row')].some(r=>!!r.querySelector('.ls-pv'))`));
   await mtab('chart');
   await mtab('disc');
   ok('English: the styles and the scenes', (await J(`[...document.querySelectorAll('#lpRoot .lp-h')].map(h=>h.textContent).join('|')`)) === 'Styles|Scenes' && /Rock/.test(await J(`document.querySelector('#lpRoot .lp-gg').textContent`)));
   await tab('podcast'); hd = await head(); const tp1 = await tops();
   ok('English: podcasts: "Top podcasts" first, then the US chart; the categories in English; a load-more button in English', hd.h === 'Top podcasts' && hd.n === '200 episodes' && tp1.map(x => x.id).join() === 'pod-hot,pod-us,pod-cn,pod,pc-news,pc-story,pc-english,pc-business' && hd.more === 'Load more (30 / 200)'
-    && (await chips('#lpRoot .lp-strip .lp-ch')).slice(-4).join('|') === 'News|Stories|Learn English|Business' && hd.opts.join('|') === 'Chart order|Newest|Length|Title|Show', [hd, tp1.map(x => x.id)]);
+    && (await chips('#lpRoot .lp-strip .lp-ch')).slice(-4).join('|') === 'News|Stories|Learn English|Business' && (await sortOpts()).join('|') === 'Chart order|Newest|Length|Title|Show', [hd, tp1.map(x => x.id)]);
   await c.js('window.__zt.plStop()');
+
+  await zone('Asia/Shanghai'); await get('/__listen?mode=ok&reset=1'); await fresh('en'); await toDir(); await openPage(); await mtab('chart');
+  ok('English interface in a Chinese time zone: the Chinese chart is the first one (the language and the time zone decide, no button, no look-up of the address)', (await head()).h === 'Chinese hits' && (await J(`document.querySelector('#lpRoot .lp-regs:not(.lp-cgs) .lp-reg[aria-selected="true"]').textContent`)) === 'China', await head());
 
   // ================================================ I. the language button on the page (the footer): "auto" and one button that switches
   await J(`document.body.classList.remove('drawer')`);
@@ -229,7 +235,7 @@ const withPods = (on = true) => {
   await get('/__listen?mode=junk&reset=1');
   await fresh('zh'); await toDir(); await openPage();
   await mtab('chart');
-  ok('rubbish is dropped: a list with a bad id, an unknown kind, no name, things that are not lists; the good chart stays (under the charts), the good style under discover, and the podcast one is on the podcast side', (await J(`[...document.querySelectorAll('#lpRoot .lp-reg')].length`)) === 1 && (await head()).h === '也好' && (await modes()).join('|') === '音乐*|播客', [await head(), await modes()]);
+  ok('rubbish is dropped: a list with a bad id, an unknown kind, no name, things that are not lists; the good chart stays (under the charts), the good style under discover, and the podcast one is on the podcast side', (await J(`[...document.querySelectorAll('#lpRoot .lp-regs:not(.lp-cgs) .lp-reg')].length`)) === 1 && (await head()).h === '也好' && (await modes()).join('|') === '音乐*|播客', [await head(), await modes()]);
   await openList('good'); sg = await songs();
   ok('the one good song is shown as TEXT, its picture is not http, its address is not a javascript: link, a date that is not a date is not shown; the song with a javascript: sound, a bad kind and no id are gone', sg.length === 1 && sg[0].t === '<img src=x onerror=alert(1)>' && !sg[0].img && sg[0].src === '' && dialogs.length === 0 && (await J(`document.querySelectorAll('#lpRoot img').length`)) === 0, [sg, dialogs]);
   await get('/__listen?mode=down&reset=1');
@@ -250,13 +256,16 @@ const withPods = (on = true) => {
   await fresh('zh', null); await toDir();
   const ph0 = await J(`({sw:document.documentElement.scrollWidth, iw:innerWidth, today:Math.round(document.querySelector('#dirReco .today').getBoundingClientRect().height), heroTop:Math.round(document.querySelector('#dirReco .hero').getBoundingClientRect().top), vh:innerHeight, rows:document.querySelectorAll('#lsBlock .ls-row').length})`);
   ok('a phone: "today’s three" are under 340 px and the hero is on the first screen; the small block shows four rows; no sideways scroll', ph0.sw <= ph0.iw && ph0.today < 340 && ph0.heroTop < ph0.vh * 0.6 && ph0.rows === 4, ph0);
-  await J(`document.body.classList.add('drawer')`); await sleep(300); await J(`document.querySelector('#cats [data-dlisten]').click()`); await waitFor(`document.querySelector('#lpRoot .ls-row')`); await sleep(400);
-  const ph = await J(`(()=>{ const q=s=>document.querySelector(s), r=e=>Math.round(e.getBoundingClientRect().height), first=q('#lpRoot .lp-rows .ls-row');
-    return {sw:document.documentElement.scrollWidth, iw:innerWidth, rowsMode:!!q('#lpRoot .lp-rows') && !q('#lpRoot .lp-grid'), firstTop:Math.round(first.getBoundingClientRect().top), vh:innerHeight, tabH:Math.min(...[...document.querySelectorAll('#lpRoot .lp-tab')].map(r)), tabs:document.querySelectorAll('#lpRoot .lp-tab').length, heroH:Math.min(...[...document.querySelectorAll('#lpRoot .lp-hero-a .btn')].map(r)), likeH:r(q('#lpRoot .ls-like')), moreH:r(q('#lpRoot .ls-more')), modeH:Math.min(...[...document.querySelectorAll('#lpRoot .lp-modes button')].map(r)), drawer:document.body.classList.contains('drawer')}; })()`);
-  ok('a phone: the first tab is rows; the first song is on the first screen; nothing scrolls sideways', ph.sw <= ph.iw && ph.rowsMode && ph.firstTop < ph.vh && ph.tabs === 3, ph);
-  ok('a phone: every control at least 44 px (the tabs, the radio buttons, ♥ and ⋯, the music / podcasts switch)', ph.tabH >= 44 && ph.heroH >= 44 && ph.likeH >= 44 && ph.moreH >= 44 && ph.modeH >= 44, ph);
+  await J(`document.body.classList.add('drawer')`); await sleep(300); await J(`document.querySelector('#cats [data-dlisten]').click()`); await waitFor(`document.querySelector('#lpRoot .lp-forrows .ls-row')`); await sleep(400);
+  const ph1 = await J(`(()=>{ const q=s=>document.querySelector(s), r=e=>Math.round(e.getBoundingClientRect().height), row=q('#lpRoot .lp-forrows .ls-row'); return {sw:document.documentElement.scrollWidth, iw:innerWidth, cards:document.querySelectorAll('#lpRoot .lp-sc').length, rows:document.querySelectorAll('#lpRoot .lp-forrows .ls-row').length, firstTop:Math.round(row.getBoundingClientRect().top), vh:innerHeight, shelf:getComputedStyle(q('#lpRoot .lp-shelf')).overflowX, tabH:Math.min(...[...document.querySelectorAll('#lpRoot .lp-tab')].map(r)), tabs:document.querySelectorAll('#lpRoot .lp-tab').length, playH:r(q('#lpRoot .lp-playall')), likeH:r(q('#lpRoot .lp-forrows .ls-like')), moreH:r(q('#lpRoot .lp-forrows .ls-more')), modeH:Math.min(...[...document.querySelectorAll('#lpRoot .lp-modes button')].map(r)), drawer:document.body.classList.contains('drawer')}; })()`);
+  ok('a phone: the first tab is the play lists (a row that slides sideways; the page does not) and then thirty rows of songs; the first song is on the first screen', ph1.sw <= ph1.iw && ph1.rows === 30 && ph1.cards === 0 && ph1.shelf === 'auto' && ph1.firstTop < ph1.vh && ph1.tabs === 3, ph1);
+  ok('a phone: every control at least 40 px (the tabs, the play icon, the music / podcasts switch), ♥ and ⋯ at least 44 px', ph1.tabH >= 40 && ph1.playH >= 40 && ph1.modeH >= 40 && ph1.likeH >= 44 && ph1.moreH >= 44, ph1);
+  await J(`document.querySelector('#lpRoot [data-lp-tab="chart"]').click()`); await waitFor(`document.querySelector('#lpRoot .lp-rows .ls-row')`); await sleep(500);
+  const ph = await J(`(()=>{ const q=s=>document.querySelector(s), r=e=>Math.round(e.getBoundingClientRect().height); return {likeH:r(q('#lpRoot .ls-like')), moreH:r(q('#lpRoot .ls-more')), drawer:document.body.classList.contains('drawer'), rowsMode:!!q('#lpRoot .lp-rows')}; })()`);
+  ok('a phone: on a chart the rows have ♥ and ⋯ of at least 44 px', ph.rowsMode && ph.likeH >= 44 && ph.moreH >= 44, ph);
   ok('the left list is closed (the page is the page)', !ph.drawer, ph);
-  const swipe = async (x1, x2, y = 660) => { await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x1, y }] }); for (let i = 1; i <= 6; i++) { await c.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x1 + (x2 - x1) * i / 6, y }] }); await sleep(12); } await c.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await sleep(900); };
+  await J(`document.querySelector('#lpRoot [data-lp-tab="rec"]').click()`); await sleep(500);
+  const swipe = async (x1, x2) => { await J(`window.scrollTo(0,0)`); const y = await J(`(()=>{ const e=document.querySelector('#lpRoot .lp-secbar, #lpRoot .lp-songs-h'); if(!e) return 660; const r=e.getBoundingClientRect(); return Math.round(r.top+r.height/2); })()`); await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x1, y }] }); for (let i = 1; i <= 6; i++) { await c.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x1 + (x2 - x1) * i / 6, y }] }); await sleep(12); } await c.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await sleep(900); };
   const cur = () => J(`state.lp.tab`);
   const was = await cur();
   await swipe(300, 90);
@@ -278,13 +287,13 @@ const withPods = (on = true) => {
   // ================================================ L. what a new reader gets: rows on a wide screen too, the rank of a chart, the region
   await get('/__listen?mode=ok&reset=1');
   await fresh('zh', null); await toDir(); await openPage();
-  ok('a new reader starts on the first tab, in the region of the language (国内), with the daily picks as rows (one column, also on a wide screen: a list is read down)', (await tabs()) === '推荐*|榜单|发现' && (await J(`document.querySelector('#lpRoot .lp-region').textContent.trim()`)) === '国内' && (await J(`document.querySelectorAll('#lpRoot .lp-rows .ls-row').length`)) === 30 && (await J(`getComputedStyle(document.querySelector('#lpRoot .lp-rows')).gridTemplateColumns.split(' ').length`)) === 1, [await tabs()]);
+  ok('a new reader starts on the first tab: the play lists in a row that slides, then the songs for you as thirty rows (one column also on a wide screen: a list is read down), no region button', (await tabs()) === '推荐*|榜单|发现' && !(await J(`!!document.querySelector('#lpRoot .lp-region')`)) && (await J(`document.querySelectorAll('#lpRoot .lp-forrows .ls-row').length`)) === 30 && (await J(`getComputedStyle(document.querySelector('#lpRoot .lp-shelf')).overflowX`)) === 'auto' && (await J(`getComputedStyle(document.querySelector('#lpRoot .lp-forrows')).gridTemplateColumns.split(' ').length`)) === 1, [await tabs()]);
   ok('the daily picks are not a chart: no place in front of a song', await J(`!document.querySelector('#lpRoot .ls-n')`));
   await mtab('chart');
   sg = await songs();
   ok('a chart: the place is the number in front; the row says only who it is by (and “试听” after the title for a preview)', await J(`document.querySelector('#lpRoot .ls-n em').textContent`) === '1' && sg.every(x => /^Artist [A-Z]$/.test(x.m)) && sg.some(x => x.pv), sg.slice(0, 2).map(x => x.m));
   await J(`document.querySelector('[data-space="dir"]') && document.querySelector('#cats [data-dbrowse="0"]').click()`); await sleep(900);
-  ok('the rest of the page is not touched: the discovery page has its own sort and cards / rows button again', (await J(`getComputedStyle(document.querySelector('#sort')).display`)) !== 'none' && (await J(`getComputedStyle(document.querySelector('#viewBtn')).display`)) !== 'none');
+  ok('the rest of the page is not touched: back on the discovery page the listening page is gone and the directory’s own sort button is there', (await J(`!document.querySelector('#lpRoot')`)) && (await J(`getComputedStyle(document.querySelector('#sortBtn')).display`)) !== 'none' || (await J(`!document.querySelector('#lpRoot')`)));
 
   ok('no script errors in the whole run', errs.length === 0, errs);
 

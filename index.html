@@ -353,28 +353,6 @@ body.noting{overflow:hidden}
 .ne-doc li[data-c="1"]{color:var(--muted)}
 @media (min-width:761px){.noteed .ne-body{order:2}.noteed #neDocBar{order:1}}
 .dir-bar{position:relative;max-width:1280px;margin:0 0 16px}
-.dp-btn{gap:6px}.dp-btn .icon{width:15px;height:15px}
-.dp-btn.on{border-color:var(--accent);color:var(--accent)}
-.dp-n{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--accent);color:#fff;font-size:12px;line-height:18px;text-align:center}
-.dir-pick{position:absolute;left:0;top:calc(100% - 6px);z-index:25;width:min(460px,100%);max-height:min(70vh,560px);display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--rule);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.2)}
-.dir-pick[hidden]{display:none}
-.dp-top,.dp-chips,.dp-foot{flex:none}
-.dp-top{display:flex;align-items:center;gap:10px;padding:10px 12px 6px}
-.dp-top input{flex:1;min-width:0;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:8px 10px}
-.dp-chips{display:flex;flex-wrap:wrap;gap:6px;padding:4px 12px 8px}
-.dp-chips:empty{display:none}
-.dp-chips button{border:1px solid var(--rule);background:var(--bg);color:var(--ink);border-radius:999px;padding:3px 11px;font:inherit;font-size:13px;cursor:pointer}
-.dp-chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.dp-list{flex:1;min-height:80px;overflow-y:auto;padding:0 6px 6px;-webkit-overflow-scrolling:touch}
-.dp-group{margin:8px 8px 2px;font-size:12px;font-weight:700;color:var(--muted)}
-.dp-row{display:flex;align-items:center;gap:10px;padding:8px 8px;border-radius:8px;cursor:pointer}
-.dp-row:hover{background:var(--bg)}
-.dp-row input{flex:none;width:20px;height:20px;accent-color:var(--accent)}
-.dp-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14.5px}
-.dp-meta{flex:none;font-size:12px;color:var(--muted);white-space:nowrap}
-.dp-none{padding:18px 12px;color:var(--muted);font-size:14px}
-.dp-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted)}
-.dp-back{display:none}
 .sub-tip .link-btn,.chk-sub .link-btn{border:0;background:none;padding:0;font:inherit;font-weight:600;color:var(--accent);text-decoration:underline;cursor:pointer}
 @media(max-width:600px){.sub-tip .link-btn,.chk-sub .link-btn{display:inline-block;padding:10px 0}}
 .sub-tip{margin:6px 0 12px;padding:8px 10px;font-size:13.5px;color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:6px}
@@ -445,9 +423,11 @@ body.dir-listen #sort,body.dir-listen #viewBtn,body.dir-listen #langFilter{displ
 body.dir-listen .view-head,body.dir-hot .view-head{padding:22px 0 10px}
 body.dir-listen .view-head h1,body.dir-hot .view-head h1{font-size:clamp(22px,2.4vw,28px);margin:0}
 body.dir-listen .view-head p,body.dir-hot .view-head p{font-size:14px}
-.lp-bar{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+.lp-bar{display:flex;flex-wrap:nowrap;align-items:center;gap:10px;margin:0 0 6px;overflow-x:auto;scrollbar-width:none}
+.lp-bar::-webkit-scrollbar{display:none}
+.lp-bar>*{flex:none}
 .lp-modes{margin:0}
-.lp-modes button{min-height:40px;padding:6px 22px;font-size:15px;font-weight:600}
+.lp-modes button{min-height:36px;padding:4px 16px;font-size:14px;font-weight:600}
 .lp-modes button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
 .lp-ctl{margin-left:auto;display:flex;align-items:center;gap:6px}
 .lp-sort{font:inherit;font-size:13px;min-height:36px;border:1px solid var(--rule);border-radius:8px;background:var(--bg);color:var(--ink);padding:0 6px}
@@ -486,27 +466,30 @@ body.dir-listen .view-head p,body.dir-hot .view-head p{font-size:14px}
 .lp,.lp-songs,.lsm{font-family:var(--sans)}
 .lp-region{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border:1px solid var(--rule);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;font-size:13.5px;cursor:pointer}
 .lp-region .icon{width:16px;height:16px;color:var(--muted)}
-.lp-tabs{display:flex;border-bottom:1px solid var(--rule);margin:0 0 6px}
-.lp-tab{flex:1;max-width:180px;min-height:46px;border:0;background:none;color:var(--muted);font:inherit;font-size:16px;cursor:pointer;border-bottom:2px solid transparent}
-.lp-tab[aria-selected="true"]{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
-.lp-regs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 4px}
-.lp-reg{min-height:40px;padding:0 16px;border:1px solid var(--rule);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+.lp-tabs{display:flex;gap:6px;margin:0}
+.lp-tab{flex:none;min-height:40px;padding:0 14px;border:1px solid var(--rule);border-radius:999px;background:var(--surface);color:var(--ink);font:inherit;font-size:13.5px;cursor:pointer;white-space:nowrap}
+.lp-tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:500}
+.lp-regs{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:8px 0 4px;-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent);padding-right:24px}
+.lp-regs::-webkit-scrollbar{display:none}
+.lp-reg{min-height:36px;padding:0 14px;flex:none;white-space:nowrap;border:1px solid var(--rule);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
 .lp-reg[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .lp-cg{font:inherit;font-size:14px;min-height:40px;border:1px solid var(--rule);border-radius:8px;background:var(--bg);color:var(--ink);padding:0 8px;margin:4px 0}
 .lp-h{margin:18px 0 8px;font-family:var(--sans);font-size:15px;font-weight:600}
+.lp-secbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0 4px}
+.lp-secbar .lp-h{margin:0}
+.lp-refresh,.lp-playall{width:40px;height:40px;color:var(--muted)}.lp-playall{color:var(--accent)}.lp-secact{display:inline-flex;align-items:center;gap:2px}
+.lp-shelf .lp-sc{flex:0 0 128px;scroll-snap-align:start}
+.lp-myv{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:var(--surface)!important;border:1px solid var(--rule)}
+.lp-myv i{display:grid;color:var(--muted)}
+.lp-myv i .icon{width:20px;height:20px}
+.lp-myv b{font-size:26px!important;font-weight:500!important;line-height:1.1}
 .lp-mine{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 4px}
 .lp-mc{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:64px;padding:10px 12px;border:1px solid var(--rule);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;text-align:left}
 .lp-mc b{font-size:15px;font-weight:500}
 .lp-mc span{font-size:12.5px;color:var(--muted)}
-.lp-hero{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0 4px;padding:14px 16px;border-radius:14px;background:var(--surface);border:1px solid var(--rule)}
-.lp-hero-t{flex:1;min-width:140px;display:grid;gap:2px}
-.lp-hero-t b{font-size:17px;font-weight:600}
-.lp-hero-t span{font-size:13px;color:var(--muted)}
-.lp-hero-a{display:flex;gap:8px}
-.lp-hero-a .btn{display:inline-flex;align-items:center;gap:6px;min-height:44px}
-.lp-hero-a .btn .icon{width:16px;height:16px}
 .lp-shelf{display:flex;gap:12px;overflow-x:auto;padding:2px 0 8px;scroll-snap-type:x proximity;scrollbar-width:none}
 .lp-shelf::-webkit-scrollbar{display:none}
+@media (hover:hover) and (pointer:fine){.lp-shelf{scrollbar-width:thin;scrollbar-color:var(--rule) transparent}.lp-shelf::-webkit-scrollbar{display:block;height:8px}.lp-shelf::-webkit-scrollbar-thumb{background:var(--rule);border-radius:4px}}          /* (a mouse has no finger to slide a row with: a thin bar shows that there is more, shift + wheel moves it) */
 .lp-gc{flex:0 0 112px;display:grid;gap:6px;border:0;background:none;padding:0;color:var(--ink);font:inherit;text-align:left;cursor:pointer;scroll-snap-align:start}
 .lp-gg .lp-gc{flex:none;width:auto}
 .lp-gcv{display:grid;place-items:center;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:hsl(var(--h) 45% 55% / .22);color:var(--ink)}
@@ -891,18 +874,24 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .rvote button{display:inline-flex;align-items:center;gap:5px;height:38px;padding:0 13px;border:0;border-radius:999px;background:transparent;color:var(--ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
 .rvote button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .rvote .icon{width:19px;height:19px}@media (max-width:760px){
-  .dir-pick{position:fixed;left:0;right:0;top:auto;bottom:0;width:auto;max-height:78vh;z-index:40;border-radius:16px 16px 0 0;padding-bottom:env(safe-area-inset-bottom,0px)}
-  body.dp-open .dp-back{display:block;position:fixed;inset:0;z-index:39;background:rgba(10,14,18,.4)}
-  body.dp-open{overflow:hidden}
-  .dp-list{overscroll-behavior:contain}
-  .dp-row{padding:11px 8px;min-height:44px}.dp-chips button{padding:5px 12px;min-height:44px}
-  .dir-tabs button{padding:3px 12px;font-size:13px;min-height:44px}
-  .dir-subs button{min-height:40px}
-  .dir-bar .dir-tabs.folded{max-height:106px}
-  #dTabsMode button,#dPickBtn,.dt-more,#dPickDone,#dPickClear{min-height:44px}
+  .dir-tabs button{padding:3px 12px;font-size:13px;min-height:40px}
+  .dir-subs button{min-height:36px}
+  #dTabsMode button,.dt-more{min-height:40px}
   .grid:not(.list) .card[data-did] .acts .ext{display:none}
 }
-.dir-line{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.dir-line{display:flex;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:8px 12px;min-height:40px}
+.dir-line .ctl-box{margin-left:auto}
+/* the one row of a page of the public space: what slides sideways is the row of tabs (no drop-down, no folding behind "more"); the tools are icons at the right end (the sort goes round its ways, the toast says which) */
+body.in-dir .st-tools,body.in-dir .fl-panel{display:none!important}
+body.in-dir #sort,#langFilter[hidden],#sort[hidden],#sortBtn[hidden],#ctlBox[hidden]{display:none!important}
+.sort-btn{width:auto;min-width:32px;padding:0 6px;gap:4px;font-size:12.5px;color:var(--muted)}
+.sort-btn .sb-l{display:none}
+@media (min-width:981px){.sort-btn .sb-l{display:inline}}
+.dir-line .ibtn{width:36px;height:36px}.dir-line .sort-btn{width:auto}
+@media (max-width:980px){.dir-line .ibtn{width:40px;height:40px}.dir-line .sort-btn{min-width:40px}#dirBar .seg button{min-height:40px;min-width:40px}}          /* (a finger: every button of the row is at least 40 px) */
+#dirBar .dir-tabs{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch;-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent);padding-right:24px}
+#dirBar .dir-tabs::-webkit-scrollbar{display:none}
+#dirBar .dir-tabs button{flex:none}
 .dir-line label{margin:0;font-size:13px;font-weight:700;color:var(--muted)}
 .dir-line select{font:inherit;font-size:14.5px;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:7px 10px;min-width:0;max-width:100%}
 .dir-tabs{display:flex;flex-wrap:wrap;gap:6px;padding:10px 0 2px}
@@ -913,7 +902,6 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .form-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 4px}.form-lbl{font-size:13px;color:var(--muted)}
 .dir-subs .dt-live{color:var(--accent);font-weight:600;border-style:solid}
 .dir-subs{padding-top:0}.dir-subs button{border-style:dashed;font-size:12.5px;padding:2px 10px}.dir-subs button[aria-selected="true"]{border-style:solid}
-.dir-tabs.folded{max-height:80px;overflow:hidden}
 .dt-more{margin:2px 0 0;padding:6px 0;border:0;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--accent);cursor:pointer}
 .dir-reco{max-width:1280px;margin:0 0 24px}
 .dr-block{margin:0 0 16px}
@@ -1554,6 +1542,7 @@ body.dir-listen .ctl-box,body.dir-hot .ctl-box{display:none}
   .fl-row.fl-col:has(#flTag:empty),#flTagRow[hidden]{display:none}
   .fl-dir:empty{display:none}
   body.sh-phone .view-head{padding:8px 0 4px}
+  body.sh-phone.in-dir:not(.vh-text) .view-head{display:none}          /* (the public space has no heading on a phone and, most of the time, no line under the strip either: no empty room) */
   body.sh-phone .view-head h1{position:absolute;width:1px;height:1px;margin:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}          /* (the strip names the page: the heading is only for a reader of the screen) */
   body.sh-phone .view-head p{font-size:13px;min-height:26px;white-space:nowrap;overflow-x:auto;scrollbar-width:none}
   body.sh-phone #viewSub br{display:none}
@@ -1671,6 +1660,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
           <option value="read" data-i="sortRead">最近阅读</option>
           <option value="title" data-i="sortTitle">标题</option>
         </select>
+        <button class="ibtn sort-btn" type="button" id="sortBtn" hidden></button>
         <button class="ibtn" type="button" id="viewBtn"></button>
         <button class="ibtn" type="button" id="noteBtn" data-i-aria="noteNew"><svg class="icon" viewBox="0 0 24 24"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19zM14.5 6.5l3 3"/></svg></button>
         <button class="btn sub" type="button" id="subBtn" data-i-aria="subscribe" hidden><svg class="icon" viewBox="0 0 24 24"><path d="M5 11a8 8 0 0 1 8 8M5 4a15 15 0 0 1 15 15"/><circle cx="6" cy="18" r="1.4"/></svg><span class="lbl" data-i="subscribe">订阅</span></button>
@@ -1704,20 +1694,11 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     </section>
     <div class="dir-bar" id="dirBar" hidden>
       <div class="dir-line">
-        <button class="btn dp-btn" type="button" id="dPickBtn" aria-expanded="false" aria-controls="dPick"><span data-i="dpBtn">节目</span><span class="dp-n" id="dPickN" hidden></span><svg class="icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="seg" id="dTabsMode" role="group"><button type="button" data-dtabs="topic" aria-pressed="true" data-i="dtTopic">领域</button><button type="button" data-dtabs="plat" aria-pressed="false" data-i="dtPlat">平台</button></div>
       </div>
       <div class="dir-tabs" id="dTabs" role="tablist"></div>
       <div class="dir-tabs dir-subs" id="dSubs" role="tablist" hidden></div>
-      <button class="link-btn dt-more" type="button" id="dTabsMore" hidden></button>
-      <div class="dir-pick" id="dPick" hidden role="dialog" aria-label="节目">
-        <div class="dp-top"><input type="search" id="dPickQ" data-i-ph="dpSearch" placeholder="搜索节目" autocomplete="off" enterkeyhint="search"><button class="link-btn" type="button" id="dPickClear" data-i="dpClear">清除</button></div>
-        <div class="dp-chips" id="dPickViews"></div>
-        <div class="dp-list" id="dPickList"></div>
-        <div class="dp-foot"><span id="dPickSum"></span><button class="btn primary" type="button" id="dPickDone" data-i="dpDone">完成</button></div>
-      </div>
     </div>
-    <div class="dp-back" id="dPickBack" hidden></div>
     <div class="reco-banner" id="recoBanner" hidden></div>
     <div class="continue" id="continue" hidden></div>
     <section class="dir-reco" id="dirReco" hidden></section>
@@ -2717,6 +2698,8 @@ Object.assign(I18N.zh,{bkSub:'人工挑选、可以免费读的书和刊物', bk
   bgn_novel:'小说', bgn_philosophy:'哲学', bgn_history:'历史', bgn_verse:'诗文', bgn_science:'科学', bgn_tech:'技术', bgn_magazine:'杂志', bgn_library:'书库'});
 Object.assign(I18N.en,{bkSub:'Hand-picked books and journals that are free to read', bkLists:'Book lists', bkListN:n=>n===1?'1 book':`${n} books`, bkListsMore:n=>`All ${n} book lists ▾`, bkListsLess:'Fewer ▴', bkBackAll:'‹ Book picks', bkAuthorChip:'Author: ',
   bgn_novel:'Fiction', bgn_philosophy:'Philosophy', bgn_history:'History', bgn_verse:'Verse & essays', bgn_science:'Science', bgn_tech:'Tech', bgn_magazine:'Magazines', bgn_library:'Libraries'});
+Object.assign(I18N.zh,{sortBy:v=>`排序：${v}`, sortBooks:'推荐'});
+Object.assign(I18N.en,{sortBy:v=>`Sort: ${v}`, sortBooks:'Picks'});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const catName = c => (['all','featured','books','tools','notes','hidden'].includes(c)? t(c) : c);
@@ -3633,6 +3616,7 @@ const ICON = {
   move:'<svg class="icon" viewBox="0 0 24 24"><path d="M3 7a1 1 0 0 1 1-1h5l2 2h8a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M8.5 14h7M13 11.5l2.5 2.5-2.5 2.5"/></svg>',
   grid:'<svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>',
   list:'<svg class="icon" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="5" cy="6" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="18" r="1"/></svg>',
+  sort:'<svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14M8 19l-3-3M8 19l3-3M16 19V5M16 5l-3 3M16 5l3 3"/></svg>',
   bookmark:'<svg class="icon" viewBox="0 0 24 24"><path d="M6.5 4h11a1 1 0 0 1 1 1v15l-6.5-4-6.5 4V5a1 1 0 0 1 1-1z"/></svg>',
   share:'<svg class="icon" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5M5 14v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5"/></svg>',
   more:'<svg class="icon" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18.5" cy="12" r="1.5"/></svg>',
@@ -3701,6 +3685,7 @@ function render(){
   sel.value = (dm && state.sort==='date') || (!dm && state.sort==='heat') || (state.sort==='heat' && !heatOn) ? 'recent' : state.sort;
   syncFt(dm);
   const vl=state.view==='grid'?t('viewGrid'):t('viewList'); $('#viewBtn').innerHTML=state.view==='grid'?ICON.list:ICON.grid; $('#viewBtn').title=vl; $('#viewBtn').setAttribute('aria-label',vl);
+  { const lab=dirSortLabel(sel.value), sb=$('#sortBtn'), tip=t('sortBy',lab); sb.innerHTML=ICON.sort+`<span class="sb-l">${esc(lab)}</span>`; sb.title=tip; sb.setAttribute('aria-label',tip); document.body.classList.toggle('in-dir',dm); }          // (the public space sorts with one button that goes round the ways, no drop-down)
   $('#themeBtn').textContent=t(themeNow()==='light'?'themeLight':themeNow()==='dark'?'themeDark':'themeAuto');
   document.title=dirOn() && publicRouteFromPath() ? publicLabel(publicRouteFromPath())+'｜'+t('brand') : t('siteTitle');
 
@@ -3713,7 +3698,7 @@ function render(){
   syncSubscribe();
   if(dirMode){ $('#colRow').hidden=true; $('#colNav').hidden=true; $('#recoPane').hidden=true; $('#recoBanner').hidden=true; renderDir(); updNoteSync(); renderPublicAd(); syncReader(); return; }
   renderPublicAd(); document.documentElement.classList.remove('ptr');
-  $('#moreRow').hidden=true; $('#dirLabel').textContent=t('dir'); $('#dirBar').hidden=true; document.body.classList.remove('dir-discover','dir-hot','dir-listen'); $('#dirReco').hidden=true; $('#dirReco').innerHTML=''; state.dPickOpen=false; $('#dPick').hidden=true; $('#dPickBack').hidden=true; document.body.classList.remove('dp-open');          // (the directory's home page is made again when it is shown: its cards must not linger behind the shelf)
+  $('#moreRow').hidden=true; $('#dirLabel').textContent=t('dir'); $('#dirBar').hidden=true; document.body.classList.remove('dir-discover','dir-hot','dir-listen'); $('#dirReco').hidden=true; $('#dirReco').innerHTML='';          // (the directory's home page is made again when it is shown: its cards must not linger behind the shelf)
 
   renderCols();                                                            // also settles which part of the shelf is shown, before anything below counts it
   const tags=ownTags(); if(state.tag && !tags.some(g=>g.name.toLowerCase()===state.tag.toLowerCase())) state.tag='';
@@ -4183,8 +4168,6 @@ function dirBooksHeadHTML(){                                                    
       return `<button class="bkp-list" type="button" data-blist="${esc(l.id)}"><span class="bkp-stack" aria-hidden="true">${bs.map(b=>`<i style="background:${coverLook(b).pal[2]}"></i>`).join('')}</span><span class="bkp-txt"><span class="bkp-name">${esc(bkText(l.name))}</span><span class="bkp-n">${esc(t('bkListN',l.books.length))}</span></span></button>`;
     }).join('')}</div>${lists.length>4 ? `<button class="dt-more" type="button" data-blmore="1" aria-expanded="${open}">${esc(open ? t('bkListsLess') : t('bkListsMore',lists.length))}</button>` : ''}</section>`;
   }
-  const have=new Set(dirList('genre').map(bookGenre));                                              // (a genre with no book under the language and the search that are on is not offered)
-  if(have.size>=2 || state.dGenre) html+=`<div class="dir-tabs bkp-tabs" role="tablist"><button type="button" role="tab" data-bgenre="" aria-selected="${!state.dGenre}">${esc(t('all'))}</button>${BOOK_GENRES.filter(g=>have.has(g) || g===state.dGenre).map(g=>`<button type="button" role="tab" data-bgenre="${g}" aria-selected="${state.dGenre===g}">${esc(t('bgn_'+g))}</button>`).join('')}</div>`;
   if(state.dAuthor) html+=`<p class="bkp-au"><button class="chip" type="button" data-bauthor="" title="${esc(t('clearTag'))}"><b>${esc(t('bkAuthorChip')+state.dAuthor)}</b><em>✕</em></button></p>`;
   return html ? `<div class="bkp-head">${html}</div>` : '';
 }
@@ -4983,7 +4966,8 @@ const CHANGELOG=[{v:'2026-10-22',
       '新增“专注模式”（学习、冥想）：点歌曲列表上的“专注”、播放条上的 ◎ 或“正在播放”页里的“专注模式”，整个屏幕只剩一个缓慢变化的图案（呼吸 / 极光 / 暗）和一行小字歌名，并自动放整首的歌或整集的节目（30 秒试听不算）；按钮 4 秒不碰就隐去，碰一下屏幕再出来：上一首 / 暂停 / 下一首、音乐 ↔ 播客、定时（15 / 25 / 45 / 60 分钟）、换图案；Esc 或 × 退出，声音继续。读文章时，阅读栏上的“专注阅读”（手机在“Aa 阅读设置”里）收起所有按钮，只留正文和右下角一个小条（暂停、下一首、图案页、退出），进入时自动放，在小条里暂停过，下次就不自动放。',
       '页面更简洁：公共目录顶部不再有“共 N 条，来自 N 个书架，更新于…”那行计数；界面语言只留“自动”和一个“中 / EN”按钮（点一下换成另一种）；公共目录的“显示更多”滚到底自动加载。',
       '“今日听什么”重做：音乐分成“推荐 / 榜单 / 发现”三个标签（国内 ⇄ 国际决定先推荐哪里的歌；榜单一排地区，发现里风格和场景分开），一首歌只留封面、歌名、艺人、♥ 和 ⋯（下一首播放、加入歌单、喜欢、不想听这类）；喜欢的歌、自己建的歌单、最近播放只记在这台设备上。点一首歌就把这张列表放进播放条；一首歌有好几个音源时，放不出来或几秒没有声音会自动换下一个，整首的排在试听前面；音乐的播放条用“列表循环 / 单曲循环 / 随机 / 顺序”代替倍速（播客仍有倍速）；播放器的弹窗就是播放器：左上收起、右上 × 关闭播放器、列表标题处“清空”（可撤销），点弹窗外面或 3 分钟不动会自动收起，设置只有音源、省流量、定时关闭三项。',
-      '精选图书页改简单了：没有“节目 / 栏目 / 平台”那套筛选，没有“已更新”那行字（发现世界所有页面都去掉了），侧栏里的标签列表也去掉了；标题下是站长手挑的几张“书单”（点一张只看这张里的书，每本有一句推荐理由）和一排类别（小说、哲学、科学、技术、杂志……），点书名下的作者名可以看他的全部书。书的卡片上不再写“站长推荐”“书籍”、授权和标签，只有语言、作者、来源、章数、喜欢、热度、收藏，读过的书写“读到 第 3 回 · 12%”，封面底边有一条细线。读书时点返回就是返回，不再弹出章节表。'],
+      '精选图书页改简单了：没有“节目 / 栏目 / 平台”那套筛选，没有“已更新”那行字（发现世界所有页面都去掉了），侧栏里的标签列表也去掉了；标题下是站长手挑的几张“书单”（点一张只看这张里的书，每本有一句推荐理由）和一排类别（小说、哲学、科学、技术、杂志……），点书名下的作者名可以看他的全部书。书的卡片上不再写“站长推荐”“书籍”、授权和标签，只有语言、作者、来源、章数、喜欢、热度、收藏，读过的书写“读到 第 3 回 · 12%”，封面底边有一条细线。读书时点返回就是返回，不再弹出章节表。',
+      '发现世界每个页面只剩一行筛选，没有下拉了：“节目 / 栏目”挑选和手机上的“筛选”面板去掉了，栏目（或平台）标签排成一行向左右滑；右端是排序（一个图标，点一下换一种排法，提示里写着现在是哪一种）和卡片 / 列表图标；内容语言（全部 / 中 / EN）只留在精选图书、精选文章、全部这几个内容多的页面。标签条下面的空白去掉了，热榜、今日听什么、精选图书标题下的说明文字也去掉了。“今日听什么”的推荐页更干净：去掉了“今日电台”卡；精选歌单在上，排头是“我喜欢的 / 最近播放 / 我的歌单”三个带数字的方块；为你推荐在下，一行一首，先 30 首，滚到底自动再加，标题右边是播放和换一批两个图标；“国内 ⇄ 国际”按钮去掉了，先推荐哪里的歌跟着界面语言和设备时区走。'],
   en:['New: “Back up & restore”: export the files, collections, subscriptions and reading places you added into one file, and restore it when you change device or fear a loss.',
       'Subscribed and saved links can now be read in the page: when a feed carries the full text it is shown at once; otherwise, and for any article link you paste and for the articles of the public directory, the original page is read and shown here and kept in your browser. Pages that need a login or do not let programs read them still open the original site (the card says “Original only”).',
       'New in the reading settings: “Download as a web page (HTML)” and “Print / save as PDF”.',
@@ -5022,7 +5006,8 @@ const CHANGELOG=[{v:'2026-10-22',
       'New: “Focus mode” (for studying or meditating). Press “Focus” above the song list, ◎ in the player bar, or “Focus mode” in the “Now playing” page: the whole screen holds only a slowly changing pattern (Breath / Aurora / Dark) and the title in small letters, and a whole song or a whole episode starts by itself (30-second previews do not count). The buttons disappear after four seconds and come back at a touch: previous / pause / next, music ↔ podcasts, a timer (15 / 25 / 45 / 60 minutes), the pattern; Esc or × leaves it and the sound goes on. While reading, “Focus reading” in the reader’s bar (on a phone in the “Aa” settings) hides every button and leaves the text and a small pill at the bottom right (pause, next, the pattern page, leave); the sound starts by itself, unless you paused it in the pill last time.',
       'A simpler page: the public directory no longer starts with the count line “N items from N shelves, updated …”; the interface language is “Auto” and one button (中 / EN) that switches to the other language; “Show more” in the directory loads by itself at the end of the page.',
       '“What to listen to today” was rebuilt: the music side has three tabs, “For you / Charts / Discover” (China ⇄ World says whose songs come first; the charts are one row of regions, Discover keeps styles and scenes apart), and a song is only a cover, a title, an artist, a heart and a ⋯ (play next, add to a play list, like, not this kind); the songs you like, the play lists you make and what you played last are kept on this device only. A click on a song makes its list the list of the bar; when a song has several sounds and one cannot be played, or stays silent for a few seconds, the next one is tried (a whole sound before a preview); the bar of music has “repeat the list / repeat one / shuffle / in order” instead of the speed (podcasts keep the speed); the popup of the player is the player: fold at the top left, × at the top right closes it, “Clear” at the list (can be undone), a tap outside or three minutes without a touch fold it, and there are three settings: the source, spare the data, the timer.',
-      'The page of the picked books is simpler: no “Programs / Columns / Platforms” filters, no “Updated” line (gone from every page of the public space), and the list of tags in the side is gone; under the title come a few hand-made “book lists” (tap one and only its books are shown, each with a line on why) and a row of genres (fiction, philosophy, science, tech, magazines …); the name of an author under a title shows all his books. A book’s card no longer says “Owner’s pick”, “Book”, the licence or tags, only the language, author, source, chapters, like, heat and bookmark; a book you have begun says “At Chapter 3 · 12%” and has a thin line along its cover. Tapping back in a book just goes back: the list of chapters no longer pops up.']}];
+      'The page of the picked books is simpler: no “Programs / Columns / Platforms” filters, no “Updated” line (gone from every page of the public space), and the list of tags in the side is gone; under the title come a few hand-made “book lists” (tap one and only its books are shown, each with a line on why) and a row of genres (fiction, philosophy, science, tech, magazines …); the name of an author under a title shows all his books. A book’s card no longer says “Owner’s pick”, “Book”, the licence or tags, only the language, author, source, chapters, like, heat and bookmark; a book you have begun says “At Chapter 3 · 12%” and has a thin line along its cover. Tapping back in a book just goes back: the list of chapters no longer pops up.',
+      'Every page of the public space now has one row of filters and no dropdown: the “Programs / Columns” picker and the phone’s “Filter” panel are gone, the tabs of columns (or platforms) sit in one row that slides sideways; at its right end are the sort (one icon: tap to go to the next way, the tooltip says which) and the cards / rows icon; the language of the content (All / 中 / EN) stays only on Book picks, Selected articles and All, where there is a lot to filter. The blank under the strip is gone, and so are the explaining lines under the titles of Hot lists, What to listen to today and Book picks. The “For you” tab of What to listen to today is cleaner: the “Today’s radio” card is gone; the play lists come first and begin with three squares with their numbers (Liked, Recent, My lists); the songs for you come below, one to a row, thirty at first and thirty more by themselves at the end, with a play icon and a next-batch icon at the right of the title; the “China ⇄ World” button is gone, whose songs come first follows the interface language and the time zone of the device.']}];
 const guideItem = () => state.items.find(x=>(x.source==='static'||x.source==='server') && /(^|\/)notes\/guide\/index\.html$/.test(x.id));
 const canAsk=()=>!!state.dirCfg && !LS.get('dirIntroOff',0) && !state.dPickT.size;               // the question "what do you feel like reading?" is for somebody who has not answered it, where the site has a public space
 function introStep(n, ask){                                                                  // which buttons go with which step of the window
@@ -6453,7 +6438,7 @@ let lastAdRailWide=adRailWide();
 addEventListener('resize',()=>{ const wide=adRailWide(); if(wide!==lastAdRailWide){ lastAdRailWide=wide; render(); } else renderPublicAd(); });
 const dirBase = () => httpUrl(state.dirData && state.dirData.base) || state.dirCfg;
 /* ---- what the directory page adds: heat, a recommended strip, a collection dropdown XOR domain / platform tabs ---- */
-state.dView='all'; state.dTab=''; state.dTabs=LS.get('dirTabs','topic')==='plat' ? 'plat' : 'topic'; state.heat=null; state.heatAt=0; state.dirRead=LS.get('dirRead',{}); state.vote=LS.get('dirVote',{}); state.dPick=new Set((LS.get('dirPick',[])||[]).map(String)); state.dPickOpen=false; state.dPickQ=''; state.mixSeed=0; state.dPickT=new Set((LS.get('dirPickT',[])||[]).map(String)); state.dSub=''; state.dIntro=new Set(); state.dPlatMore=false; state.dPlatRest=0; state.dBrowse=false;
+state.dView='all'; state.dTab=''; state.dTabs=LS.get('dirTabs','topic')==='plat' ? 'plat' : 'topic'; state.heat=null; state.heatAt=0; state.dirRead=LS.get('dirRead',{}); state.vote=LS.get('dirVote',{}); state.dPick=new Set((LS.get('dirPick',[])||[]).map(String)); state.mixSeed=0; state.dPickT=new Set((LS.get('dirPickT',[])||[]).map(String)); state.dSub=''; state.dIntro=new Set(); state.dPlatMore=false; state.dPlatRest=0; state.dBrowse=false;
 state.ls={scene:String(LS.get('lsScene','')||'')};
 state.lp={idx:null, idxAt:0, busy:false, err:'', data:new Map(), pending:new Map(), g:String(LS.get('lpG','daily')||'daily'), mode:'music', g_music:String(LS.get('lpG_music','daily')||'daily'), g_podcast:String(LS.get('lpG_podcast','pod-hot')||'pod-hot'), show:'', shown:30, more:false, pods:null, podsKey:'', io:null,
   sort:(k=>['rank','new','dur','title','artist'].includes(k)?k:'rank')(LS.get('lpSort','rank')),
@@ -6664,32 +6649,34 @@ function dirViews(){
   return [['all',t('dvAll')], d.shelves.some(s=>s.featured && s.n>0)?['featured',t('dvFeatured')]:null, heatAvailable()?['hot',t('dvHot')]:null, subCols().length?['subs',t('dvSubs')]:null].filter(Boolean);
 }
 const saveDirPick = () => LS.set('dirPick',[...state.dPick]);
-const pickOn = () => state.dTabs==='plat' && state.dPick.size>0;                                    // the ticked programs count on the platform side only
 const saveDirPickT = () => LS.set('dirPickT',[...state.dPickT]);
-const topicPickOn = () => state.dTabs==='topic' && state.dPickT.size>0;                             // the ticked categories count on the domain side only
-const pickCount = () => state.dTabs==='plat' ? state.dPick.size : state.dPickT.size;
-const clearPick = () => { if(state.dTabs==='plat'){ state.dPick.clear(); saveDirPick(); } else { state.dPickT.clear(); saveDirPickT(); } };
+const pickOn = () => false, topicPickOn = () => false, pickCount = () => 0;                         // (the pickers of programs and of columns are gone: what a browser ticked before is kept as its interests, for "for you", and no longer hides anything)
+const clearPick = () => { state.dPick.clear(); saveDirPick(); state.dPickT.clear(); saveDirPickT(); };
 const short7 = s => { const a=[...String(s)]; return a.length>7 ? a.slice(0,6).join('')+'…' : String(s); };      // a long name is cut to 7 characters
-function renderDirBar(){
+/* The language of the content (all / 中 / EN) is a filter only where there is a lot to filter: the picked books, the picked articles and the whole list. Elsewhere it is not offered and not applied (the interface language already puts its own first). */
+const langOnPage = () => booksPage() || state.dLanding==='articles' || (!state.dLanding && state.dBrowse && state.dType==='all');
+const dirLf = () => langOnPage() ? state.lf : 'all';
+function renderDirBar(){                                                                          // the one row of a content page: a switch (columns | platforms), the tabs of it in ONE line that slides sideways, and at the right end the language (where it is offered), the sort and the cards / rows
   $('#dirBar').hidden=false;
+  const bkp=booksPage(); $('#dTabsMode').hidden=bkp;
+  if(bkp){                                                                                         // the picked books: the genres are the tabs
+    const have=new Set(dirList('genre').map(bookGenre));
+    $('#dTabs').innerHTML = !state.dList && (have.size>=2 || state.dGenre) ? `<button type="button" role="tab" data-bgenre="" aria-selected="${!state.dGenre}">${esc(t('all'))}</button>`+BOOK_GENRES.filter(g=>have.has(g) || g===state.dGenre).map(g=>`<button type="button" role="tab" data-bgenre="${g}" aria-selected="${state.dGenre===g}">${esc(t('bgn_'+g))}</button>`).join('') : '';
+    $('#dSubs').hidden=true; $('#dSubs').innerHTML='';
+    return;
+  }
   document.querySelectorAll('[data-dtabs]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.dtabs===state.dTabs)));
   if(state.dTab && (state.dTabs==='topic')!==state.dTab.startsWith('col:')) state.dTab='';
+  state.dPlatMore=true;                                                                            // (all the platforms are in the row: it slides, nothing is folded behind "more")
   const base=dirList('tab'), counts=new Map();
   base.forEach(it=>{ dirMeta(it); if(state.dTabs==='topic'){ if(it.col) counts.set(it.col,(counts.get(it.col)||0)+1); } else counts.set(it.plat,(counts.get(it.plat)||0)+1); });
-  const tabs = state.dTabs==='topic' ? DIR_COLS.filter(c=>counts.get(c.id) && (!topicPickOn() || state.dPickT.has(c.id))).map(c=>['col:'+c.id, colName(c.id), counts.get(c.id)])
+  const tabs = state.dTabs==='topic' ? DIR_COLS.filter(c=>counts.get(c.id)).map(c=>['col:'+c.id, colName(c.id), counts.get(c.id)])
                                       : platTabs(base, counts);
-  const moreBtn = state.dTabs==='plat' && (state.dPlatRest>0 || state.dPlatMore) ? `<button type="button" class="dt-pm" data-dplatmore>${esc(state.dPlatMore ? t('dtLess') : t('platMore',state.dPlatRest))}</button>` : '';
   if(state.dTab && !tabs.some(x=>x[0]===state.dTab)) state.dTab='';
   $('#dTabs').innerHTML=`<button type="button" role="tab" data-dtab="" aria-selected="${!state.dTab}">${esc(t('dtAll'))}<span class="n">${base.length}</span></button>`
-    + tabs.map(([k,l,n])=>`<button type="button" role="tab" data-dtab="${esc(k)}" title="${esc(l)}" aria-selected="${k===state.dTab}">${esc(state.dTabs==='plat' ? short7(l) : l)}<span class="n">${n}</span></button>`).join('') + moreBtn;       // (a platform's name is cut to 7 characters; a domain's name is a word of its own)
+    + tabs.map(([k,l,n])=>`<button type="button" role="tab" data-dtab="${esc(k)}" title="${esc(l)}" aria-selected="${k===state.dTab}">${esc(state.dTabs==='plat' ? short7(l) : l)}<span class="n">${n}</span></button>`).join('');       // (a platform's name is cut to 7 characters; a domain's name is a word of its own)
   renderSubs();
-  const te=$('#dTabs'); let over=false;                                                            // a phone: two lines of tabs, the rest behind "more" (the first screen is for the first article); only when there is a third line to hide
-  if(phoneNow() && !state.dTab){ te.classList.add('folded'); over=te.scrollHeight>te.clientHeight+24; }
-  te.classList.toggle('folded', over && !state.dTabsOpen);
-  $('#dTabsMore').hidden=!over; $('#dTabsMore').textContent=t(state.dTabsOpen?'dtLess':'dtMore');
-  const n=pickCount(), lab=$('#dPickBtn span[data-i]'); lab.dataset.i=state.dTabs==='plat' ? 'dpBtn' : 'dpBtnT'; lab.textContent=t(lab.dataset.i);          // "节目" (platform side) / "分类" (domain side)
-  $('#dPickBtn').hidden=false; $('#dPickN').hidden=!n; $('#dPickN').textContent=n; $('#dPickBtn').classList.toggle('on',n>0); $('#dPickBtn').setAttribute('aria-expanded',String(!!state.dPickOpen));
-  renderPick();
+  const on=$('#dTabs [aria-selected="true"]'), row=$('#dTabs'); if(on && row.scrollWidth>row.clientWidth+2) row.scrollLeft=Math.max(0,on.offsetLeft-(row.clientWidth-on.offsetWidth)/2);          // (the chosen one is in view)
 }
 function renderSubs(){                                                                          // inside a column: its domains (科技 / 编程 ...), when there is more than one
   const box=$('#dSubs'); let html='';
@@ -6706,40 +6693,6 @@ function renderSubs(){                                                          
   if(live) html+=`<button type="button" class="dt-live" data-hot-go="${esc(live)}">${esc(t('hotLive'))} ›</button>`;
   box.innerHTML=html; box.hidden=!html;
 }
-/* the "节目" panel: every program (shelf) of what the tabs show now, a tick on any number of them (kept in this browser): the tabs then show only those programs */
-function renderPick(){
-  const open=!!state.dPickOpen && dirOn() && !!state.dirData, p=$('#dPick');
-  p.hidden=!open; $('#dPickBack').hidden=!open; document.body.classList.toggle('dp-open',open);
-  if(!open) return;
-  const views=dirViews(); if(!views.some(v=>v[0]===state.dView)) state.dView='all';
-  $('#dPickViews').innerHTML = views.length>1 ? views.map(([k,l])=>`<button type="button" data-dv="${k}" aria-pressed="${k===state.dView}">${esc(l)}</button>`).join('') : '';
-  $('#dPickQ').placeholder=t(state.dTabs==='plat' ? 'dpSearch' : 'dpSearchT');
-  if(state.dTabs==='topic'){                                                                       // the domain side: the categories, a tick on any number of them
-    const cnt=new Map(); dirList('pickt').forEach(it=>{ dirMeta(it); if(it.col) cnt.set(it.col,(cnt.get(it.col)||0)+1); });
-    const q=state.dPickQ, nm=tp=>state.lang==='zh' ? tp.zh : tp.en;
-    const rowsT=DIR_COLS.filter(tp=>(cnt.get(tp.id) || state.dPickT.has(tp.id)) && (!q || nm(tp).toLowerCase().includes(q))).sort((a,b)=>(cnt.get(b.id)||0)-(cnt.get(a.id)||0));
-    const lst=$('#dPickList'), top0=lst.scrollTop;
-    lst.innerHTML = rowsT.length ? rowsT.map(tp=>`<label class="dp-row"><input type="checkbox" data-pickt="${esc(tp.id)}"${state.dPickT.has(tp.id)?' checked':''}><span class="dp-name">${esc(nm(tp))}</span><span class="dp-meta">${esc(t('dpItems',cnt.get(tp.id)||0))}</span></label>`).join('') : `<p class="dp-none">${esc(t('dpNoneT'))}</p>`;
-    lst.scrollTop=top0; $('#dPickSum').textContent=t('dpSumT',state.dPickT.size); return;
-  }
-  const cnt=new Map(); dirList('pick').forEach(it=>cnt.set(it.shelf,(cnt.get(it.shelf)||0)+1));
-  const q=state.dPickQ, ids=[...cnt.keys()], out=[...state.dPick].filter(id=>!cnt.has(id) && state.shelfMap.has(id));
-  const match=s=>!q || (s.name+' '+s.description).toLowerCase().includes(q);
-  const rows=ids.map(id=>state.shelfMap.get(id)).filter(s=>s && match(s)).sort((a,b)=>heatOfShelf(b)-heatOfShelf(a) || (cnt.get(b.id)-cnt.get(a.id)) || a.name.localeCompare(b.name));
-  const row=s=>`<label class="dp-row"><input type="checkbox" data-pick="${esc(s.id)}"${state.dPick.has(s.id)?' checked':''}><span class="dp-name" title="${esc(s.name)}">${esc(s.name)}</span><span class="dp-meta">${esc(platName(s.plat||'blog'))} · ${esc(t('dpItems',cnt.get(s.id)||s.n))}${heatOfShelf(s)>0?` · <span class="heat">${ICON.flame}${esc(kfmt(heatOfShelf(s)))}</span>`:''}</span></label>`;
-  let html='';
-  if(out.length) html+=`<div class="dp-group">${esc(t('dpPicked'))}</div>`+out.map(id=>state.shelfMap.get(id)).filter(s=>match(s)).map(row).join('');
-  if(state.dTab){ html+=rows.map(row).join(''); }
-  else {                                                                                       // all: grouped by what the tabs are made of (the domain, or the platform)
-    const topic=state.dTabs==='topic', groups=new Map();
-    rows.forEach(s=>{ const g=topic ? ((s.topics&&s.topics[0])||'') : (s.plat||'blog'); if(!groups.has(g)) groups.set(g,[]); groups.get(g).push(s); });
-    const gname=g=>!g ? t('dpOther') : topic ? ((dirTopics().find(x=>x.id===g)||{})[state.lang==='zh'?'zh':'en']||g) : platName(g);
-    [...groups.entries()].sort((a,b)=>(topic?(a[0]?0:1)-(b[0]?0:1):platRank(a[0])-platRank(b[0])) || b[1].length-a[1].length).forEach(([g,list])=>{ html+=`<div class="dp-group">${esc(gname(g))}</div>`+list.map(row).join(''); });
-  }
-  const list=$('#dPickList'), top=list.scrollTop;
-  list.innerHTML = html || `<p class="dp-none">${esc(t('dpNone'))}</p>`; list.scrollTop=top;
-  $('#dPickSum').textContent=t('dpSum',state.dPick.size);
-}
 /* ---- the home page of the directory: not one long list. Owner's picks, "for you" (what this browser has read, saved, followed and liked), the top of every domain / platform mixed, the top 5 of every hot list. */
 function dirScore(it){                                                                          // how much an entry deserves a place up front: heat (log), freshness (halves in 3 days), the owner's pick, likes; a place on a hot list; dislikes count against it
   const sh=state.shelfMap.get(it.shelf)||{}, h=(state.heat && state.heat.items[it.id]) || {}, ts=Date.parse(String(it.date||'').slice(0,10)), age=isNaN(ts) ? 365 : Math.max(0,(Date.now()-ts)/86400000);
@@ -6748,7 +6701,7 @@ function dirScore(it){                                                          
   if(it.rank) s+=Math.max(0,6-it.rank)*.25;
   s+=opsWeight(it)*.25;
   if(moduleOn('featured') && hasPlacement(it,'featured')) s+=3; else if(moduleOn('selected') && hasPlacement(it,'selected')) s+=2; else if(moduleOn('personalized') && hasPlacement(it,'personalized')) s+=1.5; else if(moduleOn('trending') && hasPlacement(it,'trending')) s+=1;
-  if(state.lf==='all' && it.lang && it.lang===state.lang) s+=state.lang==='zh' ? 1.8 : .7;        // the page's own language comes first, a Chinese page's Chinese by a clear margin (nothing is hidden: the filter "中 / EN" does that)
+  if(dirLf()==='all' && it.lang && it.lang===state.lang) s+=state.lang==='zh' ? 1.8 : .7;        // the page's own language comes first, a Chinese page's Chinese by a clear margin (nothing is hidden: the filter "中 / EN" does that)
   return s;
 }
 function diversify(list, cap, max){ const per=new Map(), out=[]; for(const it of list){ const n=per.get(it.shelf)||0; if(n>=cap) continue; per.set(it.shelf,n+1); out.push(it); if(out.length>=max) break; } return out; }      // (one program does not fill the page)
@@ -7145,14 +7098,14 @@ function lpSorted(items, id){
 const lpShownItems=()=>{ const cur=lpCur(); if(!cur) return state.lp.tab==='rec' ? lpRecItems() : []; return lpSorted(lpGroupItems(cur, cur==='pod' ? state.lp.show : '').items, cur); };
 function lpEnsure(){                                                                                 // the lists that the page on the screen needs are asked for (the daily picks for the radio, the chart that is shown, the list that was opened)
   if(!listenApi()) return; lpIndex(); const L=state.lp;
-  if(!lpPodMode() && L.tab==='rec'){ const d=lpGroups().find(g=>g.type==='music' && g.kind==='daily'); if(d) lpLoad(d.id); }
+  if(!lpPodMode() && L.tab==='rec'){ const gs=lpGroups(), d=gs.find(g=>g.type==='music' && g.kind==='daily'), m=lpMixGroup(gs); if(d) lpLoad(d.id); if(m) lpLoad(m.id); }
   const cur=lpCur(); if(cur && cur!=='pod' && !cur.startsWith('my:')) lpLoad(cur);
 }
 function lpDate(){ const ymd=String((state.lp.idx && state.lp.idx.date) || today()).split('-').map(Number), dd=new Date(ymd[0],ymd[1]-1,ymd[2]); return isNaN(dd) ? '' : dd.toLocaleDateString(state.lang==='zh' ? 'zh-CN' : 'en', {month:'long', day:'numeric'}); }
 function lpMeta(x){ return [x.artist || x.from, x.hot ? '🔥 '+t('lpRank',x.hot) : '', x.preview ? t('lsPreviewS') : '', x.net==='global' ? t('lsGlobal') : ''].filter(Boolean); }          // (who it is by, how hot it is (the place in a chart), "preview" when it is one, "overseas": nothing else)
 const lpIsRows=()=> LS.get('lpView','rows')!=='cards';                                              // (rows by default: a chart is read down a list; the cards are one tap away; the shelf's own view choice is not touched)
 const LP_BARS='<i class="ls-bars" aria-hidden="true"><b></b><b></b><b></b></i>';                       // (the little bars that dance on the row that plays)
-function listenRowHTML(x, playing){                                                                 // a song as a row: [rank] cover, title (a small "preview" when it is one), artist, ♥ and ⋯; an episode keeps a play mark and a link to its page
+function listenRowHTML(x, playing, plain){                                                                 // a song as a row: [rank] cover, title (a small "preview" when it is one), artist, ♥ and ⋯; an episode keeps a play mark and a link to its page
   lpSeen.set(x.id,x);
   const stream=x.mode==='stream';
   const cv=x.cover ? `<img src="${esc(x.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span>${esc(String(x.artist||x.title).slice(0,1)||'♪')}</span>`;
@@ -7160,7 +7113,7 @@ function listenRowHTML(x, playing){                                             
     const src=stream && x.url ? `<a class="ls-src" href="${esc(x.url)}" target="_blank" rel="nofollow ugc noopener noreferrer" title="${esc(t('lsSrc',x.from||hostOf(x.url)))}" aria-label="${esc(t('lsSrc',x.from||hostOf(x.url)))}">↗</a>` : '';
     return `<li class="ls-row nonum${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}"><span class="ls-cv">${cv}${LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}</b><span class="ls-m"><span class="ls-w">${esc(lpMeta(x)[0]||'')}</span>${lpMeta(x).length>1 ? `<span class="ls-x"> · ${esc(lpMeta(x).slice(1).join(' · '))}</span>` : ''}</span></span><span class="ls-ic" aria-hidden="true">${ICON.play}</span></button>${src}</li>`;
   }
-  const liked=lpIsLiked(x.id), num=x.hot>0;
+  const liked=lpIsLiked(x.id), num=x.hot>0 && !plain;          // (plain: a list that is not a chart, such as the songs for you, which mixes a chart in: no place in front of a song)
   return `<li class="ls-row${num?'':' nonum'}${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}">${num ? `<span class="ls-n${x.hot<=3?' top':''}"><em>${x.hot}</em>${LP_BARS}</span>` : ''}<span class="ls-cv">${cv}${num?'':LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}${x.preview ? `<em class="ls-pv">${esc(t('lsPreviewS'))}</em>` : ''}</b><span class="ls-m">${esc(x.artist||x.from)}</span></span></button>`
     + `<button class="ls-like" type="button" data-ls-like="${esc(x.id)}" aria-pressed="${liked}" title="${esc(t(liked?'lsLiked':'lsLike'))}" aria-label="${esc(t(liked?'lsLiked':'lsLike'))}">${ICON.heart}</button><button class="ls-more" type="button" data-ls-more="${esc(x.id)}" aria-haspopup="dialog" title="${esc(t('lsMore'))}" aria-label="${esc(t('lsMore'))}">${ICON.more}</button></li>`;
 }
@@ -7172,15 +7125,15 @@ function lpCardHTML(x, playing){                                                
   return `<article class="lp-sc${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="lp-cv" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}">${cv}<span class="lp-pl" aria-hidden="true">${ICON.play}</span></button>`
     + `<div class="lp-tx"><b class="lp-t" title="${esc(x.title)}">${esc(x.title)}</b><span class="lp-a">${esc(who||'')}</span><span class="lp-m">${esc(m.join(' · '))}</span></div>${src}</article>`;
 }
-function lpItemsHTML(items, from, to){                                                               // the cards (or rows) from `from` to `to` of the list
+function lpItemsHTML(items, from, to, plain){                                                               // the cards (or rows) from `from` to `to` of the list
   const now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '', playing=x=>!!now && now==='tmp:ls:'+x.id, part=items.slice(from,to);
-  return lpIsRows() || !lpPodMode() ? part.map(x=>listenRowHTML(x,playing(x))).join('') : part.map(x=>lpCardHTML(x,playing(x))).join('');          // (the cards are for the podcast side; songs are always rows)
+  return lpIsRows() || !lpPodMode() ? part.map(x=>listenRowHTML(x,playing(x),plain)).join('') : part.map(x=>lpCardHTML(x,playing(x))).join('');          // (the cards are for the podcast side; songs are always rows)
 }
-function lpSortSel(cur){                                                                              // the sort of the list that is shown (a podcast chart: its own order, newest, length ...)
-  const L=state.lp, pod=cur==='pod', isPod=lpTypeOf(cur)==='podcast';
-  const keys=isPod ? (pod ? ['rank','dur','title','artist'] : ['rank','new','dur','title','artist']) : ['rank','dur','title','artist'];
-  const sort=keys.includes(L.sort) ? L.sort : 'rank';
-  return `<select class="lp-sort" data-lp-sort aria-label="${esc(t('lpSort'))}" title="${esc(t('lpSort'))}">${keys.map(k=>`<option value="${k}"${sort===k?' selected':''}>${esc(k==='rank' ? t(pod ? 'lpSortNew' : isPod ? 'lpSortChart' : 'lpSortRank') : t('lpSort_'+k+(isPod && k==='artist' ? 'P' : '')))}</option>`).join('')}</select>`;
+function lpSortKeys(cur){ const pod=cur==='pod', isPod=lpTypeOf(cur)==='podcast'; return isPod ? (pod ? ['rank','dur','title','artist'] : ['rank','new','dur','title','artist']) : ['rank','dur','title','artist']; }
+function lpSortLabel(cur,k){ const pod=cur==='pod', isPod=lpTypeOf(cur)==='podcast'; return k==='rank' ? t(pod ? 'lpSortNew' : isPod ? 'lpSortChart' : 'lpSortRank') : t('lpSort_'+k+(isPod && k==='artist' ? 'P' : '')); }
+function lpSortSel(cur){                                                                              // the sort of the list that is shown (a podcast chart: its own order, newest, length ...): ONE button, each tap the next way, the toast says which
+  const L=state.lp, keys=lpSortKeys(cur), sort=keys.includes(L.sort) ? L.sort : 'rank', tip=t('sortBy',lpSortLabel(cur,sort));
+  return `<button class="ibtn lp-sort" type="button" data-lp-sortgo title="${esc(tip)}" aria-label="${esc(tip)}">${ICON.sort}</button>`;
 }
 function lpSongsHTML(cur, groups){
   const L=state.lp, pod=cur==='pod', info=lpGroupItems(cur, pod ? L.show : ''), g=groups.find(x=>x.id===cur), isPod=lpTypeOf(cur)==='podcast';
@@ -7201,7 +7154,8 @@ function lpOrder(mode){ const mine=lpGroups().filter(g=>g.type===mode); return m
    discover: styles and scenes as cards. A list opened from the first or the third has a back arrow. The podcast side keeps its strip of lists. */
 const LP_REGIONS=['cn','west','jp-kr','global'], LP_SCENES=['chill','focus','sleep','workout','commute','study'];
 const LP_BACK='<svg class="icon" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>', LP_SWAP='<svg class="icon" viewBox="0 0 24 24"><path d="M7 7h12M16 4l3 3-3 3M17 17H5M8 14l-3 3 3 3"/></svg>';
-const lpRegionPref=()=>LS.get('lpRegion', state.lang==='zh'?'cn':'global')==='cn' ? 'cn' : 'global';
+const lpCnZone=()=>{ try{ return /^Asia\/(Shanghai|Chongqing|Harbin|Urumqi|Hong_Kong|Macau|Taipei)$/.test(Intl.DateTimeFormat().resolvedOptions().timeZone||''); }catch(e){ return false; } };
+const lpRegionPref=()=>state.lang==='zh' || lpCnZone() ? 'cn' : 'global';          // (whose songs come first: by the interface language and the time zone of the device, nothing is asked of the network and there is no button for it)
 const lpIsChart=g=>g.kind==='chart' || /^(nep-|dzp-(3155776842|1313621735|1111142221)$)/.test(g.id);          // (a chart: a place in it is how hot a song is; until the service says so by kind, the lists of the top of Deezer and NetEase are charts too)
 const lpIsScene=g=>g.kind==='scene' || LP_SCENES.includes(g.id);
 function lpRegionOf(g){                                                                              // the region of a chart: what the service says, else by its name / language
@@ -7219,21 +7173,30 @@ function lpChartCur(){                                                          
 }
 const lpPodMode=()=>state.lp.mode==='podcast' || !lpGroups().some(g=>g.type!=='podcast');                 // (the podcast side is shown when it was chosen, or when there is no music at all: the shows of the directory)
 function lpCur(){ const L=state.lp; if(lpPodMode()) return lpSel(); if(L.tab==='chart'){ const c=lpChartCur(); return c.g ? c.g.id : ''; } return L.open ? L.g : ''; }          // the list on the page ('' = the first or the third tab's own page)
-function lpRecItems(all){                                                                            // today's radio: a batch of the daily picks (another batch at "next batch")
-  const d=(all||lpGroups()).find(g=>g.type==='music' && g.kind==='daily'); if(!d) return [];
-  const items=lpGroupItems(d.id,'').items, n=items.length; if(!n) return [];
-  const start=(state.lp.batch*LP_PAGE)%n, out=items.slice(start,start+LP_PAGE); return out.length<LP_PAGE ? out.concat(items.slice(0,LP_PAGE-out.length)) : out;
+function lpMixGroup(gs){ const want=lpRegionPref()==='cn' ? ['west','global'] : ['cn']; return gs.find(g=>g.type==='music' && lpIsChart(g) && want.includes(lpRegionOf(g))); }          // (the chart of another region that is mixed in)
+function lpRecItems(all){                                                                            // songs for you: the day's picks with a chart of another region mixed in (two of ours, one of theirs); the whole mix, from where the batch begins (another batch = another start); thirty are shown, the rest come when the end is reached
+  const gs=all||lpGroups(), d=gs.find(g=>g.type==='music' && g.kind==='daily'); if(!d) return [];
+  const own=lpGroupItems(d.id,'').items; if(!own.length) return [];
+  const mg=lpMixGroup(gs), more=mg ? lpGroupItems(mg.id,'').items : [], seen=new Set(), mixed=[]; let i=0, j=0;
+  while(i<own.length || j<more.length){
+    for(let k=0;k<2 && i<own.length;k++){ const x=own[i++]; if(!seen.has(x.id)){ seen.add(x.id); mixed.push(x); } }
+    if(j<more.length){ const x=more[j++]; if(!seen.has(x.id)){ seen.add(x.id); mixed.push(x); } }
+  }
+  const start=(state.lp.batch*LP_PAGE)%mixed.length; return start ? mixed.slice(start).concat(mixed.slice(0,start)) : mixed;
 }
 function lpGcCard(g){ const h=Math.abs(hashStr(g.id))%360; return `<button class="lp-gc" type="button" data-lp-g="${esc(g.id)}" style="--h:${h}"><span class="lp-gcv">${g.cover ? `<img src="${esc(g.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<b>${esc(Array.from(lpName(g)).slice(0,2).join(''))}</b>`}</span><span class="lp-gct">${esc(lpName(g))}</span></button>`; }
-function lpRecHTML(all){
-  const d=all.find(g=>g.type==='music' && g.kind==='daily'), info=d ? lpGroupItems(d.id,'') : {state:'none', items:[]}, now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '';
-  const mine=[['my:likes',lpLikes().length],['my:recent',lpRecent().length],['my:lists',lpLists().length]].map(([id,n])=>`<button class="lp-mc" type="button" data-lp-my="${id}"><b>${esc(lpMyTitle(id))}</b><span>${n}</span></button>`).join('');
-  const shelves=all.filter(g=>g.type==='music' && g.kind==='list' && !lpIsChart(g)).slice(0,12), items=lpRecItems(all);
-  const hero=`<div class="lp-hero"><div class="lp-hero-t"><b>${esc(t('lpRadio'))}</b><span>${esc(t(lpRegionPref()==='cn'?'lpRegionCn':'lpRegionGlobal'))} · ${esc(t('lpRadioN',items.length))}</span></div><span class="lp-hero-a"><button class="btn primary" type="button" data-lp-radio>${ICON.play}<span>${esc(t('lpRadioPlay'))}</span></button><button class="btn" type="button" data-lp-batch>${esc(t('lpBatch'))}</button></span></div>`;
-  const shelf=shelves.length ? `<h3 class="lp-h">${esc(t('lpShelf'))}</h3><div class="lp-shelf">${shelves.map(lpGcCard).join('')}</div>` : '';
-  const body=items.length ? `<h3 class="lp-h">${esc(t('lpForYou'))}</h3><ol class="ls-rows lp-rows">${items.map(x=>listenRowHTML(x, !!now && now==='tmp:ls:'+x.id)).join('')}</ol>`
+const LP_CLOCK='<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>';
+function lpRecHTML(all){                                                                             // the play lists in a row (it begins with my three squares: liked, recent, my lists, each with its number), then the songs for you as rows: thirty, more when the end is reached; an icon plays them, one brings another batch
+  const d=all.find(g=>g.type==='music' && g.kind==='daily'), info=d ? lpGroupItems(d.id,'') : {state:'none', items:[]}, now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '', L=state.lp;
+  const items=lpRecItems(all), again=`<button class="ibtn lp-refresh" type="button" data-lp-batch title="${esc(t('lpBatch'))}" aria-label="${esc(t('lpBatch'))}">${ICON.shuffle}</button>`;
+  const playAll=`<button class="ibtn lp-playall" type="button" data-lp-radio title="${esc(t('lpRadioPlay'))}" aria-label="${esc(t('lpRadioPlay'))}">${ICON.play}</button>`;
+  const songs=items.length ? `<div class="lp-secbar"><h3 class="lp-h">${esc(t('lpForYou'))}</h3><span class="lp-secact">${playAll}${again}</span></div><ol class="ls-rows lp-rows lp-forrows">${lpItemsHTML(items,0,L.shown,true)}</ol>${lpEndHTML(items.length, L.shown)}`
     : info.state==='err' ? `<p class="hot-state">${esc(info.msg||t('lpErr'))}<br><button class="btn" type="button" data-lp-retry>${esc(t('dirRetry'))}</button></p>` : `<p class="hot-state">${esc(t('lpLoading'))}</p>`;
-  return `<div class="lp-mine">${mine}</div>${hero}${shelf}${body}`;
+  const sq=(id,icon,n)=>`<button class="lp-gc lp-my" type="button" data-lp-my="${id}"><span class="lp-gcv lp-myv"><i aria-hidden="true">${icon}</i><b>${n}</b></span><span class="lp-gct">${esc(lpMyTitle(id))}</span></button>`;
+  const mine=sq('my:likes',ICON.heart,lpLikes().length)+sq('my:recent',LP_CLOCK,lpRecent().length)+sq('my:lists',ICON.list,lpLists().length);
+  const lists=all.filter(g=>g.type==='music' && g.kind==='list' && !lpIsChart(g)).slice(0,20);
+  const shelf=`<div class="lp-secbar"><h3 class="lp-h">${esc(t('lpShelf'))}</h3></div><div class="lp-shelf">${mine}${lists.map(lpGcCard).join('')}</div>`;
+  return shelf+songs;
 }
 function lpDiscHTML(all){
   const L=state.lp, music=all.filter(g=>g.type==='music'), scenes=music.filter(lpIsScene), styles=music.filter(g=>g.kind==='style' && !lpIsScene(g)), shown=L.styles ? styles : styles.slice(0,8);
@@ -7243,7 +7206,7 @@ function lpDiscHTML(all){
 function lpChartHTML(all){
   const c=lpChartCur(), L=state.lp; if(!c.g) return `<p class="hot-state">${esc(L.err||t('lpLoading'))}</p>`;
   const regs=`<div class="lp-regs" role="tablist" aria-label="${esc(t('lpTab_chart'))}">${c.regs.map(r=>`<button class="lp-reg" type="button" role="tab" aria-selected="${r===c.r}" data-lp-cr="${r}">${esc(t('lpR_'+r))}</button>`).join('')}</div>`;
-  const pick=c.list.length>1 ? `<select class="lp-cg" data-lp-cg aria-label="${esc(t('lpChartPick'))}">${c.list.map(g=>`<option value="${esc(g.id)}"${g.id===c.g.id?' selected':''}>${esc(lpName(g))}</option>`).join('')}</select>` : '';
+  const pick=c.list.length>1 ? `<div class="lp-regs lp-cgs" role="tablist" aria-label="${esc(t('lpChartPick'))}">${c.list.map(g=>`<button class="lp-reg" type="button" role="tab" aria-selected="${g.id===c.g.id}" data-lp-cgb="${esc(g.id)}">${esc(lpName(g))}</button>`).join('')}</div>` : '';
   return regs+pick+lpSongsHTML(c.g.id, all);
 }
 function lpListsHTML(){                                                                              // "my play lists": a row each, and a button for a new one
@@ -7254,10 +7217,9 @@ function lpListsHTML(){                                                         
 function lpMusicHTML(all){
   const L=state.lp, hasPod=all.some(g=>g.type==='podcast');
   const modes=hasPod ? `<div class="lp-modes seg" role="tablist" aria-label="${esc(t('lsTitle'))}">${['music','podcast'].map(m=>`<button type="button" role="tab" aria-selected="${m==='music'}" data-lp-mode="${m}">${esc(t('lpMode_'+m))}</button>`).join('')}</div>` : '';
-  const region=`<button class="lp-region" type="button" data-lp-region title="${esc(t('lpRegionTip'))}" aria-label="${esc(t('lpRegionTip'))}"><span>${esc(t(lpRegionPref()==='cn'?'lpRegionCn':'lpRegionGlobal'))}</span>${LP_SWAP}</button>`;
   const tabs=LP_TABS.map(k=>`<button class="lp-tab" type="button" role="tab" aria-selected="${k===L.tab}" data-lp-tab="${k}">${esc(t('lpTab_'+k))}</button>`).join('');
   const body=L.tab==='chart' ? lpChartHTML(all) : L.open ? (L.g==='my:lists' ? lpListsHTML() : lpSongsHTML(L.g, all)) : L.tab==='disc' ? lpDiscHTML(all) : lpRecHTML(all);
-  return `<div class="lp"><div class="lp-bar">${modes}<span class="lp-ctl">${region}</span></div><nav class="lp-tabs" role="tablist" aria-label="${esc(t('lsTitle'))}">${tabs}</nav>${body}</div>`;
+  return `<div class="lp"><div class="lp-bar">${modes}<nav class="lp-tabs" role="tablist" aria-label="${esc(t('lsTitle'))}">${tabs}</nav></div>${body}</div>`;
 }
 function lpHTML(){
   const L=state.lp, P=lpPods(), all=lpGroups();
@@ -7297,7 +7259,7 @@ function lpPaint(){
   if(b) b.innerHTML=listenHTML();
   if(p){
     const old=p.querySelector('.lp-strip'), was=old ? old.scrollLeft : null, wasCur=p.dataset.cur;
-    p.innerHTML=lpHTML(); $('#viewSub').textContent=t('lsSub'); p.dataset.cur=lpSel();
+    p.innerHTML=lpHTML(); $('#viewSub').textContent=''; p.dataset.cur=lpSel();
     const st=p.querySelector('.lp-strip'), on=st && st.querySelector('[aria-pressed="true"]');
     if(st && st.scrollWidth>st.clientWidth+2) st.scrollLeft = was!==null && wasCur===p.dataset.cur ? was : on ? Math.max(0, on.offsetLeft-(st.clientWidth-on.offsetWidth)/2) : 0;          // (a phone: the list that is on shows in the middle of the strip; a repaint does not move a strip somebody has scrolled)
   }
@@ -7313,13 +7275,13 @@ function lpNext(){
   const L=state.lp, cur=lpSel(), items=lpShownItems(), from=L.shown; if(from>=items.length) return;
   L.shown=Math.min(items.length, from+LP_PAGE);
   const box=$('#lpRoot .lp-grid, #lpRoot .lp-rows'), end=$('#lpRoot .lp-end'); if(!box) return;
-  box.insertAdjacentHTML('beforeend', lpItemsHTML(items, from, L.shown));
+  box.insertAdjacentHTML('beforeend', lpItemsHTML(items, from, L.shown, !lpCur() && !lpPodMode()));
   if(end){ end.outerHTML=lpEndHTML(items.length, L.shown); }
   listenMark(); lpWatch();
 }
 function renderListenPage(){
   $('#dirBar').hidden=true; $('#grid').innerHTML=''; $('#empty').hidden=true; $('#moreRow').hidden=true; state.dirAbove=null;
-  $('#viewTitle').textContent=t('lsTitle'); $('#viewSub').textContent=t('lsSub'); $('#source').textContent='';
+  $('#viewTitle').textContent=t('lsTitle'); $('#viewSub').textContent=''; $('#source').textContent='';
   $('#dirReco').hidden=false; $('#dirReco').innerHTML='<div id="lpRoot"></div>'; lpPaint(); lpEnsure();
 }
 function lpPick(id){
@@ -7425,14 +7387,15 @@ function listenClick(e){
   if((b=q('[data-ls-scene]'))){ state.ls.scene=b.dataset.lsScene; LS.set('lsScene',state.ls.scene); lpPaint(); lsEnsure(); return true; }
   if((b=q('[data-ls-open]'))){ lpOpen(b.dataset.lsOpen); return true; }
   if(q('[data-lp-focus]')){ focusOpen(lpShownItems(), lpTypeOf(lpSel())); return true; }
+  if(q('[data-lp-sortgo]')){ const L=state.lp, cur=lpSel(), keys=lpSortKeys(cur), k=keys[(Math.max(0,keys.indexOf(keys.includes(L.sort) ? L.sort : 'rank'))+1)%keys.length]; L.sort=k; L.shown=LP_PAGE; LS.set('lpSort',k); lpPaint(); toast(t('sortBy',lpSortLabel(cur,k))); return true; }
   if(q('[data-lp-view]')){ LS.set('lpView', lpIsRows() ? 'cards' : 'rows'); state.lp.shown=LP_PAGE; lpPaint(); return true; }
   if((b=q('[data-lp-all]'))){ lpPlayGroup(b.dataset.lpAll); return true; }
   if((b=q('[data-lp-mode]'))){ lpSetMode(b.dataset.lpMode); return true; }
   if((b=q('[data-lp-tab]'))){ lpTab(b.dataset.lpTab); return true; }
-  if(q('[data-lp-region]')){ lpRegionFlip(); return true; }
+  if((b=q('[data-lp-cgb]'))){ const L=state.lp; L.cg=b.dataset.lpCgb; L.shown=LP_PAGE; lpPaint(); lpEnsure(); return true; }
   if((b=q('[data-lp-cr]'))){ const L=state.lp; L.cr=b.dataset.lpCr; L.cg=''; L.shown=LP_PAGE; LS.set('lpCR',L.cr); lpPaint(); lpEnsure(); return true; }
   if(q('[data-lp-back]')){ const L=state.lp; L.open=false; L.shown=LP_PAGE; lpPaint(); lpToTop(); return true; }
-  if(q('[data-lp-batch]')){ state.lp.batch++; lpPaint(); return true; }
+  if(q('[data-lp-batch]')){ state.lp.batch++; state.lp.shown=LP_PAGE; lpPaint(); return true; }
   if(q('[data-lp-radio]')){ const items=lpRecItems(); if(items.length) listenGo(items[0].id, items); return true; }
   if(q('[data-lp-styles]')){ state.lp.styles=!state.lp.styles; lpPaint(); return true; }
   if((b=q('[data-lp-my]'))){ lpGoMy(b.dataset.lpMy); return true; }
@@ -7925,21 +7888,12 @@ function dirOpenClick(e){                                                       
   else if(e.button===0){ statSend('open','item',dop.dataset.dopen); markDirRead(dop.dataset.dopen); }
   return true;
 }
-$('#dTabsMode').addEventListener('click',e=>{ const b=e.target.closest('[data-dtabs]'); if(!b) return; state.dTabs=b.dataset.dtabs; LS.set('dirTabs',state.dTabs); state.dTab=''; state.dSub=''; state.dPickOpen=false; render(); });
-$('#dTabsMore').addEventListener('click',()=>{ state.dTabsOpen=!state.dTabsOpen; renderDirBar(); });
+$('#dTabsMode').addEventListener('click',e=>{ const b=e.target.closest('[data-dtabs]'); if(!b) return; state.dTabs=b.dataset.dtabs; LS.set('dirTabs',state.dTabs); state.dTab=''; state.dSub=''; render(); });
 $('#dTabs').addEventListener('click',e=>{ if(e.target.closest('[data-dplatmore]')){ state.dPlatMore=!state.dPlatMore; render(); return; } const b=e.target.closest('[data-dtab]'); if(!b) return; state.dTab=b.dataset.dtab; state.dSub=''; state.dLimit=DIR_PAGE; render(); });
+new MutationObserver(()=>document.body.classList.toggle('vh-text',!!$('#viewSub').textContent.trim())).observe($('#viewSub'),{childList:true,characterData:true,subtree:true});          // (a line under the strip, such as a filter that is on, is shown; an empty one takes no room)
+document.addEventListener('wheel',e=>{ const r=e.target.closest && e.target.closest('#dirBar .dir-tabs'); if(!r || r.scrollWidth<=r.clientWidth+2 || Math.abs(e.deltaX)>Math.abs(e.deltaY)) return; r.scrollLeft+=e.deltaY; e.preventDefault(); },{passive:false});          // (a mouse wheel over the row slides it sideways)
 $('#dSubs').addEventListener('click',e=>{ const g=e.target.closest('[data-hot-go]'); if(g){ dirGoHome(); state.dHot=true; state.hot.want=g.dataset.hotGo; state.hot.view='boards'; state.dLimit=DIR_PAGE; render(); window.scrollTo({top:0}); return; } const b=e.target.closest('[data-dsub]'); if(!b) return; state.dSub=b.dataset.dsub; state.dLimit=DIR_PAGE; render(); });
-$('#dPickBtn').addEventListener('click',()=>{ state.dPickOpen=!state.dPickOpen; renderPick(); $('#dPickBtn').setAttribute('aria-expanded',String(state.dPickOpen)); if(state.dPickOpen && !matchMedia('(pointer:coarse)').matches) $('#dPickQ').focus(); });
-$('#dPickDone').addEventListener('click',()=>{ state.dPickOpen=false; renderPick(); $('#dPickBtn').setAttribute('aria-expanded','false'); });
-$('#dPickBack').addEventListener('click',()=>{ state.dPickOpen=false; renderPick(); $('#dPickBtn').setAttribute('aria-expanded','false'); });
-$('#dPickClear').addEventListener('click',()=>{ clearPick(); state.dPickQ=''; $('#dPickQ').value=''; state.dLimit=DIR_PAGE; render(); });
-$('#dPickQ').addEventListener('input',e=>{ state.dPickQ=e.target.value.trim().toLowerCase(); renderPick(); });
-$('#dPickList').addEventListener('change',e=>{ const ct=e.target.closest('[data-pickt]'); if(ct){ if(ct.checked) state.dPickT.add(ct.dataset.pickt); else state.dPickT.delete(ct.dataset.pickt); saveDirPickT(); state.dLimit=DIR_PAGE; render(); return; } const c=e.target.closest('[data-pick]'); if(!c) return; if(c.checked) state.dPick.add(c.dataset.pick); else state.dPick.delete(c.dataset.pick); saveDirPick(); state.dLimit=DIR_PAGE; render(); });
-$('#dPickViews').addEventListener('click',e=>{ const b=e.target.closest('[data-dv]'); if(!b) return; state.dView=b.dataset.dv; state.dLimit=DIR_PAGE; render(); });
-document.addEventListener('click',e=>{ if(state.dPickOpen && !matchMedia('(max-width:760px)').matches && !e.composedPath().some(n=>n.id==='dPick' || n.id==='dPickBtn')){ state.dPickOpen=false; renderPick(); $('#dPickBtn').setAttribute('aria-expanded','false'); } });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape' && state.dPickOpen){ state.dPickOpen=false; renderPick(); $('#dPickBtn').setAttribute('aria-expanded','false'); $('#dPickBtn').focus(); } });
 $('#dirReco').addEventListener('change',e=>{
-  const sel=e.target.closest('[data-lp-sort]'); if(sel){ state.lp.sort=sel.value; state.lp.shown=LP_PAGE; LS.set('lpSort',sel.value); lpPaint(); return; }
   const cg=e.target.closest('[data-lp-cg]'); if(cg){ state.lp.cg=cg.value; state.lp.shown=LP_PAGE; lpPaint(); lpEnsure(); }
 });
 $('#dirReco').addEventListener('click',e=>{
@@ -8046,7 +8000,7 @@ function dirList(skip){
   const tk=tokens(), tg=state.dTag.toLowerCase(), subs=state.dView==='subs' ? new Set(subCols().map(c=>urlKey(c.feed.url))) : null;
   const bkp=booksPage(), bkIds=bkp && state.dList ? bookListIds(state.dList) : null;          // (the picked-books page does not take part in the filters of the other pages: programs, platforms, domains; it has its own: a book list, a genre, an author)
   return state.dirData.items.filter(it=>{
-    if(state.lf==='zh' && it.lang==='en') return false; if(state.lf==='en' && it.lang==='zh') return false;
+    const lf=dirLf(); if(lf==='zh' && it.lang==='en') return false; if(lf==='en' && it.lang==='zh') return false;
     if(skip!=='type' && state.dType!=='all' && dirTypeOf(it)!==state.dType) return false;
     if(bkp && skip!=='type'){                                                                          // (the numbers beside the sidebar's types do not change with a book list, a genre or an author)
       if(bkIds && !bkIds.has(it.id)) return false;
@@ -8078,7 +8032,7 @@ function interleaveDays(list){                                                  
   }
   return out;
 }
-const dirIsHome=()=>!tokens().length && !state.dShelf && !state.dTag && state.dType==='all' && state.dView==='all' && !state.dTab && state.lf==='all' && !pickOn();          // no filter, no search
+const dirIsHome=()=>!tokens().length && !state.dShelf && !state.dTag && state.dType==='all' && state.dView==='all' && !state.dTab && dirLf()==='all' && !pickOn();          // no filter, no search
 function dirGoHome(){ state.dHot=false; state.dListen=false; state.dLanding=''; state.dGenre=''; state.dList=''; state.dAuthor=''; state.dTab=''; state.dSub=''; state.dType='all'; state.dView='all'; state.lf='all'; state.q=''; $('#q').value=''; state.dTag=''; state.dShelf=''; state.dBrowse=false; }
 function dirLandingHTML(items){
   if(!items.length || !['articles','watch'].includes(state.dLanding)) return '';
@@ -8126,8 +8080,8 @@ function renderDir(){
   if(hot){ if($('#reader').hidden) state.visible=[]; renderHotPage(); return; }
   if(listen){ if($('#reader').hidden) state.visible=[]; renderListenPage(); return; }
 
-  const bkp=booksPage(), curList=bkp && state.dList ? bookLists().find(l=>l.id===state.dList) : null;          // the picked-books page: no filter bar of the directory (programs, domains, platforms)
-  if(!bkp) renderDirBar();
+  const bkp=booksPage(), curList=bkp && state.dList ? bookLists().find(l=>l.id===state.dList) : null;          // the picked-books page: its genres are the tabs of the one row
+  renderDirBar();
   const found=dirList(), byDate=(a,b)=>String(b.date||'').localeCompare(String(a.date||'')), key=state.dView==='hot' ? 'heat' : state.sort; let list=found.slice();
   if(key==='title') list.sort((a,b)=>a.title.localeCompare(b.title,state.lang==='zh'?'zh-Hans-CN':'en'));
   else if(key==='read') list.sort((a,b)=>(state.dirRead[b.id]||0)-(state.dirRead[a.id]||0) || byDate(a,b));                 // what was opened here last comes first
@@ -8138,7 +8092,7 @@ function renderDir(){
   if(curList){ const ord=new Map(curList.books.map((b,i)=>[b.id,i])); list.sort((a,b)=>ord.get(a.id)-ord.get(b.id)); }          // (a book list is read in the order that its maker gave)
   const sh=state.dShelf?state.shelfMap.get(state.dShelf):null;
   $('#viewTitle').textContent = sh ? sh.name : state.dTag ? '#'+state.dTag : curList ? bkText(curList.name) : state.dLanding ? publicLabel(state.dLanding) : state.dType!=='all' ? t('ty_'+state.dType) : discover ? t('dirDiscover') : t('dirTitle');
-  let sub = tk.length ? t('matchCount',list.length,state.q.trim()) : curList ? bkText(curList.blurb) : bkp ? t('bkSub') : '';                                // (no count of the whole directory: the page does not need it)
+  let sub = tk.length ? t('matchCount',list.length,state.q.trim()) : curList ? bkText(curList.blurb) : '';                                // (no count of the whole directory: the page does not need it)
   if(sh && sh.description) sub = sh.description + (state.lang==='zh'?'。':'. ') + sub;
   let html = esc(sub);
   if(sh && sh.home) html += ` <a href="${esc(sh.home)}" target="_blank" rel="nofollow ugc noopener noreferrer">${esc(t('visitSite'))} ↗</a>`;
@@ -8147,7 +8101,7 @@ function renderDir(){
   if(colL) cl.push(clr('dtab',t('scCol')+colL)); if(pltL) cl.push(clr('dtab',t('scPlat')+pltL));
   if(state.dSub){ const tp=dirTopics().find(x=>x.id===state.dSub)||{}; cl.push(clr('dsub',t('scSub')+((state.lang==='zh'?tp.zh:tp.en)||state.dSub))); }
   if(state.dType!=='all' && !state.dLanding) cl.push(clr('dtype',t('scType')+t('ty_'+state.dType)));
-  if(state.lf!=='all') cl.push(clr('dlf',t('scLang')+(state.lf==='zh'?t('langZh'):t('langEn'))));
+  if(dirLf()!=='all') cl.push(clr('dlf',t('scLang')+(state.lf==='zh'?t('langZh'):t('langEn'))));
   if(state.q.trim()) cl.push(clr('dq',t('scQ')+state.q.trim()));
   if(sh) cl.push(clr('dshelf',sh.name)); if(state.dTag) cl.push(clr('dtag','#'+state.dTag)); if(!bkp && (pickOn() || topicPickOn()) && !sh) cl.push(clr('dpick',t(state.dTabs==='plat' ? 'dpSum' : 'dpSumT',pickCount())));
   $('#viewSub').innerHTML = html + (cl.length ? '<br>'+cl.join('') : '');
@@ -8155,12 +8109,12 @@ function renderDir(){
   { const pr=dirProfile(); state.dirInt = pr.n>=3 ? new Set([...pr.col].filter(([,w])=>w>=2).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0])) : new Set(); }          // (the columns this browser has really read, saved, liked or followed: said on a recommendation, never made up)
   state.subKeys=new Set(subCols().map(c=>urlKey(c.feed.url)));                                    // (the programs this browser follows: "you follow it" on a card)
   const saved=new Set(state.items.filter(x=>x.type==='link').map(x=>x.id)); state.dirAbove=null;
-  const landingHome=['articles','watch'].includes(state.dLanding) && !tk.length && !state.dShelf && !state.dTag && state.dView==='all' && !state.dTab && !state.dSub && state.lf==='all' && !pickOn() && !topicPickOn();
+  const landingHome=['articles','watch'].includes(state.dLanding) && !tk.length && !state.dShelf && !state.dTag && state.dView==='all' && !state.dTab && !state.dSub && dirLf()==='all' && !pickOn() && !topicPickOn();
   const slug=state.dLanding==='articles'?'selected':'featured';
   const picks=landingHome ? moduleCap(found.filter(canRecommend).sort((a,b)=>Number(hasPlacement(b,slug))-Number(hasPlacement(a,slug)) || moduleScore(b,slug)-moduleScore(a,slug) || byDate(a,b)),slug,state.dLanding==='articles'?6:3) : [];
   const moreTitle=state.dLanding==='articles' ? (state.lang==='zh'?'更多文章':'More articles') : (state.lang==='zh'?'更多视频':'More videos');
   const reco=discover ? dirHomeHTML() : bkp ? dirBooksHeadHTML() : landingHome ? dirLandingHTML(picks)+(picks.length && list.length>picks.length ? `<h2 class="dr-all">${esc(moreTitle)}</h2>` : '') : '';                       // one recommendation section above the unchanged article/video cards
-  $('#dirReco').innerHTML=reco; $('#dirReco').hidden=!reco; $('#dirBar').hidden=discover || bkp;
+  $('#dirReco').innerHTML=reco; $('#dirReco').hidden=!reco; $('#dirBar').hidden=discover;
   grid.className='grid '+(state.view==='list'?'dir-rows':'dcards');                                   // the button: cards in a tidy grid of three columns at most (the default) or light rows, on the home page too
   if(discover) list=list.filter(it=>!state.dirAbove.has(it.id));                                          // (what the page shows above is not shown again below)
   if(picks.length) list=list.filter(it=>!picks.some(p=>p.id===it.id));
@@ -9096,6 +9050,11 @@ let qTimer; $('#q').addEventListener('input',e=>{ clearTimeout(qTimer); qTimer=s
 $('#q').addEventListener('keydown',e=>{ if(e.key==='Escape'){ e.target.value=''; state.q=''; render(); ftSchedule(); e.target.blur(); } });
 $('#ftBtn').addEventListener('click',()=>{ state.ftOn=!state.ftOn; LS.set('ftOn',state.ftOn?1:0); ftSchedule(); render(); if(state.ftOn && state.q.trim()) toast(t('ftBusy')); });
 $('#sort').addEventListener('change',e=>{ state.sort=e.target.value; LS.set('sort',state.sort); render(); });
+function dirSortLabel(v){ const o=[...$('#sort').options].find(x=>x.value===v); return dirOn() && booksPage() && v==='recent' ? t('sortBooks') : (o ? o.textContent : ''); }
+$('#sortBtn').addEventListener('click',()=>{                                                              // the next way of sorting among those that this page has; the toast says which
+  const sel=$('#sort'), ways=[...sel.options].filter(o=>!o.disabled && !o.hidden); if(ways.length<2) return;
+  const n=ways[(ways.findIndex(o=>o.value===sel.value)+1)%ways.length]; state.sort=n.value; LS.set('sort',state.sort); state.dLimit=DIR_PAGE; render(); toast(t('sortBy',dirSortLabel(n.value)));
+});
 $('#viewBtn').addEventListener('click',()=>{ state.view=state.view==='grid'?'list':'grid'; LS.set('view',state.view); render(); });
 function setLang(v){                                                                          // "auto": follow the system; zh / en: that language, remembered
   if(v==='auto'){ try{ localStorage.removeItem('archive.lang'); }catch(e){} state.langAuto=true; state.lang=sysLang(); }
@@ -9153,11 +9112,13 @@ function shLayout(){
   shMove($('#cats'), phone ? $('#stripIn') : $('.side-scroll'), phone ? $('#colChip') : lab);
   shMove($('#colNav'), phone ? $('#colPop') : $('.side-scroll'), phone ? null : $('#cats'));
   shMove($('#tagbox'), phone ? $('#flTag') : shelf ? $('#tagPop') : $('.side-scroll'), phone || shelf ? null : lab);
-  shMove($('#dirBar'), phone ? $('#flDir') : $('.main'), phone ? null : $('#dPickBack'));
-  const lf=$('#langFilter'), so=$('#sort'), vb=$('#viewBtn'), bar=$('#dirBar'), tb=$('.toolbar'), tg=$('#tagBtn');
-  if(phone){ shMove(so,$('#flSort')); shMove(lf,$('#flLang')); shMove(vb,$('#flView')); }
-  else if(on){ const box=$('#ctlBox'), to=bar && !bar.hidden ? bar.querySelector('.dir-line') : $('#vhCtl'); shMove(box,to); [tg,lf,so,vb].forEach(e=>shMove(e,box)); }
+  b.classList.toggle('in-dir',dirOn());
+  shMove($('#dirBar'), $('.main'), $('#recoBanner'));
+  const lf=$('#langFilter'), so=$('#sort'), srt=$('#sortBtn'), vb=$('#viewBtn'), bar=$('#dirBar'), tb=$('.toolbar'), tg=$('#tagBtn'), box0=$('#ctlBox');
+  if(phone && !dirOn()){ shMove(so,$('#flSort')); shMove(lf,$('#flLang')); shMove(vb,$('#flView')); }          // (my shelf on a phone: the filter panel; the public space has no panel: its one row has them)
+  else if(on){ const to=bar && !bar.hidden ? bar.querySelector('.dir-line') : $('#vhCtl'); shMove(box0,to); [tg,lf,so,srt,vb].forEach(e=>shMove(e,box0)); }
   else { [lf,so,vb].forEach(e=>shMove(e,tb,$('#noteBtn'))); }
+  if(on){ box0.hidden=dirOn() && (!bar || bar.hidden); lf.hidden=dirOn() && !langOnPage(); so.hidden=dirOn(); srt.hidden=!dirOn(); }
   tg.hidden=!(on && !phone && shelf && !$('#tagbox').hidden); tg.classList.toggle('on',!!state.tag); tg.textContent=t('flTag')+(state.tag ? '：#'+cut(state.tag,8) : '')+' ▾'; if(tg.hidden) $('#tagPop').hidden=true;
   if(!on) return;
   shTheme();
@@ -9251,7 +9212,7 @@ document.addEventListener('visibilitychange',()=>{
   const park = () => { place(-PULL_SHOW,true); };
   document.addEventListener('touchstart',e=>{
     armed=pulling=false; d=0;
-    if(busy || e.touches.length!==1 || !dirOn() || !state.dirData || !atTop() || !$('#reader').hidden || document.querySelector('dialog[open]') || state.dPickOpen || document.body.classList.contains('drawer')) return;
+    if(busy || e.touches.length!==1 || !dirOn() || !state.dirData || !atTop() || !$('#reader').hidden || document.querySelector('dialog[open]') || document.body.classList.contains('drawer')) return;
     if(e.target.closest('input,textarea,select,[contenteditable],.dp-list,.dir-tabs')) return;
     x0=e.touches[0].clientX; y0=e.touches[0].clientY; armed=true;
   },{passive:true});
