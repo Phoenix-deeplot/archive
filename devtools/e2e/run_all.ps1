@@ -26,8 +26,8 @@ $known = @(
     @{ test = 's_sync';   match = 'B: the collection, its member'; why = 'the name of the subscription differs from what the check expects' },
     @{ test = 's_mobile'; match = 'publication date';              why = 'a counter of the fake stat service left by a test before it (it passes on a fresh rig, or after /__stat_reset?off=0)' }
 )
-$all = 's_read', 's_lang', 's_starter', 's_mobile', 's_reco', 's_readerui', 's_backup', 's_text', 's_sync', 's_notes', 's_notes_doc', 's_first', 's_dir', 's_hot', 's_hotpage', 's_rich', 's_tips', 's_player', 's_player2', 's_listen', 's_focus', 's_more', 's_books', 's_bookcache', 's_bookreader', 's_bookcards', 's_booktrans', 's_bookpaged', 's_bookpage', 's_public_bar', 's_dirkeep', 's_music_core', 's_music_failover', 's_music_modes', 's_music_list', 's_swkeep'
-$quickList = 's_mobile', 's_lang', 's_first', 's_readerui', 's_text', 's_dir', 's_shell', 's_hot', 's_dirkeep', 's_bookpaged', 's_bookpage', 's_public_bar'          # (s_mobile first: it wants a rig that nothing has counted on yet)
+$all = 's_read', 's_lang', 's_starter', 's_mobile', 's_reco', 's_readerui', 's_backup', 's_text', 's_sync', 's_notes', 's_notes_doc', 's_first', 's_dir', 's_hot', 's_hotpage', 's_rich', 's_tips', 's_player', 's_player2', 's_listen', 's_focus', 's_more', 's_books', 's_bookcache', 's_bookreader', 's_bookcards', 's_booktrans', 's_bookpaged', 's_bookpage', 's_public_bar', 's_feedback', 's_group', 's_dirkeep', 's_music_core', 's_music_failover', 's_music_modes', 's_music_list', 's_swkeep'
+$quickList = 's_mobile', 's_lang', 's_first', 's_readerui', 's_text', 's_dir', 's_shell', 's_hot', 's_dirkeep', 's_bookpaged', 's_bookpage', 's_public_bar', 's_feedback', 's_group'          # (s_mobile first: it wants a rig that nothing has counted on yet)
 $list = if ($Only.Count) { $Only } elseif ($Quick) { $quickList } else { $all }
 $list = @($list | ForEach-Object { $_ -split ',' } | Where-Object { $_ })                       # ("-File ... -Only a,b" gives one string "a,b")
 $skipped = @($Skip | ForEach-Object { $_ -split ',' } | Where-Object { $_ }); $list = @($list | Where-Object { $skipped -notcontains $_ })

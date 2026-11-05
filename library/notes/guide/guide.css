@@ -76,3 +76,17 @@ header.top{position:relative}
 .langbar[hidden]{display:none}
 .langbar button{appearance:none;border:0;background:none;color:var(--muted);font-size:20px;line-height:1;cursor:pointer}
 body:lang(en){font-family:var(--sans)}
+
+/* the reading group: a card at the top of the guide (the QR of the QQ group, its number, copy / save / feedback) */
+.group{display:flex;gap:18px;align-items:center;margin:20px 0 4px;padding:16px 18px;border:1px solid var(--rule);border-radius:14px;background:var(--accent-soft)}
+.group-qr{flex:none;display:block;width:132px;line-height:0;border-radius:10px;overflow:hidden}
+.group-qr img{width:100%;height:auto;display:block}
+.group-tx{min-width:0}
+.group-tx p{margin:0 0 6px;font-size:15px}
+.group-tx .group-h{font-size:18px;font-weight:700}
+.group-no b{font-size:17px;letter-spacing:.02em;user-select:all}
+.group-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px!important}
+.gcopy,.gbtn{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border:1px solid var(--accent);border-radius:999px;background:var(--surface);color:var(--accent);font:inherit;font-size:14.5px;text-decoration:none;cursor:pointer}
+.gcopy:hover,.gbtn:hover,.gcopy:focus-visible,.gbtn:focus-visible{background:var(--accent);color:var(--bg);outline:none}
+.group-tx .group-note{margin:8px 0 0;font-size:13px;color:var(--muted)}
+@media (max-width:560px){.group{flex-direction:column;align-items:flex-start}.group-qr{width:min(160px,55%)}}
