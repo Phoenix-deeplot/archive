@@ -477,7 +477,7 @@ body.dir-listen .view-head p,body.dir-hot .view-head p{font-size:14px}
 .lp-h{margin:18px 0 8px;font-family:var(--sans);font-size:15px;font-weight:600}
 .lp-secbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0 4px}
 .lp-secbar .lp-h{margin:0}
-.lp-refresh{width:40px;height:40px;color:var(--muted)}
+.lp-refresh,.lp-playall{width:40px;height:40px;color:var(--muted)}.lp-playall{color:var(--accent)}.lp-secact{display:inline-flex;align-items:center;gap:2px}
 .lp-shelf .lp-sc{flex:0 0 128px;scroll-snap-align:start}
 .lp-myv{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:var(--surface)!important;border:1px solid var(--rule)}
 .lp-myv i{display:grid;color:var(--muted)}
@@ -487,13 +487,6 @@ body.dir-listen .view-head p,body.dir-hot .view-head p{font-size:14px}
 .lp-mc{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:64px;padding:10px 12px;border:1px solid var(--rule);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;text-align:left}
 .lp-mc b{font-size:15px;font-weight:500}
 .lp-mc span{font-size:12.5px;color:var(--muted)}
-.lp-hero{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0 4px;padding:14px 16px;border-radius:14px;background:var(--surface);border:1px solid var(--rule)}
-.lp-hero-t{flex:1;min-width:140px;display:grid;gap:2px}
-.lp-hero-t b{font-size:17px;font-weight:600}
-.lp-hero-t span{font-size:13px;color:var(--muted)}
-.lp-hero-a{display:flex;gap:8px}
-.lp-hero-a .btn{display:inline-flex;align-items:center;gap:6px;min-height:44px}
-.lp-hero-a .btn .icon{width:16px;height:16px}
 .lp-shelf{display:flex;gap:12px;overflow-x:auto;padding:2px 0 8px;scroll-snap-type:x proximity;scrollbar-width:none}
 .lp-shelf::-webkit-scrollbar{display:none}
 @media (hover:hover) and (pointer:fine){.lp-shelf{scrollbar-width:thin;scrollbar-color:var(--rule) transparent}.lp-shelf::-webkit-scrollbar{display:block;height:8px}.lp-shelf::-webkit-scrollbar-thumb{background:var(--rule);border-radius:4px}}          /* (a mouse has no finger to slide a row with: a thin bar shows that there is more, shift + wheel moves it) */
@@ -4913,7 +4906,7 @@ const CHANGELOG=[{v:'2026-10-22',
       '页面更简洁：公共目录顶部不再有“共 N 条，来自 N 个书架，更新于…”那行计数；界面语言只留“自动”和一个“中 / EN”按钮（点一下换成另一种）；公共目录的“显示更多”滚到底自动加载。',
       '“今日听什么”重做：音乐分成“推荐 / 榜单 / 发现”三个标签（国内 ⇄ 国际决定先推荐哪里的歌；榜单一排地区，发现里风格和场景分开），一首歌只留封面、歌名、艺人、♥ 和 ⋯（下一首播放、加入歌单、喜欢、不想听这类）；喜欢的歌、自己建的歌单、最近播放只记在这台设备上。点一首歌就把这张列表放进播放条；一首歌有好几个音源时，放不出来或几秒没有声音会自动换下一个，整首的排在试听前面；音乐的播放条用“列表循环 / 单曲循环 / 随机 / 顺序”代替倍速（播客仍有倍速）；播放器的弹窗就是播放器：左上收起、右上 × 关闭播放器、列表标题处“清空”（可撤销），点弹窗外面或 3 分钟不动会自动收起，设置只有音源、省流量、定时关闭三项。',
       '精选图书页改简单了：没有“节目 / 栏目 / 平台”那套筛选，没有“已更新”那行字（发现世界所有页面都去掉了），侧栏里的标签列表也去掉了；标题下是站长手挑的几张“书单”（点一张只看这张里的书，每本有一句推荐理由）和一排类别（小说、哲学、科学、技术、杂志……），点书名下的作者名可以看他的全部书。书的卡片上不再写“站长推荐”“书籍”、授权和标签，只有语言、作者、来源、章数、喜欢、热度、收藏，读过的书写“读到 第 3 回 · 12%”，封面底边有一条细线。读书时点返回就是返回，不再弹出章节表。',
-      '发现世界每个页面只剩一行筛选，没有下拉了：“节目 / 栏目”挑选和手机上的“筛选”面板去掉了，栏目（或平台）标签排成一行向左右滑；右端是排序（一个图标，点一下换一种排法，提示里写着现在是哪一种）和卡片 / 列表图标；内容语言（全部 / 中 / EN）只留在精选图书、精选文章、全部这几个内容多的页面。标签条下面的空白去掉了，热榜、今日听什么、精选图书标题下的说明文字也去掉了。“今日听什么”的推荐页更干净：今日电台一个“播放”，下面一排 10 首歌（右上图标换一批），再下面是精选歌单，排头是“我喜欢的 / 最近播放 / 我的歌单”三个带数字的方块；“国内 ⇄ 国际”按钮去掉了，先推荐哪里的歌跟着界面语言和设备时区走。'],
+      '发现世界每个页面只剩一行筛选，没有下拉了：“节目 / 栏目”挑选和手机上的“筛选”面板去掉了，栏目（或平台）标签排成一行向左右滑；右端是排序（一个图标，点一下换一种排法，提示里写着现在是哪一种）和卡片 / 列表图标；内容语言（全部 / 中 / EN）只留在精选图书、精选文章、全部这几个内容多的页面。标签条下面的空白去掉了，热榜、今日听什么、精选图书标题下的说明文字也去掉了。“今日听什么”的推荐页更干净：去掉了“今日电台”卡；精选歌单在上，排头是“我喜欢的 / 最近播放 / 我的歌单”三个带数字的方块；为你推荐在下，一行一首，先 30 首，滚到底自动再加，标题右边是播放和换一批两个图标；“国内 ⇄ 国际”按钮去掉了，先推荐哪里的歌跟着界面语言和设备时区走。'],
   en:['New: “Back up & restore”: export the files, collections, subscriptions and reading places you added into one file, and restore it when you change device or fear a loss.',
       'Subscribed and saved links can now be read in the page: when a feed carries the full text it is shown at once; otherwise, and for any article link you paste and for the articles of the public directory, the original page is read and shown here and kept in your browser. Pages that need a login or do not let programs read them still open the original site (the card says “Original only”).',
       'New in the reading settings: “Download as a web page (HTML)” and “Print / save as PDF”.',
@@ -4953,7 +4946,7 @@ const CHANGELOG=[{v:'2026-10-22',
       'A simpler page: the public directory no longer starts with the count line “N items from N shelves, updated …”; the interface language is “Auto” and one button (中 / EN) that switches to the other language; “Show more” in the directory loads by itself at the end of the page.',
       '“What to listen to today” was rebuilt: the music side has three tabs, “For you / Charts / Discover” (China ⇄ World says whose songs come first; the charts are one row of regions, Discover keeps styles and scenes apart), and a song is only a cover, a title, an artist, a heart and a ⋯ (play next, add to a play list, like, not this kind); the songs you like, the play lists you make and what you played last are kept on this device only. A click on a song makes its list the list of the bar; when a song has several sounds and one cannot be played, or stays silent for a few seconds, the next one is tried (a whole sound before a preview); the bar of music has “repeat the list / repeat one / shuffle / in order” instead of the speed (podcasts keep the speed); the popup of the player is the player: fold at the top left, × at the top right closes it, “Clear” at the list (can be undone), a tap outside or three minutes without a touch fold it, and there are three settings: the source, spare the data, the timer.',
       'The page of the picked books is simpler: no “Programs / Columns / Platforms” filters, no “Updated” line (gone from every page of the public space), and the list of tags in the side is gone; under the title come a few hand-made “book lists” (tap one and only its books are shown, each with a line on why) and a row of genres (fiction, philosophy, science, tech, magazines …); the name of an author under a title shows all his books. A book’s card no longer says “Owner’s pick”, “Book”, the licence or tags, only the language, author, source, chapters, like, heat and bookmark; a book you have begun says “At Chapter 3 · 12%” and has a thin line along its cover. Tapping back in a book just goes back: the list of chapters no longer pops up.',
-      'Every page of the public space now has one row of filters and no dropdown: the “Programs / Columns” picker and the phone’s “Filter” panel are gone, the tabs of columns (or platforms) sit in one row that slides sideways; at its right end are the sort (one icon: tap to go to the next way, the tooltip says which) and the cards / rows icon; the language of the content (All / 中 / EN) stays only on Book picks, Selected articles and All, where there is a lot to filter. The blank under the strip is gone, and so are the explaining lines under the titles of Hot lists, What to listen to today and Book picks. The “For you” tab of What to listen to today is cleaner: today’s radio has one “Play”, below it a row of ten songs (the icon at the top right brings another batch), then the play lists, which begin with three squares with their numbers: Liked, Recent, My lists; the “China ⇄ World” button is gone, whose songs come first follows the interface language and the time zone of the device.']}];
+      'Every page of the public space now has one row of filters and no dropdown: the “Programs / Columns” picker and the phone’s “Filter” panel are gone, the tabs of columns (or platforms) sit in one row that slides sideways; at its right end are the sort (one icon: tap to go to the next way, the tooltip says which) and the cards / rows icon; the language of the content (All / 中 / EN) stays only on Book picks, Selected articles and All, where there is a lot to filter. The blank under the strip is gone, and so are the explaining lines under the titles of Hot lists, What to listen to today and Book picks. The “For you” tab of What to listen to today is cleaner: the “Today’s radio” card is gone; the play lists come first and begin with three squares with their numbers (Liked, Recent, My lists); the songs for you come below, one to a row, thirty at first and thirty more by themselves at the end, with a play icon and a next-batch icon at the right of the title; the “China ⇄ World” button is gone, whose songs come first follows the interface language and the time zone of the device.']}];
 const guideItem = () => state.items.find(x=>(x.source==='static'||x.source==='server') && /(^|\/)notes\/guide\/index\.html$/.test(x.id));
 const canAsk=()=>!!state.dirCfg && !LS.get('dirIntroOff',0) && !state.dPickT.size;               // the question "what do you feel like reading?" is for somebody who has not answered it, where the site has a public space
 function introStep(n, ask){                                                                  // which buttons go with which step of the window
@@ -7051,7 +7044,7 @@ function lpDate(){ const ymd=String((state.lp.idx && state.lp.idx.date) || today
 function lpMeta(x){ return [x.artist || x.from, x.hot ? '🔥 '+t('lpRank',x.hot) : '', x.preview ? t('lsPreviewS') : '', x.net==='global' ? t('lsGlobal') : ''].filter(Boolean); }          // (who it is by, how hot it is (the place in a chart), "preview" when it is one, "overseas": nothing else)
 const lpIsRows=()=> LS.get('lpView','rows')!=='cards';                                              // (rows by default: a chart is read down a list; the cards are one tap away; the shelf's own view choice is not touched)
 const LP_BARS='<i class="ls-bars" aria-hidden="true"><b></b><b></b><b></b></i>';                       // (the little bars that dance on the row that plays)
-function listenRowHTML(x, playing){                                                                 // a song as a row: [rank] cover, title (a small "preview" when it is one), artist, ♥ and ⋯; an episode keeps a play mark and a link to its page
+function listenRowHTML(x, playing, plain){                                                                 // a song as a row: [rank] cover, title (a small "preview" when it is one), artist, ♥ and ⋯; an episode keeps a play mark and a link to its page
   lpSeen.set(x.id,x);
   const stream=x.mode==='stream';
   const cv=x.cover ? `<img src="${esc(x.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span>${esc(String(x.artist||x.title).slice(0,1)||'♪')}</span>`;
@@ -7059,7 +7052,7 @@ function listenRowHTML(x, playing){                                             
     const src=stream && x.url ? `<a class="ls-src" href="${esc(x.url)}" target="_blank" rel="nofollow ugc noopener noreferrer" title="${esc(t('lsSrc',x.from||hostOf(x.url)))}" aria-label="${esc(t('lsSrc',x.from||hostOf(x.url)))}">↗</a>` : '';
     return `<li class="ls-row nonum${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}"><span class="ls-cv">${cv}${LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}</b><span class="ls-m"><span class="ls-w">${esc(lpMeta(x)[0]||'')}</span>${lpMeta(x).length>1 ? `<span class="ls-x"> · ${esc(lpMeta(x).slice(1).join(' · '))}</span>` : ''}</span></span><span class="ls-ic" aria-hidden="true">${ICON.play}</span></button>${src}</li>`;
   }
-  const liked=lpIsLiked(x.id), num=x.hot>0;
+  const liked=lpIsLiked(x.id), num=x.hot>0 && !plain;          // (plain: a list that is not a chart, such as the songs for you, which mixes a chart in: no place in front of a song)
   return `<li class="ls-row${num?'':' nonum'}${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}">${num ? `<span class="ls-n${x.hot<=3?' top':''}"><em>${x.hot}</em>${LP_BARS}</span>` : ''}<span class="ls-cv">${cv}${num?'':LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}${x.preview ? `<em class="ls-pv">${esc(t('lsPreviewS'))}</em>` : ''}</b><span class="ls-m">${esc(x.artist||x.from)}</span></span></button>`
     + `<button class="ls-like" type="button" data-ls-like="${esc(x.id)}" aria-pressed="${liked}" title="${esc(t(liked?'lsLiked':'lsLike'))}" aria-label="${esc(t(liked?'lsLiked':'lsLike'))}">${ICON.heart}</button><button class="ls-more" type="button" data-ls-more="${esc(x.id)}" aria-haspopup="dialog" title="${esc(t('lsMore'))}" aria-label="${esc(t('lsMore'))}">${ICON.more}</button></li>`;
 }
@@ -7071,9 +7064,9 @@ function lpCardHTML(x, playing){                                                
   return `<article class="lp-sc${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="lp-cv" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}">${cv}<span class="lp-pl" aria-hidden="true">${ICON.play}</span></button>`
     + `<div class="lp-tx"><b class="lp-t" title="${esc(x.title)}">${esc(x.title)}</b><span class="lp-a">${esc(who||'')}</span><span class="lp-m">${esc(m.join(' · '))}</span></div>${src}</article>`;
 }
-function lpItemsHTML(items, from, to){                                                               // the cards (or rows) from `from` to `to` of the list
+function lpItemsHTML(items, from, to, plain){                                                               // the cards (or rows) from `from` to `to` of the list
   const now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '', playing=x=>!!now && now==='tmp:ls:'+x.id, part=items.slice(from,to);
-  return lpIsRows() || !lpPodMode() ? part.map(x=>listenRowHTML(x,playing(x))).join('') : part.map(x=>lpCardHTML(x,playing(x))).join('');          // (the cards are for the podcast side; songs are always rows)
+  return lpIsRows() || !lpPodMode() ? part.map(x=>listenRowHTML(x,playing(x),plain)).join('') : part.map(x=>lpCardHTML(x,playing(x))).join('');          // (the cards are for the podcast side; songs are always rows)
 }
 function lpSortKeys(cur){ const pod=cur==='pod', isPod=lpTypeOf(cur)==='podcast'; return isPod ? (pod ? ['rank','dur','title','artist'] : ['rank','new','dur','title','artist']) : ['rank','dur','title','artist']; }
 function lpSortLabel(cur,k){ const pod=cur==='pod', isPod=lpTypeOf(cur)==='podcast'; return k==='rank' ? t(pod ? 'lpSortNew' : isPod ? 'lpSortChart' : 'lpSortRank') : t('lpSort_'+k+(isPod && k==='artist' ? 'P' : '')); }
@@ -7120,7 +7113,7 @@ function lpChartCur(){                                                          
 const lpPodMode=()=>state.lp.mode==='podcast' || !lpGroups().some(g=>g.type!=='podcast');                 // (the podcast side is shown when it was chosen, or when there is no music at all: the shows of the directory)
 function lpCur(){ const L=state.lp; if(lpPodMode()) return lpSel(); if(L.tab==='chart'){ const c=lpChartCur(); return c.g ? c.g.id : ''; } return L.open ? L.g : ''; }          // the list on the page ('' = the first or the third tab's own page)
 function lpMixGroup(gs){ const want=lpRegionPref()==='cn' ? ['west','global'] : ['cn']; return gs.find(g=>g.type==='music' && lpIsChart(g) && want.includes(lpRegionOf(g))); }          // (the chart of another region that is mixed in)
-function lpRecItems(all){                                                                            // today's radio: the day's picks, a chart of another region mixed in (two of ours, one of theirs), a batch at a time (another batch at "next batch")
+function lpRecItems(all){                                                                            // songs for you: the day's picks with a chart of another region mixed in (two of ours, one of theirs); the whole mix, from where the batch begins (another batch = another start); thirty are shown, the rest come when the end is reached
   const gs=all||lpGroups(), d=gs.find(g=>g.type==='music' && g.kind==='daily'); if(!d) return [];
   const own=lpGroupItems(d.id,'').items; if(!own.length) return [];
   const mg=lpMixGroup(gs), more=mg ? lpGroupItems(mg.id,'').items : [], seen=new Set(), mixed=[]; let i=0, j=0;
@@ -7128,22 +7121,21 @@ function lpRecItems(all){                                                       
     for(let k=0;k<2 && i<own.length;k++){ const x=own[i++]; if(!seen.has(x.id)){ seen.add(x.id); mixed.push(x); } }
     if(j<more.length){ const x=more[j++]; if(!seen.has(x.id)){ seen.add(x.id); mixed.push(x); } }
   }
-  const n=mixed.length, start=(state.lp.batch*LP_PAGE)%n, out=mixed.slice(start,start+LP_PAGE); return out.length<LP_PAGE ? out.concat(mixed.slice(0,LP_PAGE-out.length)) : out;
+  const start=(state.lp.batch*LP_PAGE)%mixed.length; return start ? mixed.slice(start).concat(mixed.slice(0,start)) : mixed;
 }
 function lpGcCard(g){ const h=Math.abs(hashStr(g.id))%360; return `<button class="lp-gc" type="button" data-lp-g="${esc(g.id)}" style="--h:${h}"><span class="lp-gcv">${g.cover ? `<img src="${esc(g.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<b>${esc(Array.from(lpName(g)).slice(0,2).join(''))}</b>`}</span><span class="lp-gct">${esc(lpName(g))}</span></button>`; }
 const LP_CLOCK='<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>';
-function lpRecHTML(all){                                                                             // the radio; ten songs in a row that slides (a button for another ten); the play lists in a row that begins with my three squares (liked, recent, my lists, each with its number)
-  const d=all.find(g=>g.type==='music' && g.kind==='daily'), info=d ? lpGroupItems(d.id,'') : {state:'none', items:[]}, now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '';
-  const items=lpRecItems(all), B=state.lp.batch, again=`<button class="ibtn lp-refresh" type="button" data-lp-batch title="${esc(t('lpBatch'))}" aria-label="${esc(t('lpBatch'))}">${ICON.shuffle}</button>`;
-  const hero=`<div class="lp-hero"><div class="lp-hero-t"><b>${esc(t('lpRadio'))}</b><span>${esc(t('lpRadioN',items.length))}</span></div><span class="lp-hero-a"><button class="btn primary" type="button" data-lp-radio>${ICON.play}<span>${esc(t('lpRadioPlay'))}</span></button></span></div>`;
-  const songs=items.length ? `<div class="lp-secbar"><h3 class="lp-h">${esc(t('lpForYou'))}</h3>${again}</div><div class="lp-shelf lp-songrow">${items.slice(0,10).map(x=>lpCardHTML(x, !!now && now==='tmp:ls:'+x.id)).join('')}</div>`
+function lpRecHTML(all){                                                                             // the play lists in a row (it begins with my three squares: liked, recent, my lists, each with its number), then the songs for you as rows: thirty, more when the end is reached; an icon plays them, one brings another batch
+  const d=all.find(g=>g.type==='music' && g.kind==='daily'), info=d ? lpGroupItems(d.id,'') : {state:'none', items:[]}, now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '', L=state.lp;
+  const items=lpRecItems(all), again=`<button class="ibtn lp-refresh" type="button" data-lp-batch title="${esc(t('lpBatch'))}" aria-label="${esc(t('lpBatch'))}">${ICON.shuffle}</button>`;
+  const playAll=`<button class="ibtn lp-playall" type="button" data-lp-radio title="${esc(t('lpRadioPlay'))}" aria-label="${esc(t('lpRadioPlay'))}">${ICON.play}</button>`;
+  const songs=items.length ? `<div class="lp-secbar"><h3 class="lp-h">${esc(t('lpForYou'))}</h3><span class="lp-secact">${playAll}${again}</span></div><ol class="ls-rows lp-rows lp-forrows">${lpItemsHTML(items,0,L.shown,true)}</ol>${lpEndHTML(items.length, L.shown)}`
     : info.state==='err' ? `<p class="hot-state">${esc(info.msg||t('lpErr'))}<br><button class="btn" type="button" data-lp-retry>${esc(t('dirRetry'))}</button></p>` : `<p class="hot-state">${esc(t('lpLoading'))}</p>`;
   const sq=(id,icon,n)=>`<button class="lp-gc lp-my" type="button" data-lp-my="${id}"><span class="lp-gcv lp-myv"><i aria-hidden="true">${icon}</i><b>${n}</b></span><span class="lp-gct">${esc(lpMyTitle(id))}</span></button>`;
   const mine=sq('my:likes',ICON.heart,lpLikes().length)+sq('my:recent',LP_CLOCK,lpRecent().length)+sq('my:lists',ICON.list,lpLists().length);
-  const lists=all.filter(g=>g.type==='music' && g.kind==='list' && !lpIsChart(g)), nl=lists.length, st=nl ? (B*10)%nl : 0;
-  const shown=nl<=10 ? lists : lists.slice(st,st+10).concat(lists.slice(0,Math.max(0,st+10-nl)));
-  const shelf=`<div class="lp-secbar"><h3 class="lp-h">${esc(t('lpShelf'))}</h3>${nl>10 ? again : ''}</div><div class="lp-shelf">${mine}${shown.map(lpGcCard).join('')}</div>`;
-  return hero+songs+shelf;
+  const lists=all.filter(g=>g.type==='music' && g.kind==='list' && !lpIsChart(g)).slice(0,20);
+  const shelf=`<div class="lp-secbar"><h3 class="lp-h">${esc(t('lpShelf'))}</h3></div><div class="lp-shelf">${mine}${lists.map(lpGcCard).join('')}</div>`;
+  return shelf+songs;
 }
 function lpDiscHTML(all){
   const L=state.lp, music=all.filter(g=>g.type==='music'), scenes=music.filter(lpIsScene), styles=music.filter(g=>g.kind==='style' && !lpIsScene(g)), shown=L.styles ? styles : styles.slice(0,8);
@@ -7222,7 +7214,7 @@ function lpNext(){
   const L=state.lp, cur=lpSel(), items=lpShownItems(), from=L.shown; if(from>=items.length) return;
   L.shown=Math.min(items.length, from+LP_PAGE);
   const box=$('#lpRoot .lp-grid, #lpRoot .lp-rows'), end=$('#lpRoot .lp-end'); if(!box) return;
-  box.insertAdjacentHTML('beforeend', lpItemsHTML(items, from, L.shown));
+  box.insertAdjacentHTML('beforeend', lpItemsHTML(items, from, L.shown, !lpCur() && !lpPodMode()));
   if(end){ end.outerHTML=lpEndHTML(items.length, L.shown); }
   listenMark(); lpWatch();
 }
@@ -7342,7 +7334,7 @@ function listenClick(e){
   if((b=q('[data-lp-cgb]'))){ const L=state.lp; L.cg=b.dataset.lpCgb; L.shown=LP_PAGE; lpPaint(); lpEnsure(); return true; }
   if((b=q('[data-lp-cr]'))){ const L=state.lp; L.cr=b.dataset.lpCr; L.cg=''; L.shown=LP_PAGE; LS.set('lpCR',L.cr); lpPaint(); lpEnsure(); return true; }
   if(q('[data-lp-back]')){ const L=state.lp; L.open=false; L.shown=LP_PAGE; lpPaint(); lpToTop(); return true; }
-  if(q('[data-lp-batch]')){ state.lp.batch++; lpPaint(); return true; }
+  if(q('[data-lp-batch]')){ state.lp.batch++; state.lp.shown=LP_PAGE; lpPaint(); return true; }
   if(q('[data-lp-radio]')){ const items=lpRecItems(); if(items.length) listenGo(items[0].id, items); return true; }
   if(q('[data-lp-styles]')){ state.lp.styles=!state.lp.styles; lpPaint(); return true; }
   if((b=q('[data-lp-my]'))){ lpGoMy(b.dataset.lpMy); return true; }

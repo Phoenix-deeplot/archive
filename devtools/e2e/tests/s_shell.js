@@ -134,7 +134,7 @@ const get = p => fetch(SVC + p).then(r => r.json());
   ok('... the row holds the switch, the tabs that slide sideways, and at the right end the language, the sort button and the cards / rows button', await J(`(()=>{ const b=document.querySelector('#dirBar'), t=b.querySelector('#dTabs'); return !!b.querySelector('#dTabsMode') && getComputedStyle(t).overflowX==='auto' && [...b.querySelectorAll('.dir-line #ctlBox > *')].filter(e=>e.offsetParent!==null).map(e=>e.id).join()==='langFilter,sortBtn,viewBtn'; })()`));
 
   // the player and the bar: the player sits above the bar; the list of "me" is not covered
-  await J(`[...document.querySelectorAll('#cats .cat-btn')].find(b=>b.textContent.includes('今日听什么')).click()`); await waitFor(`document.querySelector('#lpRoot .lp-songrow .lp-sc')`, 12000); await J(`document.querySelector('[data-lp-tab="chart"]').click()`); await waitFor(`document.querySelector('#lpRoot .ls-row')`, 12000); await settle(600);
+  await J(`[...document.querySelectorAll('#cats .cat-btn')].find(b=>b.textContent.includes('今日听什么')).click()`); await waitFor(`document.querySelector('#lpRoot .lp-forrows .ls-row')`, 12000); await J(`document.querySelector('[data-lp-tab="chart"]').click()`); await waitFor(`document.querySelector('#lpRoot .ls-row')`, 12000); await settle(600);
   ok('the listening page has no row of tools at all (it has its own controls)', await J(`getComputedStyle(document.querySelector('#stTools')).display==='none'`));
   const b3 = await bar();
   ok('the listening page: no row of tools, no empty room: the head is as short as on the discover page', b3.strip === b0.strip && b3.tools === '0/0' && b3.top === b1.top, [b1, b3]);

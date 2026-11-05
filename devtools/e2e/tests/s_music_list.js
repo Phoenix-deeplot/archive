@@ -22,11 +22,11 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
     await J(`document.querySelector('[data-space="dir"]').click()`); await sleep(1200);
     await waitFor(`document.querySelector('#cats [data-dlisten]')`, 8000);
     await J(`document.querySelector('#cats [data-dlisten]').click()`);
-    await waitFor(`document.querySelector('#lpRoot .lp-tabs') && document.querySelector('#lpRoot .lp-songrow .lp-sc')`, 9000); await sleep(300);
+    await waitFor(`document.querySelector('#lpRoot .lp-tabs') && document.querySelector('#lpRoot .lp-forrows .ls-row')`, 9000); await sleep(300);
   };
   const tab = async k => { await J(`window.scrollTo(0,0); document.querySelector('#lpRoot [data-lp-tab="${k}"]').click()`); await sleep(500); };
   const rows = () => J(`[...document.querySelectorAll('#lpRoot .ls-row[data-ls-row]')].map(r=>r.dataset.lsRow)`);
-  const cards = () => J(`[...document.querySelectorAll('#lpRoot .lp-songrow .lp-sc')].map(r=>r.dataset.lsRow)`);
+  const cards = () => J(`[...document.querySelectorAll('#lpRoot .lp-forrows .ls-row')].map(r=>r.dataset.lsRow)`);
   await c.desktop(1280, 900, 1);
   await fresh('zh');
 
@@ -35,21 +35,24 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   ok('the mode (music | podcasts) and the three tabs are ONE row; there is no switch for the region, no strip of chips, no sort and no card / row button on the music side', top.tabs === '推荐*|榜单|发现' && !top.region && top.oneRow && top.chips === 0 && !top.sort && !top.view && top.modes === '音乐|播客', top);
 
   // ------------------------------------------------ for you
-  const rec = await J(`({hero:(document.querySelector('#lpRoot .lp-hero-t b')||{}).textContent, btns:[...document.querySelectorAll('#lpRoot .lp-hero-a button')].map(b=>b.textContent.trim()).join('|'), heads:[...document.querySelectorAll('#lpRoot .lp-h')].map(h=>h.textContent).join('|'), songs:document.querySelectorAll('#lpRoot .lp-songrow .lp-sc').length, mine:[...document.querySelectorAll('#lpRoot .lp-my')].map(b=>b.textContent.replace(/\s+/g,'')).join('|'), first3:[...document.querySelectorAll('#lpRoot .lp-shelf:not(.lp-songrow) > *')].slice(0,3).every(b=>b.classList.contains('lp-my')), shelf:[...document.querySelectorAll('#lpRoot .lp-shelf:not(.lp-songrow) .lp-gct')].map(b=>b.textContent).join('|'), rows:document.querySelectorAll('#lpRoot .ls-row').length, again:document.querySelectorAll('#lpRoot [data-lp-batch]').length})`);
-  ok('"for you": today\'s radio with Play only; ten songs in a row (cards, a button for another ten); then the play lists in a row that BEGINS with my three squares (liked, recent, my lists, each with its number) and goes on with the featured lists (not the charts); no list of songs below', rec.hero === '今日电台' && rec.btns === '播放' && rec.heads === '为你推荐|精选歌单' && rec.songs === 10 && rec.mine === '0我喜欢的|0最近播放|0我的歌单' && rec.first3 && /bedroom rave/.test(rec.shelf) && !/Top 100/.test(rec.shelf) && rec.rows === 0 && rec.again >= 1, rec);
+  const rec = await J(`({hero:document.querySelectorAll('#lpRoot .lp-hero').length, heads:[...document.querySelectorAll('#lpRoot .lp-h')].map(h=>h.textContent).join('|'), order:(()=>{ const a=document.querySelector('#lpRoot .lp-shelf'), b=document.querySelector('#lpRoot .lp-forrows'); return !!a && !!b && !!(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING); })(), songs:document.querySelectorAll('#lpRoot .lp-forrows .ls-row').length, cards:document.querySelectorAll('#lpRoot .lp-sc, #lpRoot .lp-songrow').length, mine:[...document.querySelectorAll('#lpRoot .lp-my')].map(b=>b.textContent.replace(/\s+/g,'')).join('|'), first3:[...document.querySelectorAll('#lpRoot .lp-shelf > *')].slice(0,3).every(b=>b.classList.contains('lp-my')), shelf:[...document.querySelectorAll('#lpRoot .lp-shelf .lp-gct')].map(b=>b.textContent).join('|'), play:(document.querySelector('#lpRoot .lp-playall')||{}).title, again:document.querySelectorAll('#lpRoot [data-lp-batch]').length, more:!!document.querySelector('#lpRoot .lp-end'), hearts:document.querySelectorAll('#lpRoot .lp-forrows .ls-like').length})`);
+  ok('"for you": no radio card; the play lists FIRST (a row that BEGINS with my three squares: liked, recent, my lists, each with its number, then the featured lists, not the charts), then the songs for you as ROWS (thirty, a button for more at the end, ♥ on each), with an icon “播放” and an icon “换一批” at the head; no cards of songs', rec.hero === 0 && rec.heads === '精选歌单|为你推荐' && rec.order && rec.songs === 30 && rec.cards === 0 && rec.mine === '0我喜欢的|0最近播放|0我的歌单' && rec.first3 && /bedroom rave/.test(rec.shelf) && !/Top 100/.test(rec.shelf) && rec.play === '播放' && rec.again === 1 && rec.more && rec.hearts === 30, rec);
   await tab('chart');
   const row = await J(`(()=>{ const r=document.querySelector('#lpRoot .ls-row'), t=r.querySelector('.ls-t'), cs=getComputedStyle(t), rr=r.getBoundingClientRect(); return {h:Math.round(rr.height), size:cs.fontSize, ff:cs.fontFamily, weight:cs.fontWeight, artist:getComputedStyle(r.querySelector('.ls-m')).fontSize, src:!!r.querySelector('.ls-src'), ic:!!r.querySelector('.ls-ic'), like:!!r.querySelector('.ls-like'), more:!!r.querySelector('.ls-more'), cv:Math.round(r.querySelector('.ls-cv').getBoundingClientRect().width), meta:r.querySelector('.ls-m').textContent, heat:/🔥/.test(r.textContent)}; })()`);
   ok('a song is a clean row: 60px high, cover 48, title 16px in the sans family, artist 13px, ♥ and ⋯; no link to the source, no play circle, no heat', row.h >= 56 && row.cv === 48 && row.size === '16px' && !/Noto Serif|Songti|STSong|Georgia|Times/i.test(row.ff) && row.artist === '13px' && row.like && row.more && !row.src && !row.ic && !row.heat && /^Artist/.test(row.meta), { h: row.h, cv: row.cv, size: row.size, weight: row.weight, artist: row.artist, like: row.like, more: row.more, src: row.src, ic: row.ic, heat: row.heat, meta: row.meta, serif: /Noto Serif|Songti|STSong|Georgia|Times/i.test(row.ff) });
   await tab('rec');
   const c0 = await cards();
+  await J(`window.scrollTo(0, document.documentElement.scrollHeight)`); await sleep(1100);
+  const c60 = await cards();
+  ok('at the end of the thirty the next thirty come by themselves (no click): sixty, and the first thirty are the same rows (nothing blinks); no place in front of any song (the mix has chart songs, a place means nothing there)', c60.length === 60 && c60.slice(0, 30).join() === c0.join() && await J(`!document.querySelector('#lpRoot .lp-forrows .ls-n')`), [c0.length, c60.length]);
+  await J(`window.scrollTo(0,0)`); await sleep(200);
   await J(`document.querySelector('#lpRoot [data-lp-batch]').click()`); await sleep(400);
   const c1 = await cards();
-  ok('"Next batch" (the button at the head of the songs) shows another ten', c1.length === 10 && c1[0] !== c0[0] && !c1.some(x => c0.includes(x)), [c0[0], c1[0]]);
+  ok('"Next batch" (the icon at the head of the songs) starts another batch: back to thirty rows, all of them others than the first thirty before', c1.length === 30 && c1[0] !== c0[0] && !c1.some(x => c0.includes(x)), [c0[0], c1[0], c1.length]);
   await J(`document.querySelector('#lpRoot [data-lp-radio]').click()`);
-  ok('"Play" plays the radio: the thirty songs of the batch are the list of the bar, the first one plays', await waitFor(`pl.q.length===30 && pl.q[pl.i]==='tmp:ls:${c1[0]}' && plAudio.currentTime>0.05`, 8000), [await J(`pl.q.length`), await J(`pl.q[pl.i]`)]);
-  await J(`document.querySelector('#lpRoot .lp-songrow .lp-sc[data-ls-row="${c1[5]}"] .lp-cv').click()`);
-  ok('a click on a song card makes the list on the screen (the batch) the list of the bar, from that song; the card that plays is marked', await waitFor(`pl.q.length===30 && pl.q[pl.i]==='tmp:ls:${c1[5]}'`, 6000) && await J(`document.querySelector('#lpRoot .lp-sc[data-ls-row="${c1[5]}"]').classList.contains('is-playing')`), [await J(`pl.q.length`), await J(`pl.q[pl.i]`)]);
-  ok('the card that plays has the accent colour', await J(`getComputedStyle(document.querySelector('#lpRoot .lp-sc.is-playing .lp-t')).color!==getComputedStyle(document.querySelector('#lpRoot .lp-sc:not(.is-playing) .lp-t')).color`));
+  ok('the icon “播放” plays the songs for you: the whole list (more than a hundred songs) is the list of the bar, the first one plays', await waitFor(`pl.q.length>=100 && pl.q[pl.i]==='tmp:ls:${c1[0]}' && plAudio.currentTime>0.05`, 8000), [await J(`pl.q.length`), await J(`pl.q[pl.i]`)]);
+  await J(`document.querySelector('#lpRoot .lp-forrows .ls-row[data-ls-row="${c1[5]}"] .ls-main').click()`);
+  ok('a click on a song makes the list on the screen the list of the bar, from that song; the row that plays is marked', await waitFor(`pl.q.length>=100 && pl.q[pl.i]==='tmp:ls:${c1[5]}'`, 6000) && await J(`document.querySelector('#lpRoot .ls-row[data-ls-row="${c1[5]}"]').classList.contains('is-playing')`), [await J(`pl.q.length`), await J(`pl.q[pl.i]`)]);
   await J(`plAudio.pause()`);
   await tab('chart');
   const r1 = await rows();
@@ -65,7 +68,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await J(`document.querySelector('#lpRoot .ls-row .ls-like').click()`); await sleep(300);
   ok('♥ again takes it out (the list there is empty now)', (await J(`LS.get('lpLikes',[]).length`)) === 0 && (await J(`document.querySelectorAll('#lpRoot .ls-row').length`)) === 0 && /还没有歌曲/.test(await J(`document.querySelector('#lpRoot .hot-state').textContent`)));
   await J(`document.querySelector('#lpRoot [data-lp-back]').click()`); await sleep(300);
-  ok('the back arrow goes to the first tab', await J(`!!document.querySelector('#lpRoot .lp-hero')`));
+  ok('the back arrow goes to the first tab', await J(`!!document.querySelector('#lpRoot .lp-shelf') && !!document.querySelector('#lpRoot .lp-forrows')`));
 
   // ------------------------------------------------ the menu of ⋯
   await J(`window.scrollTo(0,0)`); await tab('chart');
@@ -134,16 +137,16 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   const early = await waitFor(`document.querySelectorAll('#lsBlock .ls-row').length>0`, 5000);
   ok('at the next visit the small block shows songs at once, from the copy of the last visit, while the service is slow (it answers after six seconds)', early && Date.now() - t1 < 4500, Date.now() - t1);
   await J(`document.querySelector('#cats [data-dlisten]').click()`);
-  ok('...and so does the page: the tabs and the songs of the first tab', await waitFor(`document.querySelector('#lpRoot .lp-tabs') && document.querySelectorAll('#lpRoot .lp-songrow .lp-sc').length>0`, 4000));
+  ok('...and so does the page: the tabs and the songs of the first tab', await waitFor(`document.querySelector('#lpRoot .lp-tabs') && document.querySelectorAll('#lpRoot .lp-forrows .ls-row').length>0`, 4000));
   await sleep(6500);
-  ok('when the service answers the songs are the new ones (the page was not blanked meanwhile)', await J(`document.querySelectorAll('#lpRoot .lp-songrow .lp-sc').length>0 && state.lp.data.get('daily|zh').state==='ok'`));
+  ok('when the service answers the songs are the new ones (the page was not blanked meanwhile)', await J(`document.querySelectorAll('#lpRoot .lp-forrows .ls-row').length>0 && state.lp.data.get('daily|zh').state==='ok'`));
   await fetch(SVC + '/__listen?mode=ok&delay=0');
 
   // ------------------------------------------------ a phone
   await c.mobile(390, 844, 2);
   await fresh('zh');
-  const ph = await J(`(()=>{ const small=[...document.querySelectorAll('#lpRoot .lp-tab, #lpRoot .lp-modes button, #lpRoot .lp-refresh, #lpRoot .lp-hero-a .btn, #lpRoot .lp-my, #lpRoot .lp-sc .lp-cv')].map(b=>{ const r=b.getBoundingClientRect(); return [Math.round(r.width),Math.round(r.height)]; }); const bar=document.querySelector('#lpRoot .lp-bar').getBoundingClientRect(), rows=[...document.querySelectorAll('#lpRoot .lp-shelf')].map(e=>getComputedStyle(e).overflowX); return {x:document.documentElement.scrollWidth-document.documentElement.clientWidth, small:small.filter(([w,h])=>h<40||w<40).length, n:small.length, tabs:document.querySelectorAll('#lpRoot .lp-tab').length, barH:Math.round(bar.height), rows}; })()`);
-  ok('phone: the mode and the three tabs are one line, every button of the page is at least 40px, the rows of songs and of play lists slide sideways, nothing else does', ph.x <= 1 && ph.small === 0 && ph.n > 14 && ph.tabs === 3 && ph.barH <= 60 && ph.rows.length === 2 && ph.rows.every(o => o === 'auto'), ph);
+  const ph = await J(`(()=>{ const small=[...document.querySelectorAll('#lpRoot .lp-tab, #lpRoot .lp-modes button, #lpRoot .lp-refresh, #lpRoot .lp-playall, #lpRoot .lp-my, #lpRoot .lp-forrows .ls-like, #lpRoot .lp-forrows .ls-more')].map(b=>{ const r=b.getBoundingClientRect(); return [Math.round(r.width),Math.round(r.height)]; }); const bar=document.querySelector('#lpRoot .lp-bar').getBoundingClientRect(), rows=[...document.querySelectorAll('#lpRoot .lp-shelf')].map(e=>getComputedStyle(e).overflowX); return {x:document.documentElement.scrollWidth-document.documentElement.clientWidth, small:small.filter(([w,h])=>h<40||w<40).length, n:small.length, tabs:document.querySelectorAll('#lpRoot .lp-tab').length, barH:Math.round(bar.height), rows}; })()`);
+  ok('phone: the mode and the three tabs are one line, every button of the page is at least 40px (♥ and ⋯ too), the row of play lists slides sideways, nothing else does', ph.x <= 1 && ph.small === 0 && ph.n > 14 && ph.tabs === 3 && ph.barH <= 60 && ph.rows.length === 1 && ph.rows.every(o => o === 'auto'), ph);
   await c.shot(require('../paths').SHOTS + '/ml_phone_rec.png');
   await tab('chart'); await c.shot(require('../paths').SHOTS + '/ml_phone_chart.png');
   await tab('disc'); await c.shot(require('../paths').SHOTS + '/ml_phone_disc.png');
