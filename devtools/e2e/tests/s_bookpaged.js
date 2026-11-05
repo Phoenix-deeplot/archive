@@ -1,6 +1,6 @@
 // e2e: reading a picked book (R2 + "simple reading"): the chapter is in pages, on a PC (a sheet in the middle of the screen, an arrow at each side, keys, the wheel) and on a phone (the page follows the finger,
 // lets go and goes on or comes back, taps at the sides); nothing to set but the size of the letters (the bar at the foot); the top bar has only what a book needs, and an eye-care button that changes the colour;
-// the place is a place in the text (the size of the letters changes, the reader stays where he is); a chapter with a table is scrolled; the chapters panel pinned at the left of a wide screen; an article has the same settings (the letters, the colour), is scrolled, and has no bookmark
+// the place is a place in the text (the size of the letters changes, the reader stays where he is); a chapter with a table, a code or pictures is turned like the others (only a frame or a video is scrolled); the chapters panel pinned at the left of a wide screen; an article has the same settings (the letters, the colour), is scrolled, and has no bookmark
 const fs = require('fs');
 const { connect, sleep } = require('../cdp');
 const { writeDir } = require('../dir_fixture.js');
@@ -144,14 +144,16 @@ const ARTICLE = '# A short history of tea\n\n' + Array.from({ length: 30 }, (_, 
   await click('#readerEye'); await click('#readerEye'); await click('#readerEye'); await settle(500);
   ok('(back to the colours of the system for the rest)', (await J(`state.rs.th`)) === 'follow');
 
-  // ------------------------------------------------ a chapter with a table is scrolled
+  // ------------------------------------------------ a chapter with a table is turned like the others (the table is fitted into the column)
   await click('#readerToc'); await settle(400);
   ok('the contents of a book have its chapters, and no "bookmarks" page', (await shown('#rTocPanel .rtabs [data-tab="chs"]')) && !(await shown('#rTocPanel .rtabs [data-tab="marks"]')));
   await J(`document.querySelectorAll('#rTocBody .toc-i.bk')[3].click()`); await ready(); await settle(900);
   const tb = await pg();
-  ok('a chapter with a table is scrolled (the columns do not hold it); the foot says how far, and there are no arrows', !tb.paged && !tb.pgd && /^\d+%$/.test(tb.info) && /Chapter 4/.test(tb.title) && !(await shown('#rEdgeR')) && (await shown('#rbFsP')), tb);
+  const tfit = await fdoc(`(()=>{ const t=d.querySelector('.doc table'), c=d.querySelector('.doc').getBoundingClientRect(), r=t?t.getBoundingClientRect():null; return {has:!!t, tw:r?Math.round(r.width):0, cw:Math.round(c.width), over:d.documentElement.scrollWidth-Math.ceil(document.querySelector('#rbInfo').textContent.split(' / ')[1]*w.innerWidth)}; })()`);
+  ok('a chapter with a table is in pages like the others (arrows, "n / N" at the foot), not scrolled', tb.paged && tb.pgd && /^\d+ \/ \d+$/.test(tb.info) && /Chapter 4/.test(tb.title) && (await shown('#rEdgeR')) && (await shown('#rbFsP')), tb);
+  ok('...the table is as wide as the column or less, and nothing sticks out sideways past the last page', tfit.has && tfit.tw <= tfit.cw + 1 && tfit.over <= 2, tfit);
   await fsBig(1);
-  ok('...and the size of the letters still works there', (await fdoc(`getComputedStyle(d.body).fontSize`)) === '20.9px');
+  ok('...and the size of the letters still works there', (await fdoc(`getComputedStyle(d.body).fontSize`)) === '20.9px' && (await pg()).paged);
   await fsSmall(1);
 
   // ------------------------------------------------ the pictures that come late
@@ -159,9 +161,12 @@ const ARTICLE = '# A short history of tea\n\n' + Array.from({ length: 30 }, (_, 
   await J(`document.querySelector('#rTocPanel').hidden && document.querySelector('#readerToc').click()`); await sleep(300);
   await J(`document.querySelectorAll('#rTocBody .toc-i.bk')[1].click()`); await ready(); await settle(900);
   const nBefore = await nPages();
-  await fdoc(`(()=>{ const p=d.querySelector('.doc>p:not([class])'); for(let i=0;i<3;i++){ const im=d.createElement('img'); im.style.display='block'; im.src='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="1400"><rect width="400" height="1400" fill="#cde"/></svg>'); p.after(im); } })()`); await settle(1200);
+  await fdoc(`(()=>{ const p=d.querySelector('.doc>p:not([class])'); for(let i=0;i<5;i++){ const im=d.createElement('img'); im.style.display='block'; im.src='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="1400"><rect width="400" height="1400" fill="#cde"/></svg>'); p.after(im); } })()`); await settle(1200);
   const nAfter = await nPages();
-  ok('pictures that come late are counted: more pages, still in pages', nAfter >= nBefore + 2 && (await pg()).paged, [nBefore, nAfter]);
+  ok('pictures that come late are counted, however many (five here): more pages, still in pages', nAfter >= nBefore + 3 && (await pg()).paged, [nBefore, nAfter]);
+  await fdoc(`(()=>{ const q=d.createElement('iframe'); q.srcdoc='<p>x</p>'; d.querySelector('.doc').appendChild(q); })()`); await fsBig(1);           // (a change of the size of the letters lays the page out again)
+  ok('only a frame (or a video, an object) in the text turns a chapter back into a scrolled one', !(await pg()).paged && /^\d+%$/.test((await pg()).info), await pg());
+  await fsSmall(1);
   await shut();
 
   // ------------------------------------------------ a Chinese book is set the Chinese way

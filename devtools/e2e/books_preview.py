@@ -35,6 +35,9 @@ def main():
     try:
         os.makedirs(os.path.join(tmp, 'registry'))
         shutil.copy2(src, os.path.join(tmp, 'registry', 'books.json'))
+        lists = os.path.join(sd, 'registry', 'booklists.json')                                  # (the book lists, when the service has them: the page shows them above the books)
+        if os.path.isfile(lists):
+            shutil.copy2(lists, os.path.join(tmp, 'registry', 'booklists.json'))
         agg.ROOT = tmp
         built = json.loads(agg.build()['directory.json'])
     finally:
@@ -45,12 +48,16 @@ def main():
     d['shelves'] = [s for s in d['shelves'] if s['id'] != 'books'] + [s for s in built['shelves'] if s['id'] == 'books']
     d['items'] = [i for i in d['items'] if i.get('shelf') != 'books'] + built['items']
     d['count'] = len(d['items'])
+    if built.get('booklists'):
+        d['booklists'] = built['booklists']
+    else:
+        d.pop('booklists', None)
     d['types'] = {}
     for i in d['items']:
         d['types'][i['type']] = d['types'].get(i['type'], 0) + 1
     with open(target, 'w', encoding='utf-8') as f:
         json.dump(d, f, ensure_ascii=False)
-    print('%d books in the demo directory (%d items in all): %s' % (len(built['items']), d['count'], target))
+    print('%d books and %d book lists in the demo directory (%d items in all): %s' % (len(built['items']), len(d.get('booklists') or []), d['count'], target))
 
 
 main()
