@@ -87,6 +87,10 @@
 - 书单数据（`shelf-directory`）：`registry/booklists.json`（8 张书单，每本书中英文各一句）、`aggregate.load_booklists`（校验、把书编号换成目录里的 `id`、跳过目录没有的书并在构建日志里说明、不足两本的整张跳过）、`directory.json` 的 `booklists`、`tests/test_booklists.py`（真实书单的每本书都在 `books.json` 里）、README B6b 一条；`genre` 后端没有做，前端按标签推，以后服务端给了就以它为准。
 - 测试：新增 `s_bookpage.js`（进快速集）；改了 `s_books`（关阅读页不再弹窗、卡片不写授权）、`s_bookcards`（卡片没有徽标，读到哪里带百分比和细线）、`s_first`（侧栏没有标签盒）、`s_swkeep`（没有 `#updNote`，用 `state.dirAt` 和 `dirRefresh` 查回到页面和下拉刷新）。
 - 文档：README（发现世界一段、精选图书一段、新的“精选图书页”一段、回到应用时自动更新）、使用指南 zh / en（新的“精选图书”一条）、页面里的更新说明（zh / en 各一条）。
+
+追加（用户试用后又提的两条，分支 `claude/books-fixes`，从 `claude/books-page` 开）：
+- 第 7 条“有的书第一页滚动、后面几章翻页”：原因是 `pagedSuitable` 把含表格、`<pre>` 或超过 3 张图的章节判成“排不进栏”，自动改成竖向滚动。扫了真实书目的前两章：西游记第一章有 1 个表格、史记第一章有表格和图、聊斋每章 3 个表格、红楼梦第二章 5 张图、爱丽丝第二章 4 张图。改法：`PG_CSS` 里让表格和栏一样宽（`table-layout:fixed`）、代码自动换行、图片不超过一页的宽和高；`pagedSuitable` 只剩含 `[data-ph]`（占位页）、`iframe`、`video`、`object` 才滚动。`s_bookpaged` 里“含表格的章节滚动”改成“表格章节也翻页，表格不比栏宽，最后一页后没有东西伸出去”，图片测试改成 5 张，新增“只有 iframe 才回到滚动”。
+- 第 8 条“喜欢图标太小”：卡片上的 ♥（`.cstat.heart`）点击区只有约 21×25 px，比旁边的收藏钮（36 px，手机 44 px）小。改成 36 px（手机 44 px），图标 21 px，负的外边距让这一行的高度不变；`s_bookpage` 查大小。阅读页里的喜欢 / 不喜欢条（`#rVote`）对书的章节本来就不显示，没动。“书里要不要有喜欢”：留着（它给热度记数，你第 2 条也列了喜欢）。
 - 没有做：顶栏的排序下拉（“最新发布”）在这一页还在，书按“页面语言在前、热度、书名”排；要藏起来是一行 CSS，等用户说。
 
 ### codex
