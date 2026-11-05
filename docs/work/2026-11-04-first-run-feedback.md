@@ -79,12 +79,17 @@
 
 ### claude
 
-（等用户确认规划、等 `claude/music-core` 和 `claude/books-page` 合并完。）
+2026-11-05：G1、G2、G3 做完并已合并进两个仓库的 `master`（见“合并记录”）。
+- G1 反馈服务（shelf-directory）：`feedbackapi.py`、`api/feedback.py`、审核页“反馈”标签、24 个测试。
+- G2 反馈前端（my-archive）：侧栏底部“反馈”链接、小窗、`#feedback`、首次收藏 / 读完一章后一次的轻提示、`s_feedback`（26 项）。
+- G3 共读群：QQ 群 869727153（Ai 产品讨论群）。阅读指南（中、英）顶部一张卡片：二维码（`library/notes/guide/img/qq-group.webp`，50 KB）、群号、复制群号、保存二维码、写反馈；“我的书架”里指南那张卡的封面 `library/notes/guide/cover.webp`（1280×800，59 KB，由 `<meta name="archive:cover">` 指定）；反馈小窗里一行群号 + 复制；`s_group`（12 项）。换群的步骤写在 README 第 8 节。
+- 没做：G4（新用户第一屏，要先出方案）、G5（周更“值得读的 3 件”草稿脚本）、G6（收录和核心功能页）；G7 用户说暂时不做。
 
 ### codex
 
 ## 4. 合并记录
 
-- 合并顺序：
-- 合并后的测试结果：
-- 删除的分支和 worktree：
+- 合并顺序：2026-11-05 用户说“合并”。shelf-directory：`claude/feedback` 已含 `master`，无冲突，`--no-ff` 合并（`8013665`）。my-archive：先把 `master`（已含 `claude/public-simplify` 和 Codex 的热榜）并进 `claude/first-run`，两处冲突都是“两边都留”（`index.html` 里新增的翻译词典行、`run_all.ps1` 的测试清单加上 `s_public_bar`），再 `--no-ff` 合并进 `master`（`aba98e6`）；用户本机 `index.html` 里那一行百度验证 meta 先 `git stash push -- index.html` 再放回，没提交。
+- 合并后的测试结果：shelf-directory 全部 734 个，只有 1 条失败（`test_hotdetail` 的 `test_diag_says_why_a_platform_cannot_be_reached_from_here`，以前就有，与反馈无关）；反馈的 24 个单独也全过。my-archive 的 `master` 上快速集 14 个全过（`s_mobile`、`s_lang`、`s_first`、`s_readerui`、`s_text`、`s_dir`、`s_shell`、`s_hot`、`s_dirkeep`、`s_bookpaged`、`s_bookpage`、`s_public_bar`、`s_feedback`、`s_group`）。`s_shell` 里“底栏”那一条改成认 Codex 的底栏：标记里有热榜按钮但手机上隐藏，手机上三个按钮，从左到右是“发现世界、＋、我的书架”（和我自己预览时的左右相反，按用户说的以 `codex/hot-analytics-ui` 为准）。
+- 删除的分支和 worktree：`claude/first-run`、`E:\Ztree\wt\claude-first-run`、shelf-directory 的 `claude/feedback`、`E:\Ztree\wt\claude-feedback-sd` 已删。
+- 上线前要做：反馈只有 shelf-directory 部署后才有（它需要 Redis 的环境变量，可选 `FEEDBACK_PER_DAY`、`FEEDBACK_KEEP`），没部署前页面上的“反馈”链接不显示，群卡片和封面照常。my-archive 要 `vercel --prod`。
