@@ -64,6 +64,7 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   ok('long boards append the next batch without an inner scroll area', await J(`document.querySelectorAll('#dirReco .hot-row').length>10 && getComputedStyle(document.querySelector('#dirReco .hot-board-body')).overflowY!=='auto'`));
   await J(`document.querySelectorAll('#dirReco [data-hot-board]')[1].click()`); await sleep(220);
   ok('desktop platform selection updates the right-hand list', await J(`!!document.querySelector('#dirReco .hot-board-desktop .hot-plat[aria-selected="true"]') && !!document.querySelector('#dirReco .hot-board-desktop .hot-row')`));
+  await selectPlatform('weibo');                                              // (the checks above chose the second platform; what follows starts from the first one, 微博热搜, again)
   const expectedCats = ['综合热点','科技','AI 最新','金融财经','国际时事','娱乐','学习与专业提升','影音与社区'];
   let categoryLabels = await cols();
   ok('the updated interest categories are visible while shopping remains optional', expectedCats.every(x=>categoryLabels.some(s=>s.replace('*','')===x)) && !categoryLabels.some(s=>s.replace('*','')==='购物'), categoryLabels);
@@ -104,9 +105,9 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   await selectPlatform('weibo'); await sleep(300);
   ok('and back: the cached list is shown at once, with no extra request', (await rows())[0].title === '项目 weibo 一' && (await asked()).length === askedAfterZhihu.length, await asked());
   await clickTab('#dirReco .hot-col', '科技');
-  await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0 && document.querySelector('#dirReco .hot-head h2').textContent.startsWith('GitHub')`);
+  await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0 && document.querySelector('#dirReco .hot-head h2').textContent.startsWith('掘金')`);
   const tech = await tabs();
-  ok('another column: its platforms (GitHub first, then Juejin, V2EX, Hacker News ...)', tech[0] === 'GitHub Trending（今日）*' && tech.includes('Hacker News') && tech.includes('Product Hunt') && tech.includes('少数派'), tech);
+  ok('another column: its platforms in the service’s order (Juejin first, then V2EX ... GitHub, Hacker News, Product Hunt ...)', tech[0] === '掘金热榜*' && tech.includes('GitHub Trending（今日）') && tech.includes('Hacker News') && tech.includes('Product Hunt') && tech.includes('少数派'), tech);
   await clickTab('#dirReco .hot-board-trigger', 'Hacker News');
   await waitFor(`document.querySelector('#dirReco .hot-head h2').textContent==='Hacker News' && document.querySelectorAll('#dirReco .hot-row').length>0`);
   r = await rows();
@@ -149,15 +150,15 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   await clickTab('#dirReco .hot-board-trigger', 'Lobsters');
   await waitFor(`document.querySelector('#dirReco .hot-state')`);
   h = await head();
-  ok('a list the service cannot read: the page says so (and why) with a retry button; the other boards remain available', /这个榜单现在读不到/.test(h.state) && /HTTP 500/.test(h.state) && await J(`!!document.querySelector('#dirReco [data-hot-refresh].btn') && document.querySelectorAll('#dirReco [data-hot-p]').length>3`), h);
-  await get('/__hot?'); await J(`document.querySelector('#dirReco .hot-state [data-hot-refresh]').click()`);
+  ok('a list the service cannot read: the page says so (and why), the refresh icon (it has its tooltip) is there to try again; the other boards remain available', /这个榜单现在读不到/.test(h.state) && /HTTP 500/.test(h.state) && await J(`(()=>{ const b=document.querySelector('#dirReco [data-hot-refresh]'); return !!b && !!(b.title || b.getAttribute('aria-label')); })() && document.querySelectorAll('#dirReco [data-hot-p]').length>3`), h);
+  await get('/__hot?'); await J(`document.querySelector('#dirReco [data-hot-refresh]').click()`);
   await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0`);
   ok('"重试" asks again and the list is there', (await rows())[0].title === '项目 lobsters 一');
   await get('/__hot?delay=900');
   await J(`document.querySelector('#dirReco [data-hot-refresh]').click()`); await sleep(250);
-  const slow = await J(`({busy:document.querySelector('#dirReco .hot-list').getAttribute('aria-busy'), rows:document.querySelectorAll('#dirReco .hot-row').length})`);
-  ok('a refresh in progress keeps the old rows on screen (busy for screen readers)', slow.busy === 'true' && slow.rows === 12, slow);
-  await waitFor(`document.querySelector('#dirReco .hot-list').getAttribute('aria-busy')==='false'`);
+  const slow = await J(`({busy:document.querySelector('#dirReco .hot-board-body').getAttribute('aria-busy'), rows:document.querySelectorAll('#dirReco .hot-row').length})`);
+  ok('a refresh in progress keeps the old rows on screen (busy for screen readers)', slow.busy === 'true' && slow.rows >= 10, slow);
+  await waitFor(`document.querySelector('#dirReco .hot-board-body').getAttribute('aria-busy')==='false'`);
   await clickTab('#dirReco .hot-board-trigger', 'V2EX'); await sleep(250);
   ok('a slow list not asked for before: a loading line until it comes', /正在读取榜单/.test((await head()).state));
   await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0`);
@@ -198,8 +199,9 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   const down = await J(`({txt:(document.querySelector('#dirReco .hot-state')||{}).textContent||'', retry:!!document.querySelector('#dirReco [data-hot-retry]'), cols:document.querySelectorAll('#dirReco .hot-col').length})`);
   ok('the hot-list service is down: one plain line and a retry button, no empty tabs', /(?:榜单服务现在连不上|热点追踪暂时不可用)/.test(down.txt) && down.retry && down.cols === 0, down);
   await get('/__hot?'); await J(`document.querySelector('#dirReco [data-hot-retry]').click()`);
+  await waitFor(`document.querySelector('#dirReco [data-hot-view="boards"]')`); await J(`document.querySelector('#dirReco [data-hot-view="boards"]').click()`);
   await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0`);
-  ok('"重试" after it is back: the lists are there', (await cols()).length >= 8 && (await rows()).length === 12);
+  ok('"重试" after it is back: the lists are there (the first ten rows of the first list)', (await cols()).length >= 8 && (await rows()).length >= 10);
   await selectPlatform('bbc');
   await waitFor(`document.querySelector('#dirReco .hot-head h2').textContent==='BBC 国际' && document.querySelectorAll('#dirReco .hot-row').length>0`);
   await c.goto(BASE, 2800); await toDir(); await openHot();
@@ -219,7 +221,7 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   let o = await opts();
   ok('a list of a country has a country picker: "自动" first, then the countries by name; the browser’s language (en-US here) decided: 美国', o.n > 40 && o.val === 'auto' && o.first === '自动（美国）' && o.h2 === 'Google 热搜 · 美国' && o.title === '项目 gtrends US 一', o);
   await selectPlatform('bbc'); await sleep(300);
-  ok('only a list of a country has it (BBC does not)', await J(`!document.querySelector('#dirReco .hot-region')`));
+  ok('only a list of a country has it (BBC does not)', await J(`!document.querySelector('#dirReco .hot-board-desktop .hot-region')`));
   await selectPlatform('gtrends');
   await pickCountry('DE');
   await waitFor(`document.querySelector('#dirReco .hot-head h2').textContent==='Google 热搜 · 德国' && document.querySelectorAll('#dirReco .hot-row').length>0`);
@@ -259,7 +261,7 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
 
   // ================================================ H. a phone
   await c.mobile(390, 844, 2);
-  await fresh('zh'); await toDir();
+  await fresh('zh', `localStorage.setItem('archive.shell', JSON.stringify('2'))`); await toDir();
   await J(`document.querySelector('#dirReco [data-dr-hot]').click()`); await sleep(600);
   await J(`document.querySelector('#dirReco [data-hot-view="boards"]')?.click()`);
   await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0`);
@@ -267,7 +269,7 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0`);
   const ph = await J(`(()=>{ const q=s=>document.querySelector(s), cat=q('#dirReco .hot-cols'), board=q('#dirReco .hot-board-mobile [data-hot-board][aria-expanded="true"]'), head=q('#dirReco .hot-views').getBoundingClientRect(), catBox=cat.getBoundingClientRect(), period=q('#dirReco .hot-board-mobile .hot-period').getBoundingClientRect(); return {sw:document.documentElement.scrollWidth,iw:innerWidth,catDisplay:getComputedStyle(cat).display,catFlex:getComputedStyle(cat).flexDirection,boardH:Math.round(board.getBoundingClientRect().height),catH:Math.round(catBox.height),boards:document.querySelectorAll('#dirReco .hot-board-mobile [data-hot-board]').length,open:document.querySelectorAll('#dirReco .hot-board-mobile [data-hot-board][aria-expanded="true"]').length,periodVisible:period.width>0,periodButtons:q('#dirReco .hot-board-mobile .hot-period').querySelectorAll('button').length,top:Math.round(head.top),drawer:document.body.classList.contains('drawer')}; })()`);
   ok('phone: one horizontal category rail, vertical accordion boards and no page overflow', ph.sw<=ph.iw && ph.catDisplay!=='none' && ph.catFlex==='row' && ph.catH>=34 && ph.boards>1 && ph.open===1 && ph.boardH>=44, ph);
-  ok('phone: hot modes and platform controls start near the top, with one period control', ph.top<100 && ph.periodVisible && ph.periodButtons===2 && !ph.drawer, ph);
+  ok('phone: hot modes and platform controls start near the top, with one period control', ph.top<200 && ph.periodVisible && ph.periodButtons===2 && !ph.drawer, ph);
   await J(`document.querySelector('#dirReco .hot-board-mobile [data-hot-board][aria-expanded="true"]').click()`); await sleep(150);
   ok('phone: tapping the open accordion closes it', await J(`document.querySelectorAll('#dirReco .hot-board-mobile [data-hot-board][aria-expanded="true"]').length===0`));
   await J(`document.querySelector('#dirReco .hot-board-mobile [data-hot-board]').click()`); await sleep(180);

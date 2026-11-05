@@ -45,6 +45,14 @@ const writeDir = fn => { const d = JSON.parse(JSON.stringify(dir0)); fn(d); fs.w
 
   fs.writeFileSync(O + 'recommended.json', JSON.stringify(FIX));
   await reset();
+  // the made-up directory lists many shelves whose home is the made-up blog (http://127.0.0.1:8841/blog/): then every recommended item of that blog would be "in the directory already". For this test the
+  // directory knows ONE site of the recommendations, by its home (the item "eD"); the blog's own shelves are taken out of it
+  const testDir = () => writeDir(d => {
+    const base = d.shelves.find(x => x.id === 'blogA');
+    d.shelves = d.shelves.filter(x => !/127\.0\.0\.1:8841\/blog\//.test(x.home || ''));
+    d.shelves.push(Object.assign({}, base, { id: 'supplyw', name: 'Supply Weekly', home: 'https://supply-weekly.example/', feed: 'http://127.0.0.1:8841/blog/feed.xml?d=supplyw' }));
+  });
+  testDir();
 
   // ------------------------------------------------ the way in: the left list and the banner
   await fresh('zh');
@@ -152,7 +160,7 @@ const writeDir = fn => { const d = JSON.parse(JSON.stringify(dir0)); fn(d); fs.w
   writeDir(d => { delete d.submit_api; });
   await fresh('zh');
   ok('a site without the service (no submit_api): nothing to subscribe or push with, so no entry', await J(`!document.querySelector('[data-cat="reco"]')`));
-  fs.writeFileSync(DIRF, JSON.stringify(dir0));
+  testDir();
 
   // ------------------------------------------------ a tablet and a phone
   for (const [name, w, h, phone] of [['tablet', 820, 1100, false], ['phone', 375, 812, true]]) {
@@ -174,6 +182,7 @@ const writeDir = fn => { const d = JSON.parse(JSON.stringify(dir0)); fn(d); fs.w
     }
   }
   await c.desktop(1280, 900, 1);
+  fs.writeFileSync(DIRF, JSON.stringify(dir0));
   console.log(`\n${pass} passed, ${fail} failed`);
   c.close(); process.exit(fail ? 1 : 0);
 })().catch(e => { console.error(e); process.exit(2); });
