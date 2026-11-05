@@ -479,10 +479,6 @@ body.dir-listen .view-head p,body.dir-hot .view-head p{font-size:14px}
 .lp-secbar .lp-h{margin:0}
 .lp-refresh,.lp-playall{width:40px;height:40px;color:var(--muted)}.lp-playall{color:var(--accent)}.lp-secact{display:inline-flex;align-items:center;gap:2px}
 .lp-shelf .lp-sc{flex:0 0 128px;scroll-snap-align:start}
-.lp-myv{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:var(--surface)!important;border:1px solid var(--rule)}
-.lp-myv i{display:grid;color:var(--muted)}
-.lp-myv i .icon{width:20px;height:20px}
-.lp-myv b{font-size:26px!important;font-weight:500!important;line-height:1.1}
 .lp-mine{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 4px}
 .lp-mc{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:64px;padding:10px 12px;border:1px solid var(--rule);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;text-align:left}
 .lp-mc b{font-size:15px;font-weight:500}
@@ -496,12 +492,13 @@ body.dir-listen .view-head p,body.dir-hot .view-head p{font-size:14px}
 .lp-gcv img{width:100%;height:100%;object-fit:cover}
 .lp-gcv b{font-size:22px;font-weight:600}
 .lp-gcv{position:relative;container-type:inline-size}
-.lp-poster{position:absolute;inset:0;display:grid;place-items:center;padding-bottom:22%;background:linear-gradient(150deg,var(--c1),var(--c2));color:#fff6e6;font-family:var(--sans)}
-.lp-poster::before{content:"";position:absolute;inset:7%;border-radius:50%;border:1px solid rgba(255,246,230,.3)}
-.lp-poster .sun{position:absolute;right:13%;top:10%;width:14%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f3d9a0,#c79a5c)}
-.lp-poster .icon{width:30cqw;height:30cqw;stroke-width:1.6;position:relative}
-.lp-poster .nm{position:absolute;left:10%;right:10%;top:64%;text-align:center;font-size:9.5cqw;font-weight:600;letter-spacing:.1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lp-poster .kd{position:absolute;left:0;right:0;bottom:8%;text-align:center;font-size:7cqw;letter-spacing:.06em;opacity:.78}
+.lp-poster{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:0;padding-bottom:22%;background:linear-gradient(150deg,var(--c1),var(--c2));color:#fff6e6;font-family:var(--sans);overflow:hidden}
+.lp-poster .deco{position:absolute;inset:0;width:100%;height:100%}
+.lp-poster .icon{width:30cqw;height:30cqw;stroke-width:1.6;position:relative;filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))}
+.lp-poster .nm{position:absolute;left:10%;right:10%;top:64%;text-align:center;font-size:9.5cqw;font-weight:600;letter-spacing:.1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.lp-poster .kd{position:absolute;left:0;right:0;bottom:8%;text-align:center;font-size:7cqw;letter-spacing:.06em;opacity:.85;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.lp-mypost{padding-bottom:0}
+.lp-mypost .big{position:relative;margin-top:4cqw;font-size:25cqw;font-weight:500;line-height:1;text-shadow:0 1px 3px rgba(0,0,0,.3)}
 .lp-nc{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(150deg,var(--c1),var(--c2));color:#fff6e6}
 .lp-nc .icon{width:46%;height:46%;stroke-width:1.7}
 .lp-gct{font-size:13.5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -7288,10 +7285,55 @@ const LP_NOTES=['<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path 
 function lpTone(seed){ const h=hashStr(String(seed)); return {c:LP_TONES[h%LP_TONES.length], n:LP_NOTES[(h>>>4)%LP_NOTES.length]}; }
 const lpNoteCover=seed=>{ const k=lpTone(seed); return `<span class="lp-nc" style="--c1:${k.c[0]};--c2:${k.c[1]}">${k.n}</span>`; };          // (a song without a picture: a note on a colour of its own)
 const lpSongCover=x=>x.cover ? `<img src="${esc(x.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : x.pod ? `<span>${esc(String(x.artist||x.title).slice(0,1)||'♪')}</span>` : lpNoteCover(x.id);
-function lpPoster(g){                                                                                 // a play list, a style or a scene without a picture: a poster (a colour of its own, a thin ring, a small sun, a note, its name, what it is)
-  const k=lpTone(g.id), nm=lpName(g), kd=lpIsScene(g) ? t('lpPK_scene') : g.kind==='style' ? t('lpPK_style') : t('lpPK_list');
-  return `<span class="lp-poster" style="--c1:${k.c[0]};--c2:${k.c[1]}"><span class="sun"></span>${k.n}<span class="nm">${esc(state.lang==='en' ? nm.toUpperCase() : nm)}</span><span class="kd">${esc(kd)}${g.n ? ' · '+g.n : ''}</span></span>`;
+document.addEventListener('error',e=>{                                                                // a picture of a song that cannot be loaded: the note on a colour takes its place (no empty square)
+  const im=e.target; if(!im || im.tagName!=='IMG') return; const host=im.closest && im.closest('.ls-cv'), row=host && host.closest('[data-ls-row]'), x=row && lpSeen.get(row.dataset.lsRow);
+  if(x && !x.pod){ im.insertAdjacentHTML('afterend', lpNoteCover(x.id)); im.remove(); }
+},true);
+const LP_IC={bolt:'<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>', mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4"/>', moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>', leaf:'<path d="M5 19C5 10 10 5 19 5c0 9-5 14-14 14zM5 19l8-8"/>', flame:'<path d="M12 21c4 0 6-2.7 6-6 0-3-2-4.7-3-7-1.5 1.5-2 3-2 4-1.5-1-2-3-1.5-6C8 7 6 10 6 15c0 3.3 2 6 6 6z"/>',
+  star:'<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>', heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>', clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>', list:'<path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/>',
+  play:'<path d="M8 5.5v13l11-6.5z"/>', headphones:'<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><path d="M4 14h3v6H5a1 1 0 0 1-1-1zM20 14h-3v6h2a1 1 0 0 0 1-1z"/>', pick:'<path d="M12 3c4 0 7 2.5 7 6 0 5-4 10-7 12-3-2-7-7-7-12 0-3.5 3-6 7-6z"/>',
+  piano:'<rect x="4" y="5" width="16" height="14" rx="1"/><path d="M9.3 5v14M14.7 5v14M7 5v8M12 5v8M17 5v8"/>', bars:'<path d="M5 18v-6M9 18V6M13 18v-9M17 18V9M21 18v-4"/>', target:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>', route:'<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h7a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h7"/>'};
+const lpIcon=k=>k==='note1' ? LP_NOTES[0] : k==='note2' ? LP_NOTES[1] : `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${LP_IC[k]}</svg>`;
+const LP_GRID=(()=>{ let o=''; for(let x=14;x<=86;x+=18) for(let y=14;y<=86;y+=18) o+=`<circle cx="${x}" cy="${y}" r="1.4"/>`; return o; })();
+const LP_DECO={                                                                                       // what is drawn behind the icon: different things for different kinds of music (all flat, all a little see-through)
+  rings:'<circle cx="50" cy="46" r="40" fill="none" stroke="rgba(255,246,230,.28)"/><circle cx="50" cy="46" r="27" fill="none" stroke="rgba(255,246,230,.18)"/><circle cx="80" cy="20" r="7" fill="#f3d9a0"/>',
+  stripes:'<path d="M-10 78L78 -10h20L10 98z" fill="rgba(255,255,255,.1)"/><path d="M26 112L112 26v22L48 112z" fill="rgba(255,255,255,.08)"/><path d="M-10 108L108 -10v10L0 108z" fill="rgba(0,0,0,.12)"/>',
+  bars:'<g fill="rgba(255,255,255,.17)"><rect x="8" y="64" width="9" height="36"/><rect x="22" y="48" width="9" height="52"/><rect x="36" y="58" width="9" height="42"/><rect x="50" y="40" width="9" height="60"/><rect x="64" y="54" width="9" height="46"/><rect x="78" y="44" width="9" height="56"/></g>',
+  waves:'<path d="M0 62c12-10 24-10 36 0s24 10 36 0 20-7 28-2V100H0z" fill="rgba(255,255,255,.12)"/><path d="M0 78c12-9 24-9 36 0s24 9 36 0 20-6 28-2V100H0z" fill="rgba(255,255,255,.12)"/>',
+  stars:'<g fill="rgba(255,246,230,.85)"><circle cx="18" cy="20" r="1.4"/><circle cx="76" cy="14" r="1.8"/><circle cx="88" cy="40" r="1.2"/><circle cx="12" cy="58" r="1.2"/><circle cx="62" cy="30" r="1"/><circle cx="30" cy="40" r="1"/><circle cx="90" cy="70" r="1.2"/></g><circle cx="82" cy="18" r="9" fill="rgba(255,246,230,.16)"/>',
+  keys:'<g fill="rgba(255,255,255,.14)"><rect x="6" y="58" width="12" height="42"/><rect x="22" y="58" width="12" height="42"/><rect x="38" y="58" width="12" height="42"/><rect x="54" y="58" width="12" height="42"/><rect x="70" y="58" width="12" height="42"/><rect x="86" y="58" width="12" height="42"/></g><g fill="rgba(0,0,0,.22)"><rect x="15" y="58" width="6" height="26"/><rect x="31" y="58" width="6" height="26"/><rect x="63" y="58" width="6" height="26"/><rect x="79" y="58" width="6" height="26"/></g>',
+  sun:'<circle cx="80" cy="82" r="36" fill="rgba(255,236,190,.2)"/><circle cx="80" cy="82" r="22" fill="rgba(255,236,190,.22)"/>',
+  grid:'<g fill="rgba(255,255,255,.22)">'+LP_GRID+'</g>',
+  dots:'<circle cx="22" cy="24" r="16" fill="rgba(255,255,255,.1)"/><circle cx="78" cy="30" r="9" fill="rgba(255,255,255,.13)"/><circle cx="70" cy="78" r="20" fill="rgba(255,255,255,.1)"/>'};
+const LP_THEMES=[                                                                                     // [what the name (or id) says, dark corner, light corner, what is drawn, the icon]: a cover that says what the music is
+  [/rock|摇滚|metal|punk|金属|朋克/, '#3a0d12', '#e0502d', 'stripes', 'bolt'],
+  [/hip.?hop|\brap\b|说唱|嘻哈|trap/, '#241543', '#e6a73a', 'stripes', 'mic'],
+  [/folk|民谣|country|乡村|acoustic|原声/, '#5a3a1f', '#e6b873', 'sun', 'pick'],
+  [/classic|古典|orchestra|交响|piano|钢琴/, '#13284a', '#d1a954', 'keys', 'piano'],
+  [/electr|电子|\bedm\b|dance|techno|house|舞曲/, '#1a0f4a', '#20d7c9', 'bars', 'bars'],
+  [/jazz|爵士|blues|蓝调/, '#11243b', '#d98c3f', 'rings', 'moon'],
+  [/r&b|\brnb\b|soul|灵魂|节奏布鲁斯/, '#4a1230', '#e0707f', 'waves', 'heart'],
+  [/k-?pop|韩|j-?pop|日系|anime|动漫|二次元/, '#5a1766', '#ff8fbd', 'dots', 'star'],
+  [/\bpop\b|流行/, '#6d1a58', '#ff9b6e', 'dots', 'star'],
+  [/sleep|助眠|asleep|night|夜|晚安|lullaby/, '#0e1b3a', '#6f84d6', 'stars', 'moon'],
+  [/focus|专注|study|学习|读书/, '#1b3a2e', '#b7d78f', 'grid', 'target'],
+  [/chill|放松|relax|lo-?fi|calm|治愈|轻音乐|ambient|纯音乐|instrumental/, '#1f5f55', '#d6c98c', 'waves', 'leaf'],
+  [/workout|运动|\bgym\b|\brun\b|健身|跑步|sport/, '#7b1c10', '#ff9a3a', 'stripes', 'flame'],
+  [/commute|通勤|drive|驾驶|road|旅行|travel/, '#1e3c5b', '#8dc3e6', 'waves', 'route'],
+  [/video|视频|\bmv\b/, '#3a0e14', '#e5564c', 'rings', 'play'],
+  [/world|全球|international|国际|latin|拉丁/, '#14464f', '#f0b45d', 'sun', 'headphones']];
+const LP_MINE={'my:likes':['#7d1d3b','#ff7f8f','rings','heart'], 'my:recent':['#173e63','#5fb4d6','waves','clock'], 'my:lists':['#2f5d3a','#c3d86a','bars','list']};          // (liked, recent, my lists: a poster each, with its number)
+function lpTheme(g){                                                                                  // the theme of a play list / style / scene: by what its name says, else (a name nobody foresaw) a look of its own from its id
+  const hay=String((g.id||'')+' '+(g.name||'')+' '+(g.name_en||'')).toLowerCase(), m=LP_THEMES.find(x=>x[0].test(hay));
+  if(m) return {c:[m[1],m[2]], deco:m[3], icon:m[4]};
+  const h=hashStr(String(g.id)), ds=Object.keys(LP_DECO).filter(k=>k!=='keys');
+  return {c:LP_TONES[h%LP_TONES.length], deco:ds[(h>>>5)%ds.length], icon:['note1','note2','headphones','star'][(h>>>9)%4]};
 }
+function lpPoster(g){                                                                                 // a play list, a style or a scene without a picture: a poster that suits it (its colours, what is drawn, its icon), its name and what it is
+  const th=lpTheme(g), nm=lpName(g), kd=lpIsScene(g) ? t('lpPK_scene') : g.kind==='style' ? t('lpPK_style') : t('lpPK_list');
+  return `<span class="lp-poster" data-theme-icon="${th.icon}" style="--c1:${th.c[0]};--c2:${th.c[1]}"><svg class="deco" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${LP_DECO[th.deco]}</svg>${lpIcon(th.icon)}<span class="nm">${esc(state.lang==='en' ? nm.toUpperCase() : nm)}</span><span class="kd">${esc(kd)}${g.n ? ' · '+g.n : ''}</span></span>`;
+}
+function lpMyPoster(id, n){ const m=LP_MINE[id]; return `<span class="lp-poster lp-mypost" data-theme-icon="${m[3]}" style="--c1:${m[0]};--c2:${m[1]}"><svg class="deco" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${LP_DECO[m[2]]}</svg>${lpIcon(m[3])}<b class="big">${n}</b></span>`; }
 function lpGcCard(g){ const h=Math.abs(hashStr(g.id))%360; return `<button class="lp-gc" type="button" data-lp-g="${esc(g.id)}" style="--h:${h}"><span class="lp-gcv">${g.cover ? `<img src="${esc(g.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : lpPoster(g)}</span><span class="lp-gct">${esc(lpName(g))}</span></button>`; }
 const LP_CLOCK='<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>';
 function lpRecHTML(all){                                                                             // the play lists in a row (it begins with my three squares: liked, recent, my lists, each with its number), then the songs for you as rows: thirty, more when the end is reached; an icon plays them, one brings another batch
@@ -7300,7 +7342,7 @@ function lpRecHTML(all){                                                        
   const playAll=`<button class="ibtn lp-playall" type="button" data-lp-radio title="${esc(t('lpRadioPlay'))}" aria-label="${esc(t('lpRadioPlay'))}">${ICON.play}</button>`;
   const songs=items.length ? `<div class="lp-secbar"><h3 class="lp-h">${esc(t('lpForYou'))}</h3><span class="lp-secact">${playAll}${again}</span></div><ol class="ls-rows lp-rows lp-forrows">${lpItemsHTML(items,0,L.shown,true)}</ol>${lpEndHTML(items.length, L.shown)}`
     : info.state==='err' ? `<p class="hot-state">${esc(info.msg||t('lpErr'))}<br><button class="btn" type="button" data-lp-retry>${esc(t('dirRetry'))}</button></p>` : `<p class="hot-state">${esc(t('lpLoading'))}</p>`;
-  const sq=(id,icon,n)=>`<button class="lp-gc lp-my" type="button" data-lp-my="${id}"><span class="lp-gcv lp-myv"><i aria-hidden="true">${icon}</i><b>${n}</b></span><span class="lp-gct">${esc(lpMyTitle(id))}</span></button>`;
+  const sq=(id,icon,n)=>`<button class="lp-gc lp-my" type="button" data-lp-my="${id}"><span class="lp-gcv">${lpMyPoster(id,n)}</span><span class="lp-gct">${esc(lpMyTitle(id))}</span></button>`;
   const mine=sq('my:likes',ICON.heart,lpLikes().length)+sq('my:recent',LP_CLOCK,lpRecent().length)+sq('my:lists',ICON.list,lpLists().length);
   const lists=all.filter(g=>g.type==='music' && g.kind==='list' && !lpIsChart(g)).slice(0,20);
   const shelf=`<div class="lp-secbar"><h3 class="lp-h">${esc(t('lpShelf'))}</h3></div><div class="lp-shelf">${mine}${lists.map(lpGcCard).join('')}</div>`;
