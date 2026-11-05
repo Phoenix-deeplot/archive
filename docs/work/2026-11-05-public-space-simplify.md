@@ -78,7 +78,7 @@
 
 ### claude
 
-2026-11-05 P1–P5 做完，在分支 `claude/public-simplify`（worktree `E:\Ztree\wt\claude-public-simplify`）里，等用户看预览、说“合并”。
+2026-11-05 P1–P5 做完，用户看过预览后又改了听歌页的推荐（去掉今日电台、歌单在上、推荐一行一首先 30 首滚动加载），然后说“合并”，已合并进 `master`（见下面“合并记录”）。
 
 - P1 空白：手机顶部的工具行在发现世界里不再占位；头部 157 → 111 px；标签条和第一块内容之间 ≤ 24 px（`s_public_bar` 量每一页）。
 - P2 每页一行：“节目 / 栏目”挑选面板、排序下拉、手机“筛选”面板都去掉；内容页（全部、精选文章、看什么、精选图书）是一条带：左边“栏目 | 平台”开关 + 右端工具（内容语言只在精选图书 / 精选文章 / 全部、排序图标点一下换一种、卡片 / 列表图标），下面一行标签向左右滑；热榜、今日听什么各一行；电脑上滚轮能横向滑标签行；歌曲和歌单两排在电脑上有细滚动条。以前版本勾选过的节目不再藏内容，勾选过的栏目只当兴趣。
@@ -93,6 +93,6 @@
 
 ## 5. 合并记录
 
-- 合并顺序：
-- 合并后的测试结果：
-- 删除的分支和 worktree：
+- 合并顺序：2026-11-05 用户说“合并”，并说热榜已被改过：除了我改的空白区域，其余冲突以 Codex 的为准。先把 `master`（已含 `codex/hot-analytics-ui`）并进 `claude/public-simplify`，`index.html` 有 2 处冲突（`hotFocusHTML`、`hotHTML`）、`s_hotpage.js` 1 处，全部取 Codex 的；我在热榜页上改过的样式（`.hot-modebar`、`.hot-mode`、`.hot-updated`）和“副标题去掉”也还原成 master 的，现在热榜页和 master 上 Codex 的版本完全一致，只留外壳里去空白的部分（手机头部不再占位的工具行）。然后 `--no-ff` 合并进 `master`（`47e7b24`）。测试里 `s_public_bar` 的热榜一行改认 Codex 的 `.hot-views`。用户本机 `index.html` 里那一行百度验证 meta 用 `git stash push -- index.html` 绕开，合并后放回，没提交。
+- 合并后的测试结果：分支上全套 36 个，除 4 条已知失败外，只有热榜页 `s_hotpage` 的 7 条失败；在 master 上（快速集 + s_listen / s_music_list / s_hotpage）：全部通过，只有 `s_hotpage` 8 条和 `s_shell` 的“底栏三个按钮”1 条失败。这 9 条在没有我改动的 `master`（`7589580`）的干净副本上同样失败，是 Codex 那边改动留下的：底栏现在是“发现世界 \| 热榜 \| ＋ \| 我的书架”四个，测试还在查三个；热榜测试的假数据和页面不合。**没有修，留给 Codex。**
+- 删除的分支和 worktree：`claude/public-simplify` 和 `E:\Ztree\wt\claude-public-simplify` 已删；临时的 `tmp-master-check` 也删了。`claude/first-run`、`claude/feedback`（shelf-directory）还没合并。master 里有一个 Codex 的 stash（“Preserve local user edits before Codex branch merges”），我没碰。
