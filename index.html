@@ -1028,6 +1028,13 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
 .dlg label{display:block;font-size:13px;color:var(--muted);margin:14px 0 4px}
 .dlg select,.dlg input[type=text],.dlg textarea{width:100%;font:inherit;font-size:14.5px;color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:7px 9px}
 .dlg textarea{min-height:64px;resize:vertical;line-height:1.6}
+#fbDlg .fb-kinds{margin:0 0 10px}
+#fbDlg .fb-kinds button{min-height:36px;padding:5px 12px}
+#fbDlg textarea{min-height:120px}
+#fbDlg .fb-count{margin:2px 0 8px;font-size:12.5px;text-align:right}
+#fbDlg input[type=text]{margin-bottom:8px}
+.fb-hp{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none}
+@media (max-width:620px){#fbDlg .fb-kinds{display:flex}#fbDlg .fb-kinds button{flex:1;min-height:44px;padding:5px 4px}}
 .pending{border:1px solid var(--rule);border-radius:8px;padding:10px 12px 12px;margin-top:12px}
 .pending .fname{font-family:var(--mono);font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
 .row2{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end}
@@ -1582,7 +1589,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
         </div>
         <button class="btn" type="button" id="themeBtn"></button>
       </div>
-      <p class="legal-links"><a href="about.html" data-i="legalAbout">关于本站</a> · <a href="privacy.html" data-i="legalPrivacy">隐私政策</a> · <a href="terms.html" data-i="legalTerms">使用条款</a> · <button class="link-btn" type="button" id="introLink" data-i="introLink">这是什么</button></p>
+      <p class="legal-links"><a href="about.html" data-i="legalAbout">关于本站</a> · <a href="privacy.html" data-i="legalPrivacy">隐私政策</a> · <a href="terms.html" data-i="legalTerms">使用条款</a> · <button class="link-btn" type="button" id="introLink" data-i="introLink">这是什么</button><span id="fbSpan" hidden> · <button class="link-btn" type="button" id="fbLink" data-i="fbLink">反馈</button></span></p>
     </div>
   </aside>
 
@@ -1945,6 +1952,23 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
       <p class="sub-hint" id="bkStatus" role="status" aria-live="polite"></p>
     </div>
     <div class="dlg-foot"><button class="btn primary" type="button" id="bkGo" hidden data-i="bkGo">合并到我的书架</button><button class="btn" type="button" id="bkClose" data-i="close">关闭</button></div>
+  </div>
+</dialog>
+
+<dialog id="fbDlg" aria-labelledby="fbTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h2 id="fbTitle" data-i="fbTitle">反馈</h2></div>
+    <div class="dlg-body">
+      <p class="sub-hint" data-i="fbHint"></p>
+      <div class="seg fb-kinds" id="fbKinds" role="group" data-i-aria="fbKindL"><button type="button" data-k="bug" aria-pressed="false" data-i="fbKind_bug">出问题了</button><button type="button" data-k="idea" aria-pressed="true" data-i="fbKind_idea">有想法</button><button type="button" data-k="content" aria-pressed="false" data-i="fbKind_content">内容</button><button type="button" data-k="other" aria-pressed="false" data-i="fbKind_other">其他</button></div>
+      <textarea id="fbMsg" rows="5" maxlength="1000" data-i-ph="fbPh" data-i-aria="fbTitle"></textarea>
+      <p class="sub-hint fb-count" id="fbCount"></p>
+      <input type="text" id="fbContact" maxlength="80" autocomplete="off" data-i-ph="fbContactPh" data-i-aria="fbContactPh">
+      <input type="text" id="fbWebsite" class="fb-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <p class="sub-hint" data-i="fbNote"></p>
+      <p class="sub-hint" id="fbStatus" role="status" aria-live="polite"></p>
+    </div>
+    <div class="dlg-foot"><button class="btn primary" type="button" id="fbSend" data-i="fbSend">发送</button><button class="btn" type="button" id="fbClose" data-i="close">取消</button></div>
   </div>
 </dialog>
 
@@ -2657,6 +2681,10 @@ Object.assign(I18N.zh,{bkSub:'人工挑选、可以免费读的书和刊物', bk
   bgn_novel:'小说', bgn_philosophy:'哲学', bgn_history:'历史', bgn_verse:'诗文', bgn_science:'科学', bgn_tech:'技术', bgn_magazine:'杂志', bgn_library:'书库'});
 Object.assign(I18N.en,{bkSub:'Hand-picked books and journals that are free to read', bkLists:'Book lists', bkListN:n=>n===1?'1 book':`${n} books`, bkListsMore:n=>`All ${n} book lists ▾`, bkListsLess:'Fewer ▴', bkBackAll:'‹ Book picks', bkAuthorChip:'Author: ',
   bgn_novel:'Fiction', bgn_philosophy:'Philosophy', bgn_history:'History', bgn_verse:'Verse & essays', bgn_science:'Science', bgn_tech:'Tech', bgn_magazine:'Magazines', bgn_library:'Libraries'});
+Object.assign(I18N.zh,{fbLink:'反馈', fbTitle:'反馈', fbHint:'哪里不顺手、想要什么、哪里写错了，都可以写在这里。不用登录，也不记你的网络地址。', fbKindL:'类型', fbKind_bug:'出问题了', fbKind_idea:'有想法', fbKind_content:'内容', fbKind_other:'其他',
+  fbPh:'写点什么…（最多 1000 字）', fbContactPh:'想要回复的话，留个邮箱或微信（可以不填）', fbNote:'只有站长看得到，保存 180 天；联系方式只有你填了才会有。', fbSend:'发送', fbSending:'发送中…', fbThanks:'谢谢，收到了', fbEmpty:'先写点什么', fbRate:'今天写得够多了，明天再来', fbFail:'没发出去，稍后再试', fbNudge:'用得顺手吗？有想法可以告诉我', fbNudgeGo:'写反馈'});
+Object.assign(I18N.en,{fbLink:'Feedback', fbTitle:'Feedback', fbHint:'What is awkward, what you would like, what is wrong: write it here. No sign-in, and your network address is not kept.', fbKindL:'Kind', fbKind_bug:'Something is wrong', fbKind_idea:'An idea', fbKind_content:'Content', fbKind_other:'Other',
+  fbPh:'Write something… (at most 1000 characters)', fbContactPh:'If you want an answer, leave an e-mail or a handle (optional)', fbNote:'Only the maintainer can read it; it is kept for 180 days; a contact is there only if you wrote one.', fbSend:'Send', fbSending:'Sending…', fbThanks:'Thank you, it arrived', fbEmpty:'Write something first', fbRate:'That is enough for today; come back tomorrow', fbFail:'It did not go; try again later', fbNudge:'Is it working well for you? Tell me what you think', fbNudgeGo:'Write feedback'});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const catName = c => (['all','featured','books','tools','notes','hidden'].includes(c)? t(c) : c);
@@ -4031,7 +4059,7 @@ function bookPlace(did){
   const old=+((LS.get('bookPos',{})||{})[did]); return {i:old>0?old:0, pct:0, done:[], at:0, known:old>0};
 }
 function bookSave(did, i, pct){
-  const p=bookPlace(did), done=new Set(p.done); if(pct>=90) done.add(i);
+  const p=bookPlace(did), done=new Set(p.done); if(pct>=90){ if(!done.has(i)) fbNudgeSoon(); done.add(i); }          // (the first chapter read to its end: the one light line of the feedback box, once)
   state.progress['bk:'+did]={i, pct:Math.round(pct*100)/100, at:Date.now(), done:[...done].sort((a,b)=>a-b).slice(0,400)};
   LS.set('progress',state.progress);
 }
@@ -5878,7 +5906,55 @@ $('#syncWipe').addEventListener('click',async()=>{
   try{ await syncEnsureKeys(); await syncCall({action:'destroy'}); }catch(e){ if(e.code!=='novault') { syncMsg(t('syncErr',e.message)); return; } }
   LS.set('sync',null); syncSt.keys=null; await idb.set('syncBase',undefined); syncMsg(t('syncWiped')); syncPanels(); syncUI();
 });
+/* ---- feedback: a few words from a reader to the maintainer, anonymous (the directory's service keeps the words, the kind, an optional contact, the page, the language, the version and the day: nothing about who).
+   The entry is a link at the foot of the side list, a link from the guide (#feedback), and ONE light line (a toast, once) after the first thing saved to the shelf or the first chapter read to its end: no window of its own, nothing over a text. */
+const fbSt={ready:false, kind:'idea', busy:false};
+function fbApi(){ const s=String((state.dirData&&state.dirData.submit_api)||''), a=/\/submit\/?$/.test(s)?s.replace(/\/submit\/?$/,'/feedback'):''; return /^https:\/\//.test(a) || /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//.test(a) ? a : ''; }
+function fbUI(){ $('#fbSpan').hidden=!fbSt.ready; }
+async function fbProbe(){
+  fbSt.ready=false; const a=fbApi();
+  if(a){ try{ const r=await fetch(a,{cache:'no-store'}), d=await r.json(); fbSt.ready=!!(d && d.configured); }catch(e){} }
+  fbUI(); if(fbSt.ready && location.hash==='#feedback') fbOpen();
+}
+const fbWhere=()=>{ if(!$('#reader').hidden){ const it=itemById(state.readingId); return it && /(^|\/)notes\/guide\//.test(it.id) ? 'guide' : 'reader'; } return dirOn() ? (state.dHot ? 'hot' : state.dListen ? 'listen' : state.dLanding || 'dir') : 'shelf'; };
+function fbKind(k){ fbSt.kind=k; document.querySelectorAll('#fbKinds button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.k===k))); }
+function fbCount(){ const n=[...$('#fbMsg').value].length; $('#fbCount').textContent=n+' / 1000'; }
+function fbOpen(kind){
+  if(!fbSt.ready) return;
+  if(location.hash==='#feedback') history.replaceState(null,'',location.pathname+location.search);
+  document.body.classList.remove('drawer');
+  fbKind(kind||fbSt.kind); $('#fbStatus').textContent=''; fbCount();
+  if(!$('#fbDlg').open) $('#fbDlg').showModal();
+  $('#fbMsg').focus();
+}
+async function fbSend(){
+  if(fbSt.busy) return;
+  const msg=$('#fbMsg').value.trim(), st=$('#fbStatus');
+  if(!msg){ st.textContent=t('fbEmpty'); $('#fbMsg').focus(); return; }
+  fbSt.busy=true; $('#fbSend').disabled=true; st.textContent=t('fbSending');
+  try{
+    const r=await fetch(fbApi(),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({msg, kind:fbSt.kind, contact:$('#fbContact').value.trim(), where:fbWhere(), lang:state.lang, ver:APP_VERSION, website:$('#fbWebsite').value})});
+    let d=null; try{ d=await r.json(); }catch(e){}
+    if(r.ok && d && d.ok){ $('#fbMsg').value=''; $('#fbContact').value=''; $('#fbDlg').close(); toast(t('fbThanks')); }
+    else st.textContent = r.status===429 ? t('fbRate') : (d && (state.lang==='zh' ? d.message : d.message_en)) || t('fbFail');
+  }catch(e){ st.textContent=t('fbFail'); }
+  fbSt.busy=false; $('#fbSend').disabled=false;
+}
+function fbNudgeSoon(){                                                                                  // once, a little after the first save or the first chapter read to its end; never over a window, a focus page or before the service is known to be there
+  setTimeout(()=>{
+    if(!fbSt.ready || LS.get('fbNudge',0) || document.querySelector('dialog[open]') || document.body.classList.contains('reader-focus')) return;
+    LS.set('fbNudge',1); toast(t('fbNudge'),t('fbNudgeGo'),()=>fbOpen());
+  },2800);
+}
+$('#fbLink').addEventListener('click',()=>fbOpen());
+$('#fbClose').addEventListener('click',()=>$('#fbDlg').close());
+$('#fbSend').addEventListener('click',fbSend);
+$('#fbMsg').addEventListener('input',fbCount);
+$('#fbKinds').addEventListener('click',e=>{ const b=e.target.closest('[data-k]'); if(b) fbKind(b.dataset.k); });
+$('#fbDlg').addEventListener('click',e=>{ if(e.target===$('#fbDlg')) $('#fbDlg').close(); });
+window.addEventListener('hashchange',()=>{ if(location.hash==='#feedback') fbOpen(); });
 async function syncInit(){
+  fbProbe();
   await syncProbe();
   if(syncOn() && syncSt.ready) syncRun();
   payTrack();
@@ -8048,7 +8124,7 @@ async function toggleSaveLink(did){
       const rec={id, type:'link', url:it.url, title:it.title, summary:it.summary, keywords:it.tags.slice(0,8), lang:(it.lang==='zh'||it.lang==='en')?it.lang:'en', date:it.date||today(),
                  category:it.type==='tool'?'tools':'notes', image:it.image, from:sh?sh.name:'', added:Math.floor(Date.now()/1000), ...(it.audio?{audio:it.audio}:{})};
       const read=state.tmp.get('tmp:'+did); if(read && read.content){ rec.content=read.content; if(read.contentCut) rec.contentCut=true; }        // saved after reading: the text comes along
-      await idb.put(rec); state.items.push({...rec, source:'local'}); toast(t('savedToast',cut(it.title,24))); statSend('save','item',did);
+      await idb.put(rec); state.items.push({...rec, source:'local'}); toast(t('savedToast',cut(it.title,24))); statSend('save','item',did); fbNudgeSoon();
     }
     render();
   }catch(e){ toast(t('saveFail')+e.message); }

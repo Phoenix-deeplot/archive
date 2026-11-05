@@ -205,6 +205,7 @@ ENV['STAT_DAILY_EVENTS'] = '5000'
 CHECKS = []                                                             # the "check" requests (they create nothing)
 SUBMITS = []                                                            # what the page sent to the (fake) submission service
 SUBMIT = {'limit': None}                                                # accepted per "day"; None: no limit
+FEEDBACK = {'on': True, 'mode': 'ok', 'log': []}                        # the fake feedback service: set up or not, how it answers, what the page sent
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8840
 
 
@@ -245,6 +246,36 @@ class H(BaseHTTPRequestHandler):
                 return self.reply(429, {'ok': False, 'error': 'rate', 'message': '今天提交得太多了，请明天再试', 'message_en': 'Too many submissions today; please try again tomorrow'})
             SUBMITS[-1]['_ok'] = True
             return self.reply(200, {'ok': True, 'status': 'queued', 'kind': 'feed'})
+        if p.path == '/api/feedback':                                         # a stand-in for the feedback service (the real one is tested in shelf-directory): GET says whether it is set up, POST keeps what the page sent
+            if method == 'OPTIONS':
+                self.send_response(204)
+                self.cors()
+                self.end_headers()
+                return
+            if method == 'GET':
+                return self.reply(200, {'ok': True, 'service': 'shelf-feedback', 'configured': FEEDBACK['on']})
+            n = int(self.headers.get('Content-Length') or 0)
+            try:
+                payload = json.loads(self.rfile.read(n) or b'{}')
+            except ValueError:
+                payload = {}
+            FEEDBACK['log'].append(payload)
+            if FEEDBACK['mode'] == 'rate':
+                return self.reply(429, {'ok': False, 'error': 'rate', 'message': '今天发得够多了，明天再来', 'message_en': 'That is enough for today; come back tomorrow'})
+            if FEEDBACK['mode'] == 'bad':
+                return self.reply(400, {'ok': False, 'error': 'request', 'message': '请求格式不对（内容不能为空，最多 1000 字）', 'message_en': 'Bad request (write something; at most 1000 characters)'})
+            if FEEDBACK['mode'] == 'down':
+                return self.reply(503, {'ok': False, 'error': 'storage', 'message': '反馈服务暂时不可用', 'message_en': 'Feedback is unavailable for the moment'})
+            return self.reply(200, {'ok': True})
+        if p.path == '/__fb':                                                 # ?on=0|1&mode=ok|rate|bad|down ; /__fb?reset=1 forgets what was sent
+            q = parse_qs(p.query)
+            if q.get('reset'):
+                FEEDBACK['log'].clear()
+            if q.get('on'):
+                FEEDBACK['on'] = q['on'][0] == '1'
+            if q.get('mode'):
+                FEEDBACK['mode'] = q['mode'][0]
+            return self.json({'on': FEEDBACK['on'], 'mode': FEEDBACK['mode'], 'log': FEEDBACK['log']})
         if p.path == '/api/listen':                                           # today's listening: /__listen?mode=ok|down|junk|empty&delay=ms&fail=ID
             q = parse_qs(p.query)
             gid = (q.get('g') or [''])[0]
