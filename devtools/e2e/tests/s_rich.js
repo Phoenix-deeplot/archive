@@ -39,7 +39,7 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await stub();
 
   // ================================================ A. a video plays in a window of the page (the platform's own player)
-  await plat('影音与社区', 'B 站热门视频');
+  await plat('综合热点', 'B 站热门视频');
   await first(); await settle(400);
   const em = await J(`({open:document.querySelector('#embedDlg').open, src:(document.querySelector('#embedBox iframe')||{}).src, sandbox:(document.querySelector('#embedBox iframe')||{}).getAttribute('sandbox')||'', title:document.querySelector('#embedTitle').textContent,
     sub:document.querySelector('#embedSub').textContent, body:document.querySelector('#embedBody').hidden?'':document.querySelector('#embedBody').textContent, orig:document.querySelector('#embedOrig').href, origText:document.querySelector('#embedOrig').textContent,
@@ -57,7 +57,7 @@ const get = p => fetch(SVC + p).then(r => r.json());
   const ne = await J(`({open:document.querySelector('#embedDlg').open, src:(document.querySelector('#embedBox iframe')||{}).src, h:document.querySelector('#embedBox').style.height})`);
   ok('a NetEase song: its own small player (66 px) in the window', ne.open && ne.src === 'https://music.163.com/outchain/player?type=2&id=300591&auto=0&height=66' && ne.h === '86px', ne);
   await J(`document.querySelector('#embedDone').click()`); await sleep(300);
-  await plat('娱乐', 'Steam 热销');
+  await plat('应用与游戏', 'Steam 热销');
   await J(`window.__dp=[]`); await first(); await sleep(300);
   const st = await J(`({dp:window.__dp[0], open:document.querySelector('#embedDlg').open, reader:!document.querySelector('#reader').hidden, target:document.querySelector('#dirReco .hot-t').target})`);
   ok('a row with nothing to show (only a title and a price): the click is left to the browser, a tab of its own', st.dp === false && !st.open && !st.reader && st.target === '_blank', st);

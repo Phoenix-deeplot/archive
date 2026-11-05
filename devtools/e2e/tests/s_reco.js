@@ -41,6 +41,7 @@ const writeDir = fn => { const d = JSON.parse(JSON.stringify(dir0)); fn(d); fs.w
   const openReco = async () => { await J(`document.querySelector('[data-cat="reco"]').click()`); await settle(500); };
   const ids = sel => J(`[...document.querySelectorAll(${JSON.stringify(sel)})].map(x=>x.dataset.rid||x.id)`);
   const tick = (kind, id) => J(`document.querySelector('[data-r${kind}="${id}"]').click()`);
+  const lf = async k => { for (let i = 0; i < 3 && (await J(`state.lf`)) !== k; i++) { await J(`document.querySelector('#lfBtn').click()`); await sleep(350); } };          // (the language of the content is ONE button: each tap the next, all -> 中 -> EN -> all)
   const sumText = () => J(`document.querySelector('#rcSum').textContent`);
 
   fs.writeFileSync(O + 'recommended.json', JSON.stringify(FIX));
@@ -74,9 +75,9 @@ const writeDir = fn => { const d = JSON.parse(JSON.stringify(dir0)); fn(d); fs.w
   ok('a row: name linking to the site, language and full-text chips, description, the traffic dots with the rank in a tooltip, tags, the two ticks', row.name === '甲博客' && row.href === 'http://127.0.0.1:8841/blog/' && row.chips.includes('中文') && row.chips.includes('全文') === false && row.chips.includes('订阅源带全文') && row.desc === '甲博客的简介' && row.meter === '●●●●●' && /1,000/.test(row.tip) && /#标签甲 #标签乙/.test(row.tags) && row.picks.join() === '订阅,推送审核', row);
   ok('no dots for an item without a rank', await J(`!document.querySelector('[data-rid="zC"] .rc-meter')`));
   await c.shot(require('../paths').SHOTS + '/rc_page_desktop.png');
-  await J(`document.querySelector('[data-lf="en"]').click()`); await sleep(300);
+  await lf('en'); await sleep(200);
   ok('the language filter (EN) leaves the English group only', (await J(`[...document.querySelectorAll('.rc-group h2')].map(h=>h.textContent)`)).join() === '英文 · 测试组');
-  await J(`document.querySelector('[data-lf="all"]').click()`); await sleep(300);
+  await lf('all'); await sleep(200);
   await J(`const i=document.querySelector('#q'); i.value='乙博客'; i.dispatchEvent(new Event('input',{bubbles:true}))`); await settle(500);
   ok('the search box filters the recommendations too', (await ids('.rc-row')).join() === 'zB');
   await J(`const i=document.querySelector('#q'); i.value=''; i.dispatchEvent(new Event('input',{bubbles:true}))`); await settle(400);
