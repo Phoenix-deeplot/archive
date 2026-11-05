@@ -38,6 +38,14 @@
     });
     pre.appendChild(b);
   });
+  document.querySelectorAll('[data-copy]').forEach(function(b){                                  // "copy the group number": the text of the button says "copied" for a moment
+    var was=b.textContent;
+    b.addEventListener('click',function(){
+      var t=b.dataset.copy, done=function(){ b.textContent=b.dataset.done||label[1]; setTimeout(function(){ b.textContent=was; },1500); };
+      if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done,function(){ fallback(); }); else fallback();
+      function fallback(){ var i=document.createElement('textarea'); i.value=t; i.style.position='fixed'; i.style.opacity='0'; document.body.appendChild(i); i.select(); try{ if(document.execCommand('copy')) done(); }catch(e){} i.remove(); }
+    });
+  });
   /* A hint, never a redirect (a crawler must see each language page as it is): "English version" for a reader whose browser is not Chinese, "中文版" for one whose is. */
   var bar=document.getElementById('langbar');
   if(bar){

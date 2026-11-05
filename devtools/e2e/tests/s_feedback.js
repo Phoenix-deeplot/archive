@@ -43,6 +43,11 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   const o = await J(`({open:document.querySelector('#fbDlg').open, kinds:[...document.querySelectorAll('#fbKinds button')].map(b=>b.textContent+(b.getAttribute('aria-pressed')==='true'?'*':'')).join('|'), count:document.querySelector('#fbCount').textContent, focus:document.activeElement.id, hp:(()=>{ const r=document.querySelector('#fbWebsite').getBoundingClientRect(); return r.right<0 || r.left<-1000; })(), hpAria:document.querySelector('#fbWebsite').getAttribute('aria-hidden'), ph:document.querySelector('#fbMsg').placeholder, note:document.querySelector('#fbDlg .dlg-body').innerText.includes('只有站长看得到')})`);
   ok('the window opens: four kinds ("有想法" chosen), the words box with its count and focus, the contact, the note on who can read it, the honeypot out of sight', o.open && o.kinds === '出问题了|有想法*|内容|其他' && o.count === '0 / 1000' && o.focus === 'fbMsg' && o.hp && o.hpAria === 'true' && /最多 1000/.test(o.ph) && o.note, o);
   await c.shot(P.SHOTS + '/feedback_dialog.png');
+  ok('the window has one small line for the reading group: its QQ number and a button that copies it (a tap says so, or selects the number where the browser will not copy)', await J(`document.querySelector('#fbDlg .fb-group b').textContent`) === '869727153' && await J(`document.querySelector('#fbCopy').textContent`) === '复制群号');
+  await J(`document.querySelector('#fbCopy').click()`); await sleep(500);
+  const cp = await toastNow();
+  ok('"复制群号" copies the number: the toast says so, or the number is selected for the reader to copy', /已复制群号/.test(cp.msg) || (await J(`String(getSelection())`)) === '869727153', [cp, await J(`String(getSelection())`)]);
+  await J(`getSelection().removeAllRanges()`);
 
   // ------------------------------------------------ sending
   await J(`document.querySelector('#fbSend').click()`); await sleep(400);
