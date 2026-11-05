@@ -562,7 +562,7 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .hot-views{display:flex;gap:3px;width:max-content;max-width:100%;padding:4px;margin:0 0 14px;border:1px solid var(--rule);border-radius:12px;background:var(--surface)}
 .hot-views button{min-height:40px;padding:7px 15px;border:0;border-radius:9px;background:transparent;color:var(--muted);font:inherit;font-size:14px;white-space:nowrap;cursor:pointer}
 .hot-views button[aria-pressed="true"]{background:var(--ink);color:var(--bg);font-weight:650}
-.hot-board-list{display:grid;gap:8px}
+.hot-board-list{display:grid;gap:8px;min-width:0}
 .hot-board-card{overflow:hidden;border:1px solid var(--rule);border-radius:12px;background:var(--surface)}
 .hot-board-trigger{display:flex;align-items:center;gap:10px;width:100%;min-height:60px;padding:10px 13px;border:0;background:transparent;color:var(--ink);text-align:left;font:inherit;cursor:pointer}
 .hot-board-trigger:hover{background:color-mix(in srgb,var(--accent) 4%,var(--surface))}
@@ -573,8 +573,20 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .hot-board-chevron{flex:0 0 auto;color:var(--muted);font-size:18px;transition:transform .16s ease}
 .hot-board-card[aria-expanded="true"] .hot-board-chevron{transform:rotate(90deg)}
 .hot-board-body{padding:0 12px 12px;border-top:1px solid var(--rule)}
-.hot-board-actions{display:flex;flex-wrap:wrap;align-items:center;gap:7px;padding:9px 0}
-.hot-board-actions>a{color:var(--accent);font-size:12px}
+.hot-board-actions{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:0}
+.hot-board-actions>a,.hot-board-actions button{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;min-height:34px;padding:0;border:1px solid var(--rule);border-radius:9px;background:var(--bg);color:var(--muted);text-decoration:none;cursor:pointer}
+.hot-board-actions>a:hover,.hot-board-actions button:hover{border-color:var(--accent);color:var(--accent)}
+.hot-board-actions .icon{width:17px;height:17px}
+.hot-board-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-bottom:1px solid var(--rule)}
+.hot-board-toolbar .hot-meta{flex:1 1 auto}
+.hot-board-toolbar .hot-head{padding:0;border:0}
+.hot-board-toolbar .hot-region{max-width:9em}
+.hot-board-desktop{display:grid}
+.hot-board-mobile{display:none}
+.hot-board-card{display:none}
+.hot-board-desktop .hot-plat{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.hot-board-desktop .hot-plat small{color:var(--muted);font-size:11px;white-space:nowrap}
+.hot-board-desktop .hot-plat[aria-selected="true"] small{color:inherit;opacity:.75}
 .hot-board-preview{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.45;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hot-more-rows{display:block;margin:10px auto 0;min-height:40px;padding:7px 14px;border:1px solid var(--rule);border-radius:9px;background:var(--bg);color:var(--accent);font:inherit;font-size:13px;cursor:pointer}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -636,6 +648,8 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .hot-event-sources a:hover{text-decoration:underline}
 .hot-feedback{margin:10px 0 14px;color:var(--muted);font-size:13px}
 @media (max-width:760px){
+  body.sh-phone.dir-hot .view-head{padding:0;height:0;overflow:hidden}
+  body.sh-phone.dir-hot .hot{margin-top:-4px}
   .hot-intro{align-items:flex-start;margin-bottom:8px;padding-bottom:8px}
   .hot-intro h2{font-size:19px}
   .hot-updated{width:auto;margin-left:auto;text-align:right}
@@ -667,6 +681,13 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
   .hot-mix-row .hot-mix-foot{grid-column:2;grid-row:3;justify-content:flex-start;text-align:left;margin-top:4px}
   .hot-mix-row .hot-mix-note{grid-column:2;grid-row:4}
   .hot-main{grid-template-columns:minmax(0,1fr);gap:10px}
+  .hot-board-desktop{display:none}
+  .hot-board-mobile{display:grid}
+  .hot-board-card{display:block}
+  .hot-board-toolbar{align-items:flex-start;flex-wrap:wrap;padding:9px 10px}
+  .hot-board-toolbar .hot-meta{flex-basis:100%;order:2}
+  .hot-board-toolbar .hot-region{max-width:10em}
+  .hot-board-actions{margin-left:auto}
   .hot-plats{position:static;flex-direction:row;overflow-x:auto;overflow-y:visible;max-height:none;gap:6px;padding:0 0 4px;scrollbar-width:none}
   .hot-plat{flex:0 0 auto;white-space:nowrap;border:1px solid var(--rule);border-radius:999px;padding:7px 14px;min-height:40px}
   .hot-plat[aria-selected="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
@@ -1396,7 +1417,8 @@ body.dir-listen .ctl-box,body.dir-hot .ctl-box{display:none}
   .fl-dir .dir-bar{margin:0}
   .fl-dir .dir-pick{position:static;box-shadow:none;border:0;max-width:none;width:auto}
   #colPop .col-nav{display:block;padding:10px 14px}
-  body.sh-phone .tabbar{display:grid;grid-template-columns:1fr 1fr 72px 1fr;position:fixed;left:0;right:0;bottom:0;z-index:25;height:var(--tb);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--surface);border-top:1px solid var(--rule)}
+  body.sh-phone .tabbar{display:grid;grid-template-columns:1fr 72px 1fr;position:fixed;left:0;right:0;bottom:0;z-index:25;height:var(--tb);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--surface);border-top:1px solid var(--rule)}
+  body.sh-phone .tabbar [data-hot-nav]{display:none}
   .tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;background:none;color:var(--muted);font:inherit;font-size:11.5px;cursor:pointer;min-height:56px}
   .tabbar button .icon{width:22px;height:22px}
   .tabbar button{position:relative}
@@ -3513,7 +3535,7 @@ function render(){
   const dirMode = dirOn();
   $('#spaceSwitch').hidden = !state.dirCfg;
   document.querySelectorAll('[data-space]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.space===(dirMode?'dir':'mine'))));
-  $('#tabbar [data-space="dir"]').setAttribute('aria-pressed',String(dirMode&&!state.dHot)); $('#tabbar [data-hot-nav]').setAttribute('aria-pressed',String(dirMode&&state.dHot)); $('#tabbar [data-space="mine"]').setAttribute('aria-pressed',String(!dirMode));
+  $('#tabbar [data-space="dir"]').setAttribute('aria-pressed',String(dirMode)); $('#tabbar [data-hot-nav]').setAttribute('aria-pressed','false'); $('#tabbar [data-space="mine"]').setAttribute('aria-pressed',String(!dirMode));
   $('#noteBtn').hidden=dirMode; $('#noteFab').hidden=dirMode && shellSel()!=='2';          // (the new shell writes a note from both spaces)
   const addTxt=t(dirMode?'submit':'add'); $('#addLbl').textContent=addTxt; $('#addBtn').title=addTxt; $('#addBtn').setAttribute('aria-label',addTxt);
   syncSubscribe();
@@ -6097,7 +6119,7 @@ state.ls={scene:String(LS.get('lsScene','')||'')};
 state.lp={idx:null, idxAt:0, busy:false, err:'', data:new Map(), pending:new Map(), g:String(LS.get('lpG','daily')||'daily'), mode:'music', g_music:String(LS.get('lpG_music','daily')||'daily'), g_podcast:String(LS.get('lpG_podcast','pod-hot')||'pod-hot'), show:'', shown:30, more:false, pods:null, podsKey:'', io:null,
   sort:(k=>['rank','new','dur','title','artist'].includes(k)?k:'rank')(LS.get('lpSort','rank'))};
 state.dListen=false;                    // today's listening: what the service said, when it was asked, the scene that is shown
-state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), view:LS.get('hotView','mix')==='boards'?'boards':'mix', openId:'', visible:{}, mixBusy:false, mixRows:[], mixRun:0, period:LS.get('hotPeriod','day')==='week'?'week':'day', events:[], eventsAt:0, eventsBusy:false, eventsErr:'', eventsRun:0, region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
+state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), view:LS.get('hotView','mix')==='boards'?'boards':'mix', openId:null, visible:{}, mixBusy:false, mixRows:[], mixRun:0, period:LS.get('hotPeriod','day')==='week'?'week':'day', events:[], eventsAt:0, eventsBusy:false, eventsErr:'', eventsRun:0, region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
 const PUBLIC_ROUTES={discover:'/discover/',hot:'/hot/',listen:'/listen/',books:'/picks/books/',articles:'/picks/articles/',watch:'/watch/'};
 const publicRouteFromPath=()=>Object.keys(PUBLIC_ROUTES).find(k=>PUBLIC_ROUTES[k]===location.pathname)||'';
 const publicLabel=k=>({discover:['发现','Discover'],hot:['热榜','Trending'],listen:['今日听什么','Listen today'],books:['精选图书','Book picks'],articles:['精选文章','Article picks'],watch:['看什么','What to watch']}[k]||[])[state.lang==='zh'?0:1]||'';
@@ -7183,23 +7205,26 @@ function hotBoardsHTML(){
   const h=state.hot, columns=hotActiveColumns(), col=columns.find(c=>c.id===h.sel.c)||columns[0];
   if(!col) return `<div class="hot-list"><p class="hot-state">${esc(h.err || t('hotLoading'))}${h.err?`<br><button class="btn" type="button" data-hot-retry>${esc(t('dirRetry'))}</button>`:''}</p></div>`;
   const plats=(h.idx.platforms||[]).filter(p=>p.col===col.id).slice().sort((a,b)=>Number(b.lang===(state.lang==='en'?'en':'zh'))-Number(a.lang===(state.lang==='en'?'en':'zh')));
-  if(!plats.some(p=>p.id===h.openId)) h.openId=plats[0]&&plats[0].id||'';
-  const cards=plats.map(p=>{
-    const d=h.data.get(hotKey(p)), open=p.id===h.openId, rows=d&&Array.isArray(d.rows)?d.rows:[], ranked=p.ranked!==false, where=p.regions?(h.region!=='auto'?h.region:(d&&d.region)||''):'', canSub=!!feedApi(), subUrl=hotFeed(p,where,h.period), subbed=canSub&&(!p.regions||!!where)&&subCols().some(c=>urlKey(c.feed.url)===urlKey(subUrl)), visible=Math.max(10,Number(h.visible[hotKey(p)])||10), preview=rows.length?String(rows[0].title_zh&&state.lang==='zh'?rows[0].title_zh:rows[0].title||''):hotUi('boardPreview');
-    let body='';
-    if(open){
-      if(!d||d.state==='load'&&!rows.length) body=`<p class="hot-state">${esc(hotUi('boardLoading'))}</p>`;
-      else if(d.state==='err'&&!rows.length) body=`<p class="hot-state">${esc(d.msg||t('hotErr'))}<br><button class="btn" type="button" data-hot-refresh>${esc(t('dirRetry'))}</button></p>`;
-      else if(h.period==='week'&&!(d.history&&d.history.complete)&&!rows.length) body=`<p class="hot-history-note">${esc(hotUi('weekEmpty'))}</p>`;
-      else if(!rows.length) body=`<p class="hot-state">${esc(t('hotEmpty'))}</p>`;
-      else { const shown=rows.slice(0,visible); body=`<ol class="hot-rows">${shown.map((r,i)=>hotRowHTML(r,i,ranked,p.id)).join('')}</ol>`+(rows.length>visible?`<button class="hot-more-rows" type="button" data-hot-more="${esc(p.id)}">${esc(hotUi('moreRows'))}</button>`:`<p class="hot-board-preview">${esc(hotUi('allRows'))}</p>`); }
-      const region=p.regions?`<select class="hot-region" data-hot-region aria-label="${esc(t('hotRegion'))}" title="${esc(t('hotRegion'))}"><option value="auto"${h.region==='auto'?' selected':''}>${esc(t('hotRegionAuto',h.region==='auto'&&where?hotCountry(where):''))}</option>${p.regions.map(c=>[c,hotCountry(c)]).sort((a,b)=>a[1].localeCompare(b[1],state.lang==='zh'?'zh-Hans-CN':'en')).map(([c,n])=>`<option value="${esc(c)}"${h.region===c?' selected':''}>${esc(n)}</option>`).join('')}</select>`:'';
-      body=`<header class="hot-head"><h2 class="sr-only">${esc(hotName(p))}${where?' · '+esc(hotCountry(where)):''}</h2><span class="hot-meta">${esc([hotTrackName(p),p.via?t('hotVia',p.via):'',d&&d.at?t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))):'',ranked?'':t('hotNewest')].filter(Boolean).join(' · '))}</span></header><div class="hot-board-actions"><span class="hot-period" role="group" aria-label="${esc(hotUi('platformBoards'))}"><button type="button" data-hot-period="day" aria-pressed="${h.period==='day'}">${esc(hotUi('day'))}</button><button type="button" data-hot-period="week" aria-pressed="${h.period==='week'}">${esc(hotUi('week'))}</button></span>${region}${httpUrl(p.home)?`<a href="${esc(p.home)}" target="_blank" rel="nofollow ugc noopener noreferrer">${esc(t('hotHome'))}</a>`:''}<button class="btn dr-act" type="button" data-hot-refresh>${esc(t('hotRefresh'))}</button>${canSub?`<button class="btn dr-act" type="button" data-hot-sub title="${esc(t('hotFollowTip'))}" ${subbed||(p.regions&&!where)?'disabled':''}>${esc(t(subbed?'hotFollowed':'hotFollow'))}</button>`:''}</div>${body}`;
-    }
-    const meta=[p.lang&&p.lang!==state.lang?(p.lang==='zh'?'中文':'English'):'',d&&d.at?t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))):''].filter(Boolean).join(' · ')||hotUi('boardPreview');
-    return `<section class="hot-board-card" data-hot-card="${esc(p.id)}" aria-expanded="${open}"><button class="hot-board-trigger" type="button" data-hot-board="${esc(p.id)}" data-hot-p="${esc(p.id)}" aria-expanded="${open}"><span class="hot-board-icon" aria-hidden="true">${esc((hotName(p)||'?').slice(0,2))}</span><span class="hot-board-copy"><strong>${esc(hotName(p))}</strong><small>${esc(meta)}</small>${!open?`<span class="hot-board-preview">${esc(preview)}</span>`:''}</span><span class="hot-board-chevron" aria-hidden="true">›</span></button>${open?`<div class="hot-board-body hot-list" aria-live="polite" aria-busy="${!!(d&&d.state==='load')}">${body}</div>`:''}</section>`;
-  }).join('');
-  return `<div class="hot"><div class="hot-cols" role="tablist" aria-label="${esc(t('hotTitle'))}">${columns.map(c=>`<button class="hot-col" type="button" role="tab" aria-selected="${c.id===col.id}" data-hot-c="${esc(c.id)}">${esc(hotName(c))}</button>`).join('')}</div><div class="hot-board-list">${cards||`<p class="hot-state">${esc(t('hotEmpty'))}</p>`}</div></div>`;
+  if(!plats.some(p=>p.id===h.sel.p?.[col.id])){ if(!h.sel.p||typeof h.sel.p!=='object') h.sel.p={}; h.sel.p[col.id]=plats[0]?.id||''; }
+  const chosen=plats.find(p=>p.id===h.sel.p?.[col.id])||plats[0]||null;
+  if(h.openId===null) h.openId=chosen?.id||'';
+  const periodControl=`<span class="hot-period" role="group" aria-label="${esc(hotUi('platformBoards'))}"><button type="button" data-hot-period="day" aria-pressed="${h.period==='day'}">${esc(hotUi('day'))}</button><button type="button" data-hot-period="week" aria-pressed="${h.period==='week'}">${esc(hotUi('week'))}</button></span>`;
+  const boardBody=p=>{
+    const d=h.data.get(hotKey(p)),rows=d&&Array.isArray(d.rows)?d.rows:[],ranked=p.ranked!==false,where=p.regions?(h.region!=='auto'?h.region:(d&&d.region)||''):'',canSub=!!feedApi(),subUrl=hotFeed(p,where,h.period),subbed=canSub&&(!p.regions||!!where)&&subCols().some(c=>urlKey(c.feed.url)===urlKey(subUrl)),visible=Math.max(10,Number(h.visible[hotKey(p)])||10);
+    const region=p.regions?`<select class="hot-region" data-hot-region aria-label="${esc(t('hotRegion'))}" title="${esc(t('hotRegion'))}"><option value="auto"${h.region==='auto'?' selected':''}>${esc(t('hotRegionAuto',h.region==='auto'&&where?hotCountry(where):''))}</option>${p.regions.map(c=>[c,hotCountry(c)]).sort((a,b)=>a[1].localeCompare(b[1],state.lang==='zh'?'zh-Hans-CN':'en')).map(([c,n])=>`<option value="${esc(c)}"${h.region===c?' selected':''}>${esc(n)}</option>`).join('')}</select>`:'';
+    const meta=[hotTrackName(p),p.via?t('hotVia',p.via):'',d&&d.at?t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))):'',ranked?'':t('hotNewest')].filter(Boolean).join(' · ');
+    let rowsHtml='';
+    if(!d||d.state==='load'&&!rows.length) rowsHtml=`<p class="hot-state">${esc(hotUi('boardLoading'))}</p>`;
+    else if(d.state==='err'&&!rows.length) rowsHtml=`<p class="hot-state">${esc(d.msg||t('hotErr'))}</p>`;
+    else if(h.period==='week'&&!(d.history&&d.history.complete)&&!rows.length) rowsHtml=`<p class="hot-history-note">${esc(hotUi('weekEmpty'))}</p>`;
+    else if(!rows.length) rowsHtml=`<p class="hot-state">${esc(t('hotEmpty'))}</p>`;
+    else { const shown=rows.slice(0,visible); rowsHtml=`<ol class="hot-rows">${shown.map((r,i)=>hotRowHTML(r,i,ranked,p.id)).join('')}</ol>`+(rows.length>visible?`<button class="hot-more-rows" type="button" data-hot-more="${esc(p.id)}">${esc(hotUi('moreRows'))}</button>`:`<p class="hot-board-preview">${esc(hotUi('allRows'))}</p>`); }
+    const actions=`${region}${httpUrl(p.home)?`<a href="${esc(p.home)}" target="_blank" rel="nofollow ugc noopener noreferrer" title="${esc(t('hotHome'))}" aria-label="${esc(t('hotHome'))}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/></svg></a>`:''}<button type="button" data-hot-refresh title="${esc(t('hotRefresh'))}" aria-label="${esc(t('hotRefresh'))}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.4-3"/></svg></button>${canSub?`<button type="button" data-hot-sub title="${esc(t(subbed?'hotFollowed':'hotFollowTip'))}" aria-label="${esc(t(subbed?'hotFollowed':'hotFollow'))}" ${subbed||(p.regions&&!where)?'disabled':''}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>`:''}`;
+    return `<section class="hot-list"><div class="hot-board-toolbar"><header class="hot-head"><h2 class="sr-only">${esc(hotName(p))}${where?' · '+esc(hotCountry(where)):''}</h2><span class="hot-meta">${esc(meta)}</span></header>${periodControl}<div class="hot-board-actions">${actions}</div></div><div class="hot-board-body" aria-live="polite" aria-busy="${!!(d&&d.state==='load')}">${rowsHtml}</div></section>`;
+  };
+  const desktop=chosen?`<div class="hot-main hot-board-desktop"><nav class="hot-plats" aria-label="${esc(hotName(col))}">${plats.map(p=>{const d=h.data.get(hotKey(p)),meta=[p.lang&&p.lang!==state.lang?(p.lang==='zh'?'中文':'English'):'',d&&d.at?t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))):''].filter(Boolean).join(' · ')||hotUi('boardPreview');return `<button type="button" class="hot-plat" data-hot-p="${esc(p.id)}" aria-selected="${p.id===chosen.id}"><span>${esc(hotName(p))}</span><small>${esc(meta)}</small></button>`;}).join('')}</nav>${boardBody(chosen)}</div>`:`<p class="hot-state">${esc(t('hotEmpty'))}</p>`;
+  const mobile=plats.map(p=>{const d=h.data.get(hotKey(p)),open=p.id===h.openId,rows=d&&Array.isArray(d.rows)?d.rows:[],preview=rows.length?String(rows[0].title_zh&&state.lang==='zh'?rows[0].title_zh:rows[0].title||''):hotUi('boardPreview'),meta=[p.lang&&p.lang!==state.lang?(p.lang==='zh'?'中文':'English'):'',d&&d.at?t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))):''].filter(Boolean).join(' · ')||hotUi('boardPreview');return `<section class="hot-board-card" data-hot-card="${esc(p.id)}" aria-expanded="${open}"><button class="hot-board-trigger" type="button" data-hot-board="${esc(p.id)}" data-hot-p="${esc(p.id)}" aria-expanded="${open}"><span class="hot-board-icon" aria-hidden="true">${esc((hotName(p)||'?').slice(0,2))}</span><span class="hot-board-copy"><strong>${esc(hotName(p))}</strong><small>${esc(meta)}</small>${!open?`<span class="hot-board-preview">${esc(preview)}</span>`:''}</span><span class="hot-board-chevron" aria-hidden="true">›</span></button>${open?boardBody(p):''}</section>`;}).join('');
+  return `<div class="hot"><div class="hot-cols" role="tablist" aria-label="${esc(t('hotTitle'))}">${columns.map(c=>`<button class="hot-col" type="button" role="tab" aria-selected="${c.id===col.id}" data-hot-c="${esc(c.id)}">${esc(hotName(c))}</button>`).join('')}</div>${desktop}<div class="hot-board-list hot-board-mobile">${mobile||`<p class="hot-state">${esc(t('hotEmpty'))}</p>`}</div></div>`;
 }
 function hotEventTime(value){
   if(value===null||value===undefined||value==='') return '';
@@ -7247,11 +7272,11 @@ function hotMixHTML(){
 }
 function hotHTML(){
   const view=state.hot.view==='boards'?'boards':'mix';
-  return `<div class="hot"><div class="hot-views" role="group" aria-label="${esc(t('hotTitle'))}"><button type="button" data-hot-view="mix" aria-pressed="${view==='mix'}">${esc(hotUi('todayPicks'))}</button><button type="button" data-hot-view="boards" aria-pressed="${view==='boards'}">${esc(hotUi('platformBoards'))}</button></div>${view==='boards'?hotBoardsHTML():`${hotMixHTML()}${hotFocusHTML()}`}</div>`;
+  return `<div class="hot"><div class="hot-views" role="group" aria-label="${esc(t('hotTitle'))}"><button type="button" data-hot-view="mix" aria-pressed="${view==='mix'}">${esc(hotUi('todayPicks'))}</button><button type="button" data-hot-view="boards" aria-pressed="${view==='boards'}">${esc(hotUi('platformBoards'))}</button></div>${view==='boards'?hotBoardsHTML():`${hotFocusHTML()}${hotMixHTML()}`}</div>`;
 }
 function hotSetView(view){
   if(view!=='mix'&&view!=='boards') return;
-  state.hot.view=view; LS.set('hotView',view); paintHot(); hotEnsure();
+  state.hot.view=view; if(view==='boards') state.hot.openId=null; LS.set('hotView',view); paintHot(); hotEnsure();
 }
 function hotSetPeriod(period){ if(period!=='day'&&period!=='week') return; state.hot.period=period; LS.set('hotPeriod',period); paintHot(); hotEnsure(); }
 function hotOpenItem(e,r,p){
@@ -8576,7 +8601,7 @@ function shLayout(){
   if(!on) return;
   shTheme();
   { const sl=so.selectedOptions && so.selectedOptions[0]; $('#flSum').textContent=(sl ? sl.textContent : '')+' · '+t(state.view==='grid' ? 'viewIsCards' : 'viewIsList'); }
-  $('#tabbar [data-space="dir"]').hidden=!state.dirCfg; $('#tabbar [data-hot-nav]').hidden=!state.dirCfg; $('#tabbar [data-space="dir"]').setAttribute('aria-pressed',String(dirOn()&&!state.dHot)); $('#tabbar [data-hot-nav]').setAttribute('aria-pressed',String(dirOn()&&state.dHot)); $('#tabbar [data-space="mine"]').setAttribute('aria-pressed',String(!dirOn())); $('#tabbar').classList.toggle('one',!state.dirCfg);
+  $('#tabbar [data-space="dir"]').hidden=!state.dirCfg; $('#tabbar [data-hot-nav]').hidden=!state.dirCfg; $('#tabbar [data-space="dir"]').setAttribute('aria-pressed',String(dirOn())); $('#tabbar [data-hot-nav]').setAttribute('aria-pressed','false'); $('#tabbar [data-space="mine"]').setAttribute('aria-pressed',String(!dirOn())); $('#tabbar').classList.toggle('one',!state.dirCfg);
   $('#flTagRow').hidden=!phone || !$('#flTag').children.length || $('#tagbox').hidden;
   const chip=$('#colChip'), hasCol=!$('#colNav').hidden && !dirOn();
   chip.hidden=!phone || !hasCol; if(phone && hasCol){ const c=(state.cols||[]).find(x=>x.id===state.col); chip.innerHTML=esc((c ? t('colChip')+'：'+cut(c.name,10) : t('colChip'))+' ▾')+(state.col!=='all' ? `<span class="col-x" data-colclear role="button" tabindex="0" aria-label="${esc(t('colClear'))}">✕</span>` : ''); chip.classList.toggle('on',state.col!=='all'); }
