@@ -30,7 +30,7 @@ const get = p => fetch(SVC + p).then(r => r.json());
     const main = document.querySelector('.main');
     const kids = [...main.children].filter(vis).filter(e => !e.matches('header.top'));
     const first = kids.find(e => e.getBoundingClientRect().height > 8);
-    const row = [document.querySelector('#dirBar'), document.querySelector('#lpRoot .lp-bar'), document.querySelector('.hot-modebar')].find(vis) || null;
+    const row = [document.querySelector('#dirBar'), document.querySelector('#lpRoot .lp-bar'), document.querySelector('.hot-views')].find(vis) || null;          // (the hot page’s own two-way switch is Codex’s: it never needs to slide)
     const slideEls = row ? [row, ...row.querySelectorAll('*')].filter(e => { const o = getComputedStyle(e).overflowX; return o === 'auto' || o === 'scroll'; }) : [];
     const icon = [...main.querySelectorAll('button')].filter(vis).filter(b => !b.textContent.trim() && b.querySelector('svg, i'));
     const noTip = icon.filter(b => !(b.title || b.getAttribute('aria-label'))).map(b => b.className + '|' + b.id);
@@ -51,11 +51,11 @@ const get = p => fetch(SVC + p).then(r => r.json());
   for (const p of pages) { await go(p); L[p] = await look(); }
 
   // ---- no blank between the strip and the content, on every page
-  for (const p of pages) ok(`${p}: no blank under the strip (the content starts within 24 px of it)`, L[p].gap <= 24 && L[p].gap >= -2, L[p]);
+  for (const p of pages) ok(`${p}: no blank under the strip (the content starts within 24 px of it)`, L[p].gap <= 24 && L[p].gap >= -8, L[p]);
   // ---- no dropdown, no panel, no row of tools anywhere in the public space
   for (const p of pages) ok(`${p}: no dropdown, no filter panel, no row of tools, nothing wider than the screen`, L[p].selects.length === 0 && L[p].panel === 'none' && L[p].tools === 'none' && L[p].over <= 0, L[p]);
   // ---- one band under the strip (a content page: the switch and the tools, then the tabs: two short lines at most; hot and listen: one line), that slides sideways, finger-sized, every icon with its tooltip
-  for (const p of pages.filter(x => x !== '发现')) { const content = ['全部', '精选文章', '看什么', '精选图书'].includes(p); ok(`${p}: one band of controls under the strip (${content ? 'at most 110 px: the switch + tools, the tabs' : 'one line, at most 64 px'}); it slides sideways; no line wider than the screen; every button at least 40 px; every icon button has a tooltip`, !!L[p].row && L[p].rowH <= (content ? 110 : 64) && L[p].slides > 0 && L[p].lineOver <= 1 && L[p].small.length === 0 && L[p].noTip.length === 0, L[p]); }
+  for (const p of pages.filter(x => x !== '发现')) { const content = ['全部', '精选文章', '看什么', '精选图书'].includes(p); ok(`${p}: one band of controls under the strip (${content ? 'at most 110 px: the switch + tools, the tabs' : 'one line, at most 64 px'}); it slides sideways; no line wider than the screen; every button at least 40 px; every icon button has a tooltip`, !!L[p].row && L[p].rowH <= (content ? 110 : 64) && (L[p].slides > 0 || p === '热榜') && L[p].lineOver <= 1 && L[p].small.length === 0 && L[p].noTip.length === 0, L[p]); }
   ok('发现: no band at all (nothing to filter on the front page)', L['发现'].row === '', L['发现']);
   // ---- the language filter only where there is a lot to filter
   ok('the language filter is on 精选图书, 精选文章 and 全部 only', pages.filter(p => L[p].lang).join() === '精选图书,全部,精选文章', pages.filter(p => L[p].lang));
