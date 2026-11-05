@@ -69,6 +69,8 @@ const addBooks = () => {
   const tale = await J(`(()=>{ const c=${card('The Tale')}; return {badges:!!c.querySelector('.why, .ftype, .lic, .chips, .tag, .shelf-link, .mono-sm'), all:c.textContent.replace(/\\s+/g,' '), meta:c.querySelector('.xmeta').textContent, by:(c.querySelector('.bk-by')||{}).textContent, sum:!!c.querySelector('.sum'), go:(c.querySelector('.bk-go')||{}).textContent, heart:!!c.querySelector('.heart'), bm:!!c.querySelector('[data-d="save"]'), prog:!!c.querySelector('.bk-prog')}; })()`);
   ok('the card of a book: no "站长推荐", no "书籍", no licence, no tags, no shelf name, no mark of the shelf', !tale.badges && !/站长推荐|书籍|公有领域|精选图书|#/.test(tale.all), tale);
   ok('...it says the language, the chapters and where it is read; the author is under the title; the summary stays; like, bookmark and "试读" are there', /English/.test(tale.meta) && /3 章/.test(tale.meta) && tale.by === 'A. Writer' && tale.sum && tale.go === '试读' && tale.heart && tale.bm && !tale.prog, tale);
+  const hs = await J(`(()=>{ const h=${card('The Tale')}.querySelector('.cstat.heart').getBoundingClientRect(), b=${card('The Tale')}.querySelector('[data-d="save"]').getBoundingClientRect(); return {w:Math.round(h.width), h:Math.round(h.height), bw:Math.round(b.width), bh:Math.round(b.height)}; })()`);
+  ok('the heart is a finger-sized button, as big as the bookmark beside it (at least 36 px)', hs.w >= 36 && hs.h >= 36 && hs.h >= hs.bh - 2, hs);
   await c.shot(P.SHOTS + '/bookpage_home.png');
 
   // ------------------------------------------------ the book lists
@@ -138,6 +140,8 @@ const addBooks = () => {
   await fresh(); await toPage();
   const ph = await J(`(()=>{ const rs=[...document.querySelectorAll('.bkp-list')].map(b=>b.getBoundingClientRect()), tb=[...document.querySelectorAll('.bkp-tabs button')].map(b=>Math.round(b.getBoundingClientRect().height)); return {cols:new Set(rs.map(r=>Math.round(r.left))).size, right:Math.max(...rs.map(r=>r.right)), vw:innerWidth, tabH:Math.min(...tb), over:document.documentElement.scrollWidth>innerWidth, scroller:[...document.querySelectorAll('#dirReco *')].some(e=>{ const o=getComputedStyle(e).overflowX; return (o==='auto'||o==='scroll') && e.scrollWidth>e.clientWidth; })}; })()`);
   ok('on a phone: two lists side by side, nothing sideways, the genres are finger-sized and wrap', ph.cols === 2 && ph.right <= ph.vw && ph.tabH >= 36 && !ph.over && !ph.scroller, ph);
+  const hp = await J(`(()=>{ const h=${card('The Tale')}.querySelector('.cstat.heart').getBoundingClientRect(); return {w:Math.round(h.width), h:Math.round(h.height)}; })()`);
+  ok('on a phone the heart is at least 44 px', hp.w >= 44 && hp.h >= 44, hp);
   await c.shot(P.SHOTS + '/bookpage_phone.png');
   await c.desktop(1280, 900, 1);
 

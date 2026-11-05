@@ -821,7 +821,10 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .cstats{display:flex;align-items:center;gap:10px;min-width:0}
 .cstat{display:inline-flex;align-items:center;gap:4px;border:0;background:none;padding:4px 2px;margin:0;color:var(--muted);font:inherit;font-size:13px;line-height:1;cursor:default}
 .cstat .icon{width:17px;height:17px}
-.cstat.heart{cursor:pointer;border-radius:8px}
+.cstat.heart{cursor:pointer;border-radius:8px;min-width:36px;min-height:36px;justify-content:center;padding:0 8px;margin:-8px -4px -8px -10px}          /* a finger-sized button (36 px, 44 px on a phone); the negative margins keep the row as high as it was */
+.cstat.heart .icon{width:21px;height:21px}
+.cstat.heart:active{background:var(--bg)}
+@media (max-width:620px){.cstat.heart{min-width:44px;min-height:44px;margin:-10px -6px -10px -14px}}
 .cstat.heart:hover{color:var(--heat)}
 .cstat.heart[aria-pressed="true"]{color:var(--heat)}
 .cstat.heart[aria-pressed="true"] .icon{fill:currentColor}
@@ -4294,7 +4297,8 @@ $('#rTocPanel').addEventListener('click',e=>{
 /* ================= paged reading of a chapter of a picked book =================
    A book is read in pages, on a phone and on a PC; there is nothing to set but the size of the letters (the bar at the foot of the page). The text of the chapter is set in columns that are as wide as the screen and as high as
    the text area: a page is a column, a turn moves the document sideways by the width of the screen (a short slide). On a wide screen the page is a column of about 36 characters in the middle of the screen (a sheet on a desk) with an
-   arrow at each side; on a phone it takes the whole width and follows the finger. A chapter with a table, a code, a video or a lot of pictures is scrolled (columns do not hold them). The place is a place in the text
+   arrow at each side; on a phone it takes the whole width and follows the finger. A table, a code and a picture are fitted into the column (a table as wide as the column, a code that wraps, a picture no wider and no higher than the page),
+   so that every chapter of a book is turned the same way; only a chapter with a video, a frame or an object (and the page that stands in while a chapter loads) is scrolled. The place is a place in the text
    (how many characters come before the top of the page), so that a change of the size of the letters or of the window keeps the reader where he is; it is the same figure (a percent) that scrolling saves. */
 const PGD={on:false, page:0, pages:1, stride:1, pct:0, anim:0, wide:false, hold:false};
 const PG_CSS=`html.paged{height:100%;overflow:hidden;background:var(--desk,var(--bg));--desk:#EFEFEA}
@@ -4304,10 +4308,13 @@ html.paged body{height:100%;margin:0;background:transparent}
 html.paged.wide::before{content:"";position:fixed;z-index:-1;top:0;bottom:0;left:calc(var(--pm) - 44px);width:calc(100vw - 2*var(--pm) + 88px);background:var(--bg);box-shadow:0 0 0 1px var(--rule),0 10px 34px rgba(0,0,0,.07)}
 html.paged .doc{box-sizing:border-box;width:calc(100vw - 2*var(--pm));max-width:none;height:calc(100vh - var(--pt) - var(--pb));margin:var(--pt) var(--pm) var(--pb);padding:0;column-width:var(--pcw);column-gap:calc(2*var(--pm));column-fill:auto}
 html.paged .doc h1,html.paged .doc h2,html.paged .doc h3{break-after:avoid}
-html.paged .doc img{max-height:calc(100vh - var(--pt) - var(--pb) - 24px);width:auto;object-fit:contain}
+html.paged .doc img{max-width:100%;max-height:calc(100vh - var(--pt) - var(--pb) - 24px);width:auto;object-fit:contain;break-inside:avoid}
+html.paged .doc table{width:100%;max-width:100%;table-layout:fixed;border-collapse:collapse}
+html.paged .doc td,html.paged .doc th{overflow-wrap:anywhere;word-break:break-word;vertical-align:top}
+html.paged .doc pre{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere}
 html.paged .doc .bk-end{display:none}`;
 const pagedWanted = () => state.rkind==='doc' && !state.rpdf && !!bookOfReading();
-const pagedSuitable = d => !d.querySelector('[data-ph],table,pre,iframe,video,object') && d.querySelectorAll('.doc img').length<=3;          // ([data-ph]: the page that stands in while a chapter is read, or says that it could not be: it is not the chapter, and its place is not the reader's)
+const pagedSuitable = d => !d.querySelector('[data-ph],iframe,video,object');          // (a table, a code and pictures are fitted into the column by PG_CSS, so every chapter is turned alike; [data-ph]: the page that stands in while a chapter is read, or says that it could not be: it is not the chapter, and its place is not the reader's)
 const reducedMotion = () => matchMedia('(prefers-reduced-motion:reduce)').matches;
 function pagedText(d){                                                                             // the text nodes of the chapter in their order (not the translations, not the way on at the end): where each begins
   const doc=d.querySelector('.doc'), list=[]; let total=0; if(!doc) return {list,total};
