@@ -567,7 +567,7 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .hot-board-trigger{display:flex;align-items:center;gap:10px;width:100%;min-height:60px;padding:10px 13px;border:0;background:transparent;color:var(--ink);text-align:left;font:inherit;cursor:pointer}
 .hot-board-trigger:hover{background:color-mix(in srgb,var(--accent) 4%,var(--surface))}
 .hot-board-heading{display:flex;align-items:center;gap:6px;padding-right:8px}
-.hot-board-heading .hot-board-trigger{flex:1;min-width:0}
+.hot-board-heading .hot-board-trigger{flex:1 1 0;width:auto;min-width:0}
 .hot-board-heading .hot-board-actions{flex:0 0 auto;padding:0}
 .hot-board-icon{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:10px;background:color-mix(in srgb,var(--accent) 10%,var(--surface));color:var(--accent);font-size:13px;font-weight:750}
 .hot-board-copy{flex:1;min-width:0}
@@ -577,8 +577,11 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .hot-board-card[aria-expanded="true"] .hot-board-chevron{transform:rotate(90deg)}
 .hot-board-body{padding:0 12px 12px;border-top:1px solid var(--rule)}
 .hot-board-actions{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:0}
-.hot-board-actions>a,.hot-board-actions button{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;min-height:40px;padding:0;border:1px solid var(--rule);border-radius:10px;background:var(--bg);color:var(--muted);text-decoration:none;cursor:pointer}
-.hot-board-actions>a:hover,.hot-board-actions button:hover{border-color:var(--accent);color:var(--accent)}
+.hot-board-actions>a,.hot-board-actions button{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;min-height:40px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--muted);text-decoration:none;cursor:pointer}
+.hot-board-actions>a:hover,.hot-board-actions button:hover{background:color-mix(in srgb,var(--accent) 10%,var(--surface));color:var(--accent)}
+.hot-board-actions button[data-subscribed="true"]{color:var(--accent)}
+.hot-board-actions button[data-subscribed="true"] .icon{fill:color-mix(in srgb,var(--accent) 18%,transparent)}
+.hot-board-actions button:disabled{opacity:.4;cursor:default}
 .hot-board-actions .icon{width:17px;height:17px}
 .hot-board-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-bottom:1px solid var(--rule)}
 .hot-board-toolbar .hot-meta{flex:1 1 auto}
@@ -7223,7 +7226,7 @@ function hotBoardsHTML(){
     const region=p.regions?`<select class="hot-region" data-hot-region aria-label="${esc(t('hotRegion'))}" title="${esc(t('hotRegion'))}"><option value="auto"${h.region==='auto'?' selected':''}>${esc(t('hotRegionAuto',h.region==='auto'&&where?hotCountry(where):''))}</option>${p.regions.map(c=>[c,hotCountry(c)]).sort((a,b)=>a[1].localeCompare(b[1],state.lang==='zh'?'zh-Hans-CN':'en')).map(([c,n])=>`<option value="${esc(c)}"${h.region===c?' selected':''}>${esc(n)}</option>`).join('')}</select>`:'';
     const homeAction=httpUrl(p.home)?`<a href="${esc(p.home)}" target="_blank" rel="nofollow ugc noopener noreferrer" title="${esc(t('hotHome'))}" aria-label="${esc(t('hotHome'))}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/></svg></a>`:'';
     const refreshAction=`<button type="button" data-hot-refresh="${esc(p.id)}" title="${esc(t('hotRefresh'))}" aria-label="${esc(t('hotRefresh'))}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.4-3"/></svg></button>`;
-    const subAction=canSub?`<button type="button" data-hot-sub="${esc(p.id)}" title="${esc(t(subbed?'hotFollowed':'hotFollowTip'))}" aria-label="${esc(t(subbed?'hotFollowed':'hotFollow'))}" ${subbed||(p.regions&&!where)?'disabled':''}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.75h9.5L19 8.2v11.05H6z"/><path d="M15.5 4.75V9H19M12.5 11v6M9.5 14h6"/></svg></button>`:'';
+    const subAction=canSub?`<button type="button" data-hot-sub="${esc(p.id)}" data-subscribed="${subbed}" title="${esc(t(subbed?'hotFollowed':'hotFollowTip'))}" aria-label="${esc(t(subbed?'hotFollowed':'hotFollow'))}" ${subbed||(p.regions&&!where)?'disabled':''}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.8 2.55 5.18 5.72.83-4.14 4.03.98 5.7L12 16.85l-5.11 2.69.98-5.7-4.14-4.03 5.72-.83L12 3.8Z"/></svg></button>`:'';
     return {region,homeAction,refreshAction,subAction,subbed,where};
   };
   const boardBody=(p,mobile=false)=>{
