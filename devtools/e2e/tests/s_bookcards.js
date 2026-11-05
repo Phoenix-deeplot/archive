@@ -40,7 +40,7 @@ const addBooks = () => {
   const info = title => J(`(()=>{ const c=${card(title)}; if(!c) return null; const q=s=>c.querySelector(s), bk=q('.bk-book'), cv=q('.xcover, .row-thumb'), sum=q('.sum'), go=q('.bk-go'), r=x=>x?x.getBoundingClientRect():null; return {
       hasBook:!!bk, t:bk?(q('.bk-t')||{}).textContent:'', a:bk?(q('.bk-a')||{}).textContent:'', by:(q('.bk-by')||{}).textContent||'', img:!!q('.xcover img'), sumText:sum?sum.textContent.length:0, clamp:sum?getComputedStyle(sum).webkitLineClamp:'',
       go:go?go.textContent:'', bg:bk?getComputedStyle(bk).backgroundColor:'', ratio:bk?Math.round(r(bk).width/r(bk).height*100)/100:0, coverH:cv?Math.round(r(cv).height):0, bookH:bk?Math.round(r(bk).height):0,
-      meta:(q('.xmeta')||{}).textContent||'', thumbW:q('.row-thumb')?Math.round(r(q('.row-thumb')).width):0, thumbH:q('.row-thumb')?Math.round(r(q('.row-thumb')).height):0, row:c.classList.contains('drow'), cardRight:Math.round(r(c).right) }; })()`);
+      meta:(q('.xmeta')||{}).textContent||'', all:c.textContent.replace(/\s+/g,' '), badges:!!q('.why, .ftype, .lic, .chips, .tag, .shelf-link, .mono-sm'), prog:!!q('.bk-prog'), thumbW:q('.row-thumb')?Math.round(r(q('.row-thumb')).width):0, thumbH:q('.row-thumb')?Math.round(r(q('.row-thumb')).height):0, row:c.classList.contains('drow'), cardRight:Math.round(r(c).right) }; })()`);
 
   const PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
   await c.send('Fetch.enable', { patterns: [{ urlPattern: 'https://img.invalid/*' }] });                         // (the picture of a book: answered here, so that it really loads)
@@ -56,7 +56,8 @@ const addBooks = () => {
   ok('the author is under the title too, and the summary has three lines', tale.by === 'A. Writer' && tale.clamp === '3' && tale.sumText > 40, tale);
   ok('a book that has a picture keeps its picture (no drawn cover)', pic.img && !pic.hasBook, pic);
   ok('a long title is cut and the cover still holds (a Chinese journal)', jr.hasBook && jr.t.startsWith('一本很长') && jr.bookH > jr.coverH * 0.8 && !jr.a, jr);
-  ok('the card says chapters and licence in its line of facts', /3 章/.test(tale.meta) && /公有领域/.test(tale.meta), tale.meta);
+  ok('the card says the chapters in its line of facts, with the author and the language of the book', /3 章/.test(tale.meta) && /中文|English/.test(tale.meta) && /A\. Writer/.test(tale.all), [tale.meta, tale.all]);
+  ok('the card of a book has no "站长推荐", no "书籍", no licence, no tags, no shelf name, no mark of the shelf', !tale.badges && !/站长推荐|书籍|公有领域|CC BY|#/.test(tale.all) && !one.badges && !jr.badges && !tale.prog, [tale.badges, tale.all]);
   ok('"试读" on a book that can be read in the page, none on a book that cannot (a journal on its own site)', tale.go === '试读' && one.go === '试读' && jr.go === '', [tale.go, one.go, jr.go]);
   await c.shot(P.SHOTS + '/bookcards_grid.png');
 
@@ -72,9 +73,11 @@ const addBooks = () => {
   await J(`window.__zt.goPct(50)`); await sleep(600);                                                     // (a book is in pages: to the page that has the middle of the text)
   const page50 = await J(`document.querySelector('#rbInfo').textContent`);
   await J(`document.querySelector('#readerBack').click()`); await sleep(600);
+  const dlgAfter = await J(`({dlg:document.querySelector('#bookDlg').open, reader:!document.querySelector('#reader').hidden})`);
   await J(`document.querySelector('#bookDlg').open && document.querySelector('#bookClose').click()`); await sleep(400);
   const again = await info('The Tale');
-  ok('after reading a little the card says "继续阅读" and where the reader is', again.go === '继续阅读' && /读到 Chapter 1/.test(again.meta), [again.go, again.meta]);
+  ok('after reading a little the card says "继续阅读" and where the reader is (the chapter, how much of the whole book), and a thin line on the cover', again.go === '继续阅读' && /读到 Chapter 1 · \d+%/.test(again.meta) && again.prog, [again.go, again.meta, again.prog]);
+  ok('closing the reader just closes it: the window of the chapters does not come back', !dlgAfter.dlg && !dlgAfter.reader, dlgAfter);
   await J(`${card('The Tale')}.querySelector('.bk-go').click()`); await sleep(2500);
   const t2 = await J(`({reader:!document.querySelector('#reader').hidden, title:document.querySelector('#readerTitle').textContent, at:document.querySelector('#rbInfo').textContent})`);
   ok('"继续阅读" goes back to the chapter and the page where the reader was', t2.reader && t2.title === 'The Tale · Chapter 1' && t2.at === page50 && !/^1 \//.test(t2.at), [t2, page50]);
