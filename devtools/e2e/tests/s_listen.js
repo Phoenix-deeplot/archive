@@ -67,6 +67,8 @@ const withPods = (on = true) => {
   const scrollDown = async () => { await J(`window.scrollTo(0, document.documentElement.scrollHeight)`); await sleep(900); };
   const all = id => J(`state.lp.data.get('${id}|'+state.lp.lang||state.lang).items`);
   await c.desktop(1280, 900, 1);
+  const zone = z => c.send('Emulation.setTimezoneOverride', { timezoneId: z });            // (whose songs come first follows the language AND the time zone: the test says which)
+  await zone('Asia/Shanghai');
 
   // ================================================ A. the small block on the discovery page
   withPods(); await get('/__listen?mode=ok&reset=1'); await fetch(POD + '/__reset');
@@ -194,13 +196,13 @@ const withPods = (on = true) => {
 
   // ================================================ H. English: what comes first, the words, and what the service is told
   await get('/__listen?mode=ok&reset=1');
-  await fresh('en'); await toDir();
+  await zone('America/New_York'); await fresh('en'); await toDir();
   ok('English: the small block: Western hits first, the podcast chart', /^What to listen to today/.test(await J(`document.querySelector('#lsBlock h2').textContent`)) && (await chips('#lsBlock .ls-chips .dr-chip')).join('|') === 'Daily picks*|Western hits|Korea|Top podcasts' && (await J(`document.querySelector('#lsBlock [data-ls-open]').textContent`)) === 'Open ›', await chips('#lsBlock .ls-chips .dr-chip'));
   ok('the service is told the reader’s language, for the index and for the list', JSON.stringify(await get('/__listen_log')) === JSON.stringify(['@en', 'daily@en']), await get('/__listen_log'));
   ok('the daily picks of an English reader are other songs than a Chinese reader’s', /daily-en/.test(await J(`document.querySelector('#lsBlock .ls-row .ls-t').textContent`)), await J(`document.querySelector('#lsBlock .ls-row .ls-t').textContent`));
   await openPage();
   ok('English: the page: the switch, the three tabs; no region switch, no subtitle', (await modes()).join('|') === 'Music*|Podcasts' && (await tabs()) === 'For you*|Charts|Discover' && !(await J(`!!document.querySelector('#lpRoot .lp-region')`)) && (await J(`document.querySelector('#viewSub').textContent`)) === '', [await modes(), await tabs()]);
-  ok('English: the first tab: today’s radio with its one button, ten songs as cards, the play lists (my three squares first), and the number of songs', (await J(`document.querySelector('#lpRoot .lp-hero-t b').textContent`)) === 'Today’s radio' && (await J(`[...document.querySelectorAll('#lpRoot .lp-hero-a button')].map(x=>x.textContent.trim()).join('|')`)) === 'Play' && /30 songs/.test(await J(`document.querySelector('#lpRoot .lp-hero-t span').textContent`)) && /daily-en/.test(await J(`document.querySelector('#lpRoot .lp-songrow .lp-sc .lp-t').textContent`)) && (await J(`[...document.querySelectorAll('#lpRoot .lp-my .lp-gct')].map(x=>x.textContent).join('|')`)) === 'Liked|Recent|My lists', await J(`document.querySelector('#lpRoot .lp-hero-t').textContent`));
+  ok('English: the first tab: today’s radio with its one button, ten songs as cards, the play lists (my three squares first), and the number of songs', (await J(`document.querySelector('#lpRoot .lp-hero-t b').textContent`)) === 'Today’s radio' && (await J(`[...document.querySelectorAll('#lpRoot .lp-hero-a button')].map(x=>x.textContent.trim()).join('|')`)) === 'Play' && /30 songs/.test(await J(`document.querySelector('#lpRoot .lp-hero-t span').textContent`)) && /daily-en/.test(await J(`document.querySelector('#lpRoot .lp-songrow .lp-sc .lp-t').textContent`)) && (await J(`[...document.querySelectorAll('#lpRoot .lp-my .lp-gct')].map(x=>x.textContent).join('|')`)) === 'Liked songs|Recently played|My play lists', await J(`document.querySelector('#lpRoot .lp-hero-t').textContent`));
   await mtab('chart'); hd = await head();
   ok('English: the charts: Western first for an English reader, the regions in English, the chart "Western hits", the count', (await J(`[...document.querySelectorAll('#lpRoot .lp-regs:not(.lp-cgs) .lp-reg')].map(b=>b.textContent+(b.getAttribute('aria-selected')==='true'?'*':'')).join('|')`)) === 'China|West*|Japan · Korea|World' && hd.h === 'Western hits' && hd.n === '40 songs', hd);
   sg = await songs();
@@ -214,6 +216,9 @@ const withPods = (on = true) => {
   ok('English: podcasts: "Top podcasts" first, then the US chart; the categories in English; a load-more button in English', hd.h === 'Top podcasts' && hd.n === '200 episodes' && tp1.map(x => x.id).join() === 'pod-hot,pod-us,pod-cn,pod,pc-news,pc-story,pc-english,pc-business' && hd.more === 'Load more (30 / 200)'
     && (await chips('#lpRoot .lp-strip .lp-ch')).slice(-4).join('|') === 'News|Stories|Learn English|Business' && (await sortOpts()).join('|') === 'Chart order|Newest|Length|Title|Show', [hd, tp1.map(x => x.id)]);
   await c.js('window.__zt.plStop()');
+
+  await zone('Asia/Shanghai'); await get('/__listen?mode=ok&reset=1'); await fresh('en'); await toDir(); await openPage(); await mtab('chart');
+  ok('English interface in a Chinese time zone: the Chinese chart is the first one (the language and the time zone decide, no button, no look-up of the address)', (await head()).h === 'Chinese hits' && (await J(`document.querySelector('#lpRoot .lp-regs:not(.lp-cgs) .lp-reg[aria-selected="true"]').textContent`)) === 'China', await head());
 
   // ================================================ I. the language button on the page (the footer): "auto" and one button that switches
   await J(`document.body.classList.remove('drawer')`);
@@ -260,7 +265,7 @@ const withPods = (on = true) => {
   ok('a phone: on a chart the rows have ♥ and ⋯ of at least 44 px', ph.rowsMode && ph.likeH >= 44 && ph.moreH >= 44, ph);
   ok('the left list is closed (the page is the page)', !ph.drawer, ph);
   await J(`document.querySelector('#lpRoot [data-lp-tab="rec"]').click()`); await sleep(500);
-  const swipe = async (x1, x2, y = 660) => { await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x1, y }] }); for (let i = 1; i <= 6; i++) { await c.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x1 + (x2 - x1) * i / 6, y }] }); await sleep(12); } await c.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await sleep(900); };
+  const swipe = async (x1, x2) => { await J(`window.scrollTo(0,0)`); const y = await J(`(()=>{ const e=document.querySelector('#lpRoot .lp-hero, #lpRoot .lp-songs-h'); if(!e) return 660; const r=e.getBoundingClientRect(); return Math.round(r.top+r.height/2); })()`); await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x1, y }] }); for (let i = 1; i <= 6; i++) { await c.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x1 + (x2 - x1) * i / 6, y }] }); await sleep(12); } await c.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await sleep(900); };
   const cur = () => J(`state.lp.tab`);
   const was = await cur();
   await swipe(300, 90);
