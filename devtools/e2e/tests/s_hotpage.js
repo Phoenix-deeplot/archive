@@ -11,6 +11,7 @@ const waitAnalytics = async (name, ms = 20000) => { const until=Date.now()+ms; l
 
 (async () => {
   writeDir();
+  await get('/__analytics?reset=1');                                      // (the events of the tests before this one (the hot cards of s_rich, say) are not this test's: it starts from none)
   const c = await connect(CDP_PORT);
   c.autoDialog(true);
   await c.send('Network.enable'); await c.send('Network.setCacheDisabled', { cacheDisabled: true });
@@ -49,8 +50,9 @@ const waitAnalytics = async (name, ms = 20000) => { const until=Date.now()+ms; l
   await J(`document.querySelector('#dirReco .hot-focus-card')?.scrollIntoView({block:'center'}); document.addEventListener('click',e=>{if(e.target.closest('.hot-focus-card'))e.preventDefault();},{capture:true,once:true}); document.querySelector('#dirReco .hot-focus-card')?.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window}));`);
   await waitFor(`document.querySelector('#dirReco .hot-focus-card')?.dataset.analyticsKey`);
   let analyticsEvents = await waitAnalytics('item_click');
+  if (!analyticsEvents.some(x => x.event_name === 'item_impression')) analyticsEvents = await waitAnalytics('item_impression');
   ok('visible focus cards report one qualified impression and focus-card clicks are recorded', analyticsEvents.some(x=>x.event_name==='item_impression'&&String(x.content_key).startsWith('event:')) && analyticsEvents.some(x=>x.event_name==='item_click'&&String(x.content_key).startsWith('event:')), analyticsEvents.map(x=>[x.event_name,x.content_key]));
-  analyticsEvents = await waitAnalytics('active_time', 50000);
+  { const until = Date.now() + 60000; do { analyticsEvents = await get('/__analytics_events'); if (analyticsEvents.some(x => x.event_name === 'active_time' && x.active_seconds >= 15)) break; await sleep(300); } while (Date.now() < until); }          // (a short batch can be sent when the page loses the front for a moment: wait for the one that holds fifteen seconds)
   ok('active-time events count only foreground hot-page seconds and are sent in batches', analyticsEvents.some(x=>x.event_name==='active_time'&&x.active_seconds>=15), analyticsEvents.filter(x=>x.event_name==='active_time'));
   const primary = await J(`({views:[...document.querySelectorAll('#dirReco [data-hot-view]')].map(b=>[b.textContent,b.getAttribute('aria-pressed')]), picks:!!document.querySelector('#dirReco .hot-mixed'), focus:document.querySelector('#dirReco .hot-focus-head h3')?.textContent, ranked:document.querySelectorAll('#dirReco .hot-mix-link').length})`);
   ok('the page opens on 今日精选, with 今日焦点 before the ranked picks', primary.views.length===2 && primary.views[0][1]==='true' && primary.picks && primary.focus==='今日焦点' && primary.ranked>0 && await J(`document.querySelector('#dirReco .hot-focus').compareDocumentPosition(document.querySelector('#dirReco .hot-mixed')) & Node.DOCUMENT_POSITION_FOLLOWING`), primary);
