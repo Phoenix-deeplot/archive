@@ -1,5 +1,5 @@
 // e2e: the page opens at once from the copy that the service worker (sw.js) keeps and the network is asked behind it; a changed page is kept and a bar offers a refresh (never a reload by itself);
-// the public space looks again when the page comes back after a while, with the "↻" of the update note, and with a pull down on a phone; what is unchanged is not drawn again.
+// the public space looks again when the page comes back after a while and with a pull down on a phone (there is no "updated ... ↻" line any more); what is unchanged is not drawn again.
 // The service worker is registered in the test browser by the switch localStorage 'zt.sw' = '1' (a page without it registers none, as on serve.py).
 const fs = require('fs');
 const { connect, sleep } = require('../cdp');
@@ -28,7 +28,6 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   const copyHas = s => J(`caches.keys().then(ks=>caches.open(ks.find(k=>/^shell-/.test(k)))).then(c=>c.match('/index.html')).then(r=>r?r.text():'').then(x=>x.includes(${JSON.stringify(s)}))`);
   const hasMark = () => J(`(document.querySelector('meta[name=zt-test]')||{}).content||''`);
   const barShown = () => J(`!document.querySelector('#newVer').hidden`);
-  const note = () => J(`document.querySelector('#updNote').textContent`);
   const ready = (url = BASE) => c.goto(url, 0).then(() => waitFor(`!!window.__zt && !!state && !!state.dirCfg`, 10000));
   await c.desktop(1280, 900, 1);
 
@@ -89,9 +88,9 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
     await c.goto(BASE + '?x=1&y=2', 0); await waitFor(`!!window.__zt`, 8000); await sleep(800);
     ok('an address with something after it is the same page: it gets no copy of its own', !(await shellKeys()).some(k => /\?/.test(k)), await shellKeys());
 
-    // ------------------------------------------------ the public space: the update note, coming back after a while
+    // ------------------------------------------------ the public space: coming back after a while
     await ready(); await waitFor(`!!state.dirData`, 8000); await sleep(800);
-    ok('the public space says when it was updated, with a button to update now', /^已更新 \d\d:\d\d$/.test((await note()).replace('↻', '').trim()) && (await J(`!!document.querySelector('#updNote [data-dirrefresh]')`)), await note());
+    ok('the public space has no line "updated ... ↻" any more (the page has no #updNote and no button for it)', await J(`!document.querySelector('#updNote') && !document.querySelector('[data-dirrefresh]')`));
     ok('...the browser\'s own pull to reload is switched off there (html.ptr)', await J(`document.documentElement.classList.contains('ptr')`));
     await J(`(()=>{ window.__t={off:0,vs:'visible'}; const R=Date.now.bind(Date); Date.now=()=>R()+window.__t.off; Object.defineProperty(document,'visibilityState',{configurable:true,get:()=>window.__t.vs}); })()`);
     const away = min => J(`(()=>{ window.__t.vs='hidden'; document.dispatchEvent(new Event('visibilitychange')); window.__t.off+=${min}*60000; window.__t.vs='visible'; document.dispatchEvent(new Event('visibilitychange')); })()`);
@@ -99,16 +98,14 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
     await J(`window.__node=[document.querySelector('#dirReco').firstElementChild, document.querySelector('#grid').firstElementChild]`);
     ctl.dirCount = 0; await away(3); await sleep(1500);
     ok('back after 3 minutes: nothing is asked', ctl.dirCount === 0, ctl.dirCount);
-    const t0 = await note();
+    const t0 = await J(`state.dirAt`);
     await away(11);
     ok('back after 11 minutes: the directory is looked at again', (await asked(1)) === 1, ctl.dirCount);
-    ok('...and the time of the note moves on', await waitFor(`document.querySelector('#updNote').textContent!==${JSON.stringify(t0)}`, 6000), [t0, await note()]);
+    ok('...and the time of the last look moves on (state.dirAt)', await waitFor(`state.dirAt>${t0}`, 6000), [t0, await J(`state.dirAt`)]);
     ok('...nothing was different, so nothing was drawn again', await J(`window.__node.some(Boolean) && window.__node[0]===document.querySelector('#dirReco').firstElementChild && window.__node[1]===document.querySelector('#grid').firstElementChild`));
     ctl.dirCount = 0;
-    const txt = await J(`(()=>{ document.querySelector('#updNote [data-dirrefresh]').click(); return document.querySelector('#updNote').textContent; })()`);
-    ok('the button of the note looks at once and says it is updating', /更新中/.test(txt) && await J(`document.querySelector('#updNote').classList.contains('spin')`), txt);
-    const spun = await waitFor(`!document.querySelector('#updNote').classList.contains('spin')`, 6000);
-    ok('...asks the directory once and goes back to the time', spun && (await asked(1, 1500)) === 1 && /已更新 \d\d:\d\d/.test(await note()), [ctl.dirCount, await note(), await J(`[state.dirBusy, state.dirRefreshing]`)]);
+    const done = await J(`window.__zt.dirRefresh().then(ok=>[ok, state.dirBusy, state.dirRefreshing])`);
+    ok('a look by the function that the pull down uses asks the directory once, says the network answered, and is not left busy', (await asked(1, 1500)) === 1 && done[0] === true && !done[1] && !done[2], [ctl.dirCount, done]);
 
     // ------------------------------------------------ a phone: pull down at the top
     await c.mobile(375, 812, 2);

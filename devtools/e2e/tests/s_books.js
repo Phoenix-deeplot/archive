@@ -1,5 +1,5 @@
 // e2e: the picked books of the directory ("精选图书"): the card says the chapters and the licence, a book with chapters opens in a window with its chapters, a chapter is read in the page,
-// previous / next walk the chapters, closing the reader brings the window back, the chapter you got to is remembered; a book that is one page is read at once, any other opens on its own site;
+// previous / next walk the chapters, closing the reader just closes it (the window does not come back), the chapter you got to is remembered; a book that is one page is read at once, any other opens on its own site;
 // English; a phone
 const fs = require('fs');
 const { connect, sleep } = require('../cdp');
@@ -44,7 +44,7 @@ const addBooks = () => {
   // ------------------------------------------------ the cards
   ok('the shelf of the picked books shows its three books', (await J(`[...document.querySelectorAll('#grid .card .card-title a')].map(a=>a.textContent)`)).sort().join('|') === 'An Open Journal|One Page Book|The Tale');
   const m1 = await meta('The Tale'), m2 = await meta('One Page Book'), m3 = await meta('An Open Journal');
-  ok('a book with chapters says how many, and every book says its licence', /3 章/.test(m1) && /公有领域/.test(m1) && !/章/.test(m2) && /公有领域/.test(m2) && /CC BY/.test(m3), [m1, m2, m3]);
+  ok('a book with chapters says how many; no card says its licence, its type or its shelf (the licence is in the window and under the chapter)', /3 章/.test(m1) && !/章/.test(m2) && ![m1, m2, m3].some(m => /公有领域|CC BY|书籍|精选图书/.test(m)), [m1, m2, m3]);
   await c.shot(P.SHOTS + '/books_cards.png');
 
   // ------------------------------------------------ a book with chapters: its window
@@ -65,8 +65,11 @@ const addBooks = () => {
   const r3 = await rd();
   ok('next is chapter 3, and there is no next after the last', r3.title === 'The Tale · Chapter 3' && /third chapter, and the bridge/.test(r3.text) && r3.pos === '3 / 3' && r3.next && !r3.prev, r3);
   await J(`document.querySelector('#readerBack').click()`); await sleep(700);
+  const d2a = await dlg();
+  ok('closing the reader just closes it: no window of the chapters comes back', !(await rd()).open && !d2a.open, d2a);
+  await J(`${card('The Tale')}.querySelector('.card-title a').click()`); await sleep(500);
   const d2 = await dlg();
-  ok('closing the reader brings the window back with the place marked and "continue" on the button', !(await rd()).open && d2.open && d2.cur === 2 && d2.start === '继续读：Chapter 3', d2);
+  ok('the window of the book (from its card) has the place marked and "continue" on the button', d2.open && d2.cur === 2 && d2.start === '继续读：Chapter 3', d2);
   ok('this browser remembers the chapter (in the progress, as the place in the book: the sync carries it)', (await J(`state.progress['bk:tale0001'].i`)) === 2);
   await J(`document.querySelector('#bookStart').click()`); await sleep(3000);
   await J(`document.querySelector('#readerPrev').click()`); await sleep(3000);
@@ -98,7 +101,7 @@ const addBooks = () => {
   const en = await meta('The Tale');
   await J(`${card('The Tale')}.querySelector('.card-title a').click()`); await sleep(500);
   const de = await dlg();
-  ok('English: "3 chapters", "Public domain", "Start reading", the note under the chapters', /3 chapters/.test(en) && /Public domain/.test(en) && /3 chapters/.test(de.sub) && de.start === 'Start reading' && /Previous \/ Next/.test(await J(`document.querySelector('.bo-note').textContent`)), [en, de]);
+  ok('English: "3 chapters" on the card (no licence there), "Public domain" in the window, "Start reading", the note under the chapters', /3 chapters/.test(en) && !/Public domain/.test(en) && /3 chapters/.test(de.sub) && /Public domain/.test(de.facts) && de.start === 'Start reading' && /Previous \/ Next/.test(await J(`document.querySelector('.bo-note').textContent`)) && !/Closing the reader/.test(await J(`document.querySelector('.bo-note').textContent`)), [en, de]);
 
   // ------------------------------------------------ a phone
   await c.mobile(390, 780, 3); await sleep(500);

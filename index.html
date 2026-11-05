@@ -1159,6 +1159,33 @@ body.reader-focus .rbook{display:none}
 .drow.bkrow .sum{-webkit-line-clamp:1}
 .bo-note{margin:10px 0 0;color:var(--muted);font-size:13px;line-height:1.6}
 .xmeta .lic{border:1px solid var(--rule);border-radius:4px;padding:0 5px;font-size:11px}
+/* a picked book's card says little: language, author, where it is read, the chapters, where this reader is (a thin line on the cover too); a line on why when it is in a book list */
+button.au{border:0;background:none;padding:0;margin:0;font:inherit;color:inherit;text-align:left;cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+button.au:hover,button.au:focus-visible{text-decoration:underline;text-underline-offset:3px;outline:none}
+.xcard.bkcard .xmeta{flex-wrap:wrap}
+.xcover.bk .bk-prog{position:absolute;left:0;bottom:0;height:4px;width:max(var(--p,0%),3%);background:var(--accent);z-index:2}
+.bk-why{margin:0 0 5px;font-size:13px;line-height:1.5;color:var(--accent);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* the page of the picked books: book lists (a small stack of covers and a name), the row of genres */
+.bkp-head{margin:0 0 16px;max-width:1280px}
+.bkp-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.bkp-list{display:flex;align-items:center;gap:12px;min-width:0;padding:10px 12px;border:1px solid var(--rule);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.bkp-list:hover,.bkp-list:focus-visible{border-color:var(--accent);outline:none}
+.bkp-stack{position:relative;flex:none;width:50px;height:56px}
+.bkp-stack i{position:absolute;bottom:0;width:28px;height:42px;border-radius:2px 4px 4px 2px;box-shadow:inset 3px 0 0 rgba(255,255,255,.2),0 2px 5px rgba(0,0,0,.22)}
+.bkp-stack i:nth-child(1){left:0;height:36px;transform:rotate(-6deg);transform-origin:bottom right}
+.bkp-stack i:nth-child(2){left:11px;height:48px}
+.bkp-stack i:nth-child(3){left:22px;height:40px;transform:rotate(6deg);transform-origin:bottom left}
+.bkp-txt{min-width:0;display:flex;flex-direction:column;gap:2px}
+.bkp-name{font:700 15px/1.35 var(--serif);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bkp-n{font-size:12.5px;color:var(--muted)}
+.bkp-lists .dt-more{margin-top:4px}
+.bkp-tabs{padding-top:12px}
+.bkp-head>.bkp-lists+.bkp-tabs{padding-top:8px}
+.bkp-au{margin:10px 0 0}
+.bkp-back{border:0;background:none;padding:6px 0;font:inherit;font-size:14px;font-weight:600;color:var(--accent);cursor:pointer;min-height:36px}
+.bkp-back:hover,.bkp-back:focus-visible{text-decoration:underline;text-underline-offset:3px;outline:none}
+@media (max-width:900px){.bkp-row{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:420px){.bkp-list{padding:9px 10px;gap:9px}.bkp-stack{width:42px}.bkp-stack i{width:24px}.bkp-stack i:nth-child(2){left:9px}.bkp-stack i:nth-child(3){left:18px}.bkp-name{font-size:14px}}
 body.has-player .rc-act{bottom:calc(var(--pl-h) + 34px + env(safe-area-inset-bottom,0px))}          /* the bar of the recommended page sticks above the player (and the tab on its edge), not under it */
 body.has-player.pl-folded .rc-act{bottom:calc(78px + env(safe-area-inset-bottom,0px))}              /* ... or above the round button of a folded one */
 /* the bar folds: a tab on its top edge (or a swipe down) turns it into a round button in the corner (the cover and play / pause, nothing that closes); the cover unfolds it again */
@@ -1245,16 +1272,10 @@ dialog.plp::backdrop{background:rgba(10,14,18,.45)}
 .newver button{border:0;border-radius:999px;padding:4px 12px;font:inherit;font-weight:600;cursor:pointer;background:var(--bg);color:var(--ink)}
 .newver button.x{background:none;color:inherit;opacity:.7;padding:4px 8px}
 body.sh-phone .newver{bottom:calc(var(--tb) + 76px)}
-.upd-note{position:absolute;left:0;top:100%;display:flex;align-items:center;gap:2px;height:18px;margin:0;font-size:12.5px;line-height:18px;color:var(--muted);white-space:nowrap}          /* (it hangs below the heading in the gap that is there: the heading is as high as on my shelf) */
-.view-head .upd-note{font-size:12.5px;margin:0}
-.upd-note[hidden]{display:none}
-.upd-note button{border:0;background:none;padding:0 6px;height:18px;font:inherit;font-size:15px;line-height:18px;color:var(--accent);cursor:pointer}
-.upd-note.spin button{animation:updspin 1s linear infinite;pointer-events:none}
-@keyframes updspin{to{transform:rotate(360deg)}}
 html.ptr{overscroll-behavior-y:contain}
 .pullhint{position:fixed;left:50%;top:env(safe-area-inset-top,0px);z-index:45;transform:translate(-50%,-64px);padding:7px 16px;border-radius:999px;background:var(--surface);color:var(--ink);border:1px solid var(--rule);font-size:13.5px;box-shadow:0 2px 10px rgba(0,0,0,.14);opacity:0;pointer-events:none;white-space:nowrap}
 .pullhint.snap{transition:transform .22s ease,opacity .22s ease}
-@media (prefers-reduced-motion:reduce){.pullhint.snap{transition:none}.upd-note.spin button{animation:none}}
+@media (prefers-reduced-motion:reduce){.pullhint.snap{transition:none}}
 
 /* ---------- narrow screens ---------- */
 @media (max-width:980px){
@@ -1616,8 +1637,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     </div>
     <section class="view-head">
       <div class="vh-txt"><h1 id="viewTitle">全部</h1>
-      <p id="viewSub"></p>
-      <p class="upd-note" id="updNote" hidden></p></div>
+      <p id="viewSub"></p></div>
       <div class="vh-ctl" id="vhCtl"><span class="ctl-box" id="ctlBox"><button class="tag-btn" type="button" id="tagBtn" hidden aria-expanded="false" aria-controls="tagPop"></button></span><section class="tag-pop" id="tagPop" hidden aria-label="标签"></section></div>
     </section>
     <div class="dir-bar" id="dirBar" hidden>
@@ -2604,9 +2624,9 @@ const state = {
 const $ = s => document.querySelector(s);
 Object.assign(I18N.zh,{themeTop:'主题', thLabel:'主题', thClassic:'经典', thCloud:'云红', setTitle:'设置', viewIsCards:'卡片', viewIsList:'列表'});
 Object.assign(I18N.en,{themeTop:'Theme', thLabel:'Theme', thClassic:'Classic', thCloud:'Cloud red', setTitle:'Settings', viewIsCards:'Cards', viewIsList:'List'});
-Object.assign(I18N.zh,{bookLicLine:(l,h,from)=>`授权：${l} · 来源：${h}${from?` · 这一章来自：${from}`:''}`, bookTier:x=>({local:'这个浏览器里的副本', hot:'服务器上的副本', durable:'服务器上的副本', source:'刚从原站读取', feed:'刚从原站读取'})[x]||'', bookChN:n=>`${n} 章`, bookStart:'从头开始读', bookOrig:'打开原站', bookChapters:'章节', bookLic:'授权', bookNote:'点一章就在这里读；阅读页顶上的“上一篇 / 下一篇”翻章，字号和颜色在“Aa”里调；关掉阅读页会回到这张章节表。',
+Object.assign(I18N.zh,{bookLicLine:(l,h,from)=>`授权：${l} · 来源：${h}${from?` · 这一章来自：${from}`:''}`, bookTier:x=>({local:'这个浏览器里的副本', hot:'服务器上的副本', durable:'服务器上的副本', source:'刚从原站读取', feed:'刚从原站读取'})[x]||'', bookChN:n=>`${n} 章`, bookStart:'从头开始读', bookOrig:'打开原站', bookChapters:'章节', bookLic:'授权', bookNote:'点一章就在这里读；阅读页顶上的“上一篇 / 下一篇”翻章，字号和颜色在“Aa”里调。',
   'lic_public-domain':'公有领域', lic_cc0:'CC0', 'lic_cc-by':'CC BY', 'lic_cc-by-sa':'CC BY-SA', 'lic_cc-by-nc':'CC BY-NC', 'lic_cc-by-nc-sa':'CC BY-NC-SA', 'lic_free-to-read':'免费阅读'});
-Object.assign(I18N.en,{bookLicLine:(l,h,from)=>`Licence: ${l} · From ${h}${from?` · This chapter came from: ${from}`:''}`, bookTier:x=>({local:'a copy kept in this browser', hot:'the copy on the server', durable:'the copy on the server', source:'the original page, just now', feed:'the original page, just now'})[x]||'', bookChN:n=>n===1?'1 chapter':`${n} chapters`, bookStart:'Start reading', bookOrig:'Open the original', bookChapters:'Chapters', bookLic:'Licence', bookNote:'Tap a chapter to read it here; “Previous / Next” at the top of the reader turns the chapters, and the text size and colours are under “Aa”. Closing the reader brings you back to this list.',
+Object.assign(I18N.en,{bookLicLine:(l,h,from)=>`Licence: ${l} · From ${h}${from?` · This chapter came from: ${from}`:''}`, bookTier:x=>({local:'a copy kept in this browser', hot:'the copy on the server', durable:'the copy on the server', source:'the original page, just now', feed:'the original page, just now'})[x]||'', bookChN:n=>n===1?'1 chapter':`${n} chapters`, bookStart:'Start reading', bookOrig:'Open the original', bookChapters:'Chapters', bookLic:'Licence', bookNote:'Tap a chapter to read it here; “Previous / Next” at the top of the reader turns the chapters, and the text size and colours are under “Aa”.',
   'lic_public-domain':'Public domain', lic_cc0:'CC0', 'lic_cc-by':'CC BY', 'lic_cc-by-sa':'CC BY-SA', 'lic_cc-by-nc':'CC BY-NC', 'lic_cc-by-nc-sa':'CC BY-NC-SA', 'lic_free-to-read':'Free to read'});
 Object.assign(I18N.zh,{trBtn:'翻译', trTip:'翻译这一页（文字会发到翻译服务）', trCycle:'点一下切换：双语 → 译文 → 原文', trBoth:'双语', trOnly:'译文', trOrig:'原文', trBusy:(a,b)=>`翻译中 ${a}/${b}`, trNone:'这一页没有可以翻译的文字', trSame:'这一页已经是你界面的语言了', trCut:'文章很长，只翻译了前 3 万字', trFailed:m=>`翻译没有成功：${m}`,
   trGo:'翻译这一页（双语对照）', trAskTitle:'翻译这一页？', trAsk:'点“翻译”，这一页的文字会发送到翻译服务（DeepL 或阿里云）去翻译；不会发送你是谁，服务端也不保存原文。译文只存在这个浏览器里。', trYes:'翻译', trNo:'取消'});
@@ -2628,8 +2648,12 @@ Object.assign(I18N.zh,{plCollapse:'收起', plSetTip:'播放设置', plSetT:'播
 Object.assign(I18N.en,{plCollapse:'Fold', plSetTip:'Player settings', plSetT:'Player settings', plSetClose:'Close settings', plSrcL:'Source', plSrc_whole:'Whole songs first', plSrc_speed:'Fastest first', plSrc_free:'Free sources only', plDataL:'Spare mobile data', plDataD:'Big files (lossless, 30–50 MB) are not played by themselves', plClearS:'Clear', plQnSongs:n=>`${n} songs`, plQnEps:n=>`${n} episodes`, plFocusL:'Focus mode ›', plWipe:'Clear what this device remembers of listening', plWiped:'Listening history cleared', plCleared:'Cleared', plUndo:'Undo'});
 Object.assign(I18N.zh,{plMode_list:'列表循环', plMode_one:'单曲循环', plMode_shuffle:'随机播放', plMode_order:'顺序播放', plSlow:'这个音源加载有点慢，再等一下', plBigAsk:mb=>`这首歌的文件很大（约 ${mb} MB），现在是手机流量`, plBigGo:'仍然播放'});
 Object.assign(I18N.en,{plMode_list:'Repeat the list', plMode_one:'Repeat one', plMode_shuffle:'Shuffle', plMode_order:'In order', plSlow:'This source is slow to load; waiting a little longer', plBigAsk:mb=>`This file is big (about ${mb} MB) and you are on mobile data`, plBigGo:'Play anyway'});
-Object.assign(I18N.zh,{newVer:'有新版本了', newVerGo:'刷新', newVerLater:'以后再说', updAt:w=>`已更新 ${w}`, updBusy:'更新中…', updGo:'现在更新', pullDown:'下拉刷新', pullGo:'松开刷新', pullOk:'已更新', pullOff:'没连上网，还是上次的'});
-Object.assign(I18N.en,{newVer:'A new version is ready', newVerGo:'Refresh', newVerLater:'Not now', updAt:w=>`Updated ${w}`, updBusy:'Updating…', updGo:'Update now', pullDown:'Pull to refresh', pullGo:'Release to refresh', pullOk:'Updated', pullOff:'No connection: still the last one'});
+Object.assign(I18N.zh,{newVer:'有新版本了', newVerGo:'刷新', newVerLater:'以后再说', updBusy:'更新中…', pullDown:'下拉刷新', pullGo:'松开刷新', pullOk:'已更新', pullOff:'没连上网，还是上次的'});
+Object.assign(I18N.en,{newVer:'A new version is ready', newVerGo:'Refresh', newVerLater:'Not now', updBusy:'Updating…', pullDown:'Pull to refresh', pullGo:'Release to refresh', pullOk:'Updated', pullOff:'No connection: still the last one'});
+Object.assign(I18N.zh,{bkSub:'人工挑选、可以免费读的书和刊物', bkLists:'书单', bkListN:n=>`${n} 本`, bkListsMore:n=>`全部 ${n} 张书单 ▾`, bkListsLess:'收起 ▴', bkBackAll:'‹ 精选图书', bkAuthorChip:'作者：',
+  bgn_novel:'小说', bgn_philosophy:'哲学', bgn_history:'历史', bgn_verse:'诗文', bgn_science:'科学', bgn_tech:'技术', bgn_magazine:'杂志', bgn_library:'书库'});
+Object.assign(I18N.en,{bkSub:'Hand-picked books and journals that are free to read', bkLists:'Book lists', bkListN:n=>n===1?'1 book':`${n} books`, bkListsMore:n=>`All ${n} book lists ▾`, bkListsLess:'Fewer ▴', bkBackAll:'‹ Book picks', bkAuthorChip:'Author: ',
+  bgn_novel:'Fiction', bgn_philosophy:'Philosophy', bgn_history:'History', bgn_verse:'Verse & essays', bgn_science:'Science', bgn_tech:'Tech', bgn_magazine:'Magazines', bgn_library:'Libraries'});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const catName = c => (['all','featured','books','tools','notes','hidden'].includes(c)? t(c) : c);
@@ -3624,7 +3648,7 @@ function render(){
   const addTxt=t(dirMode?'submit':'add'); $('#addLbl').textContent=addTxt; $('#addBtn').title=addTxt; $('#addBtn').setAttribute('aria-label',addTxt);
   syncSubscribe();
   if(dirMode){ $('#colRow').hidden=true; $('#colNav').hidden=true; $('#recoPane').hidden=true; $('#recoBanner').hidden=true; renderDir(); updNoteSync(); renderPublicAd(); syncReader(); return; }
-  renderPublicAd(); $('#updNote').hidden=true; document.documentElement.classList.remove('ptr');
+  renderPublicAd(); document.documentElement.classList.remove('ptr');
   $('#moreRow').hidden=true; $('#dirLabel').textContent=t('dir'); $('#dirBar').hidden=true; document.body.classList.remove('dir-discover','dir-hot','dir-listen'); $('#dirReco').hidden=true; $('#dirReco').innerHTML=''; state.dPickOpen=false; $('#dPick').hidden=true; $('#dPickBack').hidden=true; document.body.classList.remove('dp-open');          // (the directory's home page is made again when it is shown: its cards must not linger behind the shelf)
 
   renderCols();                                                            // also settles which part of the shelf is shown, before anything below counts it
@@ -4063,7 +4087,54 @@ function bookGo(did){
   const p=bookPlace(did); return openBookChapter(did, bookStarted(p) ? Math.min(p.i,ch.n.length-1) : 0);
 }
 document.addEventListener('click',e=>{ const b=e.target.closest && e.target.closest('[data-bk-go]'); if(!b) return; e.preventDefault(); e.stopPropagation(); bookGo(b.dataset.bkGo); },true);
-const bookReadAt = it => { const p=bookPlace(it.id); return bookStarted(p) && p.i<it.ch.n.length ? `<span class="rd">${esc(t('bkReadAt',chName(it.ch.n[p.i])))}</span>` : ''; };
+const bookReadAt = it => { const p=bookPlace(it.id); return bookStarted(p) && p.i<it.ch.n.length ? `<span class="rd">${esc(t('bkReadAt',chName(it.ch.n[p.i])))} · ${bookOverall(it.id,it.ch)}%</span>` : ''; };          // "At chapter 3 · 12%": where this reader is, and how much of the whole book
+function bookProgHTML(it){                                                                         // a thin line at the foot of the cover: how far this reader is in the book (nothing until the first chapter is read)
+  const ch=bookChs(it); if(!ch || !bookStarted(bookPlace(it.id))) return '';
+  return `<span class="bk-prog" style="--p:${bookOverall(it.id,ch)}%" aria-hidden="true"></span>`;
+}
+const BOOK_SRC=[[/(^|\.)wikisource\.org$/,'维基文库','Wikisource'],[/(^|\.)gutenberg\.org$/,'古腾堡计划','Project Gutenberg'],[/(^|\.)standardebooks\.org$/,'Standard Ebooks','Standard Ebooks'],[/(^|\.)archive\.org$/,'互联网档案馆','Internet Archive']];
+const bookSource = it => { const h=hostOf(it.url), m=BOOK_SRC.find(r=>r[0].test(h)); return m ? m[state.lang==='zh'?1:2] : h; };          // where the book is read: the name of a known site, else its address
+/* The page of the picked books ("精选图书"): no filter bar and no update line; it has a genre (one row of small tabs), the book lists (themed, by hand, each book with a line on why) and an author.
+   state.dGenre / state.dList / state.dAuthor are not kept: the page opens on all the books. The genre comes from the book (it.genre) or from its tags. */
+const booksPage = () => state.dLanding==='books' && !state.dShelf && !state.dTag;
+const BOOK_GENRES=['novel','philosophy','history','verse','science','tech','magazine','library'];
+const BOOK_GENRE_TAGS=[['magazine','杂志 期刊 magazine journal'],['library','书库 library'],['tech','技术 编程 tech programming'],['science','科学 数学 物理 生物 science math physics biology'],['novel','小说 novel fiction'],['philosophy','哲学 思想 兵法 寓言 philosophy'],['history','历史 笔记 神话 history myth'],['verse','诗歌 散文 poetry essay']];          // (the first that fits: a magazine about science is a magazine, a novel about history is a novel)
+function bookGenre(it){
+  if(BOOK_GENRES.includes(it.genre)) return it.genre;
+  const tg=new Set((it.tags||[]).map(x=>String(x).toLowerCase())), m=BOOK_GENRE_TAGS.find(r=>r[1].split(' ').some(x=>tg.has(x)));
+  return m ? m[0] : '';
+}
+const bkText = o => o ? (o[state.lang==='zh'?'zh':'en'] || o.zh || o.en || '') : '';
+const bookLists = () => (state.dirData && state.dirData.booklists) || [];
+const bookListIds = id => { const l=bookLists().find(x=>x.id===id); return l ? new Set(l.books.map(b=>b.id)) : null; };
+function dirBooksHeadHTML(){                                                                       // above the books: the book lists (or the way back out of one), and the row of genres
+  const lists=bookLists(), cur=state.dList ? lists.find(l=>l.id===state.dList) : null, bm=new Map(state.dirData.items.map(i=>[i.id,i]));
+  if(cur) return `<div class="bkp-head"><button class="link-btn bkp-back" type="button" data-blist="">${esc(t('bkBackAll'))}</button></div>`;
+  const filtered=!!(state.dGenre || state.dAuthor || tokens().length);
+  let html='';
+  if(lists.length && !filtered){
+    const open=state.dListsOpen, shown=open ? lists : lists.slice(0,4);
+    html+=`<section class="bkp-lists" aria-label="${esc(t('bkLists'))}"><div class="bkp-row">${shown.map(l=>{
+      const bs=l.books.map(b=>bm.get(b.id)).filter(Boolean).slice(0,3);
+      return `<button class="bkp-list" type="button" data-blist="${esc(l.id)}"><span class="bkp-stack" aria-hidden="true">${bs.map(b=>`<i style="background:${coverLook(b).pal[2]}"></i>`).join('')}</span><span class="bkp-txt"><span class="bkp-name">${esc(bkText(l.name))}</span><span class="bkp-n">${esc(t('bkListN',l.books.length))}</span></span></button>`;
+    }).join('')}</div>${lists.length>4 ? `<button class="dt-more" type="button" data-blmore="1" aria-expanded="${open}">${esc(open ? t('bkListsLess') : t('bkListsMore',lists.length))}</button>` : ''}</section>`;
+  }
+  const have=new Set(dirList('genre').map(bookGenre));                                              // (a genre with no book under the language and the search that are on is not offered)
+  if(have.size>=2 || state.dGenre) html+=`<div class="dir-tabs bkp-tabs" role="tablist"><button type="button" role="tab" data-bgenre="" aria-selected="${!state.dGenre}">${esc(t('all'))}</button>${BOOK_GENRES.filter(g=>have.has(g) || g===state.dGenre).map(g=>`<button type="button" role="tab" data-bgenre="${g}" aria-selected="${state.dGenre===g}">${esc(t('bgn_'+g))}</button>`).join('')}</div>`;
+  if(state.dAuthor) html+=`<p class="bkp-au"><button class="chip" type="button" data-bauthor="" title="${esc(t('clearTag'))}"><b>${esc(t('bkAuthorChip')+state.dAuthor)}</b><em>✕</em></button></p>`;
+  return html ? `<div class="bkp-head">${html}</div>` : '';
+}
+document.addEventListener('click',e=>{                                                              // a list, a genre, an author (the name of an author on a card of any page opens this page on him)
+  const b=e.target.closest && e.target.closest('[data-bgenre],[data-blist],[data-bauthor],[data-blmore]'); if(!b) return;
+  e.preventDefault(); e.stopPropagation();
+  const d=b.dataset;
+  if('blmore' in d){ state.dListsOpen=!state.dListsOpen; render(); return; }
+  if(!booksPage()){ history.pushState({publicRoute:'books'},'',PUBLIC_ROUTES.books); publicRouteApply('books'); }
+  if('bgenre' in d) state.dGenre=state.dGenre===d.bgenre ? '' : d.bgenre;
+  else if('blist' in d){ state.dList=d.blist; state.dGenre=''; state.dAuthor=''; }
+  else { state.dAuthor=d.bauthor; state.dList=''; state.dGenre=''; }
+  state.dLimit=DIR_PAGE; render(); window.scrollTo({top:0}); document.body.classList.remove('drawer');
+},true);
 function openBook(did, quiet){
   const d=state.dirData && state.dirData.items.find(x=>x.id===did); if(!d) return;
   const ch=bookChs(d); if(!ch){ window.open(d.url,'_blank','noopener,noreferrer'); return; }
@@ -4125,7 +4196,7 @@ let readerReturnY=0, readerBackPending=0;
 function rememberReaderReturn(){ if($('#reader').hidden) readerReturnY=window.scrollY; }
 function closeReader(fromPop){
   if($('#reader').hidden) return;
-  const cur=itemById(state.readingId), back = !fromPop && cur && cur.back && itemById(cur.back) ? cur.back : '', bookBack = cur && cur.bookOf || '';
+  const cur=itemById(state.readingId), back = !fromPop && cur && cur.back && itemById(cur.back) ? cur.back : '';
   if(back){ cur.back=''; closePanels(); openReader(back,false); return; }                      // a story opened from a card: back is the card (see richLinkClick)
   closePanels(); $('#frame').classList.remove('inv'); $('#tint').style.display='none';
   $('#reader').hidden=true; document.body.classList.remove('reading','reader-focus'); $('#frame').removeAttribute('srcdoc'); $('#frame').src='about:blank';
@@ -4136,8 +4207,7 @@ function closeReader(fromPop){
   const did=id && (id.startsWith('tmp:') ? id.slice(4).replace(/~\d+$/,'') : id.startsWith('local:link:') ? id.slice(11) : '');
   const card=id && (document.querySelector(`.card[data-id="${CSS.escape(id)}"]`) || (did && document.querySelector(`.card[data-did="${CSS.escape(did)}"]`)));
   const link=card && card.querySelector('.card-title a'); if(link) link.focus({preventScroll:true});
-  window.scrollTo({top:readerReturnY,behavior:'auto'});
-  if(bookBack) openBook(bookBack,true);                                                          // a chapter of a book: closing it returns to the chapters
+  window.scrollTo({top:readerReturnY,behavior:'auto'});                                              // (closing a chapter of a book is just closing: no window of the chapters comes back; they are in the reader's contents)
 }
 function step(d){
   const i=state.visible.indexOf(state.readingId), n=state.visible[i+d]; if(!n) return;
@@ -4844,7 +4914,8 @@ const CHANGELOG=[{v:'2026-10-22',
       '公共目录里“音频”换成了“今日听什么”（侧栏）：标题和副标题在一行里；下面一行是“音乐 / 播客”开关，右边是排序和“卡片 / 列表”按钮；再下面是一条标签——当天的榜单和歌单（每日推荐、华语 / 欧美 / 韩流 / 日系热歌榜、Deezer 的榜单歌单；播客是各国播客榜）在前，风格（摇滚、说唱、电子、爵士、古典、放松……）或播客分类（新闻、商业、故事、英语学习……）在后，手机上可以左右滑，在歌曲上左右滑动就换到下一个 / 上一个。标签下面直接是歌曲和节目，默认是列表，每行只写标题、来源、热度（榜单里的名次）和“试听”（只有试听片段才写），不再写时长和“站内播放”。每个榜单备有 200 项，一次显示 30 项，滚到快到底自动再加 30 项；都在页面底部的播放条里一首接一首放，放不了的自动跳过。歌曲来自 Deezer 和 Apple Music 的榜单（每首 30 秒试听，Apple 的行尾 ↗ 去 Apple Music 听全曲）、Audius（整首）、Jamendo（整首，只用允许在有广告的网站上使用的授权），播客是 Apple 播客榜上节目的最新一集（整集，声音直接来自节目自己的服务器），站长开了直连时还有网易云的整首歌。内容按界面语言排：英文系统的手机推荐的是欧美歌和英语播客榜。发现页上只留一小块“今日听什么”，点“进入”去完整的页面；“今日 3 件值得看”也缩小了。大家同一天看到的一样；你喜欢的、放过的歌只记在你这台设备上（设置里可以一键清除）。',
       '新增“专注模式”（学习、冥想）：点歌曲列表上的“专注”、播放条上的 ◎ 或“正在播放”页里的“专注模式”，整个屏幕只剩一个缓慢变化的图案（呼吸 / 极光 / 暗）和一行小字歌名，并自动放整首的歌或整集的节目（30 秒试听不算）；按钮 4 秒不碰就隐去，碰一下屏幕再出来：上一首 / 暂停 / 下一首、音乐 ↔ 播客、定时（15 / 25 / 45 / 60 分钟）、换图案；Esc 或 × 退出，声音继续。读文章时，阅读栏上的“专注阅读”（手机在“Aa 阅读设置”里）收起所有按钮，只留正文和右下角一个小条（暂停、下一首、图案页、退出），进入时自动放，在小条里暂停过，下次就不自动放。',
       '页面更简洁：公共目录顶部不再有“共 N 条，来自 N 个书架，更新于…”那行计数；界面语言只留“自动”和一个“中 / EN”按钮（点一下换成另一种）；公共目录的“显示更多”滚到底自动加载。',
-      '“今日听什么”重做：音乐分成“推荐 / 榜单 / 发现”三个标签（国内 ⇄ 国际决定先推荐哪里的歌；榜单一排地区，发现里风格和场景分开），一首歌只留封面、歌名、艺人、♥ 和 ⋯（下一首播放、加入歌单、喜欢、不想听这类）；喜欢的歌、自己建的歌单、最近播放只记在这台设备上。点一首歌就把这张列表放进播放条；一首歌有好几个音源时，放不出来或几秒没有声音会自动换下一个，整首的排在试听前面；音乐的播放条用“列表循环 / 单曲循环 / 随机 / 顺序”代替倍速（播客仍有倍速）；播放器的弹窗就是播放器：左上收起、右上 × 关闭播放器、列表标题处“清空”（可撤销），点弹窗外面或 3 分钟不动会自动收起，设置只有音源、省流量、定时关闭三项。'],
+      '“今日听什么”重做：音乐分成“推荐 / 榜单 / 发现”三个标签（国内 ⇄ 国际决定先推荐哪里的歌；榜单一排地区，发现里风格和场景分开），一首歌只留封面、歌名、艺人、♥ 和 ⋯（下一首播放、加入歌单、喜欢、不想听这类）；喜欢的歌、自己建的歌单、最近播放只记在这台设备上。点一首歌就把这张列表放进播放条；一首歌有好几个音源时，放不出来或几秒没有声音会自动换下一个，整首的排在试听前面；音乐的播放条用“列表循环 / 单曲循环 / 随机 / 顺序”代替倍速（播客仍有倍速）；播放器的弹窗就是播放器：左上收起、右上 × 关闭播放器、列表标题处“清空”（可撤销），点弹窗外面或 3 分钟不动会自动收起，设置只有音源、省流量、定时关闭三项。',
+      '精选图书页改简单了：没有“节目 / 栏目 / 平台”那套筛选，没有“已更新”那行字（发现世界所有页面都去掉了），侧栏里的标签列表也去掉了；标题下是站长手挑的几张“书单”（点一张只看这张里的书，每本有一句推荐理由）和一排类别（小说、哲学、科学、技术、杂志……），点书名下的作者名可以看他的全部书。书的卡片上不再写“站长推荐”“书籍”、授权和标签，只有语言、作者、来源、章数、喜欢、热度、收藏，读过的书写“读到 第 3 回 · 12%”，封面底边有一条细线。读书时点返回就是返回，不再弹出章节表。'],
   en:['New: “Back up & restore”: export the files, collections, subscriptions and reading places you added into one file, and restore it when you change device or fear a loss.',
       'Subscribed and saved links can now be read in the page: when a feed carries the full text it is shown at once; otherwise, and for any article link you paste and for the articles of the public directory, the original page is read and shown here and kept in your browser. Pages that need a login or do not let programs read them still open the original site (the card says “Original only”).',
       'New in the reading settings: “Download as a web page (HTML)” and “Print / save as PDF”.',
@@ -4882,7 +4953,8 @@ const CHANGELOG=[{v:'2026-10-22',
       'In the public space “Audio” is now “What to listen to today” (sidebar): the title and its subtitle are one line; below, a Music | Podcasts switch with the sort and the cards / rows button on the right; then one strip of choices — the charts and play lists of the day (the daily picks, Chinese / Western / Korean / Japanese hits, Deezer’s lists; for podcasts the charts of several countries) first, then the styles (rock, hip-hop, electronic, jazz, classical, chill …) or the podcast categories (news, business, stories, learn English …); on a phone it scrolls sideways and a swipe left or right on the songs moves to the next or previous list. The songs and shows are straight under the strip, as rows by default; a row says only the title, who it is by, how hot it is (its place in a chart) and “Preview” (only for a preview piece), no length and no “Plays here”. Every list holds 200 entries, thirty are shown and the next thirty are added by themselves near the end of the page; they play one after the other in the bar at the foot of the page, and one that cannot be played is skipped. Songs come from the charts of Deezer and Apple Music (30-second previews; the ↗ at the end of an Apple row goes to Apple Music for the whole song), Audius (whole songs), Jamendo (whole songs, only licences that allow a site with ads), podcasts are the newest episode of the shows in Apple’s podcast charts (the whole episode, the sound comes from the show’s own server), and with the owner’s direct play on also whole songs from NetEase. What comes first follows the interface language: on an English phone it is Western songs and the US and UK podcast charts. The discovery page keeps a small “What to listen to today” block; “Open” takes you to the whole page; “3 to read today” is smaller too. Everybody sees the same lists on the same day; the songs you like or played are kept on this device only (one tap clears them in the settings).',
       'New: “Focus mode” (for studying or meditating). Press “Focus” above the song list, ◎ in the player bar, or “Focus mode” in the “Now playing” page: the whole screen holds only a slowly changing pattern (Breath / Aurora / Dark) and the title in small letters, and a whole song or a whole episode starts by itself (30-second previews do not count). The buttons disappear after four seconds and come back at a touch: previous / pause / next, music ↔ podcasts, a timer (15 / 25 / 45 / 60 minutes), the pattern; Esc or × leaves it and the sound goes on. While reading, “Focus reading” in the reader’s bar (on a phone in the “Aa” settings) hides every button and leaves the text and a small pill at the bottom right (pause, next, the pattern page, leave); the sound starts by itself, unless you paused it in the pill last time.',
       'A simpler page: the public directory no longer starts with the count line “N items from N shelves, updated …”; the interface language is “Auto” and one button (中 / EN) that switches to the other language; “Show more” in the directory loads by itself at the end of the page.',
-      '“What to listen to today” was rebuilt: the music side has three tabs, “For you / Charts / Discover” (China ⇄ World says whose songs come first; the charts are one row of regions, Discover keeps styles and scenes apart), and a song is only a cover, a title, an artist, a heart and a ⋯ (play next, add to a play list, like, not this kind); the songs you like, the play lists you make and what you played last are kept on this device only. A click on a song makes its list the list of the bar; when a song has several sounds and one cannot be played, or stays silent for a few seconds, the next one is tried (a whole sound before a preview); the bar of music has “repeat the list / repeat one / shuffle / in order” instead of the speed (podcasts keep the speed); the popup of the player is the player: fold at the top left, × at the top right closes it, “Clear” at the list (can be undone), a tap outside or three minutes without a touch fold it, and there are three settings: the source, spare the data, the timer.']}];
+      '“What to listen to today” was rebuilt: the music side has three tabs, “For you / Charts / Discover” (China ⇄ World says whose songs come first; the charts are one row of regions, Discover keeps styles and scenes apart), and a song is only a cover, a title, an artist, a heart and a ⋯ (play next, add to a play list, like, not this kind); the songs you like, the play lists you make and what you played last are kept on this device only. A click on a song makes its list the list of the bar; when a song has several sounds and one cannot be played, or stays silent for a few seconds, the next one is tried (a whole sound before a preview); the bar of music has “repeat the list / repeat one / shuffle / in order” instead of the speed (podcasts keep the speed); the popup of the player is the player: fold at the top left, × at the top right closes it, “Clear” at the list (can be undone), a tap outside or three minutes without a touch fold it, and there are three settings: the source, spare the data, the timer.',
+      'The page of the picked books is simpler: no “Programs / Columns / Platforms” filters, no “Updated” line (gone from every page of the public space), and the list of tags in the side is gone; under the title come a few hand-made “book lists” (tap one and only its books are shown, each with a line on why) and a row of genres (fiction, philosophy, science, tech, magazines …); the name of an author under a title shows all his books. A book’s card no longer says “Owner’s pick”, “Book”, the licence or tags, only the language, author, source, chapters, like, heat and bookmark; a book you have begun says “At Chapter 3 · 12%” and has a thin line along its cover. Tapping back in a book just goes back: the list of chapters no longer pops up.']}];
 const guideItem = () => state.items.find(x=>(x.source==='static'||x.source==='server') && /(^|\/)notes\/guide\/index\.html$/.test(x.id));
 const canAsk=()=>!!state.dirCfg && !LS.get('dirIntroOff',0) && !state.dPickT.size;               // the question "what do you feel like reading?" is for somebody who has not answered it, where the site has a public space
 function introStep(n, ask){                                                                  // which buttons go with which step of the window
@@ -6323,7 +6395,7 @@ state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), view:
 const PUBLIC_ROUTES={discover:'/discover/',hot:'/hot/',listen:'/listen/',books:'/picks/books/',articles:'/picks/articles/',watch:'/watch/'};
 const publicRouteFromPath=()=>Object.keys(PUBLIC_ROUTES).find(k=>PUBLIC_ROUTES[k]===location.pathname)||'';
 const publicLabel=k=>({discover:['发现','Discover'],hot:['热榜','Trending'],listen:['今日听什么','Listen today'],books:['精选图书','Book picks'],articles:['精选文章','Article picks'],watch:['看什么','What to watch']}[k]||[])[state.lang==='zh'?0:1]||'';
-state.dLanding='';
+state.dLanding=''; state.dGenre=''; state.dList=''; state.dAuthor=''; state.dListsOpen=false;          // the picked-books page: a genre, a book list, an author (see booksPage)
 function publicRouteApply(k){
   if(!k) return;
   dirGoHome(); state.dPick.clear(); state.space='dir'; LS.set('space','dir'); state.dLimit=DIR_PAGE;
@@ -6650,7 +6722,7 @@ const heatRow = it => (state.heat && state.heat.items[it.id]) || null;
 const dirCols = () => phoneNow() || (($('#grid').clientWidth)||900)<760 ? 2 : 3;                      // the cards: three columns at most, two on a phone or a narrow page
 function dirWhy(it, rec){                                                                          // why it is worth a look: only what is true; `rec`: a place that RECOMMENDS (today, the picks), where "because you read ..." may be said
   const sh=state.shelfMap.get(it.shelf)||{}, h=heatRow(it)||{};
-  if(sh.featured) return ['pick',t('whyPick')];                                                    // the owner's pick always comes first
+  if(sh.featured && !isPickedBook(it)) return ['pick',t('whyPick')];                               // the owner's pick always comes first (a picked book is a pick by being in the list: it does not say so on its card)
   if(it.rank>0) return ['rank',t('whyRank',it.rank)];
   if((h.h||0)>=HOT_WEEK) return ['heat',t('whyWeek')];
   if(rec && state.dirInt && state.dirInt.has(it.col)) return ['you',t('whyYou',colName(it.col))];
@@ -6699,6 +6771,10 @@ function dirStatsHTML(it, live){                                                
   return `<span class="cstats">${heart}${eye}${fire}</span>`;
 }
 function dirMetaLine(it, sh){
+  if(isPickedBook(it)){                                                                           // a picked book: its language, author, where it is read, the chapters and where this reader is (no type, no shelf, no licence: those are in the reader)
+    const lg=it.lang==='zh' ? t('langZh') : it.lang==='en' ? t('langEn') : '', src=bookSource(it), ch=bookChs(it);
+    return (lg ? `<span class="lm">${esc(lg)}</span>` : '') + (it.author ? `<button class="au" type="button" data-bauthor="${esc(it.author)}">${esc(it.author)}</button>` : '') + (src ? `<span>${esc(src)}</span>` : '') + (ch ? `<span>${esc(t('bookChN',ch.n.length))}</span>${bookReadAt(it)}` : '');
+  }
   const lm=dirLangMark(it), day=dirDay(it), tn=it.type!=='article' ? `<span class="tag ${TYPE_COLOR[it.type]}">${esc(t('ty_'+it.type))}</span>` : '';
   return tn + srcMark(it) + (sh ? `<button class="shelf-link" type="button" data-dshelf="${esc(sh.id)}" title="${esc(sh.name)}">${esc(sh.name)}</button>` : `<span>${esc(hostOf(it.url))}</span>`) + (lm ? `<span class="lm">${esc(lm)}</span>` : '') + (it.author ? `<span class="au">${esc(it.author)}</span>` : '') + (it.pages ? `<span>${esc(t('pages',it.pages))}</span>` : '') + (bookChs(it) ? `<span>${esc(t('bookChN',it.ch.n.length))}</span>${bookReadAt(it)}` : '') + (licName(it.license) ? `<span class="lic" title="${esc(t('bookLic'))}">${esc(licName(it.license))}</span>` : '') + (day ? `<span>${esc(day)}</span>` : '');
 }
@@ -6711,7 +6787,8 @@ function dirQuote(it){                                                          
 }
 function dirXCoverHTML(it, rec){                                                                       // the cover of a card: a picture, the summary on the program's colour, or the rank / the letter; always the same shape
   const L=coverLook(it), [bg,mid,ink]=L.pal, h=hashStr(it.id), q=dirQuote(it);
-  const open=`<a class="xcover%CLS%" style="%STYLE%" href="${esc(it.url)}" target="_blank" rel="${REL}" aria-label="${esc(it.title)}" data-dopen="${esc(it.id)}">`, tail=`${whyHTML(it,rec)}${it.type!=='article'?`<span class="ftype">${esc(t('ty_'+it.type))}</span>`:''}${it.audio?dirPlayMark():''}</a>`;
+  const pk0=isPickedBook(it);                                                                      // (a picked book: no "pick" badge and no "book" label on the cover, only how far this reader is)
+  const open=`<a class="xcover%CLS%" style="%STYLE%" href="${esc(it.url)}" target="_blank" rel="${REL}" aria-label="${esc(it.title)}" data-dopen="${esc(it.id)}">`, tail=`${pk0 ? bookProgHTML(it) : whyHTML(it,rec)}${!pk0 && it.type!=='article'?`<span class="ftype">${esc(t('ty_'+it.type))}</span>`:''}${it.audio?dirPlayMark():''}</a>`;
   const fill=(cls,style,inner)=>open.replace('%CLS%',cls).replace('%STYLE%',style)+inner+tail;
   if(it.image) return fill('', '', `<img src="${esc(it.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fb="x">`);
   if(isPickedBook(it)) return fill(' bk', `--tb:${bg}`, bookCoverInner(it));
@@ -6736,21 +6813,21 @@ function dirSideHTML(it, saved){                                                
     ${dirSaveBtn(it,saved)}
   </article>`;
 }
-function dirRowHTML(it, tk, saved, rec){                                                               // a light row: a small cover, the title, the summary, one line of facts, the bookmark
+function dirRowHTML(it, tk, saved, rec, note){                                                         // a light row: a small cover, the title, the summary, one line of facts, the bookmark
   const pk=isPickedBook(it) && !it.image, sh=state.shelfMap.get(it.shelf), sum=dirSummary(it);
   return `<article class="card drow${pk?' bkrow':''}${state.dirRead[it.id]?' is-read':''}" data-did="${esc(it.id)}">
     <a class="row-thumb${pk?' bk':''}"${pk?` style="--tb:${coverLook(it).pal[0]}"`:''} href="${esc(it.url)}" target="_blank" rel="${REL}" aria-label="${esc(it.title)}" data-dopen="${esc(it.id)}">${pk ? bookCoverInner(it) : it.image ? `<img src="${esc(it.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fb="thumb">` : dirCoverArt(it,'thumb')}${it.audio?dirPlayMark():''}</a>
-    <div class="row-main"><h3 class="card-title"><a href="${esc(it.url)}" target="_blank" rel="${REL}" data-dopen="${esc(it.id)}">${hl(it.title,tk)}</a></h3>${zhSub(it)}${sum?`<p class="sum">${hl(sum,tk)}</p>`:''}<p class="xmeta">${whyHTML(it,rec)}${dirMetaLine(it,sh)}${dirStatsHTML(it,true)}</p></div>
+    <div class="row-main"><h3 class="card-title"><a href="${esc(it.url)}" target="_blank" rel="${REL}" data-dopen="${esc(it.id)}">${hl(it.title,tk)}</a></h3>${zhSub(it)}${note?`<p class="bk-why">${esc(note)}</p>`:''}${sum?`<p class="sum">${hl(sum,tk)}</p>`:''}<p class="xmeta">${isPickedBook(it)?'':whyHTML(it,rec)}${dirMetaLine(it,sh)}${dirStatsHTML(it,true)}</p></div>
     ${dirSaveBtn(it,saved)}
   </article>`;
 }
-function dirCardHTML(it, tk, saved, rec){                                                              // a card of the grid: the cover, the title, the summary (when the cover does not carry it), source, numbers, bookmark
-  const pk=isPickedBook(it), sh=state.shelfMap.get(it.shelf), sum=dirSummary(it), onCover=!!dirQuote(it) && !pk, chips=dirTagChips(it,2), on=saved.has('local:link:'+it.id), tip=t(on?'savedTip':'saveToShelf');
+function dirCardHTML(it, tk, saved, rec, note){                                                         // a card of the grid: the cover, the title, the summary (when the cover does not carry it), source, numbers, bookmark; note: a line on why (a book list)
+  const pk=isPickedBook(it), sh=state.shelfMap.get(it.shelf), sum=dirSummary(it), onCover=!!dirQuote(it) && !pk, chips=pk ? '' : dirTagChips(it,2), on=saved.has('local:link:'+it.id), tip=t(on?'savedTip':'saveToShelf');
   return `<article class="card xcard${pk?' bkcard':''}${state.dirRead[it.id]?' is-read':''}" data-did="${esc(it.id)}">
     ${dirXCoverHTML(it,rec)}
     <div class="xbody">
-      <h3 class="card-title"><a href="${esc(it.url)}" target="_blank" rel="${REL}" data-dopen="${esc(it.id)}">${hl(it.title,tk)}</a></h3>${zhSub(it)}${pk && it.author ? `<p class="bk-by">${esc(it.author)}</p>` : ''}
-      ${sum && !onCover ? `<p class="sum">${hl(sum,tk)}</p>` : ''}
+      <h3 class="card-title"><a href="${esc(it.url)}" target="_blank" rel="${REL}" data-dopen="${esc(it.id)}">${hl(it.title,tk)}</a></h3>${zhSub(it)}${pk && it.author ? `<p class="bk-by"><button class="au" type="button" data-bauthor="${esc(it.author)}">${esc(it.author)}</button></p>` : ''}
+      ${note ? `<p class="bk-why">${esc(note)}</p>` : ''}${sum && !onCover ? `<p class="sum">${hl(sum,tk)}</p>` : ''}
       ${chips?`<div class="chips">${chips}</div>`:''}
       <p class="xmeta">${dirMetaLine(it,sh)}</p>
       <div class="card-foot">${dirStatsHTML(it,true)}<span class="acts">${pk ? bookGoHTML(it) : ''}<button class="ibtn" type="button" data-d="save" aria-pressed="${on}" title="${esc(tip)}" aria-label="${esc(tip)}">${ICON.bookmark}</button></span></div>
@@ -7769,6 +7846,9 @@ function dirBuild(d,opsRaw){                                                    
   d.topics=mergeTopics((Array.isArray(d.topics)?d.topics:[]).filter(x=>x && /^[a-z0-9-]{1,20}$/.test(String(x.id||'')) && Array.isArray(x.tags)).slice(0,30).map(x=>({id:String(x.id), zh:String(x.zh||x.en||x.id).slice(0,20), en:String(x.en||x.zh||x.id).slice(0,24), tags:x.tags.slice(0,60).map(y=>String(y).toLowerCase())})));
   d.tags=(Array.isArray(d.tags)?d.tags:[]).filter(g=>g && g.name).map(g=>({name:String(g.name), slug:String(g.slug||''), n:+g.n||0}));
   applyPublicOps(d,opsRaw);
+  { const ids=new Set(d.items.map(i=>i.id)), bt=o => o && typeof o==='object' ? {zh:String(o.zh||o.en||'').slice(0,120), en:String(o.en||o.zh||'').slice(0,120)} : {zh:'',en:''};          // the book lists: the books they name that the directory has (a list with fewer than two is not shown)
+    d.booklists=(Array.isArray(d.booklists)?d.booklists:[]).filter(l=>l && /^[a-z0-9-]{1,41}$/.test(String(l.id||''))).slice(0,12).map(l=>({id:String(l.id), name:bt(l.name), blurb:bt(l.blurb),
+      books:(Array.isArray(l.books)?l.books:[]).filter(b=>b && ids.has(String(b.id))).slice(0,60).map(b=>({id:String(b.id), why:bt(b.why)}))})).filter(l=>l.name.zh && l.books.length>=2); }
   state.shelfMap=new Map(d.shelves.map(s=>[s.id,s]));
   DIR_COLS=dirColumns(d.columns); d.columns=DIR_COLS; migratePickT();
   dirPrepare(d); d.items.forEach(i=>dirMeta(i,d.topics));
@@ -7802,7 +7882,7 @@ async function loadDirectory(force){
   if(state.dirData && dirOn()){ const h=loadHeat(force); if(force) await h; }                           // (asked on purpose: the heat is looked at again too, and waited for)
   recoSync();
 }
-/* look at the public space again now (the update note's button, a pull down, coming back after a while): what is unchanged is not drawn again. -> true when the network answered */
+/* look at the public space again now (a pull down, coming back after a while): what is unchanged is not drawn again. -> true when the network answered */
 async function dirRefresh(){
   if(!state.dirCfg) return false;
   for(let i=0;i<40 && state.dirBusy;i++) await new Promise(r=>setTimeout(r,200));                         // (a look is on its way already: wait for it)
@@ -7811,29 +7891,28 @@ async function dirRefresh(){
   state.dirRefreshing=false; updNoteSync();
   return state.dirAt>=t0;
 }
-const fmtWhen = ts => { const d=new Date(ts), hm=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); return today(ts)===today() ? hm : String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+' '+hm; };
-function updNoteSync(){
-  const el=$('#updNote'); if(!el) return;
-  document.documentElement.classList.toggle('ptr',dirOn());                                               // (the public space pulls down to look again by itself: the browser's own pull to reload is off there)
-  const on=dirOn() && !!state.dirData && !document.body.classList.contains('dir-hot') && !document.body.classList.contains('dir-listen');
-  el.hidden=!on; if(!on) return;
-  const busy=state.dirBusy || state.dirRefreshing;
-  el.classList.toggle('spin',busy);
-  el.innerHTML=`<span>${esc(busy ? t('updBusy') : state.dirAt ? t('updAt',fmtWhen(state.dirAt)) : '')}</span><button type="button" data-dirrefresh title="${esc(t('updGo'))}" aria-label="${esc(t('updGo'))}">↻</button>`;
+function updNoteSync(){                                                                                   // (the line "updated 12:30 ↻" is gone: what is left is that the public space pulls down to look again by itself, so the browser's own pull to reload is off there)
+  document.documentElement.classList.toggle('ptr',dirOn());
 }
 function dirList(skip){
   const tk=tokens(), tg=state.dTag.toLowerCase(), subs=state.dView==='subs' ? new Set(subCols().map(c=>urlKey(c.feed.url))) : null;
+  const bkp=booksPage(), bkIds=bkp && state.dList ? bookListIds(state.dList) : null;          // (the picked-books page does not take part in the filters of the other pages: programs, platforms, domains; it has its own: a book list, a genre, an author)
   return state.dirData.items.filter(it=>{
     if(state.lf==='zh' && it.lang==='en') return false; if(state.lf==='en' && it.lang==='zh') return false;
     if(skip!=='type' && state.dType!=='all' && dirTypeOf(it)!==state.dType) return false;
+    if(bkp && skip!=='type'){                                                                          // (the numbers beside the sidebar's types do not change with a book list, a genre or an author)
+      if(bkIds && !bkIds.has(it.id)) return false;
+      if(skip!=='genre' && state.dGenre && bookGenre(it)!==state.dGenre) return false;
+      if(state.dAuthor && it.author!==state.dAuthor) return false;
+    }
     if(skip!=='shelf' && state.dShelf && it.shelf!==state.dShelf) return false;
-    if(skip!=='pick' && !state.dShelf && pickOn() && !state.dPick.has(it.shelf)) return false;                  // (the programs ticked in the panel; a program chosen on its own wins)
-    if(skip!=='pickt' && !state.dShelf && topicPickOn() && !(dirMeta(it) && state.dPickT.has(it.col))) return false;                // (the categories ticked in the panel, domain side)
+    if(!bkp && skip!=='pick' && !state.dShelf && pickOn() && !state.dPick.has(it.shelf)) return false;                  // (the programs ticked in the panel; a program chosen on its own wins)
+    if(!bkp && skip!=='pickt' && !state.dShelf && topicPickOn() && !(dirMeta(it) && state.dPickT.has(it.col))) return false;                // (the categories ticked in the panel, domain side)
     if(skip!=='tag' && tg && !it.tags.some(x=>x.toLowerCase()===tg)) return false;
     const sh0=state.shelfMap.get(it.shelf);
-    if(state.dView!=='all' && !(state.dView==='featured' ? !!(sh0 && sh0.featured) : state.dView==='hot' ? heatOf(it)>0 : !!(sh0 && sh0.feed && subs && subs.has(urlKey(sh0.feed))))) return false;
-    if(skip!=='tab' && state.dTab && !(dirMeta(it) && state.dTab.startsWith('col:') ? it.col===state.dTab.slice(4) : it.plat===state.dTab.slice(5))) return false;
-    if(skip!=='tab' && skip!=='sub' && state.dSub && state.dTab.startsWith('col:') && !it.topics.includes(state.dSub)) return false;                    // (a domain inside the column)
+    if(!bkp && state.dView!=='all' && !(state.dView==='featured' ? !!(sh0 && sh0.featured) : state.dView==='hot' ? heatOf(it)>0 : !!(sh0 && sh0.feed && subs && subs.has(urlKey(sh0.feed))))) return false;
+    if(!bkp && skip!=='tab' && state.dTab && !(dirMeta(it) && state.dTab.startsWith('col:') ? it.col===state.dTab.slice(4) : it.plat===state.dTab.slice(5))) return false;
+    if(!bkp && skip!=='tab' && skip!=='sub' && state.dSub && state.dTab.startsWith('col:') && !it.topics.includes(state.dSub)) return false;                    // (a domain inside the column)
     if(!tk.length) return true;
     const sh=state.shelfMap.get(it.shelf), hay=(it.title+' '+it.summary+' '+it.tags.join(' ')+' '+(sh?sh.name:'')+' '+t('ty_'+it.type)+' '+it.type
       +' '+it.author+' '+it.toc.join(' ')+' '+(it.pages?it.pages+' '+t('pages',it.pages):'')+' '+(it.lang==='zh'?'zh '+t('langZh'):it.lang==='en'?'en '+t('langEn'):'')).toLowerCase();       // only what the book's doc.json says: title, author, language, pages, contents, summary, keywords
@@ -7852,7 +7931,7 @@ function interleaveDays(list){                                                  
   return out;
 }
 const dirIsHome=()=>!tokens().length && !state.dShelf && !state.dTag && state.dType==='all' && state.dView==='all' && !state.dTab && state.lf==='all' && !pickOn();          // no filter, no search
-function dirGoHome(){ state.dHot=false; state.dListen=false; state.dLanding=''; state.dTab=''; state.dSub=''; state.dType='all'; state.dView='all'; state.lf='all'; state.q=''; $('#q').value=''; state.dTag=''; state.dShelf=''; state.dBrowse=false; }
+function dirGoHome(){ state.dHot=false; state.dListen=false; state.dLanding=''; state.dGenre=''; state.dList=''; state.dAuthor=''; state.dTab=''; state.dSub=''; state.dType='all'; state.dView='all'; state.lf='all'; state.q=''; $('#q').value=''; state.dTag=''; state.dShelf=''; state.dBrowse=false; }
 function dirLandingHTML(items){
   if(!items.length || !['articles','watch'].includes(state.dLanding)) return '';
   const rows=state.view==='list', saved=new Set(state.items.filter(x=>x.type==='link').map(x=>x.id));
@@ -7891,7 +7970,7 @@ function renderDir(){
   const hotRow=()=>hotBase() && moduleOn('trending') ? `<a class="cat-btn" href="/hot/" data-dhot="1" aria-current="${hot}"><span class="dot" style="background:var(--heat)"></span><span>${esc(t('hotSide'))}</span></a>` : '';
   const picksRow=k=>`<a class="cat-btn" href="${PUBLIC_ROUTES[k]}" data-dlanding="${k}" aria-current="${state.dLanding===k}"><span class="dot" style="background:var(--c-${k==='books'?'books':k==='watch'?'featured':'notes'})"></span><span>${esc(publicLabel(k))}</span></a>`;
   $('#cats').innerHTML = navRow(0,t('homeSide'),discover) + hotRow() + listenRow() + picksRow('books') + row('all',forType.length) + DIR_TYPES.filter(k=>counts[k] && k!=='book' && !(k==='audio' && listenOn)).map(k=>row(k,counts[k])).join('');          // article/video keep their type; the same sidebar row opens their recommendation section
-  renderTagbox(d.tags.slice(0,60), state.dTag);
+  $('#tagbox').hidden=true; $('#tagbox').innerHTML='';                                                // (the public space has no list of tags in its side: a tag on a card still filters)
   const shelves=d.shelves.filter(s=>s.kind!=='link' && s.n>0), openS=state.dirOpen.has('shelves');
   $('#dir').innerHTML = (openS?shelves:shelves.slice(0,DIR_SHELVES)).map(s=>`<button class="shelf-row" type="button" data-dshelf="${esc(s.id)}" aria-current="${s.id===state.dShelf}" title="${esc(s.name)}"><span>${esc(s.name)}</span><span class="n">${s.n}</span></button>`).join('')
     + (shelves.length>DIR_SHELVES ? `<button class="dir-more" type="button" data-fold="shelves" aria-expanded="${openS}">${esc(openS?t('dirLess'):t('dirMore',shelves.length-DIR_SHELVES))}</button>` : '');
@@ -7899,15 +7978,19 @@ function renderDir(){
   if(hot){ if($('#reader').hidden) state.visible=[]; renderHotPage(); return; }
   if(listen){ if($('#reader').hidden) state.visible=[]; renderListenPage(); return; }
 
-  renderDirBar();
+  const bkp=booksPage(), curList=bkp && state.dList ? bookLists().find(l=>l.id===state.dList) : null;          // the picked-books page: no filter bar of the directory (programs, domains, platforms)
+  if(!bkp) renderDirBar();
   const found=dirList(), byDate=(a,b)=>String(b.date||'').localeCompare(String(a.date||'')), key=state.dView==='hot' ? 'heat' : state.sort; let list=found.slice();
   if(key==='title') list.sort((a,b)=>a.title.localeCompare(b.title,state.lang==='zh'?'zh-Hans-CN':'en'));
   else if(key==='read') list.sort((a,b)=>(state.dirRead[b.id]||0)-(state.dirRead[a.id]||0) || byDate(a,b));                 // what was opened here last comes first
   else if(key==='heat' && heatAvailable()) list.sort((a,b)=>heatOf(b)-heatOf(a) || byDate(a,b));
+  else if(bkp) list.sort((a,b)=>(b.lang===state.lang)-(a.lang===state.lang) || heatOf(b)-heatOf(a) || a.title.localeCompare(b.title,state.lang==='zh'?'zh-Hans-CN':'en'));          // (books have no dates: the page's language first, then what is read most, then the title)
   else list=interleaveDays(list.sort(byDate));
+  const bkNotes = curList ? new Map(curList.books.map(b=>[b.id,bkText(b.why)])) : null;
+  if(curList){ const ord=new Map(curList.books.map((b,i)=>[b.id,i])); list.sort((a,b)=>ord.get(a.id)-ord.get(b.id)); }          // (a book list is read in the order that its maker gave)
   const sh=state.dShelf?state.shelfMap.get(state.dShelf):null;
-  $('#viewTitle').textContent = sh ? sh.name : state.dTag ? '#'+state.dTag : state.dLanding ? publicLabel(state.dLanding) : state.dType!=='all' ? t('ty_'+state.dType) : discover ? t('dirDiscover') : t('dirTitle');
-  let sub = tk.length ? t('matchCount',list.length,state.q.trim()) : '';                                // (no count of the whole directory: the page does not need it)
+  $('#viewTitle').textContent = sh ? sh.name : state.dTag ? '#'+state.dTag : curList ? bkText(curList.name) : state.dLanding ? publicLabel(state.dLanding) : state.dType!=='all' ? t('ty_'+state.dType) : discover ? t('dirDiscover') : t('dirTitle');
+  let sub = tk.length ? t('matchCount',list.length,state.q.trim()) : curList ? bkText(curList.blurb) : bkp ? t('bkSub') : '';                                // (no count of the whole directory: the page does not need it)
   if(sh && sh.description) sub = sh.description + (state.lang==='zh'?'。':'. ') + sub;
   let html = esc(sub);
   if(sh && sh.home) html += ` <a href="${esc(sh.home)}" target="_blank" rel="nofollow ugc noopener noreferrer">${esc(t('visitSite'))} ↗</a>`;
@@ -7918,7 +8001,7 @@ function renderDir(){
   if(state.dType!=='all' && !state.dLanding) cl.push(clr('dtype',t('scType')+t('ty_'+state.dType)));
   if(state.lf!=='all') cl.push(clr('dlf',t('scLang')+(state.lf==='zh'?t('langZh'):t('langEn'))));
   if(state.q.trim()) cl.push(clr('dq',t('scQ')+state.q.trim()));
-  if(sh) cl.push(clr('dshelf',sh.name)); if(state.dTag) cl.push(clr('dtag','#'+state.dTag)); if((pickOn() || topicPickOn()) && !sh) cl.push(clr('dpick',t(state.dTabs==='plat' ? 'dpSum' : 'dpSumT',pickCount())));
+  if(sh) cl.push(clr('dshelf',sh.name)); if(state.dTag) cl.push(clr('dtag','#'+state.dTag)); if(!bkp && (pickOn() || topicPickOn()) && !sh) cl.push(clr('dpick',t(state.dTabs==='plat' ? 'dpSum' : 'dpSumT',pickCount())));
   $('#viewSub').innerHTML = html + (cl.length ? '<br>'+cl.join('') : '');
 
   { const pr=dirProfile(); state.dirInt = pr.n>=3 ? new Set([...pr.col].filter(([,w])=>w>=2).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0])) : new Set(); }          // (the columns this browser has really read, saved, liked or followed: said on a recommendation, never made up)
@@ -7928,15 +8011,15 @@ function renderDir(){
   const slug=state.dLanding==='articles'?'selected':'featured';
   const picks=landingHome ? moduleCap(found.filter(canRecommend).sort((a,b)=>Number(hasPlacement(b,slug))-Number(hasPlacement(a,slug)) || moduleScore(b,slug)-moduleScore(a,slug) || byDate(a,b)),slug,state.dLanding==='articles'?6:3) : [];
   const moreTitle=state.dLanding==='articles' ? (state.lang==='zh'?'更多文章':'More articles') : (state.lang==='zh'?'更多视频':'More videos');
-  const reco=discover ? dirHomeHTML() : landingHome ? dirLandingHTML(picks)+(picks.length && list.length>picks.length ? `<h2 class="dr-all">${esc(moreTitle)}</h2>` : '') : '';                       // one recommendation section above the unchanged article/video cards
-  $('#dirReco').innerHTML=reco; $('#dirReco').hidden=!reco; $('#dirBar').hidden=discover;
+  const reco=discover ? dirHomeHTML() : bkp ? dirBooksHeadHTML() : landingHome ? dirLandingHTML(picks)+(picks.length && list.length>picks.length ? `<h2 class="dr-all">${esc(moreTitle)}</h2>` : '') : '';                       // one recommendation section above the unchanged article/video cards
+  $('#dirReco').innerHTML=reco; $('#dirReco').hidden=!reco; $('#dirBar').hidden=discover || bkp;
   grid.className='grid '+(state.view==='list'?'dir-rows':'dcards');                                   // the button: cards in a tidy grid of three columns at most (the default) or light rows, on the home page too
   if(discover) list=list.filter(it=>!state.dirAbove.has(it.id));                                          // (what the page shows above is not shown again below)
   if(picks.length) list=list.filter(it=>!picks.some(p=>p.id===it.id));
   const latestVisible=!discover || moduleOn('latest'), shown=latestVisible ? list.slice(0, discover && state.dLimit===DIR_PAGE ? moduleLimit('latest',HOME_PAGE) : state.dLimit) : [], rows=state.view==='list';
   const infeed=!adRailWide() && adOn('public-infeed-mobile'), infeedAfter=(adSetting('public-infeed-mobile')||{}).after||8;
   const flat=shown.flatMap((it,i)=>{
-    const card=rows ? dirRowHTML(it,tk,saved) : dirCardHTML(it,tk,saved);
+    const note=bkNotes ? bkNotes.get(it.id) : '', card=rows ? dirRowHTML(it,tk,saved,false,note) : dirCardHTML(it,tk,saved,false,note);
     return infeed && (i+1)%infeedAfter===0 && i+1<shown.length ? [card,infeedAdHTML()] : [card];
   });
   state.dirColsUsed=rows ? 0 : dirCols();
@@ -9010,7 +9093,6 @@ document.addEventListener('visibilitychange',()=>{
   if(hiddenAt && Date.now()-hiddenAt>=RESUME_AFTER) appResume();
   hiddenAt=0;
 });
-$('#updNote').addEventListener('click',e=>{ if(e.target.closest('[data-dirrefresh]')){ swCheck(); dirRefresh(); } });
 /* pull down at the top of the public space (a phone): a bar follows the finger; past PULL_GO the release looks again. Sideways, scrolling, the reader, a dialog, a panel: not touched. */
 (function(){
   const hint=$('#pullHint'), PULL_GO=70, PULL_SHOW=64;
