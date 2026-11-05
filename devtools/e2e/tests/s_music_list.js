@@ -75,6 +75,8 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await J(`document.querySelector('#lpRoot .ls-row[data-ls-row="${r1[2]}"] .ls-more').click()`); await sleep(400);
   const mn = await J(`({open:document.querySelector('#lsMenu').open, head:document.querySelector('#lsmHead .ls-t').textContent, acts:[...document.querySelectorAll('#lsmBody [data-lsm]')].map(b=>b.textContent.trim()).join('|')})`);
   ok('⋯ opens a sheet: the song, and play next / add to a play list / like / not this kind', mn.open && mn.acts === '下一首播放|加入歌单|喜欢|不想听这类' && mn.head.length > 3, mn);
+  const mid = await J(`(()=>{ const d=document.querySelector('#lsMenu'), r=d.getBoundingClientRect(), cs=getComputedStyle(d); return {cx:Math.round((r.left+r.right)/2), vw:document.documentElement.clientWidth, top:Math.round(r.top), bottomGap:Math.round(innerHeight-r.bottom), w:Math.round(r.width), radius:[cs.borderTopLeftRadius,cs.borderTopRightRadius,cs.borderBottomLeftRadius,cs.borderBottomRightRadius].join('|')}; })()`);
+  ok('the menu is a window in the middle of the screen (centred, with room above and below, four round corners), not a drawer at the bottom', Math.abs(mid.cx - mid.vw / 2) <= 2 && mid.top >= 40 && mid.bottomGap >= 40 && new Set(mid.radius.split('|')).size === 1 && mid.radius.split('|')[0] !== '0px', mid);
   await J(`document.querySelector('#lsmBody [data-lsm="next"]').click()`); await sleep(300);
   ok('"play next" puts the song right after the one that plays, and the sheet closes', (await J(`pl.q[pl.i+1]`)) === 'tmp:ls:' + r1[2] && !(await J(`document.querySelector('#lsMenu').open`)), [await J(`pl.q[pl.i+1]`), r1[2]]);
   await J(`document.querySelector('#lpRoot .ls-row[data-ls-row="${r1[3]}"] .ls-more').click()`); await sleep(300);

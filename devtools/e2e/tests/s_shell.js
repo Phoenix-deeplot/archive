@@ -22,6 +22,7 @@ const get = p => fetch(SVC + p).then(r => r.json());
     await J(`localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver','"2026-10-22"'); localStorage.setItem('archive.dirIntroOff','1'); localStorage.setItem('archive.guideTipOff','1')`);
     await c.goto(BASE, 0); await settle(2800);
   };
+  const lf = async k => { for (let i = 0; i < 3 && (await J(`state.lf`)) !== k; i++) { await J(`document.querySelector('#lfBtn').click()`); await sleep(350); } };          // (the language of the content is ONE button: each tap the next, all -> 中 -> EN -> all)
   const rect = sel => J(`(()=>{ const e=document.querySelector(${JSON.stringify(sel)}); if(!e) return null; const r=e.getBoundingClientRect(); return {x:Math.round(r.left), y:Math.round(r.top), w:Math.round(r.width), h:Math.round(r.height), r:Math.round(r.right), b:Math.round(r.bottom), d:getComputedStyle(e).display}; })()`);
   const bar = () => J(`(()=>{ const r=s=>{ const e=document.querySelector(s), b=e.getBoundingClientRect(); return [Math.round(b.top), Math.round(b.height)].join('/'); }; return {top:r('.top'), strip:r('#strip'), tools:r('#stTools'), head:r('.view-head'), pos:getComputedStyle(document.querySelector('.top')).position}; })()`);
   const accent = () => J(`(()=>{ const p=document.createElement('i'); p.style.color='var(--accent)'; document.body.append(p); const c=getComputedStyle(p).color; p.remove(); return c; })()`);
@@ -79,9 +80,9 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await J(`(()=>{ const s=document.querySelector('#sort'); s.value='title'; s.dispatchEvent(new Event('change',{bubbles:true})); })()`); await settle(400);
   ok('the controls in the panel are the same ones as before: a sort chosen there sorts the list', (await J(`state.sort`)) === 'title' && (await J(`!document.querySelector('#flPanel').hidden`)));
   ok('no filter is on: the button has no number', !(await J(`!!document.querySelector('#flBtn .fl-n')`)));
-  await J(`document.querySelector('#langFilter [data-lf="zh"]').click()`); await settle(500);
+  await lf('zh'); await settle(300);
   ok('the language of the content is chosen: the button says 1 (and the panel stays open)', (await J(`(document.querySelector('#flBtn .fl-n')||{}).textContent`)) === '1' && (await J(`!document.querySelector('#flPanel').hidden`)));
-  await J(`document.querySelector('#langFilter [data-lf="all"]').click()`); await settle(400);
+  await lf('all'); await settle(300);
   await J(`document.querySelector('#grid').click()`); await sleep(300);
   ok('a tap on the page closes the panel', await J(`document.querySelector('#flPanel').hidden && document.querySelector('#flBtn').getAttribute('aria-expanded')==='false'`));
 

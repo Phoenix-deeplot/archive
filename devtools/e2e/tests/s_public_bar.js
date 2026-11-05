@@ -59,6 +59,24 @@ const get = p => fetch(SVC + p).then(r => r.json());
   ok('发现: no band at all (nothing to filter on the front page)', L['发现'].row === '', L['发现']);
   // ---- the language filter only where there is a lot to filter
   ok('the language filter is on 精选图书, 精选文章 and 全部 only', pages.filter(p => L[p].lang).join() === '精选图书,全部,精选文章', pages.filter(p => L[p].lang));
+  // ---- the language of the content is ONE button: each tap the next one (all -> 中 -> EN -> all), it says which is on, its tooltip says what the next tap gives
+  await go('全部');
+  const lfRead = () => J(`({lf:state.lf, text:document.querySelector('#lfBtn').textContent, tip:document.querySelector('#lfBtn').title, n:document.querySelectorAll('#langFilter button').length, h:Math.round(document.querySelector('#lfBtn').getBoundingClientRect().height), on:document.querySelector('#lfBtn').getAttribute('aria-pressed')})`);
+  const l0 = await lfRead(); await J(`document.querySelector('#lfBtn').click()`); await sleep(350);
+  const l1 = await lfRead(); await J(`document.querySelector('#lfBtn').click()`); await sleep(350);
+  const l2 = await lfRead(); await J(`document.querySelector('#lfBtn').click()`); await sleep(350);
+  const l3 = await lfRead();
+  ok('the language is one button of at least 40 px: 全部 → 中 → EN → 全部, the list follows, the tooltip names the next one', l0.n === 1 && l0.h >= 40 && [l0, l1, l2, l3].map(x => x.lf).join() === 'all,zh,en,all' && [l0, l1, l2, l3].map(x => x.text).join() === '全部,中,EN,全部' && /^内容语言：全部（点一下换成 中文）/.test(l0.tip) && /换成 English/.test(l1.tip) && l0.on === 'false' && l1.on === 'true', [l0, l1, l2, l3]);
+  // ---- the theme pop-up works in the public space too (it was hidden there by mistake)
+  await go('发现');
+  await J(`document.querySelector('#themeTop').click()`); await sleep(350);
+  const th0 = await J(`({shown:getComputedStyle(document.querySelector('#themePop')).display!=='none' && !document.querySelector('#themePop').hidden, n:document.querySelectorAll('#themePop [data-thset]').length})`);
+  await J(`document.querySelector('#themePop [data-thset="dark"]').click()`); await sleep(350);
+  const th1 = await J(`document.documentElement.getAttribute('data-theme')`);
+  await J(`document.querySelector('#themePop [data-thset="light"]').click()`); await sleep(350);
+  const th2 = await J(`document.documentElement.getAttribute('data-theme')`);
+  ok('发现世界, phone: the theme button opens its pop-up (three themes), and a choice changes the page (dark, then the classic one)', th0.shown && th0.n === 3 && th1 === 'dark' && th2 === 'light', [th0, th1, th2]);
+  await go('全部');
 
   // ---- the sort button goes round and says so
   await go('全部');

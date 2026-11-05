@@ -495,11 +495,21 @@ body.dir-listen .view-head p,body.dir-hot .view-head p{font-size:14px}
 .lp-gcv{display:grid;place-items:center;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:hsl(var(--h) 45% 55% / .22);color:var(--ink)}
 .lp-gcv img{width:100%;height:100%;object-fit:cover}
 .lp-gcv b{font-size:22px;font-weight:600}
+.lp-gcv{position:relative;container-type:inline-size}
+.lp-poster{position:absolute;inset:0;display:grid;place-items:center;padding-bottom:22%;background:linear-gradient(150deg,var(--c1),var(--c2));color:#fff6e6;font-family:var(--sans)}
+.lp-poster::before{content:"";position:absolute;inset:7%;border-radius:50%;border:1px solid rgba(255,246,230,.3)}
+.lp-poster .sun{position:absolute;right:13%;top:10%;width:14%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f3d9a0,#c79a5c)}
+.lp-poster .icon{width:30cqw;height:30cqw;stroke-width:1.6;position:relative}
+.lp-poster .nm{position:absolute;left:10%;right:10%;top:64%;text-align:center;font-size:9.5cqw;font-weight:600;letter-spacing:.1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lp-poster .kd{position:absolute;left:0;right:0;bottom:8%;text-align:center;font-size:7cqw;letter-spacing:.06em;opacity:.78}
+.lp-nc{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(150deg,var(--c1),var(--c2));color:#fff6e6}
+.lp-nc .icon{width:46%;height:46%;stroke-width:1.7}
 .lp-gct{font-size:13.5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .lp-gg{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:12px 10px}
 .lp-moreb2{margin:10px 0 0;min-height:44px;border:1px solid var(--rule);background:var(--bg);color:var(--ink);border-radius:999px;padding:0 18px;font:inherit;font-size:14px;cursor:pointer}
 .lp-back{margin-left:-10px}
 .lp-rows{grid-template-columns:minmax(0,1fr);max-width:820px}
+@media (min-width:900px){.lp-rows.lp-forrows{grid-template-columns:repeat(2,minmax(0,1fr));max-width:none;gap:0 28px}}          /* (songs for you: two columns, nothing blank at the right; a chart is read down, one column) */
 .lp-songs-h h3{font-family:var(--sans);font-weight:600}
 @media(max-width:620px){.lp-tab{max-width:none}.lp-gg{grid-template-columns:repeat(3,minmax(0,1fr))}.lp-mine{gap:6px}.lp-mc{padding:8px 10px}}
 .lsm-head{display:flex;align-items:center;gap:12px;padding:16px 18px 10px;border-bottom:1px solid var(--rule)}
@@ -882,7 +892,7 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .dir-line{display:flex;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:8px 12px;min-height:40px}
 .dir-line .ctl-box{margin-left:auto}
 /* the one row of a page of the public space: what slides sideways is the row of tabs (no drop-down, no folding behind "more"); the tools are icons at the right end (the sort goes round its ways, the toast says which) */
-body.in-dir .st-tools,body.in-dir .fl-panel{display:none!important}
+body.in-dir .st-tools,body.in-dir #flPanel{display:none!important}
 body.in-dir #sort,#langFilter[hidden],#sort[hidden],#sortBtn[hidden],#ctlBox[hidden]{display:none!important}
 .sort-btn{width:auto;min-width:32px;padding:0 6px;gap:4px;font-size:12.5px;color:var(--muted)}
 .sort-btn .sb-l{display:none}
@@ -1282,6 +1292,7 @@ body.has-player.pl-folded{--pl-h:0px}
 .pl-queue li button:hover{color:var(--ink)}
 dialog.plp{width:min(520px,100%);max-width:100%;margin:auto auto 0;border:0;border-radius:20px 20px 0 0;background:var(--surface);color:var(--ink);padding:0;max-height:min(88dvh,780px);font-family:var(--sans)}
 dialog.plp::backdrop{background:rgba(10,14,18,.45)}
+dialog#lsMenu.plp{margin:auto;border-radius:16px;width:min(420px,calc(100% - 32px))}
 .plp-in{display:flex;flex-direction:column;max-height:inherit;position:relative}
 .plp-top{display:flex;align-items:center;gap:2px;padding:8px 10px 2px;flex:none}
 .plp-top h2{flex:1;margin:0;text-align:center;font-family:var(--sans);font-size:15px;font-weight:600}
@@ -1656,10 +1667,8 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
         <button class="ft" type="button" id="ftBtn" aria-pressed="false" data-i="ftLabel" data-i-aria="ftTip" hidden>搜正文</button>
       </div>
       <div class="toolbar">
-        <div class="seg" role="group" id="langFilter" aria-label="Content language">
-          <button type="button" data-lf="all" aria-pressed="true" data-i="lfAll">全部</button>
-          <button type="button" data-lf="zh" aria-pressed="false">中</button>
-          <button type="button" data-lf="en" aria-pressed="false">EN</button>
+        <div class="seg lf-one" role="group" id="langFilter" aria-label="Content language">
+          <button type="button" id="lfBtn" aria-pressed="false">全部</button>
         </div>
         <select id="sort" aria-label="Sort">
           <option value="recent" data-i="sortRecent">最近添加</option>
@@ -2732,6 +2741,10 @@ Object.assign(I18N.en,{fbLink:'Feedback', fbTitle:'Feedback', fbHint:'What is aw
   fbPh:'Write something… (at most 1000 characters)', fbContactPh:'If you want an answer, leave an e-mail or a handle (optional)', fbNote:'Only the maintainer can read it; it is kept for 180 days; a contact is there only if you wrote one.', fbSend:'Send', fbSending:'Sending…', fbThanks:'Thank you, it arrived', fbEmpty:'Write something first', fbRate:'That is enough for today; come back tomorrow', fbFail:'It did not go; try again later', fbNudge:'Is it working well for you? Tell me what you think', fbNudgeGo:'Write feedback'});
 Object.assign(I18N.zh,{sortBy:v=>`排序：${v}`, sortBooks:'推荐'});
 Object.assign(I18N.en,{sortBy:v=>`Sort: ${v}`, sortBooks:'Picks'});
+    Object.assign(I18N.zh,{lpPK_scene:'场景', lpPK_style:'风格', lpPK_list:'歌单'});
+    Object.assign(I18N.en,{lpPK_scene:'SCENE', lpPK_style:'STYLE', lpPK_list:'PLAYLIST'});
+    Object.assign(I18N.zh,{lfTip:(a,b)=>`内容语言：${a}（点一下换成 ${b}）`});
+    Object.assign(I18N.en,{lfTip:(a,b)=>`Content language: ${a} (tap for ${b})`});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const catName = c => (['all','featured','books','tools','notes','hidden'].includes(c)? t(c) : c);
@@ -3711,7 +3724,7 @@ function render(){
   document.querySelectorAll('[data-i-aria]').forEach(el=>{ el.setAttribute('aria-label',t(el.dataset.iAria)); el.title=t(el.dataset.iAria); });
   document.querySelectorAll('[data-i-ph]').forEach(el=>{ el.placeholder=t(el.dataset.iPh); });
   $('#langBtn').textContent=$('#langTop').textContent=state.lang==='zh' ? '中' : 'EN'; document.querySelector('[data-lang="auto"]').setAttribute('aria-pressed',String(state.langAuto));          // ("auto" follows the system; the button shows the language and switches it to the other one)
-  document.querySelectorAll('[data-lf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lf===state.lf)));
+  { const lb=$('#lfBtn'), cur=state.lf, nxt=LF_NEXT[cur]||'zh', nm=k=>k==='zh' ? t('langZh') : k==='en' ? t('langEn') : t('lfAll'); lb.textContent = cur==='zh' ? '中' : cur==='en' ? 'EN' : t('lfAll'); lb.setAttribute('aria-pressed',String(cur!=='all')); const tip=t('lfTip',nm(cur),nm(nxt)); lb.title=tip; lb.setAttribute('aria-label',tip); }          // (one button: it says the language that is on, and the tooltip says what the next tap gives)
   const dm=dirOn(), heatOn=heatAvailable(), sel=$('#sort');                                                // my shelf: added / published / read / title; the directory: newest / read here / heat / title
   [...sel.options].forEach(o=>{ o.hidden=o.disabled = dm ? o.value==='date' : o.value==='heat'; if(o.value==='heat' && !heatOn) o.hidden=o.disabled=true; if(o.value==='recent') o.textContent=t(dm?'sortNewest':'sortRecent'); });
   sel.value = (dm && state.sort==='date') || (!dm && state.sort==='heat') || (state.sort==='heat' && !heatOn) ? 'recent' : state.sort;
@@ -5000,7 +5013,8 @@ const CHANGELOG=[{v:'2026-10-22',
       '“今日听什么”重做：音乐分成“推荐 / 榜单 / 发现”三个标签（国内 ⇄ 国际决定先推荐哪里的歌；榜单一排地区，发现里风格和场景分开），一首歌只留封面、歌名、艺人、♥ 和 ⋯（下一首播放、加入歌单、喜欢、不想听这类）；喜欢的歌、自己建的歌单、最近播放只记在这台设备上。点一首歌就把这张列表放进播放条；一首歌有好几个音源时，放不出来或几秒没有声音会自动换下一个，整首的排在试听前面；音乐的播放条用“列表循环 / 单曲循环 / 随机 / 顺序”代替倍速（播客仍有倍速）；播放器的弹窗就是播放器：左上收起、右上 × 关闭播放器、列表标题处“清空”（可撤销），点弹窗外面或 3 分钟不动会自动收起，设置只有音源、省流量、定时关闭三项。',
       '精选图书页改简单了：没有“节目 / 栏目 / 平台”那套筛选，没有“已更新”那行字（发现世界所有页面都去掉了），侧栏里的标签列表也去掉了；标题下是站长手挑的几张“书单”（点一张只看这张里的书，每本有一句推荐理由）和一排类别（小说、哲学、科学、技术、杂志……），点书名下的作者名可以看他的全部书。书的卡片上不再写“站长推荐”“书籍”、授权和标签，只有语言、作者、来源、章数、喜欢、热度、收藏，读过的书写“读到 第 3 回 · 12%”，封面底边有一条细线。读书时点返回就是返回，不再弹出章节表。',
       '发现世界每个页面只剩一行筛选，没有下拉了：“节目 / 栏目”挑选和手机上的“筛选”面板去掉了，栏目（或平台）标签排成一行向左右滑；右端是排序（一个图标，点一下换一种排法，提示里写着现在是哪一种）和卡片 / 列表图标；内容语言（全部 / 中 / EN）只留在精选图书、精选文章、全部这几个内容多的页面。标签条下面的空白去掉了，热榜、今日听什么、精选图书标题下的说明文字也去掉了。“今日听什么”的推荐页更干净：去掉了“今日电台”卡；精选歌单在上，排头是“我喜欢的 / 最近播放 / 我的歌单”三个带数字的方块；为你推荐在下，一行一首，先 30 首，滚到底自动再加，标题右边是播放和换一批两个图标；“国内 ⇄ 国际”按钮去掉了，先推荐哪里的歌跟着界面语言和设备时区走。',
-      '新增“反馈”：侧栏底部的“反馈”点开一个小窗，写下哪里不顺手、想要什么、哪里写错了，不用登录（站点接上反馈服务才有）。阅读指南的顶部多了“共读群”：QQ 群 869727153，二维码、群号、复制和保存都在那里，书架里指南那张卡的封面上也有。'],
+      '新增“反馈”：侧栏底部的“反馈”点开一个小窗，写下哪里不顺手、想要什么、哪里写错了，不用登录（站点接上反馈服务才有）。阅读指南的顶部多了“共读群”：QQ 群 869727153，二维码、群号、复制和保存都在那里，书架里指南那张卡的封面上也有。',
+      '语言筛选改成一个按钮：点一下依次换，全部 → 中 → EN → 全部，按钮上写的是现在的。听歌页：“为你推荐”在宽屏分两列，右边不再空着；歌曲右边的“⋯”菜单改成在屏幕中间弹出。手机上发现世界里的主题按钮恢复了（之前被误藏，点了没有反应）。'],
   en:['New: “Back up & restore”: export the files, collections, subscriptions and reading places you added into one file, and restore it when you change device or fear a loss.',
       'Subscribed and saved links can now be read in the page: when a feed carries the full text it is shown at once; otherwise, and for any article link you paste and for the articles of the public directory, the original page is read and shown here and kept in your browser. Pages that need a login or do not let programs read them still open the original site (the card says “Original only”).',
       'New in the reading settings: “Download as a web page (HTML)” and “Print / save as PDF”.',
@@ -5041,7 +5055,8 @@ const CHANGELOG=[{v:'2026-10-22',
       '“What to listen to today” was rebuilt: the music side has three tabs, “For you / Charts / Discover” (China ⇄ World says whose songs come first; the charts are one row of regions, Discover keeps styles and scenes apart), and a song is only a cover, a title, an artist, a heart and a ⋯ (play next, add to a play list, like, not this kind); the songs you like, the play lists you make and what you played last are kept on this device only. A click on a song makes its list the list of the bar; when a song has several sounds and one cannot be played, or stays silent for a few seconds, the next one is tried (a whole sound before a preview); the bar of music has “repeat the list / repeat one / shuffle / in order” instead of the speed (podcasts keep the speed); the popup of the player is the player: fold at the top left, × at the top right closes it, “Clear” at the list (can be undone), a tap outside or three minutes without a touch fold it, and there are three settings: the source, spare the data, the timer.',
       'The page of the picked books is simpler: no “Programs / Columns / Platforms” filters, no “Updated” line (gone from every page of the public space), and the list of tags in the side is gone; under the title come a few hand-made “book lists” (tap one and only its books are shown, each with a line on why) and a row of genres (fiction, philosophy, science, tech, magazines …); the name of an author under a title shows all his books. A book’s card no longer says “Owner’s pick”, “Book”, the licence or tags, only the language, author, source, chapters, like, heat and bookmark; a book you have begun says “At Chapter 3 · 12%” and has a thin line along its cover. Tapping back in a book just goes back: the list of chapters no longer pops up.',
       'Every page of the public space now has one row of filters and no dropdown: the “Programs / Columns” picker and the phone’s “Filter” panel are gone, the tabs of columns (or platforms) sit in one row that slides sideways; at its right end are the sort (one icon: tap to go to the next way, the tooltip says which) and the cards / rows icon; the language of the content (All / 中 / EN) stays only on Book picks, Selected articles and All, where there is a lot to filter. The blank under the strip is gone, and so are the explaining lines under the titles of Hot lists, What to listen to today and Book picks. The “For you” tab of What to listen to today is cleaner: the “Today’s radio” card is gone; the play lists come first and begin with three squares with their numbers (Liked, Recent, My lists); the songs for you come below, one to a row, thirty at first and thirty more by themselves at the end, with a play icon and a next-batch icon at the right of the title; the “China ⇄ World” button is gone, whose songs come first follows the interface language and the time zone of the device.',
-      'New: “Feedback”: the link at the foot of the side list opens a small window where you can write what is awkward, what you would like or what is wrong, with no sign-in (it shows when the site has the feedback service). The top of the user guide now has the “reading group”: QQ group 869727153, with its QR code, the number, copy and save, and the guide’s card on the shelf shows it on its cover too.']}];
+      'New: “Feedback”: the link at the foot of the side list opens a small window where you can write what is awkward, what you would like or what is wrong, with no sign-in (it shows when the site has the feedback service). The top of the user guide now has the “reading group”: QQ group 869727153, with its QR code, the number, copy and save, and the guide’s card on the shelf shows it on its cover too.',
+      'The language of the content is one button now: each tap the next, All → 中 → EN → All, and it says which is on. On the listening page the songs for you are two columns on a wide screen, so nothing is left blank at the right, and the “⋯” menu of a song opens in the middle of the screen. On a phone the theme button works again in the public space (it had been hidden there by mistake).']}];
 const guideItem = () => state.items.find(x=>(x.source==='static'||x.source==='server') && /(^|\/)notes\/guide\/index\.html$/.test(x.id));
 const canAsk=()=>!!state.dirCfg && !LS.get('dirIntroOff',0) && !state.dPickT.size;               // the question "what do you feel like reading?" is for somebody who has not answered it, where the site has a public space
 function introStep(n, ask){                                                                  // which buttons go with which step of the window
@@ -6737,6 +6752,7 @@ const pickOn = () => false, topicPickOn = () => false, pickCount = () => 0;     
 const clearPick = () => { state.dPick.clear(); saveDirPick(); state.dPickT.clear(); saveDirPickT(); };
 const short7 = s => { const a=[...String(s)]; return a.length>7 ? a.slice(0,6).join('')+'…' : String(s); };      // a long name is cut to 7 characters
 /* The language of the content (all / 中 / EN) is a filter only where there is a lot to filter: the picked books, the picked articles and the whole list. Elsewhere it is not offered and not applied (the interface language already puts its own first). */
+const LF_NEXT = {all:'zh', zh:'en', en:'all'};                                              // (the language button: all (mixed) -> 中 -> EN -> all)
 const langOnPage = () => booksPage() || state.dLanding==='articles' || (!state.dLanding && state.dBrowse && state.dType==='all');
 const dirLf = () => langOnPage() ? state.lf : 'all';
 function renderDirBar(){                                                                          // the one row of a content page: a switch (columns | platforms), the tabs of it in ONE line that slides sideways, and at the right end the language (where it is offered), the sort and the cards / rows
@@ -7191,7 +7207,7 @@ const LP_BARS='<i class="ls-bars" aria-hidden="true"><b></b><b></b><b></b></i>';
 function listenRowHTML(x, playing, plain){                                                                 // a song as a row: [rank] cover, title (a small "preview" when it is one), artist, ♥ and ⋯; an episode keeps a play mark and a link to its page
   lpSeen.set(x.id,x);
   const stream=x.mode==='stream';
-  const cv=x.cover ? `<img src="${esc(x.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span>${esc(String(x.artist||x.title).slice(0,1)||'♪')}</span>`;
+  const cv=lpSongCover(x);
   if(x.pod || !stream){
     const src=stream && x.url ? `<a class="ls-src" href="${esc(x.url)}" target="_blank" rel="nofollow ugc noopener noreferrer" title="${esc(t('lsSrc',x.from||hostOf(x.url)))}" aria-label="${esc(t('lsSrc',x.from||hostOf(x.url)))}">↗</a>` : '';
     return `<li class="ls-row nonum${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}"><span class="ls-cv">${cv}${LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}</b><span class="ls-m"><span class="ls-w">${esc(lpMeta(x)[0]||'')}</span>${lpMeta(x).length>1 ? `<span class="ls-x"> · ${esc(lpMeta(x).slice(1).join(' · '))}</span>` : ''}</span></span><span class="ls-ic" aria-hidden="true">${ICON.play}</span></button>${src}</li>`;
@@ -7202,7 +7218,7 @@ function listenRowHTML(x, playing, plain){                                      
 }
 function lpCardHTML(x, playing){                                                                     // a song as a card: a square cover with a play mark, the title, the artist, one line of what it is
   const stream=x.mode==='stream';
-  const cv=x.cover ? `<img src="${esc(x.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span class="lp-let">${esc(String(x.artist||x.title).slice(0,1)||'♪')}</span>`;
+  const cv=x.cover ? `<img src="${esc(x.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : x.pod ? `<span class="lp-let">${esc(String(x.artist||x.title).slice(0,1)||'♪')}</span>` : lpNoteCover(x.id);
   const src=stream && x.url ? `<a class="ls-src lp-src" href="${esc(x.url)}" target="_blank" rel="nofollow ugc noopener noreferrer" title="${esc(t('lsSrc',x.from||hostOf(x.url)))}" aria-label="${esc(t('lsSrc',x.from||hostOf(x.url)))}">↗</a>` : '';
   const [who,...m]=lpMeta(x);
   return `<article class="lp-sc${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="lp-cv" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}">${cv}<span class="lp-pl" aria-hidden="true">${ICON.play}</span></button>`
@@ -7267,7 +7283,16 @@ function lpRecItems(all){                                                       
   }
   const start=(state.lp.batch*LP_PAGE)%mixed.length; return start ? mixed.slice(start).concat(mixed.slice(0,start)) : mixed;
 }
-function lpGcCard(g){ const h=Math.abs(hashStr(g.id))%360; return `<button class="lp-gc" type="button" data-lp-g="${esc(g.id)}" style="--h:${h}"><span class="lp-gcv">${g.cover ? `<img src="${esc(g.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<b>${esc(Array.from(lpName(g)).slice(0,2).join(''))}</b>`}</span><span class="lp-gct">${esc(lpName(g))}</span></button>`; }
+const LP_TONES=[['#1f5f55','#d2a96a'],['#2c2f6e','#d98a9c'],['#4a2a5e','#e3a65a'],['#173e63','#5fc2c0'],['#1f4d31','#b8c765'],['#5d1f36','#ee8a6a'],['#33414f','#e6b58d'],['#1b3f7a','#9b86d6']];          // (dark corner -> light corner: a pair for every id, always the same one)
+const LP_NOTES=['<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6.5l10-2V16"/><path d="M9 10.5l10-2"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>', '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17V4l5.5 2.5"/><circle cx="9.5" cy="17" r="2.5"/></svg>'];
+function lpTone(seed){ const h=hashStr(String(seed)); return {c:LP_TONES[h%LP_TONES.length], n:LP_NOTES[(h>>>4)%LP_NOTES.length]}; }
+const lpNoteCover=seed=>{ const k=lpTone(seed); return `<span class="lp-nc" style="--c1:${k.c[0]};--c2:${k.c[1]}">${k.n}</span>`; };          // (a song without a picture: a note on a colour of its own)
+const lpSongCover=x=>x.cover ? `<img src="${esc(x.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : x.pod ? `<span>${esc(String(x.artist||x.title).slice(0,1)||'♪')}</span>` : lpNoteCover(x.id);
+function lpPoster(g){                                                                                 // a play list, a style or a scene without a picture: a poster (a colour of its own, a thin ring, a small sun, a note, its name, what it is)
+  const k=lpTone(g.id), nm=lpName(g), kd=lpIsScene(g) ? t('lpPK_scene') : g.kind==='style' ? t('lpPK_style') : t('lpPK_list');
+  return `<span class="lp-poster" style="--c1:${k.c[0]};--c2:${k.c[1]}"><span class="sun"></span>${k.n}<span class="nm">${esc(state.lang==='en' ? nm.toUpperCase() : nm)}</span><span class="kd">${esc(kd)}${g.n ? ' · '+g.n : ''}</span></span>`;
+}
+function lpGcCard(g){ const h=Math.abs(hashStr(g.id))%360; return `<button class="lp-gc" type="button" data-lp-g="${esc(g.id)}" style="--h:${h}"><span class="lp-gcv">${g.cover ? `<img src="${esc(g.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : lpPoster(g)}</span><span class="lp-gct">${esc(lpName(g))}</span></button>`; }
 const LP_CLOCK='<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>';
 function lpRecHTML(all){                                                                             // the play lists in a row (it begins with my three squares: liked, recent, my lists, each with its number), then the songs for you as rows: thirty, more when the end is reached; an icon plays them, one brings another batch
   const d=all.find(g=>g.type==='music' && g.kind==='daily'), info=d ? lpGroupItems(d.id,'') : {state:'none', items:[]}, now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '', L=state.lp;
@@ -7427,7 +7452,7 @@ const LSM_ICON={next:'<svg class="icon" viewBox="0 0 24 24"><path d="M4 7h11M4 1
 function lsMenuOpen(id, view){
   const x=lpSeen.get(id); if(!x) return;
   lsMenu.dataset.id=id; lsMenu.dataset.view=view||'main';
-  const cv=x.cover ? `<img src="${esc(x.cover)}" alt="" referrerpolicy="no-referrer">` : `<span>${esc(String(x.artist||x.title).slice(0,1)||'♪')}</span>`;
+  const cv=lpSongCover(x);
   $('#lsmHead').innerHTML=`<span class="ls-cv">${cv}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}${x.preview ? `<em class="ls-pv">${esc(t('lsPreviewS'))}</em>` : ''}</b><span class="ls-m">${esc(x.artist||x.from)}</span></span>`;
   const act=(k,ic,label)=>`<button class="lsm-act" type="button" data-lsm="${k}">${ic}<span>${esc(label)}</span></button>`, liked=lpIsLiked(id);
   if(view==='add'){
@@ -9147,7 +9172,7 @@ function setLang(v){                                                            
 document.querySelector('[data-lang="auto"]').addEventListener('click',()=>setLang('auto'));
 $('#langBtn').addEventListener('click',()=>setLang(state.lang==='zh' ? 'en' : 'zh'));
 addEventListener('languagechange',()=>{ if(state.langAuto && sysLang()!==state.lang) setLang('auto'); });                 // (the system's language was changed while the page is open)
-document.querySelectorAll('[data-lf]').forEach(b=>b.addEventListener('click',()=>{ state.lf=b.dataset.lf; render(); }));
+$('#lfBtn').addEventListener('click',()=>{ state.lf=LF_NEXT[state.lf]||'zh'; render(); });
 function shellSel(){ return String(LS.get('shell', window.__ZT_SHELL || '2')); }                          // "2": the new shell (the default: a home-screen app on an iPhone cannot take a switch in the address), "1": the old page (?shell=1)
 function themeNow(){ return state.theme==='cloud' && shellSel()!=='2' ? 'light' : state.theme; }                 // (the third theme is the new shell's: the old page shows it as the light one)
 function themeEff(){ const t0=themeNow(); return t0==='auto' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : t0; }          // (what is on screen: the system's choice when none was made)

@@ -51,6 +51,7 @@ const addBooks = () => {
   const titles = () => J(`[...document.querySelectorAll('#grid .card .card-title a')].map(a=>a.textContent)`);
   const lists = () => J(`[...document.querySelectorAll('.bkp-list .bkp-name')].map(b=>b.textContent)`);
   const tabs = () => J(`[...document.querySelectorAll('#dirBar #dTabs [data-bgenre]')].map(b=>b.textContent+(b.getAttribute('aria-selected')==='true'?'*':'')).join('|')`);
+  const lf = async k => { for (let i = 0; i < 3 && (await J(`state.lf`)) !== k; i++) { await J(`document.querySelector('#lfBtn').click()`); await sleep(350); } };          // (the language of the content is ONE button: each tap the next, all -> 中 -> EN -> all)
   const head = () => J(`({title:document.querySelector('#viewTitle').textContent, sub:document.querySelector('#viewSub').textContent.trim()})`);
 
   addBooks();
@@ -107,9 +108,9 @@ const addBooks = () => {
   ok('the chip takes the author back', (await titles()).length === 6 && await J(`!document.querySelector('.bkp-au')`));
 
   // ------------------------------------------------ the language of the page's top bar still counts
-  await J(`document.querySelector('#langFilter [data-lf="zh"]').click()`); await sleep(500);
+  await lf('zh'); await sleep(200);
   ok('the language filter of the top bar still works on this page: only Chinese books, and no row of genres when there is only one', (await titles()).sort().join('|') === '孙子兵法|论语' && await J(`!document.querySelector('#dTabs [data-bgenre]')`), [await titles(), await J(`state.lf`)]);
-  await J(`document.querySelector('#langFilter [data-lf="all"]').click()`); await sleep(400);
+  await lf('all'); await sleep(200);
 
   // ------------------------------------------------ the progress of the reader
   await J(`state.progress['bk:tale0001']={i:1, pct:40, at:Date.now(), done:[0]}; LS.set('progress',state.progress); render()`); await sleep(500);
