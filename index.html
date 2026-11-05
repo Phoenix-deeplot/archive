@@ -566,6 +566,9 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .hot-board-card{overflow:hidden;border:1px solid var(--rule);border-radius:12px;background:var(--surface)}
 .hot-board-trigger{display:flex;align-items:center;gap:10px;width:100%;min-height:60px;padding:10px 13px;border:0;background:transparent;color:var(--ink);text-align:left;font:inherit;cursor:pointer}
 .hot-board-trigger:hover{background:color-mix(in srgb,var(--accent) 4%,var(--surface))}
+.hot-board-heading{display:flex;align-items:center;gap:6px;padding-right:8px}
+.hot-board-heading .hot-board-trigger{flex:1;min-width:0}
+.hot-board-heading .hot-board-actions{flex:0 0 auto;padding:0}
 .hot-board-icon{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:10px;background:color-mix(in srgb,var(--accent) 10%,var(--surface));color:var(--accent);font-size:13px;font-weight:750}
 .hot-board-copy{flex:1;min-width:0}
 .hot-board-copy strong{display:block;font-size:14px;line-height:1.35}
@@ -574,7 +577,7 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .hot-board-card[aria-expanded="true"] .hot-board-chevron{transform:rotate(90deg)}
 .hot-board-body{padding:0 12px 12px;border-top:1px solid var(--rule)}
 .hot-board-actions{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:0}
-.hot-board-actions>a,.hot-board-actions button{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;min-height:34px;padding:0;border:1px solid var(--rule);border-radius:9px;background:var(--bg);color:var(--muted);text-decoration:none;cursor:pointer}
+.hot-board-actions>a,.hot-board-actions button{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;min-height:40px;padding:0;border:1px solid var(--rule);border-radius:10px;background:var(--bg);color:var(--muted);text-decoration:none;cursor:pointer}
 .hot-board-actions>a:hover,.hot-board-actions button:hover{border-color:var(--accent);color:var(--accent)}
 .hot-board-actions .icon{width:17px;height:17px}
 .hot-board-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-bottom:1px solid var(--rule)}
@@ -623,6 +626,8 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
 .hot-mix-link strong{display:-webkit-box;overflow:hidden;-webkit-line-clamp:3;-webkit-box-orient:vertical;font-size:16px;line-height:1.45}
 .hot-mix-note{position:relative;z-index:1;display:-webkit-box;overflow:hidden;margin:7px 0 0;color:var(--muted);font-size:13px;line-height:1.5;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .hot-mix-foot{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:5px 10px;margin-top:12px;color:var(--muted);font-size:11.5px}
+.hot-mix-access{padding:1px 6px;border-radius:999px;background:color-mix(in srgb,var(--accent) 10%,var(--surface));color:var(--accent);font-size:11px;white-space:nowrap}
+.hot-mix-access.is-external{background:color-mix(in srgb,var(--muted) 9%,var(--surface));color:var(--muted)}
 .hot-mix-list{display:grid;gap:8px}
 .hot-mix-row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:start;gap:4px 10px;padding:12px 14px;border:1px solid var(--rule);border-radius:12px;background:var(--surface)}
 .hot-mix-row .hot-mix-num{grid-column:1;grid-row:1 / span 2;padding-top:2px;color:var(--heat);font-size:16px;font-weight:800;text-align:center;font-variant-numeric:tabular-nums}
@@ -687,7 +692,11 @@ body.reader-focus .rf-pill{display:flex;position:fixed;right:max(12px,env(safe-a
   .hot-board-toolbar{align-items:flex-start;flex-wrap:wrap;padding:9px 10px}
   .hot-board-toolbar .hot-meta{flex-basis:100%;order:2}
   .hot-board-toolbar .hot-region{max-width:10em}
-  .hot-board-actions{margin-left:auto}
+  .hot-board-heading{gap:4px;padding-right:7px}
+  .hot-board-heading .hot-board-actions{gap:4px}
+  .hot-board-heading .hot-board-actions>a{display:none}
+  .hot-board-heading .hot-board-actions button{width:40px;height:40px;min-height:40px}
+  .hot-board-toolbar .hot-board-actions{display:none}
   .hot-plats{position:static;flex-direction:row;overflow-x:auto;overflow-y:visible;max-height:none;gap:6px;padding:0 0 4px;scrollbar-width:none}
   .hot-plat{flex:0 0 auto;white-space:nowrap;border:1px solid var(--rule);border-radius:999px;padding:7px 14px;min-height:40px}
   .hot-plat[aria-selected="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
@@ -7022,8 +7031,8 @@ const HOT_TTL=180000;
 const HOT_EVENTS_TTL=300000;
 const HOT_MIX_PER_COLUMN=1, HOT_MIX_LIMIT=30, HOT_MIX_ITEMS=18;
 const HOT_UI_COPY={
-  zh:{todayPicks:'今日精选',platformBoards:'平台热榜',boards:n=>`平台热榜${n?` · ${n}`:''}`,day:'今日榜',week:'近 7 天',weekEmpty:'近 7 天暂时没有榜单数据。',focus:'今日焦点',focusSub:'跨平台持续追踪的重要热点',eventLoading:'正在汇总持续更新的热点事件……',eventErr:'热点追踪暂时不可用，请稍后重试。',eventEmpty:'暂时没有正在持续更新的热点事件。',eventRetry:'重试热点追踪',eventSources:n=>`${n} 个来源`,eventUpdated:m=>`最后更新 ${m}`,trendUp:'热度上升',trendDown:'热度回落',trendStable:'持续更新',boardOpen:'展开榜单',boardClose:'收起榜单',boardLoading:'正在读取榜单……',boardPreview:'点击展开查看排名',moreRows:'再看 10 条',allRows:'已显示全部内容'},
-  en:{todayPicks:'Today’s picks',platformBoards:'Platform charts',boards:n=>`Platform charts${n?` · ${n}`:''}`,day:'Today',week:'Last 7 days',weekEmpty:'No rankings are available for the last 7 days yet.',focus:'Today’s focus',focusSub:'Developing stories tracked across platforms',eventLoading:'Gathering developing stories…',eventErr:'Live topic tracking is temporarily unavailable.',eventEmpty:'No developing stories are available right now.',eventRetry:'Retry topic tracking',eventSources:n=>`${n} sources`,eventUpdated:m=>`Last updated ${m}`,trendUp:'Rising',trendDown:'Cooling',trendStable:'Developing',boardOpen:'Show chart',boardClose:'Hide chart',boardLoading:'Loading chart…',boardPreview:'Tap to view ranking',moreRows:'Show 10 more',allRows:'All items shown'}
+  zh:{todayPicks:'今日精选',platformBoards:'平台热榜',boards:n=>`平台热榜${n?` · ${n}`:''}`,day:'今日榜',week:'近 7 天',weekEmpty:'近 7 天暂时没有榜单数据。',focus:'今日焦点',focusSub:'跨平台持续追踪的重要热点',eventLoading:'正在汇总持续更新的热点事件……',eventErr:'热点追踪暂时不可用，请稍后重试。',eventEmpty:'暂时没有正在持续更新的热点事件。',eventRetry:'重试热点追踪',eventSources:n=>`${n} 个来源`,eventUpdated:m=>`最后更新 ${m}`,trendUp:'热度上升',trendDown:'热度回落',trendStable:'持续更新',boardOpen:'展开榜单',boardClose:'收起榜单',boardLoading:'正在读取榜单……',boardPreview:'',siteRead:'站内可读',openSite:'原站打开',moreRows:'再看 10 条',allRows:'已显示全部内容'},
+  en:{todayPicks:'Today’s picks',platformBoards:'Platform charts',boards:n=>`Platform charts${n?` · ${n}`:''}`,day:'Today',week:'Last 7 days',weekEmpty:'No rankings are available for the last 7 days yet.',focus:'Today’s focus',focusSub:'Developing stories tracked across platforms',eventLoading:'Gathering developing stories…',eventErr:'Live topic tracking is temporarily unavailable.',eventEmpty:'No developing stories are available right now.',eventRetry:'Retry topic tracking',eventSources:n=>`${n} sources`,eventUpdated:m=>`Last updated ${m}`,trendUp:'Rising',trendDown:'Cooling',trendStable:'Developing',boardOpen:'Show chart',boardClose:'Hide chart',boardLoading:'Loading chart…',boardPreview:'',siteRead:'Read here',openSite:'Open source',moreRows:'Show 10 more',allRows:'All items shown'}
 };
 const hotUi=(k,...args)=>{ const v=(HOT_UI_COPY[state.lang==='en'?'en':'zh']||HOT_UI_COPY.zh)[k]; return typeof v==='function'?v(...args):v||k; };
 const hotName = o => state.lang==='en' ? (o.name_en||o.name) : o.name;
@@ -7209,9 +7218,16 @@ function hotBoardsHTML(){
   const chosen=plats.find(p=>p.id===h.sel.p?.[col.id])||plats[0]||null;
   if(h.openId===null) h.openId=chosen?.id||'';
   const periodControl=`<span class="hot-period" role="group" aria-label="${esc(hotUi('platformBoards'))}"><button type="button" data-hot-period="day" aria-pressed="${h.period==='day'}">${esc(hotUi('day'))}</button><button type="button" data-hot-period="week" aria-pressed="${h.period==='week'}">${esc(hotUi('week'))}</button></span>`;
-  const boardBody=p=>{
-    const d=h.data.get(hotKey(p)),rows=d&&Array.isArray(d.rows)?d.rows:[],ranked=p.ranked!==false,where=p.regions?(h.region!=='auto'?h.region:(d&&d.region)||''):'',canSub=!!feedApi(),subUrl=hotFeed(p,where,h.period),subbed=canSub&&(!p.regions||!!where)&&subCols().some(c=>urlKey(c.feed.url)===urlKey(subUrl)),visible=Math.max(10,Number(h.visible[hotKey(p)])||10);
+  const boardControls=p=>{
+    const d=h.data.get(hotKey(p)),where=p.regions?(h.region!=='auto'?h.region:(d&&d.region)||''):'',canSub=!!feedApi(),subUrl=hotFeed(p,where,h.period),subbed=canSub&&(!p.regions||!!where)&&subCols().some(c=>urlKey(c.feed.url)===urlKey(subUrl));
     const region=p.regions?`<select class="hot-region" data-hot-region aria-label="${esc(t('hotRegion'))}" title="${esc(t('hotRegion'))}"><option value="auto"${h.region==='auto'?' selected':''}>${esc(t('hotRegionAuto',h.region==='auto'&&where?hotCountry(where):''))}</option>${p.regions.map(c=>[c,hotCountry(c)]).sort((a,b)=>a[1].localeCompare(b[1],state.lang==='zh'?'zh-Hans-CN':'en')).map(([c,n])=>`<option value="${esc(c)}"${h.region===c?' selected':''}>${esc(n)}</option>`).join('')}</select>`:'';
+    const homeAction=httpUrl(p.home)?`<a href="${esc(p.home)}" target="_blank" rel="nofollow ugc noopener noreferrer" title="${esc(t('hotHome'))}" aria-label="${esc(t('hotHome'))}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/></svg></a>`:'';
+    const refreshAction=`<button type="button" data-hot-refresh="${esc(p.id)}" title="${esc(t('hotRefresh'))}" aria-label="${esc(t('hotRefresh'))}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.4-3"/></svg></button>`;
+    const subAction=canSub?`<button type="button" data-hot-sub="${esc(p.id)}" title="${esc(t(subbed?'hotFollowed':'hotFollowTip'))}" aria-label="${esc(t(subbed?'hotFollowed':'hotFollow'))}" ${subbed||(p.regions&&!where)?'disabled':''}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.75h9.5L19 8.2v11.05H6z"/><path d="M15.5 4.75V9H19M12.5 11v6M9.5 14h6"/></svg></button>`:'';
+    return {region,homeAction,refreshAction,subAction,subbed,where};
+  };
+  const boardBody=(p,mobile=false)=>{
+    const d=h.data.get(hotKey(p)),rows=d&&Array.isArray(d.rows)?d.rows:[],ranked=p.ranked!==false,controls=boardControls(p),{where}=controls,visible=Math.max(10,Number(h.visible[hotKey(p)])||10);
     const meta=[hotTrackName(p),p.via?t('hotVia',p.via):'',d&&d.at?t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))):'',ranked?'':t('hotNewest')].filter(Boolean).join(' · ');
     let rowsHtml='';
     if(!d||d.state==='load'&&!rows.length) rowsHtml=`<p class="hot-state">${esc(hotUi('boardLoading'))}</p>`;
@@ -7219,11 +7235,11 @@ function hotBoardsHTML(){
     else if(h.period==='week'&&!(d.history&&d.history.complete)&&!rows.length) rowsHtml=`<p class="hot-history-note">${esc(hotUi('weekEmpty'))}</p>`;
     else if(!rows.length) rowsHtml=`<p class="hot-state">${esc(t('hotEmpty'))}</p>`;
     else { const shown=rows.slice(0,visible); rowsHtml=`<ol class="hot-rows">${shown.map((r,i)=>hotRowHTML(r,i,ranked,p.id)).join('')}</ol>`+(rows.length>visible?`<button class="hot-more-rows" type="button" data-hot-more="${esc(p.id)}">${esc(hotUi('moreRows'))}</button>`:`<p class="hot-board-preview">${esc(hotUi('allRows'))}</p>`); }
-    const actions=`${region}${httpUrl(p.home)?`<a href="${esc(p.home)}" target="_blank" rel="nofollow ugc noopener noreferrer" title="${esc(t('hotHome'))}" aria-label="${esc(t('hotHome'))}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/></svg></a>`:''}<button type="button" data-hot-refresh title="${esc(t('hotRefresh'))}" aria-label="${esc(t('hotRefresh'))}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.4-3"/></svg></button>${canSub?`<button type="button" data-hot-sub title="${esc(t(subbed?'hotFollowed':'hotFollowTip'))}" aria-label="${esc(t(subbed?'hotFollowed':'hotFollow'))}" ${subbed||(p.regions&&!where)?'disabled':''}><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>`:''}`;
-    return `<section class="hot-list"><div class="hot-board-toolbar"><header class="hot-head"><h2 class="sr-only">${esc(hotName(p))}${where?' · '+esc(hotCountry(where)):''}</h2><span class="hot-meta">${esc(meta)}</span></header>${periodControl}<div class="hot-board-actions">${actions}</div></div><div class="hot-board-body" aria-live="polite" aria-busy="${!!(d&&d.state==='load')}">${rowsHtml}</div></section>`;
+    const actions=mobile?controls.region:`${controls.region}${controls.homeAction}${controls.refreshAction}${controls.subAction}`;
+    return `<section class="hot-list"><div class="hot-board-toolbar"><header class="hot-head"><h2 class="sr-only">${esc(hotName(p))}${where?' · '+esc(hotCountry(where)):''}</h2><span class="hot-meta">${esc(meta)}</span></header>${periodControl}${mobile?controls.region:''}<div class="hot-board-actions">${mobile?'':actions}</div></div><div class="hot-board-body" aria-live="polite" aria-busy="${!!(d&&d.state==='load')}">${rowsHtml}</div></section>`;
   };
-  const desktop=chosen?`<div class="hot-main hot-board-desktop"><nav class="hot-plats" aria-label="${esc(hotName(col))}">${plats.map(p=>{const d=h.data.get(hotKey(p)),meta=[p.lang&&p.lang!==state.lang?(p.lang==='zh'?'中文':'English'):'',d&&d.at?t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))):''].filter(Boolean).join(' · ')||hotUi('boardPreview');return `<button type="button" class="hot-plat" data-hot-p="${esc(p.id)}" aria-selected="${p.id===chosen.id}"><span>${esc(hotName(p))}</span><small>${esc(meta)}</small></button>`;}).join('')}</nav>${boardBody(chosen)}</div>`:`<p class="hot-state">${esc(t('hotEmpty'))}</p>`;
-  const mobile=plats.map(p=>{const d=h.data.get(hotKey(p)),open=p.id===h.openId,rows=d&&Array.isArray(d.rows)?d.rows:[],preview=rows.length?String(rows[0].title_zh&&state.lang==='zh'?rows[0].title_zh:rows[0].title||''):hotUi('boardPreview'),meta=[p.lang&&p.lang!==state.lang?(p.lang==='zh'?'中文':'English'):'',d&&d.at?t('hotAgo',Math.max(0,Math.round((Date.now()/1000-d.at)/60))):''].filter(Boolean).join(' · ')||hotUi('boardPreview');return `<section class="hot-board-card" data-hot-card="${esc(p.id)}" aria-expanded="${open}"><button class="hot-board-trigger" type="button" data-hot-board="${esc(p.id)}" data-hot-p="${esc(p.id)}" aria-expanded="${open}"><span class="hot-board-icon" aria-hidden="true">${esc((hotName(p)||'?').slice(0,2))}</span><span class="hot-board-copy"><strong>${esc(hotName(p))}</strong><small>${esc(meta)}</small>${!open?`<span class="hot-board-preview">${esc(preview)}</span>`:''}</span><span class="hot-board-chevron" aria-hidden="true">›</span></button>${open?boardBody(p):''}</section>`;}).join('');
+  const desktop=chosen?`<div class="hot-main hot-board-desktop"><nav class="hot-plats" aria-label="${esc(hotName(col))}">${plats.map(p=>`<button type="button" class="hot-plat" data-hot-p="${esc(p.id)}" aria-selected="${p.id===chosen.id}"><span>${esc(hotName(p))}</span></button>`).join('')}</nav>${boardBody(chosen)}</div>`:`<p class="hot-state">${esc(t('hotEmpty'))}</p>`;
+  const mobile=plats.map(p=>{const d=h.data.get(hotKey(p)),open=p.id===h.openId,rows=d&&Array.isArray(d.rows)?d.rows:[],preview=rows.length?String(rows[0].title_zh&&state.lang==='zh'?rows[0].title_zh:rows[0].title||''):'',controls=boardControls(p);return `<section class="hot-board-card" data-hot-card="${esc(p.id)}" aria-expanded="${open}"><div class="hot-board-heading"><button class="hot-board-trigger" type="button" data-hot-board="${esc(p.id)}" data-hot-p="${esc(p.id)}" aria-expanded="${open}"><span class="hot-board-icon" aria-hidden="true">${esc((hotName(p)||'?').slice(0,2))}</span><span class="hot-board-copy"><strong>${esc(hotName(p))}</strong>${!open&&preview?`<span class="hot-board-preview">${esc(preview)}</span>`:''}</span><span class="hot-board-chevron" aria-hidden="true">›</span></button><div class="hot-board-actions">${controls.refreshAction}${controls.subAction}</div></div>${open?boardBody(p,true):''}</section>`;}).join('');
   return `<div class="hot"><div class="hot-cols" role="tablist" aria-label="${esc(t('hotTitle'))}">${columns.map(c=>`<button class="hot-col" type="button" role="tab" aria-selected="${c.id===col.id}" data-hot-c="${esc(c.id)}">${esc(hotName(c))}</button>`).join('')}</div>${desktop}<div class="hot-board-list hot-board-mobile">${mobile||`<p class="hot-state">${esc(t('hotEmpty'))}</p>`}</div></div>`;
 }
 function hotEventTime(value){
@@ -7256,14 +7272,14 @@ function hotFocusHTML(){
   return `<section class="hot-focus" data-layout="${layout}" aria-label="${esc(hotUi('focus'))}"><header class="hot-focus-head"><div><h3>${esc(hotUi('focus'))}</h3><p>${esc(hotUi('focusSub'))}</p></div></header>${cards?`<div class="hot-focus-grid">${cards}</div>`:stateHtml}</section>`;
 }
 function hotMixCardHTML(x,i,featured){
-  const r=x.row,p=x.platform,url=httpUrl(r.url),title=x.displayTitle,original=state.lang==='zh'&&r.title_zh&&r.title_zh!==r.title?`<p class="hot-mix-note" lang="en">${esc(r.title)}</p>`:'',note=r.note&&String(r.note).trim()!==title?`<p class="hot-mix-note">${esc(r.note)}</p>`:'',source=[hotName(p),x.col?hotName(x.col):''].filter(Boolean).join(' · '),rank=p.ranked===false?hotUi('newest'):hotUi('rank',x.rank),readable=!!(p.read||p.kw||embedOf(url)||RICH_DETAIL.test(url)||String(r.body||'').length>=30),foot=[r.heat||'',r.date||'',readable?hotUi('siteRead'):hotUi('openSite')].filter(Boolean).map(v=>`<span>${esc(v)}</span>`).join('');
-  if(featured) return `<article class="hot-mix-card" data-featured="${i===0}" data-rank="${i+1}"><div class="hot-mix-source"><strong>${esc(source)}</strong><span class="hot-mix-rank">${esc(rank)}</span></div><a class="hot-mix-link" href="${esc(url)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-mix-i="${i}"><strong>${esc(title)}</strong></a>${original}${note}<div class="hot-mix-foot">${foot}</div></article>`;
-  return `<article class="hot-mix-row"><span class="hot-mix-num">${i+1}</span><div class="hot-mix-source"><strong>${esc(source)}</strong><span class="hot-mix-rank">${esc(rank)}</span></div><a class="hot-mix-link" href="${esc(url)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-mix-i="${i}"><strong>${esc(title)}</strong></a><div class="hot-mix-foot">${foot}</div>${original}${note}</article>`;
+  const r=x.row,p=x.platform,url=httpUrl(r.url),title=x.displayTitle,original=state.lang==='zh'&&r.title_zh&&r.title_zh!==r.title?`<p class="hot-mix-note" lang="en">${esc(r.title)}</p>`:'',note=r.note&&String(r.note).trim()!==title?`<p class="hot-mix-note">${esc(r.note)}</p>`:'',source=[hotName(p),x.col?hotName(x.col):''].filter(Boolean).join(' · '),rank=p.ranked===false?'':(state.lang==='en'?`#${x.rank}`:`第 ${x.rank} 名`),readable=!!(p.read||p.kw||embedOf(url)||RICH_DETAIL.test(url)||String(r.body||'').length>=30),foot=[r.heat||'',r.date||''].filter(Boolean).map(v=>`<span>${esc(v)}</span>`).join(''),access=`<span class="hot-mix-access ${readable?'is-readable':'is-external'}">${esc(hotUi(readable?'siteRead':'openSite'))}</span>`;
+  if(featured) return `<article class="hot-mix-card" data-featured="${i===0}" data-rank="${i+1}"><div class="hot-mix-source"><strong>${esc(source)}</strong>${rank?`<span class="hot-mix-rank">${esc(rank)}</span>`:''}</div><a class="hot-mix-link" href="${esc(url)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-mix-i="${i}"><strong>${esc(title)}</strong></a>${original}${note}<div class="hot-mix-foot">${foot}${access}</div></article>`;
+  return `<article class="hot-mix-row"><span class="hot-mix-num">${i+1}</span><div class="hot-mix-source"><strong>${esc(source)}</strong>${rank?`<span class="hot-mix-rank">${esc(rank)}</span>`:''}</div><a class="hot-mix-link" href="${esc(url)}" target="_blank" rel="nofollow ugc noopener noreferrer" data-hot-mix-i="${i}"><strong>${esc(title)}</strong></a><div class="hot-mix-foot">${foot}${access}</div>${original}${note}</article>`;
 }
 function hotMixHTML(){
   const h=state.hot,sources=hotMixSources(),settled=sources.filter(p=>{const d=h.data.get(hotKey(p));return d&&d.state!=='load';}).length,warming=h.mixBusy&&settled<Math.min(3,sources.length),rows=warming?[]:(h.mixRows&&h.mixRows.length?h.mixRows:hotMixBuild()),failed=sources.some(p=>{const d=h.data.get(hotKey(p));return d&&d.state==='err'&&!(d.rows||[]).length;});
   let content='';
-  if(rows.length){const top=rows.slice(0,3),rest=rows.slice(3,24);content=`<h3 class="hot-mix-title">${esc(hotUi('featured'))}</h3><div class="hot-mix-grid">${top.map((x,i)=>hotMixCardHTML(x,i,true)).join('')}</div>`+(rest.length?`<h3 class="hot-mix-title">${esc(hotUi('more'))}</h3><div class="hot-mix-list">${rest.map((x,i)=>hotMixCardHTML(x,i+3,false)).join('')}</div>`:'');}
+  if(rows.length){const top=rows.slice(0,3),rest=rows.slice(3,24);content=`<div class="hot-mix-grid">${top.map((x,i)=>hotMixCardHTML(x,i,true)).join('')}</div>`+(rest.length?`<h3 class="hot-mix-title">${esc(hotUi('more'))}</h3><div class="hot-mix-list">${rest.map((x,i)=>hotMixCardHTML(x,i+3,false)).join('')}</div>`:'');}
   else if(h.mixBusy||h.busy) content=`<p class="hot-state" aria-live="polite">${esc(hotUi('loading'))}</p>`;
   else if(h.err) content=`<p class="hot-state">${esc(h.err)}<br><button class="btn hot-mix-retry" type="button" data-hot-retry>${esc(t('dirRetry'))}</button></p>`;
   else content=`<p class="hot-state">${esc(failed||!sources.length?hotUi('empty'):hotUi('loading'))}${failed?`<br><button class="btn hot-mix-retry" type="button" data-hot-mix-retry>${esc(hotUi('retry'))}</button>`:''}</p>`;
@@ -7305,13 +7321,13 @@ function hotClick(e){                                                           
   const p=e.target.closest('[data-hot-p]');
   if(p){ const s=hotCur(); if(s){ if(!state.hot.sel.p || typeof state.hot.sel.p!=='object') state.hot.sel.p={}; state.hot.sel.p[s.col.id]=p.dataset.hotP; state.hot.sel.c=s.col.id; hotSave(); hotShow(`[data-hot-p="${CSS.escape(p.dataset.hotP)}"]`); } return true; }
   if(e.target.closest('[data-hot-retry]')){ state.hot.err=''; paintHot(); hotIndex(true); return true; }
-  if(e.target.closest('[data-hot-refresh]')){ const s=hotCur(); if(s) hotLoad(s.cur,true); return true; }
-  if(e.target.closest('[data-hot-sub]')){
-    const s=hotCur(); if(!s) return true;
-    const d=state.hot.data.get(hotKey(s.cur)), where=s.cur.regions ? (state.hot.region!=='auto' ? state.hot.region : (d && d.region) || '') : '';
-    if(s.cur.regions && !where) return true;                                                      // (a list of a country is subscribed for a country: the one that is shown)
-    const id=subscribeNow(hotName(s.cur)+(where ? ' · '+hotCountry(where) : '')+(state.hot.period==='week'?'（近 7 天）':''), hotFeed(s.cur,where,state.hot.period), s.cur.home);
-    if(id){ paintHot(); toast(t('dirSubscribed',cut(hotName(s.cur),24)), t('recoView'), ()=>{ setSpace('mine'); state.cat='all'; state.col=id; LS.set('col',id); render(); }); }
+  const refresh=e.target.closest('[data-hot-refresh]'); if(refresh){ const p=state.hot.idx&&state.hot.idx.platforms.find(x=>x.id===refresh.dataset.hotRefresh)||((hotCur()||{}).cur); if(p) hotLoad(p,true); return true; }
+  const sub=e.target.closest('[data-hot-sub]'); if(sub){
+    const p=state.hot.idx&&state.hot.idx.platforms.find(x=>x.id===sub.dataset.hotSub)||((hotCur()||{}).cur); if(!p) return true;
+    const d=state.hot.data.get(hotKey(p)), where=p.regions ? (state.hot.region!=='auto' ? state.hot.region : (d && d.region) || '') : '';
+    if(p.regions && !where) return true;                                                      // (a list of a country is subscribed for a country: the one that is shown)
+    const id=subscribeNow(hotName(p)+(where ? ' · '+hotCountry(where) : '')+(state.hot.period==='week'?'（近 7 天）':''), hotFeed(p,where,state.hot.period), p.home);
+    if(id){ paintHot(); toast(t('dirSubscribed',cut(hotName(p),24)), t('recoView'), ()=>{ setSpace('mine'); state.cat='all'; state.col=id; LS.set('col',id); render(); }); }
     return true;
   }
   const a=e.target.closest('a[data-hot-i]'); if(!a) return false;                                  // a row: the platform's page in a tab, or (where the platform's pages are articles) the text in the reader

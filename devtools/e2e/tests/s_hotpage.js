@@ -58,6 +58,8 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   await waitFor(`document.querySelectorAll('#dirReco .hot-row').length>0`);
   const accordion = await J(`({cats:document.querySelectorAll('#dirReco .hot-col').length, boards:document.querySelectorAll('#dirReco [data-hot-board]').length, expanded:document.querySelectorAll('#dirReco [data-hot-board][aria-expanded="true"]').length, rows:document.querySelectorAll('#dirReco .hot-row').length})`);
   ok('desktop 平台热榜 has a left platform selector and a right list with ten initial rows', accordion.cats>3 && await J(`!!document.querySelector('#dirReco .hot-board-desktop .hot-plats') && !!document.querySelector('#dirReco .hot-board-desktop .hot-row')`) && accordion.rows===10, accordion);
+  const cleanSidebar = await J(`(()=>{const n=[...document.querySelectorAll('#dirReco .hot-board-desktop .hot-plat')];return {count:n.length,labels:n.map(x=>x.textContent.trim()),details:n.some(x=>x.querySelector('small')||/English|刚刚更新|点击查看排名/.test(x.textContent))}})()`);
+  ok('desktop platform sidebar shows platform names only, without English, freshness, or helper labels', cleanSidebar.count>0 && !cleanSidebar.details, cleanSidebar);
   await J(`document.querySelector('#dirReco [data-hot-more]')?.click()`); await sleep(180);
   ok('long boards append the next batch without an inner scroll area', await J(`document.querySelectorAll('#dirReco .hot-row').length>10 && getComputedStyle(document.querySelector('#dirReco .hot-board-body')).overflowY!=='auto'`));
   await J(`document.querySelectorAll('#dirReco [data-hot-board]')[1].click()`); await sleep(220);
@@ -79,6 +81,8 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
     await c.mobile(390,844,2); await sleep(250);
     const mobile = await J(`({sw:document.documentElement.scrollWidth,iw:innerWidth,cats:getComputedStyle(document.querySelector('#dirReco .hot-cols')).display,boards:document.querySelectorAll('#dirReco .hot-board-mobile [data-hot-board]').length,open:document.querySelectorAll('#dirReco .hot-board-mobile [data-hot-board][aria-expanded="true"]').length,list:document.querySelector('#dirReco .hot-board-mobile .hot-list').getBoundingClientRect().width})`);
     ok('phone chart page uses one visible category rail and accordion boards without page overflow', mobile.sw<=mobile.iw && mobile.cats!=='none' && mobile.boards>0 && mobile.open===1 && mobile.list<=mobile.iw, mobile);
+    const phoneActions = await J(`(()=>{const c=document.querySelector('#dirReco .hot-board-mobile .hot-board-card[aria-expanded="true"]'),h=c?.querySelector('.hot-board-heading'),b=c?.querySelector('.hot-board-body'),ext=c?.querySelector('.hot-board-toolbar .hot-board-actions a');return {refresh:!!h?.querySelector('[data-hot-refresh]'),subscribe:!!h?.querySelector('[data-hot-sub]'),bodyActions:b?.querySelectorAll('[data-hot-refresh],[data-hot-sub]').length||0,externalHidden:!ext||getComputedStyle(ext).display==='none'}})()`);
+    ok('phone refresh and subscribe controls are beside the accordion title; platform link is hidden and actions are not repeated inside the list', phoneActions.refresh && phoneActions.subscribe && phoneActions.bodyActions===0 && phoneActions.externalHidden, phoneActions);
     await c.shot(require('../paths').SHOTS + '/hotpage_boards_mobile.png');
     console.log(`\n${pass} passed, ${fail} failed`); c.close(); process.exit(fail ? 1 : 0);
   }
@@ -133,10 +137,10 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   await clickTab('#dirReco .hot-col', '科技');
   await clickTab('#dirReco .hot-board-trigger', 'GitHub');
   await waitFor(`document.querySelector('#dirReco .hot-head h2').textContent.startsWith('GitHub') && document.querySelectorAll('#dirReco .hot-row').length>0`);
-  ok('"订阅这个榜单" is on the header', (await J(`(document.querySelector('#dirReco [data-hot-sub]')||{}).textContent`)) === '订阅这个榜单');
+  ok('the subscribe action has a clear accessible label', (await J(`document.querySelector('#dirReco [data-hot-sub]')?.getAttribute('aria-label')`)) === '订阅这个榜单');
   await J(`document.querySelector('#dirReco [data-hot-sub]').click()`); await sleep(1500);
-  const sub = await J(`({cols:state.cols.filter(x=>x.feed).map(x=>x.name+'|'+x.feed.url), btn:document.querySelector('#dirReco [data-hot-sub]').textContent, off:document.querySelector('#dirReco [data-hot-sub]').disabled, toast:(document.querySelector('#toastMsg')||{}).textContent})`);
-  ok('subscribing adds the service’s feed of that list to the shelf; the button says 已订阅 and waits', sub.cols.length === 1 && sub.cols[0] === 'GitHub Trending（今日）|' + SVC + '/api/hot?p=github' && sub.btn === '已订阅' && sub.off, sub);
+  const sub = await J(`({cols:state.cols.filter(x=>x.feed).map(x=>x.name+'|'+x.feed.url), label:document.querySelector('#dirReco [data-hot-sub]').getAttribute('aria-label'), off:document.querySelector('#dirReco [data-hot-sub]').disabled, toast:(document.querySelector('#toastMsg')||{}).textContent})`);
+  ok('subscribing adds the service’s feed of that list to the shelf; the button says 已订阅 and waits', sub.cols.length === 1 && sub.cols[0] === 'GitHub Trending（今日）|' + SVC + '/api/hot?p=github' && sub.label === '已订阅' && sub.off, sub);
   ok('and the first reading of it came: 12 new articles on the shelf', await waitFor(`state.items.filter(x=>x.id.startsWith('local:feed:')).length===12`));
   await c.shot(require('../paths').SHOTS + '/hotpage_desktop.png');
 
@@ -291,7 +295,7 @@ const waitAnalytics = async name => { const until=Date.now()+20000; let events=[
   await selectPlatform('bbc');
   await waitFor(`document.querySelector('#dirReco .hot-head h2').textContent==='BBC World' && document.querySelectorAll('#dirReco .hot-row').length>0`);
   ok('English: "Newest first" for a list in time order', /Newest first/.test((await head()).meta));
-  ok('English: the subscribe button', /Subscribe to this list/.test(await J(`document.querySelector('#dirReco [data-hot-sub]').textContent`)));
+  ok('English: the subscribe button has a localized accessible label', (await J(`document.querySelector('#dirReco [data-hot-sub]').getAttribute('aria-label')`)) === 'Subscribe to this list');
   await c.shot(require('../paths').SHOTS + '/hotpage_en.png');
   await get('/__hot?');
 
