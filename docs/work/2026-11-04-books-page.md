@@ -97,6 +97,6 @@
 
 ## 4. 合并记录
 
-- 合并顺序：
-- 合并后的测试结果：
-- 删除的分支和 worktree：
+- 合并顺序（用户说“合并”，2026-11-04）：`shelf-directory` 的 `claude/books-lists` 先合进它的 `master`（`631f59c`，那边 126 项相关测试通过、全套 734 项里只有已知的 1 个旧失败）；`my-archive` 的 `claude/music-core` 先合（`dfa3086`），再把 `master` 并进 `claude/books-page`（三处冲突：新增文字行、更新说明 zh / en、`run_all.ps1` 的测试清单，两边都留），再合 `claude/books-page`（`2c4910e`）。
+- 合并后的测试结果：在并好的 `claude/books-page` 上跑全套 35 项：除已知的 4 条旧失败外全绿（`s_lang` 因为电脑中途休眠了十几个小时超时，单独重跑 13 项全过）；快速集之前已在合并前跑过，11 项全绿。
+- 删除的分支和 worktree：`claude/books-page`、`E:\Ztree\wt\claude-books-page`；`shelf-directory` 的 `claude/books-lists` 和它的 worktree 已在合并后删掉；预览服务（8831、8864–8867、8871）已停。用户试用后追加的第 7、8 条在 `claude/books-fixes`（见上面“追加”），还没合。
