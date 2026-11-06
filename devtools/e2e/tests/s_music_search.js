@@ -99,6 +99,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   ok('“clear” empties the history', (await J(`LS.get('lpSearchHist',[]).length`)) === 0 && /two letters/.test(await J(`document.querySelector('#lpSrRes').textContent`)));
   ok('Escape leaves the search page', await (async () => { await J(`document.querySelector('#lpSrIn').dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}))`); await sleep(300); return J(`!document.querySelector('#lpSrIn')`); })());
   ok('no errors in the page', errs.length === 0, errs);
+  await fetch(SVC + '/__listen?mode=ok&reset=1');                                  // (the fake service answers as it did before again: the tests after this one do not know the newer questions)
   console.log(`${pass} passed, ${fail} failed`);
   c.close();
 })().catch(e => { console.log('CRASH', e && e.stack || e); process.exit(1); });

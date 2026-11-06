@@ -26,7 +26,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
     await J(`document.querySelector('#cats [data-dlisten]').click()`);
     await waitFor(`document.querySelector('#lpRoot .lp-tabs') && document.querySelector('#lpRoot .lp-forrows .ls-row') && state.lp.pool`, 9000); await sleep(300);
   };
-  const top = (n = 30) => J(`Z.lpRecItems().slice(0,${n}).map(x=>({id:x.id,a:x.artist,m:x.market,g:x.tags,need:x.need}))`);
+  const top = (n = 30) => J(`Z.lpRecReset(); Z.lpRecItems().slice(0,${n}).map(x=>({id:x.id,a:x.artist,m:x.market,g:x.tags,need:x.need}))`);
   await c.desktop(1280, 900, 1);
 
   // ------------------------------------------------ the pool and the first question
@@ -58,7 +58,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   // ------------------------------------------------ a thing done changes the order
   await J(`state.lp.batch=0`);
   const pool = await J(`state.lp.pool.items`);
-  const listAll = await J(`Z.lpRecItems().map(x=>x.id)`);
+  const listAll = await J(`Z.lpRecReset(); Z.lpRecItems().map(x=>x.id)`);
   const first30 = new Set(listAll.slice(0, 30).map(id => (pool.find(q => q.id === id) || {}).artist).filter(Boolean));
   const pickA = pool.filter(p => p.market === 'cn').find(p => !first30.has(p.artist) && pool.filter(q => q.artist === p.artist).length >= 3);
   await J(`Z.lpSignal(state.lp.pool.items.find(x=>x.id==='${pickA.id}'), 3)`);
@@ -116,6 +116,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await fresh('v2=0');
   ok('an older service (no pool, no question): the songs for you as before, no question about what you like', !(await J(`document.querySelector('#lpRoot .lp-ask')`)) && (await J(`document.querySelectorAll('#lpRoot .lp-forrows .ls-row').length`)) === 30 && !(await J(`state.lp.pool`)));
   ok('no errors in the page', errs.length === 0, errs);
+  await fetch(SVC + '/__listen?mode=ok&reset=1');                                  // (the fake service answers as it did before again: the tests after this one do not know the newer questions)
   console.log(`${pass} passed, ${fail} failed`);
   c.close();
 })().catch(e => { console.log('CRASH', e && e.stack || e); process.exit(1); });

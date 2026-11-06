@@ -83,6 +83,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await J(`document.querySelector('#lpRoot .ls-row .ls-main').click()`);
   ok('and it plays from there (the sound is found)', await waitFor(`plAudio.currentTime>0.05 && pl.cands[0] && pl.cands[0].p==='bodian'`, 9000) && (await log2()).includes('resolve:Douyin Song 3'), await log2());
   ok('no errors in the page', errs.length === 0, errs);
+  await fetch(SVC + '/__listen?mode=ok&reset=1');                                  // (the fake service answers as it did before again: the tests after this one do not know the newer questions)
   console.log(`${pass} passed, ${fail} failed`);
   c.close();
 })().catch(e => { console.log('CRASH', e && e.stack || e); process.exit(1); });

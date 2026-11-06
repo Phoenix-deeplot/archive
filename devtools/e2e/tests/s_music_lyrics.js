@@ -100,6 +100,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   const f = await J(`(()=>{ const L=window.__zt.lpLrc; return {a:L('[00:12.50]b\\n[00:01.00]a\\n[ti:x]\\n[00:30]c').map(l=>l.t+':'+l.x).join('|'), plain:L('one\\ntwo\\n\\nthree').map(l=>l.t+':'+l.x).join('|'), two:L('[00:01.00][00:20.00]chorus\\n[00:05.00]verse').map(l=>l.t+':'+l.x).join('|'), none:L('').length}; })()`);
   ok('the format: lines are put in the order of time, tags like [ti:] are dropped, plain text has no time, one line with two times is two lines', f.a === '1:a|12.5:b|30:c' && f.plain === '-1:one|-1:two|-1:three' && f.two === '1:chorus|5:verse|20:chorus' && f.none === 0, f);
   ok('no errors in the page', errs.length === 0, errs);
+  await fetch(SVC + '/__listen?mode=ok&reset=1');                                  // (the fake service answers as it did before again: the tests after this one do not know the newer questions)
   console.log(`${pass} passed, ${fail} failed`);
   c.close();
 })().catch(e => { console.log('CRASH', e && e.stack || e); process.exit(1); });
