@@ -231,9 +231,9 @@ body.dir-discover .dir-label,body.dir-discover #dir,body.dir-discover #tagbox,bo
 .toolbar{display:flex;align-items:center;gap:8px;margin-left:auto}
 .toolbar select,.ctl-box select,.fl-slot select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:6px 8px}
 
-.view-head{max-width:1280px;padding:34px 0 18px}
-.view-head h1{font-family:var(--serif);font-weight:900;font-size:clamp(30px,3.8vw,44px);line-height:1.2;margin:0 0 6px;letter-spacing:-.01em}
-.view-head p{margin:0;color:var(--muted);font-size:15px}
+.view-head{max-width:1280px;padding:22px 0 10px}
+.view-head h1{font-family:var(--serif);font-weight:900;font-size:clamp(22px,2.4vw,28px);line-height:1.2;margin:0;letter-spacing:-.01em}
+.view-head p{margin:0;color:var(--muted);font-size:14px}
 .continue{max-width:1280px;margin:0 0 24px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .continue span{font-size:13px;color:var(--muted);margin-right:4px}
 .chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:13.5px;cursor:pointer;max-width:320px}
@@ -416,6 +416,41 @@ body.noting{overflow:hidden}
 .lp-sin:focus{outline:2px solid var(--accent);outline-offset:1px}
 .lp-spart{margin:0 0 6px}
 .pl-cell{color:var(--muted)}
+.ab-intro{margin:2px 0 10px}
+.ab-resume{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px}
+.ab-resume .icon{width:16px;height:16px}
+.ab-styles{margin:0 0 12px}
+.ab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:4px 18px}
+.ab-card{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;align-items:center;text-align:left;padding:10px 6px;border:0;border-bottom:1px solid var(--rule);background:none;color:inherit;font:inherit;cursor:pointer;min-height:96px}
+.ab-card:hover{background:var(--surface)}
+.ab-cv{position:relative;display:block;width:72px;height:96px;border-radius:6px;overflow:hidden;background:var(--surface)}
+.ab-cv img,.ab-cv .lp-nc{width:100%;height:100%;object-fit:cover;display:block}
+.ab-hot{position:absolute;left:0;top:0;padding:2px 6px;font-style:normal;font-size:11px;font-weight:600;background:var(--accent);color:#fff;border-radius:0 0 6px 0}
+.ab-t{display:grid;gap:3px;min-width:0}
+.ab-t b{font-size:16px;font-weight:500;line-height:1.35}
+.ab-by{color:var(--muted);font-size:13px;margin:0}
+.ab-gl{font-style:normal;margin-left:8px;padding:1px 5px;border:1px solid var(--rule);border-radius:4px;font-size:11px;color:var(--muted)}
+.ab-m{color:var(--muted);font-size:12.5px;margin:0}
+.ab-book{padding-bottom:30px}
+.ab-bh{margin:0 0 6px}
+.ab-hero{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;align-items:start;margin:4px 0 12px}
+.ab-hero .ab-cv{width:120px;height:160px;border-radius:8px}
+.ab-ht h3{margin:0 0 4px;font-size:20px;font-family:var(--sans)}
+.ab-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.ab-go{display:inline-flex;align-items:center;gap:6px}
+.ab-go .icon{width:16px;height:16px}
+.ab-sum{margin:0 0 6px;line-height:1.6;font-size:14.5px}
+.ab-rt{margin:0 0 12px;color:var(--muted);font-size:12.5px}
+.ab-chs{list-style:none;margin:0;padding:0}
+.ab-ch button{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:6px;align-items:center;width:100%;min-height:48px;padding:0 6px;border:0;border-bottom:1px solid var(--rule);background:none;color:inherit;font:inherit;font-size:15px;text-align:left;cursor:pointer}
+.ab-ch button:hover{background:var(--surface)}
+.ab-n{color:var(--muted);font-variant-numeric:tabular-nums;text-align:right;padding-right:8px;font-size:13px}
+.ab-ct{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ab-d{color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums}
+.ab-ch.is-cur .ab-ct,.ab-ch.is-cur .ab-n{color:var(--accent);font-weight:600}
+.ab-ch.is-playing .ab-n::after{content:"▶";margin-left:2px;font-size:10px}
+.ab-pg{position:absolute;left:0;bottom:-1px;height:2px;width:var(--p);background:var(--accent);opacity:.7}
+@media(max-width:620px){.ab-grid{grid-template-columns:1fr}.ab-hero{grid-template-columns:96px minmax(0,1fr)}.ab-hero .ab-cv{width:96px;height:128px}}
 .lp-ask{margin:14px 0 4px;padding:14px;border:1px solid var(--rule);border-radius:14px;background:var(--surface);display:grid;gap:10px}
 .lp-ask b{font-size:15.5px}.lp-ask>span{color:var(--muted);font-size:13px}
 .lp-ask-go{display:flex;gap:8px}
@@ -450,10 +485,7 @@ body.noting{overflow:hidden}
 @media(max-width:820px){.ls-rows{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:620px){.ls>.dr-note:not(.ls-sub){display:none}}
 /* the listening page: one row (music / podcasts, the sort, cards / rows), ONE strip of lists, and the songs straight under it; the title and its subtitle in one line */
-body.dir-listen #sort,body.dir-listen #viewBtn,body.dir-listen #langFilter{display:none}
-body.dir-listen .view-head,body.dir-hot .view-head{padding:22px 0 10px}
-body.dir-listen .view-head h1,body.dir-hot .view-head h1{font-size:clamp(22px,2.4vw,28px);margin:0}
-body.dir-listen .view-head p,body.dir-hot .view-head p{font-size:14px}
+body.dir-listen #sort,body.dir-listen #viewBtn,body.dir-listen #langFilter,body.dir-audio #sort,body.dir-audio #viewBtn,body.dir-audio #langFilter{display:none}
 .lp-bar{display:flex;flex-wrap:nowrap;align-items:center;gap:10px;margin:0 0 6px;overflow-x:auto;scrollbar-width:none}
 .lp-bar::-webkit-scrollbar{display:none}
 .lp-bar>*{flex:none}
@@ -553,7 +585,7 @@ body.dir-listen .view-head p,body.dir-hot .view-head p{font-size:14px}
 .plp-like[aria-pressed="true"]{color:var(--accent)}
 .plp-like[aria-pressed="true"] .icon{fill:currentColor}
 @media(max-width:620px){
-  body.dir-listen .view-head,body.dir-hot .view-head{padding:12px 0 6px}
+  .view-head{padding:12px 0 6px}
   .lp-strip{flex-wrap:nowrap;overflow-x:auto;margin:0 -16px 4px;padding:2px 16px;scrollbar-width:none}
   .lp-strip::-webkit-scrollbar{display:none}
   .lp-strip .x{display:inline-flex}
@@ -1412,6 +1444,17 @@ html.ptr{overscroll-behavior-y:contain}
   .grid{grid-template-columns:minmax(0,1fr);gap:16px}
   .view-head{padding-top:22px}
 }
+/* ===== one look for the controls under the heading, on every page of the public space (a computer: a finger has its own sizes above) =====
+   the two-way switch (columns | platforms, music | podcasts, today's pick | platform charts) is one switch: 36 px, square-ish corners, 14 px;
+   the row of pills (columns, styles, charts, regions) is one row of pills: 36 px, 13.5 px */
+@media (min-width:981px){
+  .hot-views{gap:0;padding:0;margin:0 0 12px;border-radius:6px;overflow:hidden}
+  .hot-views button{min-height:36px;padding:4px 14px;border-radius:0;font-weight:400}
+  .hot-views button[aria-pressed="true"]{font-weight:600}
+  .lp-modes button,#dirBar .seg button{min-height:36px;padding:4px 14px;font-size:14px;font-weight:400}
+  .lp-modes button[aria-selected="true"],#dirBar .seg button[aria-pressed="true"]{font-weight:600}
+  .hot-mode,.lp-tab,.dir-tabs button{min-height:36px;padding-top:0;padding-bottom:0;padding-inline:14px;font-size:13.5px}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
 
 /* ---------- v2 additions ---------- */
@@ -1533,9 +1576,10 @@ body.shell2 #noteBtn{display:none}                                          /* (
 .sw-classic{background:#1F7A6D}.sw-dark{background:#1B2125}.sw-cloud{background:#D8363A}
 .vh-txt{min-width:0;position:relative}
 .vh-ctl{display:none}
-body.dir-listen .vh-txt,body.dir-hot .vh-txt{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 14px}
+.vh-txt{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 14px}
 .ctl-box{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-body.dir-listen .ctl-box,body.dir-hot .ctl-box{display:none}
+body.dir-listen .ctl-box,body.dir-hot .ctl-box,body.dir-audio .ctl-box{display:none}
+body.dir-audio .dir-line{display:none}                          /* (its only content on this page was those controls: no empty row) */
 @media (min-width:981px){
   body.shell2 .side-toggle{display:inline-flex}
   body.shell2.side-off .app{grid-template-columns:minmax(0,1fr)}
@@ -2789,6 +2833,8 @@ Object.assign(I18N.en,{sortBy:v=>`Sort: ${v}`, sortBooks:'Picks'});
     Object.assign(I18N.en,{plFinding:'Finding a sound…', lsWholeS:'Full', lsmBigS:'about 30 MB', plLyrT:'Lyrics', plLyrL:'Show lyrics', plLyrD:'For songs that have lyrics, a “Lyrics” tab next to the queue', plLyrFrom:v=>`Lyrics from ${v}`, lpSearch:'Search', lpSearchPh:'Search songs or artists', lpSearchHint:'Type a song or an artist, two letters at least; each result says whether it is a full song or a preview', lpSearching:'Searching…', lpSearchErr:'Search is not available right now', lpSearchNone:v=>`Nothing found for “${v}”`, lpSearchPartial:'Some sources did not answer in time; here is what came in', lpSearchHist:'Recent searches', lpSearchClear:'Clear', lsmWhole:'Find the full song', lsmSrc:'Change source', lsmFinding:'Looking for the full song…', lsmNoWhole:'No full song found', lsmWholeDone:'Switched to the full song', lsmSrcDone:v=>`Switched to ${v}`, lsmNoSrc:'This song has only one source for now', lsmFindMore:'Look for other sources', lsmBusy:'Looking for sources…', srcN_bodian:'Bodian', srcN_netease:'NetEase Cloud Music', srcN_audius:'Audius', srcN_jamendo:'Jamendo', srcN_apple:'Apple Music', srcN_deezer:'Deezer', lpAskT:'What do you like to hear?', lpAskD:'Pick a few and the picks get better. Kept on this device only.', lpAskGo:'Done', lpAskSkip:'Not now', askPop:'Pop', askRock:'Rock', askHiphop:'Hip-hop', askElec:'Electronic', askJazz:'Jazz', askClassic:'Classical', askFolk:'Folk', askCn:'Chinese', askJpKr:'Japan & Korea', askWest:'Western'});
     Object.assign(I18N.zh,{plDataL:'手机流量下小字提示', plDataD:'用手机流量放大文件（无损约 30–50 MB）时，播放条上写一句；这首歌有小文件的音源就先用它', plCellular:v=>`手机流量 · ${v}`});
     Object.assign(I18N.en,{plDataL:'Say so on mobile data', plDataD:'When a big file (lossless, 30–50 MB) plays on mobile data the bar says so in small letters; a small source of the song, if there is one, comes first', plCellular:v=>`Mobile data · ${v}`});
+    Object.assign(I18N.zh,{abTab:'有声书', abTitle:'有声书', abIntro:'有头有尾的书，一章一章往后听，记住听到哪里。这里只收公版和电台自己的节目。', abNone:'有声书暂时看不了', abChapters:n=>`${n} 章`, abHours:h=>`${h} 小时`, abMins:m=>`${m} 分钟`, abGoLast:n=>`接着听 · 第 ${n} 章`, abGoStart:'从头听', abAt:n=>`听到第 ${n} 章`, abResume:(b,n)=>`接着听《${b}》第 ${n} 章`, abHot:'热门', abErr:'这本书现在读不到', abStale:'这本书现在读不到最新的，先用上次读到的。', abRtP:'公版：文字已进入公共领域', abRtB:'电台自己的节目', abFrom:v=>`声音来自 ${v}`, abGlobal:'海外', abGlobalTip:'声音在国外的服务器上，在中国大陆可能很慢', abChFail:v=>`《${v}》这一章放不了`, abRetry:'重试'});
+    Object.assign(I18N.en,{abTab:'Audiobooks', abTitle:'Audiobooks', abIntro:'Books with a beginning and an end, heard chapter after chapter, picking up where you left. Only public domain and a broadcaster\'s own programmes.', abNone:'Audiobooks are not available right now', abChapters:n=>`${n} chapters`, abHours:h=>`${h} h`, abMins:m=>`${m} min`, abGoLast:n=>`Carry on · chapter ${n}`, abGoStart:'From the start', abAt:n=>`at chapter ${n}`, abResume:(b,n)=>`Carry on with ${b}, chapter ${n}`, abHot:'Popular', abErr:'This book cannot be read right now', abStale:'The newest cannot be read right now; what was read last time is used.', abRtP:'Public domain: the text belongs to everybody', abRtB:'The broadcaster\'s own programme', abFrom:v=>`Sound from ${v}`, abGlobal:'Overseas', abGlobalTip:'The sound is on a server abroad and may be slow in mainland China', abChFail:v=>`“${v}” does not play`, abRetry:'Try again'});
     Object.assign(I18N.zh,{lfTip:(a,b)=>`内容语言：${a}（点一下换成 ${b}）`});
     Object.assign(I18N.en,{lfTip:(a,b)=>`Content language: ${a} (tap for ${b})`});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
@@ -3789,7 +3835,7 @@ function render(){
   syncSubscribe();
   if(dirMode){ $('#colRow').hidden=true; $('#colNav').hidden=true; $('#recoPane').hidden=true; $('#recoBanner').hidden=true; renderDir(); updNoteSync(); renderPublicAd(); syncReader(); return; }
   renderPublicAd(); document.documentElement.classList.remove('ptr');
-  $('#moreRow').hidden=true; $('#dirLabel').textContent=t('dir'); $('#dirBar').hidden=true; document.body.classList.remove('dir-discover','dir-hot','dir-listen'); $('#dirReco').hidden=true; $('#dirReco').innerHTML='';          // (the directory's home page is made again when it is shown: its cards must not linger behind the shelf)
+  $('#moreRow').hidden=true; $('#dirLabel').textContent=t('dir'); $('#dirBar').hidden=true; document.body.classList.remove('dir-discover','dir-hot','dir-listen','dir-audio'); $('#dirReco').hidden=true; $('#dirReco').innerHTML='';          // (the directory's home page is made again when it is shown: its cards must not linger behind the shelf)
 
   renderCols();                                                            // also settles which part of the shelf is shown, before anything below counts it
   const tags=ownTags(); if(state.tag && !tags.some(g=>g.name.toLowerCase()===state.tag.toLowerCase())) state.tag='';
@@ -5061,7 +5107,8 @@ const CHANGELOG=[{v:'2026-10-22',
       '发现世界每个页面只剩一行筛选，没有下拉了：“节目 / 栏目”挑选和手机上的“筛选”面板去掉了，栏目（或平台）标签排成一行向左右滑；右端是排序（一个图标，点一下换一种排法，提示里写着现在是哪一种）和卡片 / 列表图标；内容语言（全部 / 中 / EN）只留在精选图书、精选文章、全部这几个内容多的页面。标签条下面的空白去掉了，热榜、今日听什么、精选图书标题下的说明文字也去掉了。“今日听什么”的推荐页更干净：去掉了“今日电台”卡；精选歌单在上，排头是“我喜欢的 / 最近播放 / 我的歌单”三个带数字的方块；为你推荐在下，一行一首，先 30 首，滚到底自动再加，标题右边是播放和换一批两个图标；“国内 ⇄ 国际”按钮去掉了，先推荐哪里的歌跟着界面语言和设备时区走。',
       '新增“反馈”：侧栏底部的“反馈”点开一个小窗，写下哪里不顺手、想要什么、哪里写错了，不用登录（站点接上反馈服务才有）。阅读指南的顶部多了“共读群”：QQ 群 869727153，二维码、群号、复制和保存都在那里，书架里指南那张卡的封面上也有。',
       '语言筛选改成一个按钮：点一下依次换，全部 → 中 → EN → 全部，按钮上写的是现在的。听歌页：“为你推荐”在宽屏分两列，右边不再空着；歌曲右边的“⋯”菜单改成在屏幕中间弹出。手机上发现世界里的主题按钮恢复了（之前被误藏，点了没有反应）。',
-      '“今日听什么”能搜歌了：推荐页顶栏右边的放大镜，至少输入两个字，同时问好几个来源，每一首标明是“整首”还是“试听”。⋯ 菜单里多了“找整首”（试听的歌去找整首）和“换音源”（这首歌的每个音源列出来，点哪个就先用哪个）；没有声音地址的歌（比如抖音热歌榜）放的时候才去找声音，找到的地址过期了会自己再找，一首歌的声音全放不出来时也会再问一次。有歌词的歌，“正在播放”里列表旁边多一格“歌词”：当前这句高亮，点一句跳到那里（设置里可以关）。“为你推荐”现在会学你的口味：喜欢、听完、点“不想听这类”、很快切走都会记一笔（只记在这台设备上，30 天减半，“清除这台设备上的听歌记录”一键清掉），国内读者七成是国内的歌，每五首里有一首是没听过的歌手；第一次会问你爱听什么。原来只有 30 秒试听的歌，在国内会先去找整首（波点等来源），找不到才放试听；手机流量下放很大的整首（约 30 MB）不再弹窗，播放条上用小字写一句“手机流量 · 约 30 MB”。'],
+      '“今日听什么”能搜歌了：推荐页顶栏右边的放大镜，至少输入两个字，同时问好几个来源，每一首标明是“整首”还是“试听”。⋯ 菜单里多了“找整首”（试听的歌去找整首）和“换音源”（这首歌的每个音源列出来，点哪个就先用哪个）；没有声音地址的歌（比如抖音热歌榜）放的时候才去找声音，找到的地址过期了会自己再找，一首歌的声音全放不出来时也会再问一次。有歌词的歌，“正在播放”里列表旁边多一格“歌词”：当前这句高亮，点一句跳到那里（设置里可以关）。“为你推荐”现在会学你的口味：喜欢、听完、点“不想听这类”、很快切走都会记一笔（只记在这台设备上，30 天减半，“清除这台设备上的听歌记录”一键清掉），国内读者七成是国内的歌，每五首里有一首是没听过的歌手；第一次会问你爱听什么。原来只有 30 秒试听的歌，在国内会先去找整首（波点等来源），找不到才放试听；手机流量下放很大的整首（约 30 MB）不再弹窗，播放条上用小字写一句“手机流量 · 约 30 MB”。',
+      '新增故事类播客：“今日听什么 → 播客”里，热门播客后面是故事的几张列表——悬疑怪谈、真实罪案、真实故事、历史野史、轻松段子、睡前故事，以及喜马拉雅、小宇宙、荔枝FM 的故事热门（各平台节目在 Apple 播客中国榜上的位置）；“推荐订阅”里多了一组“故事 · 悬疑 · 段子 · 睡前”，热榜那一组也多了抖音、头条、小红书、公众号、微信读书、起点、QQ 音乐、Apple 播客榜、36氪、雪球、豆瓣的榜单，公共目录也收了几个，带“故事”标签。“精选图书”里多了“有声书”：第 1 章在前、一章一章往后放、放完自动放下一章、“接着听”回到上次的章和秒、一章放不了不会跳过去；只收公版的书和电台自己的节目（《红楼梦》《西游记》《水浒传》《聊斋志异》，“民国往事”里的《金粉世家》《骆驼祥子》《啼笑因缘》《四世同堂》《民国风云史》《闲话上海滩》等，和 LibriVox 的经典与故事；LibriVox 的声音在国外，标“海外”）。各页的标题、标题下的开关和按钮统一了样子：标题不再一页大一页小。'],
   en:['New: “Back up & restore”: export the files, collections, subscriptions and reading places you added into one file, and restore it when you change device or fear a loss.',
       'Subscribed and saved links can now be read in the page: when a feed carries the full text it is shown at once; otherwise, and for any article link you paste and for the articles of the public directory, the original page is read and shown here and kept in your browser. Pages that need a login or do not let programs read them still open the original site (the card says “Original only”).',
       'New in the reading settings: “Download as a web page (HTML)” and “Print / save as PDF”.',
@@ -5104,7 +5151,8 @@ const CHANGELOG=[{v:'2026-10-22',
       'Every page of the public space now has one row of filters and no dropdown: the “Programs / Columns” picker and the phone’s “Filter” panel are gone, the tabs of columns (or platforms) sit in one row that slides sideways; at its right end are the sort (one icon: tap to go to the next way, the tooltip says which) and the cards / rows icon; the language of the content (All / 中 / EN) stays only on Book picks, Selected articles and All, where there is a lot to filter. The blank under the strip is gone, and so are the explaining lines under the titles of Hot lists, What to listen to today and Book picks. The “For you” tab of What to listen to today is cleaner: the “Today’s radio” card is gone; the play lists come first and begin with three squares with their numbers (Liked, Recent, My lists); the songs for you come below, one to a row, thirty at first and thirty more by themselves at the end, with a play icon and a next-batch icon at the right of the title; the “China ⇄ World” button is gone, whose songs come first follows the interface language and the time zone of the device.',
       'New: “Feedback”: the link at the foot of the side list opens a small window where you can write what is awkward, what you would like or what is wrong, with no sign-in (it shows when the site has the feedback service). The top of the user guide now has the “reading group”: QQ group 869727153, with its QR code, the number, copy and save, and the guide’s card on the shelf shows it on its cover too.',
       'The language of the content is one button now: each tap the next, All → 中 → EN → All, and it says which is on. On the listening page the songs for you are two columns on a wide screen, so nothing is left blank at the right, and the “⋯” menu of a song opens in the middle of the screen. On a phone the theme button works again in the public space (it had been hidden there by mistake).',
-      'What to listen to today can search: the magnifier at the right end of the bar of the music side, two letters at least; several sources are asked at once and each song says “Full” or “Preview”. The “⋯” menu has “Find the full song” (for a preview) and “Change source” (every source of the song is listed, the one you tap comes first); a song with no sound yet (the Douyin chart, for one) gets its sound when it is played, an address that has run out is looked for again by itself, and when every sound of a song fails the service is asked once more. A song with lyrics has a “Lyrics” tab beside the list in “Now playing”: the line that is sung is lit, a tap on a line goes there (a switch in the settings turns it off). “For you” learns your taste now: a like, a song heard to the end, “not this kind” and a quick skip each count (kept on this device only, half the weight after 30 days, and “clear the records of this device” clears it); a reader in China gets seven in ten Chinese songs, and every fifth song is an artist you have not heard; the first time you are asked what you like. In China a song that used to have only a 30-second preview is first looked for as a whole song (Bodian and the others) and the preview plays only when none is found; on mobile data a very big whole song (about 30 MB) no longer asks, the bar says “Mobile data · about 30 MB” in small letters.']}];
+      'What to listen to today can search: the magnifier at the right end of the bar of the music side, two letters at least; several sources are asked at once and each song says “Full” or “Preview”. The “⋯” menu has “Find the full song” (for a preview) and “Change source” (every source of the song is listed, the one you tap comes first); a song with no sound yet (the Douyin chart, for one) gets its sound when it is played, an address that has run out is looked for again by itself, and when every sound of a song fails the service is asked once more. A song with lyrics has a “Lyrics” tab beside the list in “Now playing”: the line that is sung is lit, a tap on a line goes there (a switch in the settings turns it off). “For you” learns your taste now: a like, a song heard to the end, “not this kind” and a quick skip each count (kept on this device only, half the weight after 30 days, and “clear the records of this device” clears it); a reader in China gets seven in ten Chinese songs, and every fifth song is an artist you have not heard; the first time you are asked what you like. In China a song that used to have only a 30-second preview is first looked for as a whole song (Bodian and the others) and the preview plays only when none is found; on mobile data a very big whole song (about 30 MB) no longer asks, the bar says “Mobile data · about 30 MB” in small letters.',
+      'Story podcasts: under “What to listen to today → Podcasts”, after the top list there are lists of stories — mystery, true crime, true stories, history tales, funny talk, bedtime stories — and the hot stories of Ximalaya, Xiaoyuzhou and Lizhi FM (where the shows of each platform stand on Apple Podcasts’ China chart); “Recommended subscriptions” has a group “Stories · mystery · funny talk · bedtime” and its hot-lists group has the charts of Douyin, Toutiao, Xiaohongshu, WeChat articles, WeRead, Qidian, QQ Music, Apple Podcasts, 36Kr, Xueqiu and Douban, and the public directory took in a few, tagged “故事”. “Picked books” has “Audiobooks”: the first chapter first, chapter after chapter, the next one by itself, “Carry on” goes back to the chapter and the second you left, and a chapter that does not play is not skipped; only public-domain books and a broadcaster’s own programmes (Dream of the Red Chamber, Journey to the West, Water Margin, Strange Tales from a Chinese Studio, and LibriVox’s classics and stories; LibriVox’s sounds are abroad, marked “Overseas”).']}];
 const guideItem = () => state.items.find(x=>(x.source==='static'||x.source==='server') && /(^|\/)notes\/guide\/index\.html$/.test(x.id));
 const canAsk=()=>!!state.dirCfg && !LS.get('dirIntroOff',0) && !state.dPickT.size;               // the question "what do you feel like reading?" is for somebody who has not answered it, where the site has a public space
 function introStep(n, ask){                                                                  // which buttons go with which step of the window
@@ -5285,6 +5333,7 @@ function plFinding(i, go, start, force){                                        
 const PL_UP_MS=Math.max(500,+LS.get('plUpMs',4000)||4000);
 function plFailed(id){
   const it=plItem(id); pl.loaded=''; pl.want=0; plToggleIcon(); plMarkCards();
+  if(id.startsWith('tmp:ls:ab:') && it){ toast(t('abChFail',cut(it.title,24)), t('abRetry'), ()=>{ const k=pl.q.indexOf(id); if(k>=0) plLoad(k,true); }); return; }          // (a chapter of an audiobook that does not play is not skipped: a book is heard in order; the reader may try again)
   if(id.startsWith('tmp:ls:') && pl.i<pl.q.length-1){ toast(t('lsSkip',cut(it ? it.title : '',24))); plNext(); return; }                 // a song of today's listening that the platform does not give out: on to the next one
   if(it) toast(t('plFail'), it.url ? t('plOpenOrig') : undefined, it.url ? ()=>window.open(it.url,'_blank','noopener,noreferrer') : undefined);
 }
@@ -5308,6 +5357,7 @@ function plLoad(i, go, at){
     return;
   }
   pl.loaded=id; plStart(go);
+  if(id.startsWith('tmp:ls:ab:')) abNote(id);                                                          // (a chapter of an audiobook: the book remembers it, so that "carry on" begins here)
   if(plIsMusic(it)) lpRecentAdd(lpSeen.get(id.slice(7)));                                              // (the songs played last: "recent" on the first tab)
   if(it.unread) markRead(id);
   plSession(it); plRender(); plSave(); if(plDlg.open) plSheet();
@@ -5521,7 +5571,7 @@ function plClearAll(){                                                          
 $('#plClear').addEventListener('click',plClearAll);
 $('#plShut').addEventListener('click',()=>{ plDlg.close(); plClose(); });
 $('#plWipe').addEventListener('click',()=>{                                                            // what this browser remembers of the listening goes (the songs liked and the play lists stay: they were made on purpose)
-  LS.set('lpRecent',[]); LS.set('lpTaste',null); LS.set('lpSearchHist',[]); state.lp.ask=null; lpRecReset(); const m=plProgMap(); Object.keys(m).forEach(k=>{ if(k.startsWith('tmp:ls:')) delete m[k]; }); LS.set('plProg',m);
+  LS.set('lpRecent',[]); LS.set('abLast',{}); LS.set('lpTaste',null); LS.set('lpSearchHist',[]); state.lp.ask=null; lpRecReset(); const m=plProgMap(); Object.keys(m).forEach(k=>{ if(k.startsWith('tmp:ls:')) delete m[k]; }); LS.set('plProg',m);
   toast(t('plWiped'));
 });
 $('#readerPlay').addEventListener('click',()=>{ if(state.readingId) plPlay(state.readingId); });
@@ -6695,6 +6745,7 @@ const dirBase = () => httpUrl(state.dirData && state.dirData.base) || state.dirC
 /* ---- what the directory page adds: heat, a recommended strip, a collection dropdown XOR domain / platform tabs ---- */
 state.dView='all'; state.dTab=''; state.dTabs=LS.get('dirTabs','topic')==='plat' ? 'plat' : 'topic'; state.heat=null; state.heatAt=0; state.dirRead=LS.get('dirRead',{}); state.vote=LS.get('dirVote',{}); state.dPick=new Set((LS.get('dirPick',[])||[]).map(String)); state.mixSeed=0; state.dPickT=new Set((LS.get('dirPickT',[])||[]).map(String)); state.dSub=''; state.dIntro=new Set(); state.dPlatMore=false; state.dPlatRest=0; state.dBrowse=false;
 state.ls={scene:String(LS.get('lsScene','')||'')};
+state.ab={idx:null, busy:false, p:null, at:0, style:'', open:'', books:new Map()};          // the audiobooks: idx = what the service lists (null: not asked, false: it has none), the style chosen, the book that is open, the chapters of the books that were asked for
 state.lp={idx:null, idxAt:0, busy:false, err:'', data:new Map(), pending:new Map(), g:String(LS.get('lpG','daily')||'daily'), mode:'music', g_music:String(LS.get('lpG_music','daily')||'daily'), g_podcast:String(LS.get('lpG_podcast','pod-hot')||'pod-hot'), show:'', shown:30, more:false, pods:null, podsKey:'', io:null,
   sort:(k=>['rank','new','dur','title','artist'].includes(k)?k:'rank')(LS.get('lpSort','rank')),
   tab:(k=>['rec','chart','disc'].includes(k)?k:'rec')(LS.get('lpTab','rec')), open:false, cr:String(LS.get('lpCR','')||''), batch:0, styles:false,
@@ -6918,7 +6969,9 @@ function renderDirBar(){                                                        
   const bkp=booksPage(); $('#dTabsMode').hidden=bkp;
   if(bkp){                                                                                         // the picked books: the genres are the tabs
     const have=new Set(dirList('genre').map(bookGenre));
-    $('#dTabs').innerHTML = !state.dList && (have.size>=2 || state.dGenre) ? `<button type="button" role="tab" data-bgenre="" aria-selected="${!state.dGenre}">${esc(t('all'))}</button>`+BOOK_GENRES.filter(g=>have.has(g) || g===state.dGenre).map(g=>`<button type="button" role="tab" data-bgenre="${g}" aria-selected="${state.dGenre===g}">${esc(t('bgn_'+g))}</button>`).join('') : '';
+    abEnsure();                                                                                    // (the service is asked once whether it has audiobooks: the tab "有声书" comes with the answer)
+    const abTab=state.ab.idx ? `<button type="button" role="tab" data-bgenre="audio" aria-selected="${state.dGenre==='audio'}">${esc(t('abTab'))}</button>` : '';
+    $('#dTabs').innerHTML = !state.dList && (have.size>=2 || state.dGenre || abTab) ? `<button type="button" role="tab" data-bgenre="" aria-selected="${!state.dGenre}">${esc(t('all'))}</button>`+BOOK_GENRES.filter(g=>have.has(g) || g===state.dGenre).map(g=>`<button type="button" role="tab" data-bgenre="${g}" aria-selected="${state.dGenre===g}">${esc(t('bgn_'+g))}</button>`).join('')+abTab : '';
     $('#dSubs').hidden=true; $('#dSubs').innerHTML='';
     return;
   }
@@ -7451,7 +7504,10 @@ function lpSongsHTML(cur, groups){
     + `<p class="lp-info"><span class="lp-n">${esc(t(isPod ? 'lpEps' : 'lpCount', items.length))}</span>${info.sub ? `<span class="lp-sub">${esc(info.sub)}</span>` : ''}</p></header>` + body + lpEndHTML(items.length, L.shown) + `</section>`;
 }
 const lpEndHTML=(n, shown)=> n>shown ? `<div class="lp-end" data-lp-end><button class="btn" type="button" data-lp-next>${esc(t('lpMoreItems',Math.min(shown,n),n))}</button></div>` : '';
-function lpOrder(mode){ const mine=lpGroups().filter(g=>g.type===mode); return mine.filter(g=>g.kind!=='style').concat(mine.filter(g=>g.kind==='style')); }          // (the lists of the day first, then the styles / categories: one row of choices)
+function lpOrder(mode){                                                                              // (the lists of the day first, then the styles / categories: one row of choices; on the podcast side the top list, then the story lists (by style and by platform), then the rest)
+  const mine=lpGroups().filter(g=>g.type===mode), top=mine.filter(g=>g.id==='pod-hot'), st=mine.filter(g=>g.id.startsWith('st-')), rest=mine.filter(g=>g.id!=='pod-hot' && !g.id.startsWith('st-'));
+  return top.concat(st, rest.filter(g=>g.kind!=='style'), rest.filter(g=>g.kind==='style'));
+}          // (the lists of the day first, then the styles / categories: one row of choices)
 /* ---- the music side: three tabs (for you / charts / discover) instead of one strip of dozens of chips. For you: my things, today's radio, shelves of play lists; charts: one row of regions and the chart of the region;
    discover: styles and scenes as cards. A list opened from the first or the third has a back arrow. The podcast side keeps its strip of lists. */
 const LP_REGIONS=['cn','west','jp-kr','global'], LP_SCENES=['chill','focus','sleep','workout','commute','study'];
@@ -7786,7 +7842,7 @@ function lpSetMode(mode){                                                       
 }
 function lpRegionFlip(){ const L=state.lp; lpRecReset(); LS.set('lpRegion', lpRegionPref()==='cn' ? 'global' : 'cn'); L.cr=''; L.cg=''; LS.set('lpCR',''); L.batch=0; lpPaint(); lpEnsure(); }
 function lpGoMy(id){ const L=state.lp; L.g=id; L.open=true; L.mode='music'; L.shown=LP_PAGE; if(L.tab==='chart') L.tab='rec'; lpPaint(); lpToTop(); }
-function listenMark(){ const cur=pl.i>=0 ? pl.q[pl.i] : '', on=plPlaying(); document.querySelectorAll('[data-ls-row]').forEach(r=>r.classList.toggle('is-playing', on && cur==='tmp:ls:'+r.dataset.lsRow)); }
+function listenMark(){ const cur=pl.i>=0 ? pl.q[pl.i] : '', on=plPlaying(); document.querySelectorAll('[data-ls-row]').forEach(r=>r.classList.toggle('is-playing', on && cur==='tmp:ls:'+r.dataset.lsRow)); abMark(); }
 function listenTmp(x){                                                                              // a song as the player takes it (an item that is only being played, kept nowhere)
   const id='tmp:ls:'+x.id; lpSeen.set(x.id,x);
   if(!state.tmp.get(id)) state.tmp.set(id,{id, source:'tmp', type:'link', url:x.id.startsWith('pod:') ? x.url : '', title:x.title, summary:x.lic ? [x.artist, x.lic, x.lic.includes(x.from) ? '' : x.from].filter(Boolean).join(' · ') : '', image:x.cover||'',
@@ -7887,6 +7943,117 @@ lsMenu.addEventListener('submit',e=>{
   const f=e.target.closest('[data-lsm-new]'); if(!f) return; e.preventDefault();
   const x=lpSeen.get(lsMenu.dataset.id); if(!x) return;
   const l=lpListNew(f.querySelector('input').value); lpListAdd(l.id,x); toast(t('lsmAdded',l.name)); lsMenu.close(); if(state.lp.open) lpPaint();
+});
+/* ================= audiobooks ("有声书"): a tab among the genres of the picked books =================
+   An audiobook is not a podcast: it has a beginning and an end, it is heard in order (the first chapter first, one chapter after the other) and picked up where it was left. The service (/api/listen?books=1 and ?book=<id>)
+   lists a few books that are public domain or the broadcaster's own, and gives all the chapters of one. A chapter plays in the bar as an episode does (speed, back 15 / on 30), the chapters of the book are the list of the bar,
+   and what is kept on this device (archive.abLast: the chapter each book was left at; plProg: how far each chapter was heard) lets "carry on" begin where it was left. */
+const abLast=()=>{ const o=LS.get('abLast',{}); return o && typeof o==='object' && !Array.isArray(o) ? o : {}; };
+const abTitle=b=>state.lang==='zh' ? b.title : (b.title_en || b.title);
+const abHours=n=>{ const h=n/3600; return h>=1 ? t('abHours',Math.round(h*10)/10) : t('abMins',Math.max(1,Math.round(n/60))); };
+function abCleanBook(b){
+  const s=v=>typeof v==='string' ? v : '';
+  if(!b || typeof b!=='object' || !/^[a-z0-9-]{2,24}$/.test(s(b.id)) || !s(b.title)) return null;
+  return {id:b.id, title:cut(s(b.title),80), title_en:cut(s(b.title_en)||s(b.title),100), author:cut(s(b.author),60), narrator:cut(s(b.narrator),60), lang:b.lang==='zh'?'zh':'en', style:(Array.isArray(b.style)?b.style:[]).map(String).filter(x=>/^[a-z]{2,12}$/.test(x)).slice(0,3),
+          rights:b.rights==='broadcaster'?'broadcaster':'public-domain', net:b.net==='global'?'global':'cn', source:cut(s(b.source),30), cover:s(b.cover).startsWith('https://')?s(b.cover):'', summary:cut(s(b.summary),200), n:Math.max(0,Math.floor(+b.n)||0), secs:Math.max(0,Math.floor(+b.secs)||0), hot:Math.max(0,Math.floor(+b.hot)||0), url:httpUrl(b.url)};
+}
+function abCleanChapters(a){
+  return (Array.isArray(a) ? a : []).slice(0,600).map((c,i)=>{ if(!c || typeof c!=='object') return null; const au=httpUrl(c.audio); return au ? {n:Math.max(1,Math.floor(+c.n)||i+1), title:cut(String(c.title||''),120)||('#'+(i+1)), audio:au, dur:Math.max(0,Math.floor(+c.dur)||0)} : null; }).filter(Boolean);
+}
+async function abIndex(){                                                                           // -> true when the service has audiobooks (it is asked once; an older service answers with the lists and there is no tab)
+  const A=state.ab, api=listenApi(); if(!api) return false;
+  if(A.idx) return true; if(A.idx===false && Date.now()-A.at<60000) return false;
+  if(A.busy) return A.p;
+  A.busy=true;
+  A.p=(async()=>{
+    try{
+      const r=await fetch(api+'?books=1&lang='+state.lang,{credentials:'omit'}), d=await r.json().catch(()=>null);
+      if(!d || d.ok!==true || !Array.isArray(d.books)) throw new Error('books');
+      const books=d.books.slice(0,80).map(abCleanBook).filter(Boolean); if(!books.length) throw new Error('none');
+      A.idx={books, styles:(Array.isArray(d.styles) ? d.styles : []).slice(0,12).filter(x=>x && typeof x==='object' && /^[a-z]{2,12}$/.test(String(x.id)) && typeof x.name==='string').map(x=>({id:x.id, name:cut(x.name,20), name_en:cut(String(x.name_en||x.name),40)}))};
+    }catch(e){ A.idx=false; }
+    A.at=Date.now(); A.busy=false; return !!A.idx;
+  })();
+  return A.p;
+}
+function abEnsure(){ const A=state.ab; if(A.idx===null && !A.busy && listenApi()) abIndex().then(ok=>{ if(ok && booksPage()){ if(state.dGenre==='audio') render(); else renderDirBar(); } }); }
+async function abLoadBook(id, force){                                                               // the chapters of one book (a copy of the last visit is shown at once, the service is asked meanwhile)
+  const A=state.ab, api=listenApi(), old=A.books.get(id); if(!api) return;
+  if(old && (old.state==='load' || (old.state==='ok' && !force && Date.now()-old.t<600000))) return;
+  A.books.set(id,{...(old||{}), state:'load', t:Date.now()});
+  if(!old) lpKeptGet(api,'ab|b|'+id).then(k=>{ const cur=A.books.get(id), chs=k ? abCleanChapters(k.chapters) : []; if(!chs.length || !cur || (cur.chapters && cur.chapters.length)) return; A.books.set(id,{...cur, chapters:chs, kept:true}); abPaint(); });
+  try{
+    const r=await fetch(api+'?book='+encodeURIComponent(id)+'&lang='+state.lang,{credentials:'omit'}), d=await r.json().catch(()=>null), b=d && d.ok===true && d.book ? d.book : null, chs=b ? abCleanChapters(b.chapters) : [];
+    if(!chs.length) throw new Error('chapters');
+    A.books.set(id,{state:'ok', t:Date.now(), chapters:chs, stale:d.stale===true}); lpKeptPut(api,'ab|b|'+id,{chapters:b.chapters.slice(0,600)});
+  }catch(e){ const cur=A.books.get(id); A.books.set(id,{state:'err', t:Date.now(), chapters:(cur && cur.chapters) || []}); }
+  abPaint();
+}
+const abProg=(id,n)=>{ const p=plProgMap()['tmp:ls:ab:'+id+':'+n]; return p ? {pct:p[2] ? 100 : p[1] ? Math.min(100,Math.round(p[0]/p[1]*100)) : 0, done:!!p[2]} : {pct:0, done:false}; };
+function abNote(pid){                                                                               // the book remembers the chapter that was begun last
+  const m=/^tmp:ls:ab:([a-z0-9-]+):(\d+)$/.exec(pid); if(!m) return;
+  const o=abLast(); o[m[1]]={n:+m[2], at:Date.now()}; const ks=Object.keys(o); if(ks.length>200) ks.sort((a,b)=>o[a].at-o[b].at).slice(0,ks.length-200).forEach(k=>delete o[k]);
+  LS.set('abLast',o); if(state.ab.open && $('#abRoot')) abPaint();
+}
+function abMark(){ const A=state.ab, cur=pl.i>=0 ? pl.q[pl.i] : '', on=plPlaying(); document.querySelectorAll('#abRoot [data-ab-ch]').forEach(r=>{ const pid='tmp:ls:ab:'+A.open+':'+r.dataset.abCh; r.classList.toggle('is-cur',cur===pid); r.classList.toggle('is-playing',on && cur===pid); }); }
+function abSong(b, c){                                                                              // a chapter as the player takes it: an episode (speed, back 15 / on 30) of the book
+  return {id:'ab:'+b.id+':'+c.n, title:c.title, artist:abTitle(b), cover:b.cover, dur:c.dur, mode:'stream', audio:c.audio, url:'', lic:t(b.rights==='broadcaster' ? 'abRtB' : 'abRtP'), from:b.source || abTitle(b), net:'any', preview:false, need:false, cands:[], pod:true, date:'', show:''};
+}
+function abPlay(id, n, fromStart){
+  const A=state.ab, meta=A.idx && A.idx.books.find(b=>b.id===id), e=A.books.get(id); if(!meta || !e || !e.chapters || !e.chapters.length) return;
+  const ids=e.chapters.map(c=>listenTmp(abSong(meta,c))), want='tmp:ls:ab:'+id+':'+n, k=ids.indexOf(want); if(k<0) return;
+  if(!(pl.q.length===ids.length && ids.every((v,j)=>pl.q[j]===v))){ pl.q=ids; plNewRound(); }              // (the chapters of the book are the list of the bar, the first chapter first)
+  pl.closed=false;
+  if(fromStart){ const m=plProgMap(); delete m[want]; LS.set('plProg',m); }
+  plLoad(k,true,fromStart ? 0 : undefined);
+}
+function abMeta(b, chs){ const n=chs.length || b.n, secs=chs.reduce((a,c)=>a+c.dur,0) || b.secs; return [n ? t('abChapters',n) : '', secs ? abHours(secs) : ''].filter(Boolean).join(' · '); }
+function abCardHTML(b){
+  const cover=b.cover ? `<img src="${esc(b.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : lpNoteCover(b.id), last=abLast()[b.id];
+  return `<button class="ab-card" type="button" data-ab-open="${esc(b.id)}"><span class="ab-cv">${cover}${b.hot>0 && b.hot<=3 ? `<em class="ab-hot">${esc(t('abHot'))}</em>` : ''}</span><span class="ab-t"><b>${esc(abTitle(b))}</b><span class="ab-by">${esc([b.author,b.narrator].filter(Boolean).join(' · '))}</span><span class="ab-m">${esc(abMeta(b,[]))}${last ? ' · '+esc(t('abAt',last.n)) : ''}${b.net==='global' ? `<em class="ab-gl" title="${esc(t('abGlobalTip'))}">${esc(t('abGlobal'))}</em>` : ''}</span></span></button>`;
+}
+function abListHTML(){
+  const A=state.ab, lf=dirLf(), all=A.idx.books, books=all.filter(b=>(lf==='all' || b.lang===lf) && (!A.style || b.style.includes(A.style))).slice().sort((a,b)=>(a.hot||1e6)-(b.hot||1e6));
+  const sts=[{id:'', name:t('all'), name_en:t('all')}].concat(A.idx.styles.filter(x=>all.some(b=>b.style.includes(x.id))));
+  const lastId=Object.keys(abLast()).sort((a,b)=>abLast()[b].at-abLast()[a].at).find(id=>all.some(b=>b.id===id)), lb=lastId ? all.find(b=>b.id===lastId) : null;
+  return `<p class="dr-note ab-intro">${esc(t('abIntro'))}</p>`
+    + (lb ? `<button class="btn dr-act ab-resume" type="button" data-ab-open="${esc(lb.id)}" data-ab-resume="1">${ICON.play}<span>${esc(t('abResume',abTitle(lb),abLast()[lb.id].n))}</span></button>` : '')
+    + `<div class="dr-pickcols ab-styles" role="tablist" aria-label="${esc(t('abTab'))}">${sts.map(x=>`<button class="dr-chip" type="button" role="tab" data-ab-style="${esc(x.id)}" aria-pressed="${x.id===A.style}">${esc(state.lang==='zh' ? x.name : x.name_en)}</button>`).join('')}</div>`
+    + (books.length ? `<div class="ab-grid">${books.map(abCardHTML).join('')}</div>` : `<p class="hot-state">${esc(t('hotEmpty'))}</p>`);
+}
+function abBookHTML(id){
+  const A=state.ab, meta=A.idx.books.find(b=>b.id===id); if(!meta){ A.open=''; return abListHTML(); }
+  const e=A.books.get(id) || {state:'load', chapters:[]}, chs=e.chapters || [], last=abLast()[id], cur=pl.q[pl.i] || '', on=plPlaying();
+  const cover=meta.cover ? `<img src="${esc(meta.cover)}" alt="" referrerpolicy="no-referrer">` : lpNoteCover(meta.id);
+  const lastN=last && chs.some(c=>c.n===last.n) ? last.n : 0, nextN=lastN && abProg(id,lastN).done && chs.some(c=>c.n===lastN+1) ? lastN+1 : lastN;
+  const go=chs.length ? `<button class="btn dr-act primary ab-go" type="button" data-ab-go="${nextN || chs[0].n}">${ICON.play}<span>${esc(nextN ? t('abGoLast',nextN) : t('abGoStart'))}</span></button>` + (nextN ? `<button class="btn dr-act" type="button" data-ab-go="${chs[0].n}" data-ab-from="1">${esc(t('abGoStart'))}</button>` : '') : '';
+  const body=!chs.length ? (e.state==='err' ? `<p class="hot-state">${esc(t('abErr'))}<br><button class="btn" type="button" data-ab-retry>${esc(t('dirRetry'))}</button></p>` : `<p class="hot-state" aria-busy="true">${esc(t('lpLoading'))}</p>`)
+    : `<ol class="ab-chs">${chs.map(c=>{ const p=abProg(id,c.n), pid='tmp:ls:ab:'+id+':'+c.n; return `<li class="ab-ch${pid===cur ? ' is-cur' : ''}${pid===cur && on ? ' is-playing' : ''}" data-ab-ch="${c.n}"><button type="button" data-ab-play="${c.n}"><span class="ab-n">${c.n}</span><span class="ab-ct">${esc(c.title)}</span><span class="ab-d">${p.done ? '✓' : c.dur ? esc(fmtDur(c.dur)) : ''}</span>${p.pct && !p.done ? `<i class="ab-pg" style="--p:${p.pct}%"></i>` : ''}</button></li>`; }).join('')}</ol>`;
+  return `<section class="ab-book"><header class="ab-bh"><button class="plp-ic lp-back" type="button" data-ab-back aria-label="${esc(t('lpBack'))}">${LP_BACK}</button></header>`
+    + `<div class="ab-hero"><span class="ab-cv">${cover}</span><div class="ab-ht"><h3>${esc(abTitle(meta))}</h3><p class="ab-by">${esc([meta.author,meta.narrator].filter(Boolean).join(' · '))}</p><p class="ab-m">${esc(abMeta(meta,chs))}</p><div class="ab-acts">${go}</div></div></div>`
+    + (meta.summary ? `<p class="ab-sum">${esc(meta.summary)}</p>` : '') + `<p class="ab-rt">${esc(t(meta.rights==='broadcaster' ? 'abRtB' : 'abRtP'))}${meta.source ? ' · '+esc(t('abFrom',meta.source)) : ''}${meta.net==='global' ? ' · '+esc(t('abGlobalTip')) : ''}</p>` + (e.stale ? `<p class="dr-note">${esc(t('abStale'))}</p>` : '') + body + `</section>`;
+}
+function abHTML(){
+  const A=state.ab;
+  if(A.idx===null) return `<p class="hot-state" aria-busy="true">${esc(t('lpLoading'))}</p>`;
+  if(!A.idx) return `<p class="hot-state">${esc(t('abNone'))}</p>`;
+  return A.open ? abBookHTML(A.open) : abListHTML();
+}
+function abPaint(){ const r=$('#abRoot'); if(r){ r.innerHTML=abHTML(); abMark(); } }
+function renderAudioPage(){
+  $('#grid').innerHTML=''; $('#empty').hidden=true; $('#moreRow').hidden=true; state.dirAbove=null; if($('#reader').hidden) state.visible=[];
+  $('#viewTitle').textContent=t('abTitle'); $('#viewSub').textContent=''; $('#dirReco').hidden=false; $('#dirReco').innerHTML='<div id="abRoot"></div>'; abPaint();
+  abIndex().then(()=>{ if(booksPage() && state.dGenre==='audio'){ const A=state.ab; if(A.open && A.idx) abLoadBook(A.open); abPaint(); } });
+}
+document.addEventListener('click',e=>{
+  const q=s=>e.target.closest && e.target.closest(s), A=state.ab; let b;
+  if(!q('#abRoot')) return;
+  if((b=q('[data-ab-open]'))){ A.open=b.dataset.abOpen; abLoadBook(A.open).then(()=>{ if(b.dataset.abResume){ const ch=(A.books.get(A.open)||{}).chapters||[], last=abLast()[A.open]; if(last && ch.some(c=>c.n===last.n)) abPlay(A.open, abProg(A.open,last.n).done && ch.some(c=>c.n===last.n+1) ? last.n+1 : last.n); } }); abPaint(); window.scrollTo({top:0}); return; }
+  if(q('[data-ab-back]')){ A.open=''; abPaint(); window.scrollTo({top:0}); return; }
+  if((b=q('[data-ab-style]'))){ A.style=b.dataset.abStyle; abPaint(); return; }
+  if(q('[data-ab-retry]')){ abLoadBook(A.open,true); abPaint(); return; }
+  if((b=q('[data-ab-go]'))){ abPlay(A.open, +b.dataset.abGo, b.dataset.abFrom==='1'); return; }
+  if((b=q('[data-ab-play]'))){ abPlay(A.open, +b.dataset.abPlay, false); }
 });
 function listenClick(e){
   const q=s=>e.target.closest(s); let b;
@@ -8574,6 +8741,7 @@ function renderDir(){
   const tk=tokens(), forType=dirList('type'), counts={}; forType.forEach(it=>{ const k=dirTypeOf(it); counts[k]=(counts[k]||0)+1; });
   const home=dirIsHome(), hot=home && state.dHot && !!hotBase(), listenOn=lpAvailable(), listen=home && state.dListen && listenOn && !hot, discover=home && !state.dBrowse && !hot && !listen;          // the first level of the public space is a discovery page; everything else (all sources, platforms, tags, a filter) is the second
   document.body.classList.toggle('dir-discover',discover); document.body.classList.toggle('dir-hot',hot); document.body.classList.toggle('dir-listen',listen);
+  document.body.classList.toggle('dir-audio',!hot && !listen && booksPage() && state.dGenre==='audio');          // (the audiobooks have no language filter, sort or card view: the controls of the page are not shown)
   const navRow=(k,label,on)=>`<a class="cat-btn" href="${k?'/':'/discover/'}" data-dbrowse="${k}" aria-current="${on}"><span class="dot" style="background:var(--accent)"></span><span>${esc(label)}</span></a>`;
   const row=(k,n)=>{
     const route=k==='article'?'articles':k==='video'?'watch':'';
@@ -8597,6 +8765,7 @@ function renderDir(){
 
   const bkp=booksPage(), curList=bkp && state.dList ? bookLists().find(l=>l.id===state.dList) : null;          // the picked-books page: its genres are the tabs of the one row
   renderDirBar();
+  if(bkp && state.dGenre==='audio'){ renderAudioPage(); return; }                                      // (the tab "有声书": the audiobooks, not the books of the directory)
   const found=dirList(), byDate=(a,b)=>String(b.date||'').localeCompare(String(a.date||'')), key=state.dView==='hot' ? 'heat' : state.sort; let list=found.slice();
   if(key==='title') list.sort((a,b)=>a.title.localeCompare(b.title,state.lang==='zh'?'zh-Hans-CN':'en'));
   else if(key==='read') list.sort((a,b)=>(state.dirRead[b.id]||0)-(state.dirRead[a.id]||0) || byDate(a,b));                 // what was opened here last comes first
