@@ -227,9 +227,9 @@ body.dir-discover .dir-label,body.dir-discover #dir,body.dir-discover #tagbox,bo
 .toolbar{display:flex;align-items:center;gap:8px;margin-left:auto}
 .toolbar select,.ctl-box select,.fl-slot select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:6px 8px}
 
-.view-head{max-width:1280px;padding:34px 0 18px}
-.view-head h1{font-family:var(--serif);font-weight:900;font-size:clamp(30px,3.8vw,44px);line-height:1.2;margin:0 0 6px;letter-spacing:-.01em}
-.view-head p{margin:0;color:var(--muted);font-size:15px}
+.view-head{max-width:1280px;padding:22px 0 10px}
+.view-head h1{font-family:var(--serif);font-weight:900;font-size:clamp(22px,2.4vw,28px);line-height:1.2;margin:0;letter-spacing:-.01em}
+.view-head p{margin:0;color:var(--muted);font-size:14px}
 .continue{max-width:1280px;margin:0 0 24px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .continue span{font-size:13px;color:var(--muted);margin-right:4px}
 .chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:13.5px;cursor:pointer;max-width:320px}
@@ -478,9 +478,6 @@ body.noting{overflow:hidden}
 @media(max-width:620px){.ls>.dr-note:not(.ls-sub){display:none}}
 /* the listening page: one row (music / podcasts, the sort, cards / rows), ONE strip of lists, and the songs straight under it; the title and its subtitle in one line */
 body.dir-listen #sort,body.dir-listen #viewBtn,body.dir-listen #langFilter{display:none}
-body.dir-listen .view-head,body.dir-hot .view-head{padding:22px 0 10px}
-body.dir-listen .view-head h1,body.dir-hot .view-head h1{font-size:clamp(22px,2.4vw,28px);margin:0}
-body.dir-listen .view-head p,body.dir-hot .view-head p{font-size:14px}
 .lp-bar{display:flex;flex-wrap:nowrap;align-items:center;gap:10px;margin:0 0 6px;overflow-x:auto;scrollbar-width:none}
 .lp-bar::-webkit-scrollbar{display:none}
 .lp-bar>*{flex:none}
@@ -580,7 +577,7 @@ body.dir-listen .view-head p,body.dir-hot .view-head p{font-size:14px}
 .plp-like[aria-pressed="true"]{color:var(--accent)}
 .plp-like[aria-pressed="true"] .icon{fill:currentColor}
 @media(max-width:620px){
-  body.dir-listen .view-head,body.dir-hot .view-head{padding:12px 0 6px}
+  .view-head{padding:12px 0 6px}
   .lp-strip{flex-wrap:nowrap;overflow-x:auto;margin:0 -16px 4px;padding:2px 16px;scrollbar-width:none}
   .lp-strip::-webkit-scrollbar{display:none}
   .lp-strip .x{display:inline-flex}
@@ -1439,6 +1436,17 @@ html.ptr{overscroll-behavior-y:contain}
   .grid{grid-template-columns:minmax(0,1fr);gap:16px}
   .view-head{padding-top:22px}
 }
+/* ===== one look for the controls under the heading, on every page of the public space (a computer: a finger has its own sizes above) =====
+   the two-way switch (columns | platforms, music | podcasts, today's pick | platform charts) is one switch: 36 px, square-ish corners, 14 px;
+   the row of pills (columns, styles, charts, regions) is one row of pills: 36 px, 13.5 px */
+@media (min-width:981px){
+  .hot-views{gap:0;padding:0;margin:0 0 12px;border-radius:6px;overflow:hidden}
+  .hot-views button{min-height:36px;padding:4px 14px;border-radius:0;font-weight:400}
+  .hot-views button[aria-pressed="true"]{font-weight:600}
+  .lp-modes button,#dirBar .seg button{min-height:36px;padding:4px 14px;font-size:14px;font-weight:400}
+  .lp-modes button[aria-selected="true"],#dirBar .seg button[aria-pressed="true"]{font-weight:600}
+  .hot-mode,.lp-tab,.dir-tabs button{min-height:36px;padding-top:0;padding-bottom:0;padding-inline:14px;font-size:13.5px}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
 
 /* ---------- v2 additions ---------- */
@@ -1560,7 +1568,7 @@ body.shell2 #noteBtn{display:none}                                          /* (
 .sw-classic{background:#1F7A6D}.sw-dark{background:#1B2125}.sw-cloud{background:#D8363A}
 .vh-txt{min-width:0;position:relative}
 .vh-ctl{display:none}
-body.dir-listen .vh-txt,body.dir-hot .vh-txt{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 14px}
+.vh-txt{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 14px}
 .ctl-box{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 body.dir-listen .ctl-box,body.dir-hot .ctl-box{display:none}
 @media (min-width:981px){
@@ -5094,7 +5102,7 @@ const CHANGELOG=[{v:'2026-10-22',
       '新增“反馈”：侧栏底部的“反馈”点开一个小窗，写下哪里不顺手、想要什么、哪里写错了，不用登录（站点接上反馈服务才有）。阅读指南的顶部多了“共读群”：QQ 群 869727153，二维码、群号、复制和保存都在那里，书架里指南那张卡的封面上也有。',
       '语言筛选改成一个按钮：点一下依次换，全部 → 中 → EN → 全部，按钮上写的是现在的。听歌页：“为你推荐”在宽屏分两列，右边不再空着；歌曲右边的“⋯”菜单改成在屏幕中间弹出。手机上发现世界里的主题按钮恢复了（之前被误藏，点了没有反应）。',
       '“今日听什么”能搜歌了：推荐页顶栏右边的放大镜，至少输入两个字，同时问好几个来源，每一首标明是“整首”还是“试听”。⋯ 菜单里多了“找整首”（试听的歌去找整首）和“换音源”（这首歌的每个音源列出来，点哪个就先用哪个）；没有声音地址的歌（比如抖音热歌榜）放的时候才去找声音，找到的地址过期了会自己再找，一首歌的声音全放不出来时也会再问一次。有歌词的歌，“正在播放”里列表旁边多一格“歌词”：当前这句高亮，点一句跳到那里（设置里可以关）。“为你推荐”现在会学你的口味：喜欢、听完、点“不想听这类”、很快切走都会记一笔（只记在这台设备上，30 天减半，“清除这台设备上的听歌记录”一键清掉），国内读者七成是国内的歌，每五首里有一首是没听过的歌手；第一次会问你爱听什么。原来只有 30 秒试听的歌，在国内会先去找整首（波点等来源），找不到才放试听；手机流量下放很大的整首（约 30 MB）不再弹窗，播放条上用小字写一句“手机流量 · 约 30 MB”。',
-      '新增故事类播客：“今日听什么 → 播客”里，热门播客后面是故事的几张列表——悬疑怪谈、真实罪案、真实故事、历史野史、睡前故事，以及喜马拉雅、小宇宙、荔枝FM 的故事热门（各平台节目在 Apple 播客中国榜上的位置）；“推荐订阅”里多了一组“故事 · 悬疑 · 睡前”，公共目录也收了几个，带“故事”标签。“精选图书”里多了“有声书”：第 1 章在前、一章一章往后放、放完自动放下一章、“接着听”回到上次的章和秒、一章放不了不会跳过去；只收公版的书和电台自己的节目（《红楼梦》《西游记》《水浒传》《聊斋志异》，和 LibriVox 的经典与故事；LibriVox 的声音在国外，标“海外”）。'],
+      '新增故事类播客：“今日听什么 → 播客”里，热门播客后面是故事的几张列表——悬疑怪谈、真实罪案、真实故事、历史野史、轻松段子、睡前故事，以及喜马拉雅、小宇宙、荔枝FM 的故事热门（各平台节目在 Apple 播客中国榜上的位置）；“推荐订阅”里多了一组“故事 · 悬疑 · 段子 · 睡前”，热榜那一组也多了抖音、头条、小红书、公众号、微信读书、起点、QQ 音乐、Apple 播客榜、36氪、雪球、豆瓣的榜单，公共目录也收了几个，带“故事”标签。“精选图书”里多了“有声书”：第 1 章在前、一章一章往后放、放完自动放下一章、“接着听”回到上次的章和秒、一章放不了不会跳过去；只收公版的书和电台自己的节目（《红楼梦》《西游记》《水浒传》《聊斋志异》，“民国往事”里的《金粉世家》《骆驼祥子》《啼笑因缘》《四世同堂》《民国风云史》《闲话上海滩》等，和 LibriVox 的经典与故事；LibriVox 的声音在国外，标“海外”）。各页的标题、标题下的开关和按钮统一了样子：标题不再一页大一页小。'],
   en:['New: “Back up & restore”: export the files, collections, subscriptions and reading places you added into one file, and restore it when you change device or fear a loss.',
       'Subscribed and saved links can now be read in the page: when a feed carries the full text it is shown at once; otherwise, and for any article link you paste and for the articles of the public directory, the original page is read and shown here and kept in your browser. Pages that need a login or do not let programs read them still open the original site (the card says “Original only”).',
       'New in the reading settings: “Download as a web page (HTML)” and “Print / save as PDF”.',
@@ -5138,7 +5146,7 @@ const CHANGELOG=[{v:'2026-10-22',
       'New: “Feedback”: the link at the foot of the side list opens a small window where you can write what is awkward, what you would like or what is wrong, with no sign-in (it shows when the site has the feedback service). The top of the user guide now has the “reading group”: QQ group 869727153, with its QR code, the number, copy and save, and the guide’s card on the shelf shows it on its cover too.',
       'The language of the content is one button now: each tap the next, All → 中 → EN → All, and it says which is on. On the listening page the songs for you are two columns on a wide screen, so nothing is left blank at the right, and the “⋯” menu of a song opens in the middle of the screen. On a phone the theme button works again in the public space (it had been hidden there by mistake).',
       'What to listen to today can search: the magnifier at the right end of the bar of the music side, two letters at least; several sources are asked at once and each song says “Full” or “Preview”. The “⋯” menu has “Find the full song” (for a preview) and “Change source” (every source of the song is listed, the one you tap comes first); a song with no sound yet (the Douyin chart, for one) gets its sound when it is played, an address that has run out is looked for again by itself, and when every sound of a song fails the service is asked once more. A song with lyrics has a “Lyrics” tab beside the list in “Now playing”: the line that is sung is lit, a tap on a line goes there (a switch in the settings turns it off). “For you” learns your taste now: a like, a song heard to the end, “not this kind” and a quick skip each count (kept on this device only, half the weight after 30 days, and “clear the records of this device” clears it); a reader in China gets seven in ten Chinese songs, and every fifth song is an artist you have not heard; the first time you are asked what you like. In China a song that used to have only a 30-second preview is first looked for as a whole song (Bodian and the others) and the preview plays only when none is found; on mobile data a very big whole song (about 30 MB) no longer asks, the bar says “Mobile data · about 30 MB” in small letters.',
-      'Story podcasts: under “What to listen to today → Podcasts”, after the top list there are lists of stories — mystery, true crime, true stories, history tales, bedtime stories — and the hot stories of Ximalaya, Xiaoyuzhou and Lizhi FM (where the shows of each platform stand on Apple Podcasts’ China chart); “Recommended subscriptions” has a group “Stories · mystery · bedtime”, and the public directory took in a few, tagged “故事”. “Picked books” has “Audiobooks”: the first chapter first, chapter after chapter, the next one by itself, “Carry on” goes back to the chapter and the second you left, and a chapter that does not play is not skipped; only public-domain books and a broadcaster’s own programmes (Dream of the Red Chamber, Journey to the West, Water Margin, Strange Tales from a Chinese Studio, and LibriVox’s classics and stories; LibriVox’s sounds are abroad, marked “Overseas”).']}];
+      'Story podcasts: under “What to listen to today → Podcasts”, after the top list there are lists of stories — mystery, true crime, true stories, history tales, funny talk, bedtime stories — and the hot stories of Ximalaya, Xiaoyuzhou and Lizhi FM (where the shows of each platform stand on Apple Podcasts’ China chart); “Recommended subscriptions” has a group “Stories · mystery · funny talk · bedtime” and its hot-lists group has the charts of Douyin, Toutiao, Xiaohongshu, WeChat articles, WeRead, Qidian, QQ Music, Apple Podcasts, 36Kr, Xueqiu and Douban, and the public directory took in a few, tagged “故事”. “Picked books” has “Audiobooks”: the first chapter first, chapter after chapter, the next one by itself, “Carry on” goes back to the chapter and the second you left, and a chapter that does not play is not skipped; only public-domain books and a broadcaster’s own programmes (Dream of the Red Chamber, Journey to the West, Water Margin, Strange Tales from a Chinese Studio, and LibriVox’s classics and stories; LibriVox’s sounds are abroad, marked “Overseas”).']}];
 const guideItem = () => state.items.find(x=>(x.source==='static'||x.source==='server') && /(^|\/)notes\/guide\/index\.html$/.test(x.id));
 const canAsk=()=>!!state.dirCfg && !LS.get('dirIntroOff',0) && !state.dPickT.size;               // the question "what do you feel like reading?" is for somebody who has not answered it, where the site has a public space
 function introStep(n, ask){                                                                  // which buttons go with which step of the window

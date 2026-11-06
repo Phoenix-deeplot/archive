@@ -62,6 +62,11 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   const feedKey = u => u.replace(/^https?:\/\//, '').replace(/\/$/, '');
   ok('every show of it is valid: an id nobody else has, a name, a feed address, a line of why in both languages, tags; and a feed that no other group has', mine.every(i => /^pod-st-[a-z0-9]+$/.test(i.id) && i.name && /^https?:\/\//.test(i.feed) && i.zh && i.en && i.podcast === true && i.lang === 'zh' && i.tags.length >= 2)
     && new Set(mine.map(i => i.id)).size === mine.length && !mine.some(i => others.some(o => o.id === i.id)) && new Set(mine.map(i => feedKey(i.feed))).size === mine.length && !mine.some(i => others.some(o => feedKey(o.feed) === feedKey(i.feed))), mine.filter(i => others.some(o => feedKey(o.feed) === feedKey(i.feed))).map(i => i.id));
+  ok('the funny talk shows are in the group, tagged as such', mine.filter(i => i.tags.includes('轻松段子')).length >= 3, mine.map(i => i.name));
+  const hotGroup = rec.groups.find(x => x.id === 'hot').items.filter(i => /^hot:/.test(i.feed));
+  ok('the hot group has the charts of other platforms (the lists that hotapi.py has): each a "hot:<id>" feed, an id and a feed that are used once, both languages, a home page, tags',
+    hotGroup.length >= 18 && ['douyin', 'toutiao', 'weread_rising', 'qqmusic', 'apple_pod_cn', 'kr36'].every(p => hotGroup.some(i => i.feed === 'hot:' + p))
+    && new Set(hotGroup.map(i => i.feed)).size === hotGroup.length && hotGroup.every(i => i.id.startsWith('hot-') && i.zh && i.en && /^https:\/\//.test(i.home) && i.tags.length >= 2), hotGroup.map(i => i.feed));
   ok('no errors in the page', errs.length === 0, errs);
   await fetch(SVC + '/__listen?mode=ok&reset=1');
   console.log(`${pass} passed, ${fail} failed`);

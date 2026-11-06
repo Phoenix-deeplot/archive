@@ -147,6 +147,248 @@
      "rank": 0
     },
     {
+     "id": "hot-douyin",
+     "name": "抖音热点",
+     "name_en": "Douyin hot topics",
+     "zh": "抖音当前的热点话题，每个条目是一个话题，点开去抖音。",
+     "en": "The hot topics on Douyin right now; each entry is a topic.",
+     "home": "https://www.douyin.com/hot",
+     "feed": "hot:douyin",
+     "lang": "zh",
+     "tags": [
+      "社交",
+      "视频",
+      "热榜"
+     ],
+     "tags_en": [
+      "social",
+      "video",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-toutiao",
+     "name": "今日头条热榜",
+     "name_en": "Toutiao hot board",
+     "zh": "今日头条的热点新闻榜。",
+     "en": "The hot news board of Toutiao.",
+     "home": "https://www.toutiao.com/",
+     "feed": "hot:toutiao",
+     "lang": "zh",
+     "tags": [
+      "新闻",
+      "热榜"
+     ],
+     "tags_en": [
+      "news",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-xiaohongshu",
+     "name": "小红书热门",
+     "name_en": "Xiaohongshu hot notes",
+     "zh": "小红书当前最热的笔记话题（经第三方榜单汇总）。",
+     "en": "The hottest note topics on Xiaohongshu (gathered by a third-party chart).",
+     "home": "https://www.xiaohongshu.com/explore",
+     "feed": "hot:xiaohongshu",
+     "lang": "zh",
+     "tags": [
+      "社交",
+      "生活",
+      "热榜"
+     ],
+     "tags_en": [
+      "social",
+      "life",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-wechat",
+     "name": "公众号热文",
+     "name_en": "WeChat hot articles",
+     "zh": "微信公众号当前最热的文章（经第三方榜单汇总）。",
+     "en": "The hottest articles of WeChat official accounts (gathered by a third-party chart).",
+     "home": "https://weixin.sogou.com/",
+     "feed": "hot:wechat",
+     "lang": "zh",
+     "tags": [
+      "文章",
+      "热榜"
+     ],
+     "tags_en": [
+      "articles",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-weread-rising",
+     "name": "微信读书 · 飙升榜",
+     "name_en": "WeRead · rising books",
+     "zh": "微信读书里最近读的人增长最快的书。",
+     "en": "The books whose readers on WeRead are growing fastest.",
+     "home": "https://weread.qq.com/web/category/rising",
+     "feed": "hot:weread_rising",
+     "lang": "zh",
+     "tags": [
+      "书籍",
+      "阅读",
+      "热榜"
+     ],
+     "tags_en": [
+      "books",
+      "reading",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-weread-novel",
+     "name": "微信读书 · 小说榜",
+     "name_en": "WeRead · novels",
+     "zh": "微信读书的小说热门榜。",
+     "en": "The popular novels on WeRead.",
+     "home": "https://weread.qq.com/web/category/100000",
+     "feed": "hot:weread_novel",
+     "lang": "zh",
+     "tags": [
+      "书籍",
+      "小说",
+      "热榜"
+     ],
+     "tags_en": [
+      "books",
+      "novels",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-qidian",
+     "name": "起点中文网热榜",
+     "name_en": "Qidian novels",
+     "zh": "起点中文网的网络小说热榜。",
+     "en": "The web-novel hot list of Qidian.",
+     "home": "https://www.qidian.com/rank/",
+     "feed": "hot:qidian",
+     "lang": "zh",
+     "tags": [
+      "小说",
+      "网文",
+      "热榜"
+     ],
+     "tags_en": [
+      "novels",
+      "web novels",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-qqmusic",
+     "name": "QQ 音乐飙升榜",
+     "name_en": "QQ Music: rising songs",
+     "zh": "QQ 音乐飙升榜：最近热度上升最快的歌曲。",
+     "en": "QQ Music’s “rising” chart: the songs whose popularity is growing fastest.",
+     "home": "https://y.qq.com/n/ryqq/toplist/62",
+     "feed": "hot:qqmusic",
+     "lang": "zh",
+     "tags": [
+      "音乐",
+      "热榜"
+     ],
+     "tags_en": [
+      "music",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-apple-pod-cn",
+     "name": "Apple 播客榜 · 中国",
+     "name_en": "Apple Podcasts · China",
+     "zh": "Apple 播客中国区的节目榜，看现在大家在听什么播客。",
+     "en": "The chart of podcasts in Apple Podcasts China: what people are listening to now.",
+     "home": "https://podcasts.apple.com/cn/charts",
+     "feed": "hot:apple_pod_cn",
+     "lang": "zh",
+     "tags": [
+      "播客",
+      "热榜"
+     ],
+     "tags_en": [
+      "podcasts",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-kr36",
+     "name": "36氪 24 小时热榜",
+     "name_en": "36Kr 24-hour hot list",
+     "zh": "36氪一天里读得最多的科技与创业文章。",
+     "en": "The most read tech and startup articles of 36Kr in a day.",
+     "home": "https://36kr.com/hot-list/catalog",
+     "feed": "hot:kr36",
+     "lang": "zh",
+     "tags": [
+      "科技",
+      "创业",
+      "热榜"
+     ],
+     "tags_en": [
+      "tech",
+      "startups",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-xueqiu",
+     "name": "雪球热帖",
+     "name_en": "Xueqiu hot posts",
+     "zh": "雪球社区当前最热的投资讨论。",
+     "en": "The hottest investment discussions on Xueqiu.",
+     "home": "https://xueqiu.com/",
+     "feed": "hot:xueqiu",
+     "lang": "zh",
+     "tags": [
+      "财经",
+      "社区",
+      "热榜"
+     ],
+     "tags_en": [
+      "finance",
+      "community",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
+     "id": "hot-douban-movie",
+     "name": "豆瓣新片榜",
+     "name_en": "Douban new films",
+     "zh": "豆瓣的新片口碑榜。",
+     "en": "Douban’s chart of new films.",
+     "home": "https://movie.douban.com/chart",
+     "feed": "hot:douban_movie",
+     "lang": "zh",
+     "tags": [
+      "电影",
+      "热榜"
+     ],
+     "tags_en": [
+      "films",
+      "hot list"
+     ],
+     "rank": 0
+    },
+    {
      "id": "hn",
      "name": "Hacker News 头版",
      "name_en": "Hacker News front page",
@@ -697,8 +939,8 @@
   },
   {
    "id": "stories-zh",
-   "zh": "故事 · 悬疑 · 睡前（每个都能先点“试听”，再决定订阅）",
-   "en": "Stories · mystery · bedtime (press “Listen” first, subscribe after)",
+   "zh": "故事 · 悬疑 · 段子 · 睡前（每个都能先点“试听”，再决定订阅）",
+   "en": "Stories · mystery · funny talk · bedtime (press “Listen” first, subscribe after)",
    "podcast": true,
    "items": [
     {
@@ -969,6 +1211,90 @@
      "tags_en": [
       "stories",
       "mystery & the uncanny"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-st-nvwang",
+     "name": "女王有药丨爆笑段子电台",
+     "name_en": "女王有药丨爆笑段子电台",
+     "zh": "新闻趣事和爆笑段子，七百多期，每天更新。",
+     "en": "Odd news and funny stories, over seven hundred episodes, new ones every day.",
+     "home": "https://podcasts.apple.com/cn/podcast/id1089113037",
+     "feed": "http://www.ximalaya.com/album/3545715.xml",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "轻松段子"
+     ],
+     "tags_en": [
+      "stories",
+      "funny talk & jokes"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-st-laot",
+     "name": "吐槽脱口秀老T",
+     "name_en": "吐槽脱口秀老T",
+     "zh": "一个人的吐槽脱口秀，一千多期，天天有。",
+     "en": "A one-man comedy talk show, over a thousand episodes, daily.",
+     "home": "https://podcasts.apple.com/cn/podcast/id1430944128",
+     "feed": "http://rss.lizhi.fm/rss/510347.xml",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "轻松段子"
+     ],
+     "tags_en": [
+      "stories",
+      "funny talk & jokes"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-st-sanyan",
+     "name": "三言两语 | 脱口秀演员闲谈录",
+     "name_en": "三言两语 | 脱口秀演员闲谈录",
+     "zh": "脱口秀演员聊天，聊段子是怎么写出来的，也聊生活。",
+     "en": "Stand-up comedians talk about how jokes are written, and about life.",
+     "home": "https://podcasts.apple.com/cn/podcast/id1589571397",
+     "feed": "https://www.ximalaya.com/album/51231816.xml",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "轻松段子"
+     ],
+     "tags_en": [
+      "stories",
+      "funny talk & jokes"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-st-duanzi",
+     "name": "段子来了",
+     "name_en": "段子来了",
+     "zh": "一千多期的段子和搞笑故事。",
+     "en": "Over a thousand episodes of jokes and funny stories.",
+     "home": "https://podcasts.apple.com/cn/podcast/id693925097",
+     "feed": "http://www.ximalaya.com/album/203355.xml",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "轻松段子"
+     ],
+     "tags_en": [
+      "stories",
+      "funny talk & jokes"
      ],
      "rank": 0,
      "full": false,
