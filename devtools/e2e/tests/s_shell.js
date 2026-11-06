@@ -1,15 +1,16 @@
 // e2e: the new shell (?shell=2). A phone (a window up to 980 px): a bottom bar, ONE strip of sections (a swipe moves along it), a row of tools, a filter panel, a "+" sheet, the collections as a chip, the side list as the settings (the player no longer covers it), the language in the top bar, no sign-in;
-// themes: THREE (经典, 深色, 云红), a button beside the settings; a theme changes the colours, the font of the headings, the line of the icons and the corners together; the bottom bar in the colour of the theme; "写笔记": a pill in the corner on a wide screen, a row of the + on a phone, in both spaces
+// themes: THREE (经典, 深色, 云红), one tap on the phone's theme button cycles them; a theme changes the colours, the font of the headings, the line of the icons and the corners together; the bottom bar in the colour of the theme; "写笔记": a pill in the corner on a wide screen, a row of the + on a phone, in both spaces
 // wide screens: the side list can be hidden, sort / language / view / tags beside the list (my shelf has no list of titles and no tags in the side list). The new shell is the default (a home-screen app on an iPhone cannot take a switch in the address); ?shell=1 is the old page.
 const { connect, sleep } = require('../cdp');
 const { writeDir } = require('../dir_fixture.js');
-const BASE = 'http://127.0.0.1:8820/', SVC = 'http://127.0.0.1:8840';
+const APP_PORT = process.env.E2E_APP_PORT || '8820', HOT_PORT = process.env.E2E_HOT_PORT || '8840', CDP_PORT = Number(process.env.E2E_CDP_PORT || 9444);
+const BASE = `http://127.0.0.1:${APP_PORT}/`, APP_ORIGIN = `http://127.0.0.1:${APP_PORT}`, SVC = `http://127.0.0.1:${HOT_PORT}`;
 let pass = 0, fail = 0;
 const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name); } else { fail++; console.log('FAIL', name, extra === undefined ? '' : JSON.stringify(extra).slice(0, 600)); } };
 const get = p => fetch(SVC + p).then(r => r.json());
 
 (async () => {
-  const c = await connect(9444, { newShell: true });
+  const c = await connect(CDP_PORT, { newShell: true });
   const settle = await require('../settle')(c);
   c.autoDialog(true, []);
   const errs = [];
@@ -18,7 +19,7 @@ const get = p => fetch(SVC + p).then(r => r.json());
   const J = expr => c.js(`(()=>{ const {state,LS,pl,plAudio,plStop,idb,addCollection,loadAll,render,openReader}=window.__zt||{}; return eval(${JSON.stringify(expr)}); })()`);
   const waitFor = async (expr, ms = 9000) => { const t0 = Date.now(); for (;;) { const v = await J(expr); if (v || Date.now() - t0 > ms) return v; await sleep(120); } };
   const fresh = async (flag = '&shell=2', lang = 'zh') => {
-    await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE + '?lang=' + lang + flag, 0); await settle(1500);
+    await c.goto('about:blank', 200); await c.clearSite(APP_ORIGIN); await c.goto(BASE + '?lang=' + lang + flag, 0); await settle(1500);
     await J(`localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver','"2026-10-22"'); localStorage.setItem('archive.dirIntroOff','1'); localStorage.setItem('archive.guideTipOff','1')`);
     await c.goto(BASE, 0); await settle(2800);
   };
@@ -55,22 +56,22 @@ const get = p => fetch(SVC + p).then(r => r.json());
   ok('the bar (top bar, strip, row of tools) is fixed to the top of the screen', b0.pos === 'sticky', b0);
   const tc0 = await tabcol(), ac0 = await accent();
   ok('the bottom bar: the one that is on has the colour of the theme (bold, a small bar over it), the other one is grey, the + has the colour of the theme too', tc0.on === ac0 && tc0.off !== ac0 && tc0.plus === ac0 && +tc0.w >= 600, [tc0, ac0]);
-  await J(`document.querySelector('#themeTop').click()`); await sleep(300);
-  const look = () => J(`(()=>{ const cs=s=>getComputedStyle(document.querySelector(s)); return {th:document.documentElement.getAttribute('data-theme'), stored:LS.get('theme',''), accent:getComputedStyle(document.documentElement).getPropertyValue('--accent').trim().toLowerCase(), bg:getComputedStyle(document.body).backgroundColor, font:cs('#viewTitle').fontFamily, stroke:cs('#tabbar .icon').strokeWidth, card:cs('#grid .card').borderTopLeftRadius, btn:document.querySelector('#themeBtn').textContent, open:!document.querySelector('#themePop').hidden}; })()`);
-  const thp = await J(`({open:!document.querySelector('#themePop').hidden, rows:document.querySelectorAll('#themePop .fl-row').length, chips:[...document.querySelectorAll('#themePop button')].map(b=>b.textContent.trim()).join('|'), h:Math.min(...[...document.querySelectorAll('#themePop button')].map(b=>Math.round(b.getBoundingClientRect().height))), on:[...document.querySelectorAll('#themePop [aria-pressed="true"]')].map(b=>b.textContent.trim()).join('|'), set:getComputedStyle(document.querySelector('#setBtn')).display, th:getComputedStyle(document.querySelector('#themeTop')).display})`);
-  ok('a theme button sits beside the settings: it opens ONE row of three themes (经典 | 深色 | 云红), each at least 44 px high; the one on screen is marked', thp.open && thp.rows === 1 && thp.chips === '经典|深色|云红' && thp.h >= 44 && thp.on === '经典' && thp.set !== 'none' && thp.th !== 'none', thp);
+  const look = () => J(`(()=>{ const cs=s=>getComputedStyle(document.querySelector(s)); return {th:document.documentElement.getAttribute('data-theme'), stored:LS.get('theme',''), accent:getComputedStyle(document.documentElement).getPropertyValue('--accent').trim().toLowerCase(), bg:getComputedStyle(document.body).backgroundColor, font:cs('#viewTitle').fontFamily, stroke:cs('#tabbar .icon').strokeWidth, card:cs('#grid .card').borderTopLeftRadius, btn:document.querySelector('#themeBtn').textContent, label:document.querySelector('#themeTop').getAttribute('aria-label'), expanded:document.querySelector('#themeTop').hasAttribute('aria-expanded'), hasPop:!!document.querySelector('#themePop')}; })()`);
   const l0 = await look();
-  await J(`document.querySelector('[data-thset="cloud"]').click()`); await settle(400);
+  await J(`document.querySelector('#themeTop').click()`); await settle(400);
+  const lDark = await look();
+  ok('one tap on the phone theme button switches directly from classic to dark, with no menu', lDark.th === 'dark' && lDark.stored === 'dark' && !lDark.expanded && lDark.label.includes('深色') && !lDark.hasPop, lDark);
+  await J(`document.querySelector('#themeTop').click()`); await settle(400);
   const l1 = await look(), tc1 = await tabcol(), ac1 = await accent();
-  ok('"云红" is a whole theme at once: a cool white, a red accent, sans-serif headings (not the serif), a heavier line for the icons, rounder cards; kept in this browser; the settings say so; the panel stays open to see it', l1.th === 'cloud' && l1.stored === 'cloud' && l1.open && l1.accent === '#d8363a' && l1.bg === 'rgb(246, 247, 249)' && l1.font !== l0.font && !/Noto Serif/.test(l1.font) && /Noto Serif/.test(l0.font) && parseFloat(l1.stroke) > parseFloat(l0.stroke) && parseFloat(l1.card) > parseFloat(l0.card) && l1.btn === '主题：云红', [l0, l1]);
+  ok('one more tap switches to cloud red: a cool white, red accent, sans-serif headings, heavier icons and rounder cards; the choice is saved', l1.th === 'cloud' && l1.stored === 'cloud' && l1.accent === '#d8363a' && l1.bg === 'rgb(246, 247, 249)' && l1.font !== l0.font && !/Noto Serif/.test(l1.font) && /Noto Serif/.test(l0.font) && parseFloat(l1.stroke) > parseFloat(l0.stroke) && parseFloat(l1.card) > parseFloat(l0.card) && l1.btn === '主题：云红', [l0, l1]);
   ok('the bottom bar follows the theme: the one that is on and the + are red now', ac1 !== ac0 && tc1.on === ac1 && tc1.plus === ac1, [tc1, ac1]);
-  await J(`document.querySelector('[data-thset="dark"]').click()`); await settle(400);
+  await J(`document.querySelector('#themeTop').click()`); await settle(400);
   const l2 = await look();
   ok('"深色": dark colours, and the serif and the thin icons of the classic theme again', l2.th === 'dark' && l2.accent === '#5cc2b1' && l2.bg === 'rgb(18, 22, 25)' && l2.font === l0.font && l2.stroke === l0.stroke && l2.btn === '主题：深色', l2);
-  await J(`document.querySelector('[data-thset="light"]').click()`); await sleep(300);
+  await J(`document.querySelector('#themeTop').click()`); await sleep(300);
   await J(`document.querySelector('#grid').click()`); await sleep(300);
   const l3 = await look();
-  ok('"经典" is the first page again (colours, font, icons, corners as at the start); a tap on the page closes the panel', l3.th === 'light' && !l3.open && l3.accent === l0.accent && l3.bg === l0.bg && l3.font === l0.font && l3.stroke === l0.stroke && l3.card === l0.card && l3.btn === '主题：经典', [l0, l3]);
+  ok('a third tap returns to classic (colours, font, icons, corners as at the start), and no theme menu is left open', l3.th === 'light' && !l3.expanded && l3.accent === l0.accent && l3.bg === l0.bg && l3.font === l0.font && l3.stroke === l0.stroke && l3.card === l0.card && l3.btn === '主题：经典', [l0, l3]);
   await J(`state.theme='auto'; LS.set('theme','auto'); document.documentElement.removeAttribute('data-theme')`);
 
   // the filter panel
@@ -194,6 +195,8 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await fresh('&shell=2');
   const w = await J(`({ph:document.body.classList.contains('sh-phone'), shell:document.body.classList.contains('shell2'), tab:getComputedStyle(document.querySelector('#tabbar')).display, toggle:getComputedStyle(document.querySelector('#sideToggle')).display, me:!!document.querySelector('#meBox'), sideW:Math.round(document.querySelector('.side').getBoundingClientRect().width), inVh:!!document.querySelector('#vhCtl #ctlBox #sort') && !!document.querySelector('#vhCtl #ctlBox #langFilter') && !!document.querySelector('#vhCtl #ctlBox #viewBtn'), inTop:!!document.querySelector('.toolbar #sort'), strip:getComputedStyle(document.querySelector('#strip')).display})`);
   ok('a wide screen: no bottom bar and no strip (the side list stays), a button to hide the side list (no sign-in card), sort / language / view beside the list instead of in the top bar', !w.ph && w.shell && w.tab === 'none' && w.toggle !== 'none' && !w.me && w.sideW > 200 && w.inVh && !w.inTop && w.strip === 'none', w);
+  const sb = await J(`(()=>{ const s=getComputedStyle(document.querySelector('.side-scroll')); return {width:s.scrollbarWidth,color:s.scrollbarColor}; })()`);
+  ok('the left list uses a thin scrollbar with theme-aware colors', sb.width === 'thin' && sb.color !== 'auto', sb);
   const cr = await J(`(()=>{ const c=document.querySelector('#ctlBox').getBoundingClientRect(), h=document.querySelector('#viewTitle').getBoundingClientRect(); return {ctlLeft:Math.round(c.left), titleRight:Math.round(h.right), ctlRight:Math.round(c.right), ctlTop:Math.round(c.top), titleTop:Math.round(h.top), iw:innerWidth}; })()`);
   ok('they are on the right of the page head, level with it', cr.ctlLeft > cr.titleRight && cr.ctlRight > cr.iw - 80 && Math.abs(cr.ctlTop - cr.titleTop) < 140, cr);
   const h0 = await rect('.view-head');
