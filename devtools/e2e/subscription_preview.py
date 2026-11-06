@@ -72,6 +72,18 @@ def main():
                 self.send_response(200); self.send_header('Content-Type', 'application/json; charset=utf-8')
                 self.send_header('Content-Length', str(len(body))); self.end_headers(); self.wfile.write(body)
                 return
+            if self.path.split('?')[0] in ('/manifest.js', '/manifest.json'):
+                data = json.loads((root / 'manifest.json').read_text(encoding='utf-8'))
+                data['directory'] = base + '/dir/'
+                body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+                if self.path.split('?')[0] == '/manifest.js':
+                    body = b'window.ARCHIVE_MANIFEST = ' + body + b';\n'
+                    content_type = 'application/javascript; charset=utf-8'
+                else:
+                    content_type = 'application/json; charset=utf-8'
+                self.send_response(200); self.send_header('Content-Type', content_type)
+                self.send_header('Content-Length', str(len(body))); self.end_headers(); self.wfile.write(body)
+                return
             if self.path.split('?')[0] == '/dir/directory.json':
                 data = json.loads((root / 'dir' / 'directory.json').read_text(encoding='utf-8'))
                 data.update(feed_api=base + '/api/feed', submit_api='', feedback_api=base + '/api/feedback', hot_api='', listen_api='')
