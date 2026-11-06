@@ -34,11 +34,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await dy();
   await J(`Object.defineProperty(navigator,'connection',{value:{type:'cellular',saveData:false,effectiveType:'4g'},configurable:true})`);
   await go(1);
-  ok('mobile data: a whole song of about 30 MB is found but not played by itself; the page says how big it is and asks', await waitFor(`/30 ?MB/.test(document.querySelector('#toastMsg').textContent) && !pl.loaded`, 9000) && (await log2()).includes('resolve:Douyin Song 0'), await J(`document.querySelector('#toastMsg').textContent`));
-  await sleep(600);
-  ok('and it does not play meanwhile', (await J(`plAudio.paused && !pl.loaded`)));
-  await J(`document.querySelector('#toastAct, #toast button').click()`);
-  ok('“play it anyway” plays it', await waitFor(`pl.loaded && plAudio.currentTime>0.05`, 8000), await J(`document.querySelector('#toast').textContent`));
+  ok('mobile data: a whole song of about 30 MB is found and plays at once; no question, no pop-up; the bar says in small letters that it is mobile data (about 30 MB)', await waitFor(`pl.loaded && plAudio.currentTime>0.05`, 9000) && (await log2()).includes('resolve:Douyin Song 0') && !/文件很大|仍然播放/.test(await J(`document.querySelector('#toast').textContent`)) && /手机流量 · 30 MB/.test(await J(`document.querySelector('#plSub').textContent`)), [await J(`document.querySelector('#plSub').textContent`), await J(`document.querySelector('#toastMsg').textContent`)]);
   await J(`plAudio.pause()`);
   await J(`delete navigator.connection`);
   await go(2);

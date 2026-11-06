@@ -406,6 +406,7 @@ body.noting{overflow:hidden}
 .lp-sin{flex:1;min-width:0;height:44px;padding:0 16px;border:1px solid var(--rule);border-radius:999px;background:var(--surface);color:var(--ink);font:inherit;font-size:16px}
 .lp-sin:focus{outline:2px solid var(--accent);outline-offset:1px}
 .lp-spart{margin:0 0 6px}
+.pl-cell{color:var(--muted)}
 .lp-ask{margin:14px 0 4px;padding:14px;border:1px solid var(--rule);border-radius:14px;background:var(--surface);display:grid;gap:10px}
 .lp-ask b{font-size:15.5px}.lp-ask>span{color:var(--muted);font-size:13px}
 .lp-ask-go{display:flex;gap:8px}
@@ -1993,7 +1994,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     <div class="plp-set" id="plSetSheet" hidden>
       <div class="plp-set-h"><b data-i="plSetT">播放设置</b><button class="plp-ic" type="button" data-plp="setx" data-i-aria="plSetClose"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
       <div class="plp-row"><div class="l" data-i="plSrcL">音源</div><div class="pl-chips" id="plSrcs"></div></div>
-      <div class="plp-row plp-tg"><div><div class="l" data-i="plDataL">手机流量下省流量</div><div class="d" data-i="plDataD">不自动播放大文件（无损约 30–50 MB）</div></div><button class="plp-sw" type="button" id="plDataSw" role="switch" data-i-aria="plDataL"></button></div>
+      <div class="plp-row plp-tg"><div><div class="l" data-i="plDataL">手机流量下小字提示</div><div class="d" data-i="plDataD">用手机流量放大文件（无损约 30–50 MB）时，播放条上写一句；这首歌有小文件的音源就先用它</div></div><button class="plp-sw" type="button" id="plDataSw" role="switch" data-i-aria="plDataL"></button></div>
       <div class="plp-row"><div class="l" data-i="plSleep">定时关闭</div><div class="pl-chips" id="plSleeps"></div></div>
       <div class="plp-row plp-tg" id="plLyrRow" hidden><div><div class="l" data-i="plLyrL">显示歌词</div><div class="d" data-i="plLyrD">有歌词的歌，在播放列表旁边多一格“歌词”</div></div><button class="plp-sw" type="button" id="plLyrSw" role="switch" data-i-aria="plLyrL"></button></div>
       <div class="plp-row" id="plRatesRow"><div class="l" data-i="plSpeed">倍速</div><div class="pl-chips" id="plRates"></div></div>
@@ -2765,6 +2766,8 @@ Object.assign(I18N.en,{sortBy:v=>`Sort: ${v}`, sortBooks:'Picks'});
     Object.assign(I18N.en,{lpPK_scene:'SCENE', lpPK_style:'STYLE', lpPK_list:'PLAYLIST'});
     Object.assign(I18N.zh,{plFinding:'正在找音源…', lsWholeS:'整首', lsmBigS:'约 30 MB', plLyrT:'歌词', plLyrL:'显示歌词', plLyrD:'有歌词的歌，在播放列表旁边多一格“歌词”', plLyrFrom:v=>`歌词来自 ${v}`, lpSearch:'搜索', lpSearchPh:'搜索歌曲或歌手', lpSearchHint:'输入歌名或歌手，至少两个字；每首会标出是整首还是试听', lpSearching:'搜索中…', lpSearchErr:'搜索暂时不可用', lpSearchNone:v=>`没有找到“${v}”`, lpSearchPartial:'有些来源没有及时回应，先给你看这些', lpSearchHist:'搜索历史', lpSearchClear:'清除', lsmWhole:'找整首', lsmSrc:'换音源', lsmFinding:'正在找整首…', lsmNoWhole:'没找到整首', lsmWholeDone:'已换成整首', lsmSrcDone:v=>`已换成 ${v}`, lsmNoSrc:'这首歌暂时只有一个音源', lsmFindMore:'再找找其他音源', lsmBusy:'正在找音源…', srcN_bodian:'波点音乐', srcN_netease:'网易云音乐', srcN_audius:'Audius', srcN_jamendo:'Jamendo', srcN_apple:'Apple Music', srcN_deezer:'Deezer', lpAskT:'你爱听什么？', lpAskD:'选几个，推荐会更准。只记在这台设备上。', lpAskGo:'好了', lpAskSkip:'先不用', askPop:'流行', askRock:'摇滚', askHiphop:'说唱', askElec:'电子', askJazz:'爵士', askClassic:'古典', askFolk:'民谣', askCn:'华语', askJpKr:'日韩', askWest:'欧美'});
     Object.assign(I18N.en,{plFinding:'Finding a sound…', lsWholeS:'Full', lsmBigS:'about 30 MB', plLyrT:'Lyrics', plLyrL:'Show lyrics', plLyrD:'For songs that have lyrics, a “Lyrics” tab next to the queue', plLyrFrom:v=>`Lyrics from ${v}`, lpSearch:'Search', lpSearchPh:'Search songs or artists', lpSearchHint:'Type a song or an artist, two letters at least; each result says whether it is a full song or a preview', lpSearching:'Searching…', lpSearchErr:'Search is not available right now', lpSearchNone:v=>`Nothing found for “${v}”`, lpSearchPartial:'Some sources did not answer in time; here is what came in', lpSearchHist:'Recent searches', lpSearchClear:'Clear', lsmWhole:'Find the full song', lsmSrc:'Change source', lsmFinding:'Looking for the full song…', lsmNoWhole:'No full song found', lsmWholeDone:'Switched to the full song', lsmSrcDone:v=>`Switched to ${v}`, lsmNoSrc:'This song has only one source for now', lsmFindMore:'Look for other sources', lsmBusy:'Looking for sources…', srcN_bodian:'Bodian', srcN_netease:'NetEase Cloud Music', srcN_audius:'Audius', srcN_jamendo:'Jamendo', srcN_apple:'Apple Music', srcN_deezer:'Deezer', lpAskT:'What do you like to hear?', lpAskD:'Pick a few and the picks get better. Kept on this device only.', lpAskGo:'Done', lpAskSkip:'Not now', askPop:'Pop', askRock:'Rock', askHiphop:'Hip-hop', askElec:'Electronic', askJazz:'Jazz', askClassic:'Classical', askFolk:'Folk', askCn:'Chinese', askJpKr:'Japan & Korea', askWest:'Western'});
+    Object.assign(I18N.zh,{plDataL:'手机流量下小字提示', plDataD:'用手机流量放大文件（无损约 30–50 MB）时，播放条上写一句；这首歌有小文件的音源就先用它', plCellular:v=>`手机流量 · ${v}`});
+    Object.assign(I18N.en,{plDataL:'Say so on mobile data', plDataD:'When a big file (lossless, 30–50 MB) plays on mobile data the bar says so in small letters; a small source of the song, if there is one, comes first', plCellular:v=>`Mobile data · ${v}`});
     Object.assign(I18N.zh,{lfTip:(a,b)=>`内容语言：${a}（点一下换成 ${b}）`});
     Object.assign(I18N.en,{lfTip:(a,b)=>`Content language: ${a} (tap for ${b})`});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
@@ -5037,7 +5040,7 @@ const CHANGELOG=[{v:'2026-10-22',
       '发现世界每个页面只剩一行筛选，没有下拉了：“节目 / 栏目”挑选和手机上的“筛选”面板去掉了，栏目（或平台）标签排成一行向左右滑；右端是排序（一个图标，点一下换一种排法，提示里写着现在是哪一种）和卡片 / 列表图标；内容语言（全部 / 中 / EN）只留在精选图书、精选文章、全部这几个内容多的页面。标签条下面的空白去掉了，热榜、今日听什么、精选图书标题下的说明文字也去掉了。“今日听什么”的推荐页更干净：去掉了“今日电台”卡；精选歌单在上，排头是“我喜欢的 / 最近播放 / 我的歌单”三个带数字的方块；为你推荐在下，一行一首，先 30 首，滚到底自动再加，标题右边是播放和换一批两个图标；“国内 ⇄ 国际”按钮去掉了，先推荐哪里的歌跟着界面语言和设备时区走。',
       '新增“反馈”：侧栏底部的“反馈”点开一个小窗，写下哪里不顺手、想要什么、哪里写错了，不用登录（站点接上反馈服务才有）。阅读指南的顶部多了“共读群”：QQ 群 869727153，二维码、群号、复制和保存都在那里，书架里指南那张卡的封面上也有。',
       '语言筛选改成一个按钮：点一下依次换，全部 → 中 → EN → 全部，按钮上写的是现在的。听歌页：“为你推荐”在宽屏分两列，右边不再空着；歌曲右边的“⋯”菜单改成在屏幕中间弹出。手机上发现世界里的主题按钮恢复了（之前被误藏，点了没有反应）。',
-      '“今日听什么”能搜歌了：推荐页顶栏右边的放大镜，至少输入两个字，同时问好几个来源，每一首标明是“整首”还是“试听”。⋯ 菜单里多了“找整首”（试听的歌去找整首）和“换音源”（这首歌的每个音源列出来，点哪个就先用哪个）；没有声音地址的歌（比如抖音热歌榜）放的时候才去找声音，找到的地址过期了会自己再找，一首歌的声音全放不出来时也会再问一次。有歌词的歌，“正在播放”里列表旁边多一格“歌词”：当前这句高亮，点一句跳到那里（设置里可以关）。“为你推荐”现在会学你的口味：喜欢、听完、点“不想听这类”、很快切走都会记一笔（只记在这台设备上，30 天减半，“清除这台设备上的听歌记录”一键清掉），国内读者七成是国内的歌，每五首里有一首是没听过的歌手；第一次会问你爱听什么。手机流量下，很大的整首（约 30 MB）先问你再放。'],
+      '“今日听什么”能搜歌了：推荐页顶栏右边的放大镜，至少输入两个字，同时问好几个来源，每一首标明是“整首”还是“试听”。⋯ 菜单里多了“找整首”（试听的歌去找整首）和“换音源”（这首歌的每个音源列出来，点哪个就先用哪个）；没有声音地址的歌（比如抖音热歌榜）放的时候才去找声音，找到的地址过期了会自己再找，一首歌的声音全放不出来时也会再问一次。有歌词的歌，“正在播放”里列表旁边多一格“歌词”：当前这句高亮，点一句跳到那里（设置里可以关）。“为你推荐”现在会学你的口味：喜欢、听完、点“不想听这类”、很快切走都会记一笔（只记在这台设备上，30 天减半，“清除这台设备上的听歌记录”一键清掉），国内读者七成是国内的歌，每五首里有一首是没听过的歌手；第一次会问你爱听什么。原来只有 30 秒试听的歌，在国内会先去找整首（波点等来源），找不到才放试听；手机流量下放很大的整首（约 30 MB）不再弹窗，播放条上用小字写一句“手机流量 · 约 30 MB”。'],
   en:['New: “Back up & restore”: export the files, collections, subscriptions and reading places you added into one file, and restore it when you change device or fear a loss.',
       'Subscribed and saved links can now be read in the page: when a feed carries the full text it is shown at once; otherwise, and for any article link you paste and for the articles of the public directory, the original page is read and shown here and kept in your browser. Pages that need a login or do not let programs read them still open the original site (the card says “Original only”).',
       'New in the reading settings: “Download as a web page (HTML)” and “Print / save as PDF”.',
@@ -5080,7 +5083,7 @@ const CHANGELOG=[{v:'2026-10-22',
       'Every page of the public space now has one row of filters and no dropdown: the “Programs / Columns” picker and the phone’s “Filter” panel are gone, the tabs of columns (or platforms) sit in one row that slides sideways; at its right end are the sort (one icon: tap to go to the next way, the tooltip says which) and the cards / rows icon; the language of the content (All / 中 / EN) stays only on Book picks, Selected articles and All, where there is a lot to filter. The blank under the strip is gone, and so are the explaining lines under the titles of Hot lists, What to listen to today and Book picks. The “For you” tab of What to listen to today is cleaner: the “Today’s radio” card is gone; the play lists come first and begin with three squares with their numbers (Liked, Recent, My lists); the songs for you come below, one to a row, thirty at first and thirty more by themselves at the end, with a play icon and a next-batch icon at the right of the title; the “China ⇄ World” button is gone, whose songs come first follows the interface language and the time zone of the device.',
       'New: “Feedback”: the link at the foot of the side list opens a small window where you can write what is awkward, what you would like or what is wrong, with no sign-in (it shows when the site has the feedback service). The top of the user guide now has the “reading group”: QQ group 869727153, with its QR code, the number, copy and save, and the guide’s card on the shelf shows it on its cover too.',
       'The language of the content is one button now: each tap the next, All → 中 → EN → All, and it says which is on. On the listening page the songs for you are two columns on a wide screen, so nothing is left blank at the right, and the “⋯” menu of a song opens in the middle of the screen. On a phone the theme button works again in the public space (it had been hidden there by mistake).',
-      'What to listen to today can search: the magnifier at the right end of the bar of the music side, two letters at least; several sources are asked at once and each song says “Full” or “Preview”. The “⋯” menu has “Find the full song” (for a preview) and “Change source” (every source of the song is listed, the one you tap comes first); a song with no sound yet (the Douyin chart, for one) gets its sound when it is played, an address that has run out is looked for again by itself, and when every sound of a song fails the service is asked once more. A song with lyrics has a “Lyrics” tab beside the list in “Now playing”: the line that is sung is lit, a tap on a line goes there (a switch in the settings turns it off). “For you” learns your taste now: a like, a song heard to the end, “not this kind” and a quick skip each count (kept on this device only, half the weight after 30 days, and “clear the records of this device” clears it); a reader in China gets seven in ten Chinese songs, and every fifth song is an artist you have not heard; the first time you are asked what you like. On mobile data a very big whole song (about 30 MB) asks before it plays.']}];
+      'What to listen to today can search: the magnifier at the right end of the bar of the music side, two letters at least; several sources are asked at once and each song says “Full” or “Preview”. The “⋯” menu has “Find the full song” (for a preview) and “Change source” (every source of the song is listed, the one you tap comes first); a song with no sound yet (the Douyin chart, for one) gets its sound when it is played, an address that has run out is looked for again by itself, and when every sound of a song fails the service is asked once more. A song with lyrics has a “Lyrics” tab beside the list in “Now playing”: the line that is sung is lit, a tap on a line goes there (a switch in the settings turns it off). “For you” learns your taste now: a like, a song heard to the end, “not this kind” and a quick skip each count (kept on this device only, half the weight after 30 days, and “clear the records of this device” clears it); a reader in China gets seven in ten Chinese songs, and every fifth song is an artist you have not heard; the first time you are asked what you like. In China a song that used to have only a 30-second preview is first looked for as a whole song (Bodian and the others) and the preview plays only when none is found; on mobile data a very big whole song (about 30 MB) no longer asks, the bar says “Mobile data · about 30 MB” in small letters.']}];
 const guideItem = () => state.items.find(x=>(x.source==='static'||x.source==='server') && /(^|\/)notes\/guide\/index\.html$/.test(x.id));
 const canAsk=()=>!!state.dirCfg && !LS.get('dirIntroOff',0) && !state.dPickT.size;               // the question "what do you feel like reading?" is for somebody who has not answered it, where the site has a public space
 function introStep(n, ask){                                                                  // which buttons go with which step of the window
@@ -5143,7 +5146,9 @@ const plSetSave=()=>LS.set('plSet',{src:plSet.src, data:plSet.data, lyr:plSet.ly
 const fmtDur=s=>{ s=Math.max(0,Math.floor(+s||0)); const h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(x).padStart(2,'0'); };
 function plAudioOf(it){ return it && it.type==='link' && it.audio && (httpUrl(it.audio.url) || it.need) ? it.audio : null; }          // (a song that has no sound yet is in the list all the same: its sound is found when it is its turn)
 const plStale=it=>!!it && it.rsExp>0 && Date.now()>it.rsExp;
-const lpPromise=x=>!!x && !x.rsAsked && plSet.src!=='free' && Array.isArray(x.cands) && x.cands.some(c=>c.rs && c.k==='full' && (c.net==='any' || c.net===(lpRegionPref()==='cn' ? 'cn' : 'global'))) && !x.cands.some(c=>c.audio && c.k==='full');          // (a source of the reader's side says it has the whole song, but gave no address: it is asked for before the preview that is at hand is played)                                          // (the address of a sound that was found has run out)
+const lpAsked=x=>x.rsAsked===true || state.lp.rsDone.has(String(x.id).replace(/^tmp:ls:/,''));          // (the service was asked for this song: by this object, or earlier by another one of the same song, in a search for instance)
+const lpUpgrade=x=>!!x && !x.pod && !lpAsked(x) && !x.need && x.preview===true && plSet.src!=='free' && state.lp.v2 && lpRegionPref()==='cn' && !(Array.isArray(x.cands) && x.cands.some(c=>c.audio && c.k==='full'));          // (a song that has only a 30-second preview, for a reader in China: a whole song is looked for first (Bodian and the others), the preview is played when none is found; a reader abroad has "find the full song" in the menu)
+const lpPromise=x=>!!x && !lpAsked(x) && plSet.src!=='free' && Array.isArray(x.cands) && x.cands.some(c=>c.rs && c.k==='full' && (c.net==='any' || c.net===(lpRegionPref()==='cn' ? 'cn' : 'global'))) && !x.cands.some(c=>c.audio && c.k==='full');          // (a source of the reader's side says it has the whole song, but gave no address: it is asked for before the preview that is at hand is played)                                          // (the address of a sound that was found has run out)
 const plFind=id=>state.items.find(x=>x.id===id) || state.tmp.get(id) || null;                        // (an episode of the shelf, or one that is only being played: a recommended podcast, a card of the directory)
 const plItem=id=>{ const it=plFind(id); return plAudioOf(it) ? it : null; };
 const plCur=()=>pl.i>=0 ? plItem(pl.q[pl.i]) : null;
@@ -5152,15 +5157,15 @@ const plSrc=u=>location.protocol==='https:' ? u.replace(/^http:/i,'https:') : u;
 const plIsMusic=it=>!!it && String(it.id).startsWith('tmp:ls:') && !it.pod;                          // a song of today's listening: it has a play mode (an episode has the speed and the jumps instead)
 const plMode=()=>plIsMusic(plCur()) ? pl.mode : 'order';                                              // (an episode: on to the next one, and stop at the end)
 const plCellular=()=>{ try{ const c=navigator.connection; return !!c && (c.saveData===true || c.type==='cellular' || /^(slow-2g|2g|3g)$/.test(c.effectiveType||'')); }catch(e){ return false; } };
-const plBlocked=(c,id)=>plSet.data && c.big===true && plCellular() && !pl.bigOk.has(id);                // a big file on mobile data is not played by itself
+const plSave3=c=>plSet.data && plCellular() && c.big===true;                                           // (a big file on mobile data: it is played all the same; the small ones of the song come first, and the bar says in small letters that it is mobile data)
 function plCands(it){                                                                                  // the sounds one song can be played from, in the order to try them (a song with one sound has one)
   const a=plAudioOf(it); if(!a) return [];
   let cs=(Array.isArray(it.cands) ? it.cands : []).filter(c=>c && httpUrl(c.audio));
   if(!cs.length && httpUrl(a.url)) cs=[{p:'', k:it.preview?'preview':'full', audio:a.url, net:'any', big:false}];
   if(plSet.src==='free') cs=cs.filter(c=>!c.p || PL_FREE.has(c.p));
   const home=LS.get('lpRegion', state.lang==='zh'?'cn':'global')==='cn' ? 'cn' : 'global';
-  const rank=c=>[it.pref && c.p===it.pref ? 0 : 1, plSet.src==='speed' ? +(c.big===true) : 0, c.k==='preview' ? 1 : 0, c.net==='any' || c.net===home ? 0 : 1];          // (the source the reader chose for this song first)     // (whole before preview, a sound near the reader before one far away; "speed first": the small ones before the big ones)
-  return cs.map((c,i)=>({c,i,r:rank(c)})).sort((x,y)=>{ for(let k=0;k<4;k++) if(x.r[k]!==y.r[k]) return x.r[k]-y.r[k]; return x.i-y.i; }).map(x=>x.c);
+  const rank=c=>[it.pref && c.p===it.pref ? 0 : 1, plSet.src==='speed' ? +(c.big===true) : 0, c.k==='preview' ? 1 : 0, +plSave3(c), c.net==='any' || c.net===home ? 0 : 1];          // (the source the reader chose for this song first; whole before preview, then on mobile data a small file before a big one, then a sound near the reader before one far away; "speed first": the small ones before the big ones)
+  return cs.map((c,i)=>({c,i,r:rank(c)})).sort((x,y)=>{ for(let k=0;k<5;k++) if(x.r[k]!==y.r[k]) return x.r[k]-y.r[k]; return x.i-y.i; }).map(x=>x.c);
 }
 const PL_MODE_ICON={                                                                                  // the play mode, one picture each: the list again, one song again, shuffled, in order and stop
   list:'<svg class="icon" viewBox="0 0 24 24"><path d="M4 11V9a3 3 0 0 1 3-3h11M15 3l3 3-3 3M20 13v2a3 3 0 0 1-3 3H6M9 21l-3-3 3-3"/></svg>',
@@ -5187,7 +5192,7 @@ function plNav(){ $('#plPrev').disabled = pl.i<0; $('#plNext').disabled = pl.i<0
 function plTick(){
   const it=plCur(); if(!it) return; const a=plAudioOf(it), cur=pl.loaded?(plAudio.currentTime||0):pl.want, dur=pl.loaded && plAudio.duration>0 && isFinite(plAudio.duration) ? plAudio.duration : (a.dur||0);
   const tm=fmtDur(cur)+(dur?' / '+fmtDur(dur):''), v=dur?Math.round(Math.min(cur/dur,1)*1000):0;
-  $('#plSub').innerHTML=`<span class="pl-show">${esc(plShow(it))}</span><span class="pl-tm"> · ${esc(pl.find===it.id ? t('plFinding') : tm)}</span>`;
+  $('#plSub').innerHTML=`<span class="pl-show">${esc(plShow(it))}</span><span class="pl-tm"> · ${esc(pl.find===it.id ? t('plFinding') : tm)}</span>${(c=>c && pl.loaded===it.id && plSave3(c) ? `<span class="pl-cell"> · ${esc(t('plCellular', c.size>0 ? Math.max(1,Math.round(c.size/1048576))+' MB' : t('lsmBigS')))}</span>` : '')(pl.cands[pl.ci])}`;
   $('#plT0').textContent=fmtDur(cur); $('#plT1').textContent=dur?fmtDur(dur):'--:--'; plLyrFollow(it);
   if(!pl.drag){ $('#plSeek').value=v; $('#plSeekD').value=v; }
   if(plDlg.open){ $('#plDT0').textContent=fmtDur(cur); $('#plDT1').textContent=dur?fmtDur(dur):'--:--'; }
@@ -5239,18 +5244,24 @@ const plRs=new Map();
 function plResolve(id, force){                                                                                // -> a promise: true when the song now has a sound it did not have (the service found one); the song and the bar's copy of it are given the sounds and the words
   const it=plItem(id), x=lpSeen.get(String(id).slice(7)); if(!it || !x || !state.lp.v2) return Promise.resolve(false);
   if(plRs.has(id)) return plRs.get(id);
-  it.rsAsked=true; x.rsAsked=true;                                                                    // (asked for once: a promise that came to nothing is not asked for again at every play)
+  it.rsAsked=true; x.rsAsked=true; state.lp.rsDone.add(String(x.id));                                                                  // (asked for once: a promise that came to nothing is not asked for again at every play)
   const p=lpResolve(x,force).then(r=>{ if(!r) return false; lpApplyResolve(x,it,r); return r.cands.length>0; }).finally(()=>plRs.delete(id));
   plRs.set(id,p); return p;
 }
 function plFinding(i, go, start, force){                                                                      // the song has no sound (yet): the service is asked for one, then the song is loaded
   const id=pl.q[i], it=plItem(id); if(!it) return;
+  const soft=!it.need && plCands(it).length>0;                                                        // (a sound is at hand, such as a 30-second preview: the service gets a few seconds to find a whole song, then the sound at hand is played, and a whole song that comes later takes over while the song is still at its beginning)
   pl.loaded=''; pl.want=start||0; pl.find=id; plAudio.pause(); clearTimeout(pl.stallT); plSession(it); plRender(); plSave(); if(plDlg.open) plSheet();
-  plResolve(id,force).then(ok=>{
-    if(pl.find===id) pl.find=''; const k=pl.q.indexOf(id), cur=plItem(id); if(k<0 || pl.i!==k || !cur) return;          // (another song was chosen meanwhile)
-    if(ok && !cur.need && plCands(cur).length) plLoad(k,go,start); else { plTick(); plFailed(id); }
-  });
+  let done=false;
+  const fin=late=>{
+    const k=pl.q.indexOf(id), cur=plItem(id); if(k<0 || pl.i!==k || !cur) return;                      // (another song was chosen meanwhile)
+    if(!done){ done=true; if(pl.find===id) pl.find=''; if(!cur.need && plCands(cur).length) plLoad(k,go,start); else { plTick(); plFailed(id); } return; }
+    if(late && pl.loaded===id && plAudio.currentTime<12 && !pl.cands.some(c=>c.k==='full') && plCands(cur).some(c=>c.k==='full')) plSwitch(id);          // (the whole song was found after the preview began)
+  };
+  plResolve(id,force).then(()=>fin(done));
+  if(soft) setTimeout(()=>{ if(!done) fin(false); },PL_UP_MS);
 }
+const PL_UP_MS=Math.max(500,+LS.get('plUpMs',4000)||4000);
 function plFailed(id){
   const it=plItem(id); pl.loaded=''; pl.want=0; plToggleIcon(); plMarkCards();
   if(id.startsWith('tmp:ls:') && pl.i<pl.q.length-1){ toast(t('lsSkip',cut(it ? it.title : '',24))); plNext(); return; }                 // a song of today's listening that the platform does not give out: on to the next one
@@ -5266,14 +5277,13 @@ function plLoad(i, go, at){
   if(!it){ pl.q.splice(i,1); if(i>=pl.q.length) i=pl.q.length-1; if(i<0){ plStop(); return; } return plLoad(i,go,at); }              // gone from the shelf meanwhile
   pl.i=i; pl.pre=''; pl.preA=null; pl.closed=false;
   const prog=plProgMap()[id], start = at!==undefined ? at : prog && !prog[2] && prog[0]>5 ? Math.max(0,prog[0]-3) : 0;                    // where it was left, a little before
-  if(plIsMusic(it) && (it.need || plStale(it) || lpPromise(it)) && state.lp.v2){ plFinding(i,go,start); return; }
-  const all=plCands(it), cs=all.filter(c=>!plBlocked(c,id));
+  if(plIsMusic(it) && (it.need || plStale(it) || lpPromise(it) || lpUpgrade(it)) && state.lp.v2){ plFinding(i,go,start); return; }
+  const cs=plCands(it);
   pl.want=start; pl.cands=cs; pl.ci=0;
   if(!cs.length){
     pl.loaded=''; plAudio.pause(); plAudio.removeAttribute('src'); plAudio.load();
     plSession(it); plRender(); plSave(); if(plDlg.open) plSheet();
-    if(all.length){ const mb=Math.max(1,Math.round((all[0].size||30e6)/1048576)); toast(t('plBigAsk',mb), t('plBigGo'), ()=>{ pl.bigOk.add(id); plLoad(pl.q.indexOf(id),true,start); }); }          // (only a big file is left and this is mobile data: asked for, not played by itself)
-    else plFailed(id);
+    plFailed(id);
     return;
   }
   pl.loaded=id; plStart(go);
@@ -5298,7 +5308,7 @@ function plPrefetch(){                                                          
   if(!plIsMusic(plCur()) || !pl.loaded) return;
   const d=plAudio.duration, c=plAudio.currentTime; if(!(d>0 && isFinite(d)) || (c/d<.5 && d-c>20)) return;
   const k=plNextIdx(true); if(k<0 || k===pl.i) return; const id=pl.q[k]; if(pl.pre===id) return; pl.pre=id;
-  const it=plItem(id); if(it && plIsMusic(it) && (it.need || plStale(it) || lpPromise(it))){ plResolve(id); return; }          // (a song with no sound yet: the service looks for it now, so that it starts at once)
+  const it=plItem(id); if(it && plIsMusic(it) && (it.need || plStale(it) || lpPromise(it) || lpUpgrade(it))){ plResolve(id); return; }          // (a song with no sound yet: the service looks for it now, so that it starts at once)
   const cs=it ? plCands(it).filter(x=>!x.big) : []; if(!cs.length) return;
   try{ const a=new Audio(); a.preload='metadata'; a.src=plSrc(cs[0].audio); pl.preA=a; }catch(e){}
 }
@@ -6635,7 +6645,7 @@ state.ls={scene:String(LS.get('lsScene','')||'')};
 state.lp={idx:null, idxAt:0, busy:false, err:'', data:new Map(), pending:new Map(), g:String(LS.get('lpG','daily')||'daily'), mode:'music', g_music:String(LS.get('lpG_music','daily')||'daily'), g_podcast:String(LS.get('lpG_podcast','pod-hot')||'pod-hot'), show:'', shown:30, more:false, pods:null, podsKey:'', io:null,
   sort:(k=>['rank','new','dur','title','artist'].includes(k)?k:'rank')(LS.get('lpSort','rank')),
   tab:(k=>['rec','chart','disc'].includes(k)?k:'rec')(LS.get('lpTab','rec')), open:false, cr:String(LS.get('lpCR','')||''), batch:0, styles:false,
-  v2:false, rev:0, recSnap:null, rs:new Map(), search:false, sq:'', sres:null, sbusy:false, shist:null, pool:null, poolBusy:false};          // v2: the service can find a sound (resolve), search and give a pool (it said its region); rs: what resolve said (a moment); search: the search page is on; pool: the songs of the charts of the reader's side          // the music side has three tabs (for you / charts / discover); open: a list that was opened from the first or the third (a back arrow leaves it); cr: the region of the charts
+  v2:false, rev:0, recSnap:null, rsDone:new Set(), rs:new Map(), search:false, sq:'', sres:null, sbusy:false, shist:null, pool:null, poolBusy:false};          // v2: the service can find a sound (resolve), search and give a pool (it said its region); rs: what resolve said (a moment); search: the search page is on; pool: the songs of the charts of the reader's side          // the music side has three tabs (for you / charts / discover); open: a list that was opened from the first or the third (a back arrow leaves it); cr: the region of the charts
 state.dListen=false;                    // today's listening: what the service said, when it was asked, the scene that is shown
 state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), view:LS.get('hotView','mix')==='boards'?'boards':'mix', openId:null, visible:{}, mixBusy:false, mixRows:[], mixRun:0, period:LS.get('hotPeriod','day')==='week'?'week':'day', events:[], eventsAt:0, eventsBusy:false, eventsErr:'', eventsRun:0, region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
 const PUBLIC_ROUTES={discover:'/discover/',hot:'/hot/',listen:'/listen/',books:'/picks/books/',articles:'/picks/articles/',watch:'/watch/'};
@@ -7353,7 +7363,7 @@ function listenRowHTML(x, playing, plain){                                      
     return `<li class="ls-row nonum${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}"><span class="ls-cv">${cv}${LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}</b><span class="ls-m"><span class="ls-w">${esc(lpMeta(x)[0]||'')}</span>${lpMeta(x).length>1 ? `<span class="ls-x"> · ${esc(lpMeta(x).slice(1).join(' · '))}</span>` : ''}</span></span><span class="ls-ic" aria-hidden="true">${ICON.play}</span></button>${src}</li>`;
   }
   const liked=lpIsLiked(x.id), num=x.hot>0 && !plain;          // (plain: a list that is not a chart, such as the songs for you, which mixes a chart in: no place in front of a song)
-  return `<li class="ls-row${num?'':' nonum'}${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}">${num ? `<span class="ls-n${x.hot<=3?' top':''}"><em>${x.hot}</em>${LP_BARS}</span>` : ''}<span class="ls-cv">${cv}${num?'':LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}${x.preview && !lpPromise(x) ? `<em class="ls-pv">${esc(t('lsPreviewS'))}</em>` : x.sr ? `<em class="ls-pv ls-wh">${esc(t('lsWholeS'))}</em>` : ''}</b><span class="ls-m">${esc(x.artist||x.from)}</span></span></button>`
+  return `<li class="ls-row${num?'':' nonum'}${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}">${num ? `<span class="ls-n${x.hot<=3?' top':''}"><em>${x.hot}</em>${LP_BARS}</span>` : ''}<span class="ls-cv">${cv}${num?'':LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}${x.preview && !lpPromise(x) && !lpUpgrade(x) ? `<em class="ls-pv">${esc(t('lsPreviewS'))}</em>` : x.sr && (!x.preview || lpPromise(x)) ? `<em class="ls-pv ls-wh">${esc(t('lsWholeS'))}</em>` : ''}</b><span class="ls-m">${esc(x.artist||x.from)}</span></span></button>`
     + `<button class="ls-like" type="button" data-ls-like="${esc(x.id)}" aria-pressed="${liked}" title="${esc(t(liked?'lsLiked':'lsLike'))}" aria-label="${esc(t(liked?'lsLiked':'lsLike'))}">${ICON.heart}</button><button class="ls-more" type="button" data-ls-more="${esc(x.id)}" aria-haspopup="dialog" title="${esc(t('lsMore'))}" aria-label="${esc(t('lsMore'))}">${ICON.more}</button></li>`;
 }
 function lpCardHTML(x, playing){                                                                     // a song as a card: a square cover with a play mark, the title, the artist, one line of what it is

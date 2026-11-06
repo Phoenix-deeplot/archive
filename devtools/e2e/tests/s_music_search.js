@@ -16,10 +16,10 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   const waitFor = async (expr, ms = 9000) => { const t0 = Date.now(); for (;;) { let v = false; try { v = await J(expr); } catch (e) { /* the page is busy */ } if (v || Date.now() - t0 > ms) return v; await sleep(100); } };
   const svc = q => fetch(SVC + '/__listen?mode=ok&' + q).then(r => r.json());
   const log2 = () => fetch(SVC + '/__listen_log2').then(r => r.json());
-  const fresh = async (q = 'v2=1', lang = 'en') => {
+  const fresh = async (q = 'v2=1', lang = 'en', ls = '') => {
     await svc('reset=1&' + q);
     await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE + '?lang=' + lang, 1200);
-    await J(`localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver','"2026-10-22"'); localStorage.setItem('archive.dirIntroOff','1'); localStorage.setItem('archive.guideTipOff','1')`);
+    await J(`localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver','"2026-10-22"'); localStorage.setItem('archive.dirIntroOff','1'); localStorage.setItem('archive.guideTipOff','1'); ${ls}`);
     await c.goto(BASE + '?lang=' + lang, 2500);
     await J(`document.querySelector('[data-space="dir"]').click()`); await sleep(1200);
     await waitFor(`document.querySelector('#cats [data-dlisten]')`, 8000);
@@ -114,6 +114,33 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   ok('a reader in China: the same song says “整首” (a source of China has the whole one)', (await results())[0].b === '整首', await results());
   await J(`document.querySelector('#lpSrRes .ls-row .ls-main').click()`);
   ok('and it is looked for first: the whole song of that source plays, not the preview', await waitFor(`pl.loaded && plAudio.currentTime>0.05 && pl.cands[0] && pl.cands[0].p==='bodian' && pl.cands[0].k==='full'`, 9000) && (await log2()).includes('resolve:Search Epsilon'), [await J(`pl.cands.map(c=>c.p+':'+c.k).join()`), await log2()]);
+  await J(`plAudio.pause()`);
+
+  // ------------------------------------------------ in China a song that has only a 30-second preview is looked for as a whole song first
+  await type('Search Beta', true);
+  await waitFor(`document.querySelectorAll('#lpSrRes .ls-row').length===1`, 8000);
+  ok('a song with only a preview, for a reader in China: no “试听” mark (a whole song is looked for when it is played)', (await results())[0].b === '', await results());
+  await J(`document.querySelector('#lpSrRes .ls-row .ls-main').click()`);
+  ok('it is looked for first and the whole song plays', await waitFor(`pl.loaded && plAudio.currentTime>0.05 && pl.cands[0] && pl.cands[0].p==='bodian' && pl.cands[0].k==='full'`, 9000) && (await log2()).includes('resolve:Search Beta'), [await J(`pl.cands.map(c=>c.p+':'+c.k).join()`), await log2()]);
+  await J(`plAudio.pause()`);
+  await svc('v2=1&rs=none');
+  await type('Moonlight', true);
+  await waitFor(`document.querySelectorAll('#lpSrRes .ls-row').length===1`, 8000);
+  await J(`document.querySelector('#lpSrRes .ls-row .ls-main').click()`);
+  ok('nothing found: the preview that was at hand plays (after a few seconds at most)', await waitFor(`pl.loaded && plAudio.currentTime>0.05 && pl.cands[0] && pl.cands[0].p==='deezer'`, 12000) && (await log2()).includes('resolve:Moonlight'), [await J(`pl.cands.map(c=>c.p+':'+c.k).join()`), await log2()]);
+  await J(`plAudio.pause()`);
+  await type('Moonlight', true); await waitFor(`document.querySelectorAll('#lpSrRes .ls-row').length===1`, 8000);
+  ok('and the row says “试听” from then on (the service was asked, there is only a preview), the song is not asked for again', (await results())[0].b === '试听', await results());
+
+  // ------------------------------------------------ a whole song found while the preview already plays takes over
+  await svc('v2=1&rs=slow');
+  await fresh('v2=1&rs=slow', 'zh', "localStorage.setItem('archive.plUpMs','500');");
+  await J(`document.querySelector('#lpRoot [data-lp-search]').click()`); await sleep(300);
+  await type('Search Beta', true);
+  await waitFor(`document.querySelectorAll('#lpSrRes .ls-row').length===1`, 8000);
+  await J(`document.querySelector('#lpSrRes .ls-row .ls-main').click()`);
+  ok('the service is slow (a second and a half), the wait is cut at half a second: the preview begins ...', await waitFor(`pl.loaded && pl.cands[0] && pl.cands[0].p==='deezer'`, 6000));
+  ok('... and the whole song takes over when it is found, while the song is still at its beginning', await waitFor(`pl.loaded && pl.cands[0] && pl.cands[0].p==='bodian' && plAudio.currentTime<12`, 9000));
   await J(`plAudio.pause()`);
   ok('no errors in the page', errs.length === 0, errs);
   await fetch(SVC + '/__listen?mode=ok&reset=1');                                  // (the fake service answers as it did before again: the tests after this one do not know the newer questions)

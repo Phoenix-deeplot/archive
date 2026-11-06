@@ -12,7 +12,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   const errs = [];
   c.on(m => { if (m.method === 'Runtime.exceptionThrown') errs.push(JSON.stringify(m.params.exceptionDetails.exception && m.params.exceptionDetails.exception.description || m.params.exceptionDetails.text).slice(0, 300)); });
   await c.send('Network.enable'); await c.send('Network.setCacheDisabled', { cacheDisabled: true });
-  const J = expr => c.js(`(()=>{ const {state,LS,pl,plAudio,render}=window.__zt||{}; return eval(${JSON.stringify(expr)}); })()`);
+  const J = expr => c.js(`(()=>{ const {state,LS,pl,plAudio,render}=window.__zt||{}; const Z=window.__zt; return eval(${JSON.stringify(expr)}); })()`);
   const waitFor = async (expr, ms = 9000) => { const t0 = Date.now(); for (;;) { let v = false; try { v = await J(expr); } catch (e) { /* the page is busy */ } if (v || Date.now() - t0 > ms) return v; await sleep(100); } };
   const svc = q => fetch(SVC + '/__listen?mode=ok&' + q).then(r => r.json());
   const log2 = () => fetch(SVC + '/__listen_log2').then(r => r.json());
@@ -81,19 +81,33 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   ok('a song the service has no words for: no tab, the list is shown', await J(`document.querySelector('#plLyrTab').hidden && !document.querySelector('#plList').hidden`));
   await popClose();
 
-  // ------------------------------------------------ a song of an ordinary chart: the words are asked for when the popup is opened (once)
+  // ------------------------------------------------ a song of an ordinary chart that has only a 30-second preview: in China a whole song is looked for first
   await svc('v2=1&rs=ok');
   await J(`window.scrollTo(0,0); document.querySelector('#lpRoot [data-lp-cgb="hot-cn"]').click()`); await sleep(600);
   await waitFor(`document.querySelectorAll('#lpRoot .lp-rows .ls-row').length>=20`, 8000);
+  ok('the rows of a chart whose songs have only a preview do not say “试听” (a whole song is looked for when they are played)', await J(`!document.querySelector('#lpRoot .lp-rows .ls-pv')`));
   const before = (await log2()).length;
   await J(`document.querySelector('#lpRoot .lp-rows .ls-row:nth-child(3) .ls-main').click()`);
-  await waitFor(`plAudio.currentTime>0.05`, 8000);
-  ok('a song that plays from a chart asks nothing by itself for words', (await log2()).length === before, (await log2()).slice(before));
-  await popup(); await sleep(900);
-  const asked = (await log2()).slice(before);
-  ok('opening the popup asks once for its words, and the tab comes', asked.length === 1 && /^resolve:/.test(asked[0]) && await J(`!document.querySelector('#plLyrTab').hidden`), asked);
+  ok('such a song is looked for as a whole song when it is played (one question), and what plays is the whole song, not the preview', await waitFor(`plAudio.currentTime>0.05 && pl.cands[0] && pl.cands[0].p==='bodian' && pl.cands[0].k==='full'`, 9000) && (await log2()).slice(before).filter(x => /^resolve:/.test(x)).length >= 1, [await J(`pl.cands.map(c=>c.p+':'+c.k).join()`), (await log2()).slice(before)]);
+  await popup(); await sleep(500);
+  const afterPlay = (await log2()).filter(x => /^resolve:/.test(x)).length;
+  ok('its words came with that answer: the tab is there', await J(`!document.querySelector('#plLyrTab').hidden`));
   await popClose(); await popup(); await sleep(500);
-  ok('opening it again asks nothing more', (await log2()).slice(before).length === 1);
+  ok('opening the popup again asks nothing more', (await log2()).filter(x => /^resolve:/.test(x)).length === afterPlay);
+  await popClose(); await J(`plAudio.pause()`);
+
+  // ------------------------------------------------ a whole song from an ordinary list: nothing is asked by itself; the popup asks once for its words
+  await J(`Z.lpLoad('rock')`); await waitFor(`Z.lpGroupItems('rock','').items.length>0`, 8000);
+  const au = await J(`Z.lpGroupItems('rock','').items.find(x=>x.from==='Audius').id`);
+  const before2 = (await log2()).length;
+  await J(`Z.listenGo('${au}', Z.lpGroupItems('rock','').items)`);
+  await waitFor(`pl.loaded && plAudio.currentTime>0.05`, 8000);
+  const mine = await J(`'resolve:'+state.tmp.get(pl.q[pl.i]).title`), asks = async () => (await log2()).slice(before2).filter(x => x === mine);
+  ok('a whole song (Audius) that plays from a list asks nothing by itself (the next song, a preview, is looked for ahead of time: that is another question)', (await asks()).length === 0, (await log2()).slice(before2));
+  await popup(); await sleep(900);
+  ok('opening the popup asks once for its words, and the tab comes', (await asks()).length === 1 && await J(`!document.querySelector('#plLyrTab').hidden`), await log2());
+  await popClose(); await popup(); await sleep(500);
+  ok('opening it again asks nothing more', (await asks()).length === 1);
   await popClose();
 
   // ------------------------------------------------ the format

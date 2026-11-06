@@ -1,5 +1,5 @@
 // e2e: a song has several sounds (cands); the bar tries them in order and goes on to the next sound when one is gone, never answers, or is not the song's length; a whole sound goes before a preview; the
-// reader's choice of sounds (whole first / small first / free only); a big file on mobile data is asked for, not played; a song that nothing plays is skipped; the next song's beginning is asked for half way.
+// reader's choice of sounds (whole first / small first / free only); a big file on mobile data is played all the same (a small source of the song first, a line in small letters in the bar, no question); a song that nothing plays is skipped; the next song's beginning is asked for half way.
 // (demo app :8820, fake services :8840 and :8843; headless Edge)
 const { connect, sleep } = require('../cdp');
 const BASE = 'http://127.0.0.1:8820/', SVC = 'http://127.0.0.1:8840';
@@ -58,15 +58,12 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   // ------------------------------------------------ mobile data
   await J(`Object.defineProperty(navigator,'connection',{value:{type:'cellular',saveData:false,effectiveType:'4g'},configurable:true})`);
   await play(4);
-  ok('on mobile data the small sound plays and the big one is left alone', (await waitFor(`pl.loaded==='tmp:ls:fo:4' && plAudio.currentTime>0.1`)) && await isSrc('/ep2\\.wav') && (await J(`pl.cands.length`)) === 1, [await src(), await J(`pl.cands.length`)]);
+  ok('on mobile data the small sound of the song comes first (the big one stays behind it as a back-up)', (await waitFor(`pl.loaded==='tmp:ls:fo:4' && plAudio.currentTime>0.1`)) && await isSrc('/ep2\\.wav') && (await J(`pl.cands.length`)) === 2 && !(await J(`/手机流量/.test(document.querySelector('#plSub').textContent)`)), [await src(), await J(`pl.cands.length`)]);
   await play(5);
-  await waitFor(`document.querySelector('#toastAct') && document.querySelector('#toastAct').textContent==='仍然播放'`, 4000);
-  ok('only a big file is left: it is not played by itself, the reader is asked (about how big it is)', !(await J(`pl.loaded`)) && (await J(`document.querySelector('#toastAct').textContent`)) === '仍然播放' && /30 MB|29 MB/.test(await J(`document.querySelector('#toastMsg').textContent`)), [await J(`pl.loaded`), await J(`document.querySelector('#toastMsg').textContent`)]);
-  await J(`document.querySelector('#toastAct').click()`);
-  ok('"play anyway" plays it', (await waitFor(`pl.loaded==='tmp:ls:fo:5' && plAudio.currentTime>0.1`)) && await isSrc('/ep3\\.wav'), await src());
+  ok('only a big file is left: it plays at once, with no question and no pop-up; the bar says in small letters that it is mobile data and how big it is', (await waitFor(`pl.loaded==='tmp:ls:fo:5' && plAudio.currentTime>0.1`)) && await isSrc('/ep3\\.wav') && !/文件很大|仍然播放/.test(await J(`document.querySelector('#toast').textContent`)) && /手机流量 · (29|30) MB/.test(await J(`document.querySelector('#plSub').textContent`)), [await src(), await J(`document.querySelector('#plSub').textContent`), await J(`document.querySelector('#toastMsg').textContent`)]);
   await J(`plSet.data=false`); await J(`plStop()`);
   await play(4);
-  ok('with "spare the mobile data" off the first sound is the big one', (await waitFor(`pl.loaded==='tmp:ls:fo:4' && plAudio.currentTime>0.1`)) && await isSrc('/ep1\\.wav'), await src());
+  ok('with the mobile data line off the first sound is the big one, and the bar says nothing', (await waitFor(`pl.loaded==='tmp:ls:fo:4' && plAudio.currentTime>0.1`)) && await isSrc('/ep1\\.wav'), await src());
   await J(`plSet.data=true; delete navigator.connection`);
 
   // ------------------------------------------------ nothing plays: on to the next song
