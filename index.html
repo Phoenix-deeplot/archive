@@ -392,6 +392,28 @@ body.noting{overflow:hidden}
 .ls-tx{min-width:0}
 .ls-t{display:block;font-size:16px;font-weight:500;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ls-pv{font-style:normal;font-weight:400;font-size:11px;line-height:1;vertical-align:2px;margin-left:6px;padding:2px 5px;border:1px solid var(--rule);border-radius:4px;color:var(--muted)}
+.plp-qt{margin:0;display:flex;gap:4px}
+.plp-qtab{min-height:44px;padding:0 12px 0 0;border:0;background:none;color:var(--muted);font:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.plp-qtab[aria-selected="true"]{color:var(--ink)}
+.plp-qtab[hidden]{display:none}
+.pl-lyr{margin:6px 0 0;max-height:min(46vh,380px);overflow-y:auto;padding:8px 0 22px;text-align:center}
+.pl-lyr[hidden]{display:none}
+.pl-lyr p{margin:0;padding:8px 10px;font-size:15px;line-height:1.5;color:var(--muted);transition:color .25s}
+.pl-lyr p[data-lt]{cursor:pointer}
+.pl-lyr p.on{color:var(--accent);font-weight:600;font-size:16.5px}
+.pl-lyr small{display:block;margin-top:14px;color:var(--muted);font-size:12px}
+.lp-sbtn{margin-left:auto;width:40px;height:40px;color:var(--ink)}
+.lp-sh{display:flex;align-items:center;gap:8px;margin:2px 0 12px}
+.lp-sin{flex:1;min-width:0;height:44px;padding:0 16px;border:1px solid var(--rule);border-radius:999px;background:var(--surface);color:var(--ink);font:inherit;font-size:16px}
+.lp-sin:focus{outline:2px solid var(--accent);outline-offset:1px}
+.lp-spart{margin:0 0 6px}
+.pl-cell{color:var(--muted)}
+.lp-ask{margin:14px 0 4px;padding:14px;border:1px solid var(--rule);border-radius:14px;background:var(--surface);display:grid;gap:10px}
+.lp-ask b{font-size:15.5px}.lp-ask>span{color:var(--muted);font-size:13px}
+.lp-ask-go{display:flex;gap:8px}
+.ls-pv.ls-wh{color:var(--accent);border-color:currentColor}
+.lsm-note{margin:8px 4px;color:var(--muted);font-size:13.5px}
+.lsm-act[aria-pressed="true"] .r{color:var(--accent)}
 .ls-m{display:flex;margin-top:2px;font-size:13px;color:var(--muted);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .ls-w{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .ls-x{flex:none}
@@ -1981,14 +2003,16 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
         <button class="pl-btn sk" type="button" data-pl="fwd" data-i-aria="plFwd">+30</button>
         <button class="pl-btn pl-pn2" type="button" data-pl="next" data-i-aria="plNextEp"><svg class="icon fill" viewBox="0 0 24 24"><path d="M15.5 5h2v14h-2zM5 5.5v13L14.5 12z"/></svg></button>
       </div>
-      <div class="plp-qh"><h3 data-i="plNext">播放列表</h3><span class="plp-qn" id="plQn"></span><button class="plp-clear" type="button" id="plClear"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg><span data-i="plClearS">清空</span></button></div>
+      <div class="plp-qh"><h3 class="plp-qt"><button type="button" class="plp-qtab" data-plq="q" aria-selected="true" data-i="plNext">播放列表</button><button type="button" class="plp-qtab" id="plLyrTab" data-plq="lyr" aria-selected="false" hidden data-i="plLyrT">歌词</button></h3><span class="plp-qn" id="plQn"></span><button class="plp-clear" type="button" id="plClear"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg><span data-i="plClearS">清空</span></button></div>
       <ol class="pl-queue" id="plList"></ol>
+      <div class="pl-lyr" id="plLyr" hidden></div>
     </div>
     <div class="plp-set" id="plSetSheet" hidden>
       <div class="plp-set-h"><b data-i="plSetT">播放设置</b><button class="plp-ic" type="button" data-plp="setx" data-i-aria="plSetClose"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
       <div class="plp-row"><div class="l" data-i="plSrcL">音源</div><div class="pl-chips" id="plSrcs"></div></div>
-      <div class="plp-row plp-tg"><div><div class="l" data-i="plDataL">手机流量下省流量</div><div class="d" data-i="plDataD">不自动播放大文件（无损约 30–50 MB）</div></div><button class="plp-sw" type="button" id="plDataSw" role="switch" data-i-aria="plDataL"></button></div>
+      <div class="plp-row plp-tg"><div><div class="l" data-i="plDataL">手机流量下小字提示</div><div class="d" data-i="plDataD">用手机流量放大文件（无损约 30–50 MB）时，播放条上写一句；这首歌有小文件的音源就先用它</div></div><button class="plp-sw" type="button" id="plDataSw" role="switch" data-i-aria="plDataL"></button></div>
       <div class="plp-row"><div class="l" data-i="plSleep">定时关闭</div><div class="pl-chips" id="plSleeps"></div></div>
+      <div class="plp-row plp-tg" id="plLyrRow" hidden><div><div class="l" data-i="plLyrL">显示歌词</div><div class="d" data-i="plLyrD">有歌词的歌，在播放列表旁边多一格“歌词”</div></div><button class="plp-sw" type="button" id="plLyrSw" role="switch" data-i-aria="plLyrL"></button></div>
       <div class="plp-row" id="plRatesRow"><div class="l" data-i="plSpeed">倍速</div><div class="pl-chips" id="plRates"></div></div>
       <div class="plp-foot"><button class="plp-link" type="button" data-pl="focus" data-i="plFocusL">专注模式 ›</button><button class="plp-link" type="button" id="plWipe" data-i="plWipe">清除这台设备上的听歌记录</button></div>
     </div>
@@ -2756,6 +2780,10 @@ Object.assign(I18N.zh,{sortBy:v=>`排序：${v}`, sortBooks:'推荐'});
 Object.assign(I18N.en,{sortBy:v=>`Sort: ${v}`, sortBooks:'Picks'});
     Object.assign(I18N.zh,{lpPK_scene:'场景', lpPK_style:'风格', lpPK_list:'歌单'});
     Object.assign(I18N.en,{lpPK_scene:'SCENE', lpPK_style:'STYLE', lpPK_list:'PLAYLIST'});
+    Object.assign(I18N.zh,{plFinding:'正在找音源…', lsWholeS:'整首', lsmBigS:'约 30 MB', plLyrT:'歌词', plLyrL:'显示歌词', plLyrD:'有歌词的歌，在播放列表旁边多一格“歌词”', plLyrFrom:v=>`歌词来自 ${v}`, lpSearch:'搜索', lpSearchPh:'搜索歌曲或歌手', lpSearchHint:'输入歌名或歌手，至少两个字；每首会标出是整首还是试听', lpSearching:'搜索中…', lpSearchErr:'搜索暂时不可用', lpSearchNone:v=>`没有找到“${v}”`, lpSearchPartial:'有些来源没有及时回应，先给你看这些', lpSearchHist:'搜索历史', lpSearchClear:'清除', lsmWhole:'找整首', lsmSrc:'换音源', lsmFinding:'正在找整首…', lsmNoWhole:'没找到整首', lsmWholeDone:'已换成整首', lsmSrcDone:v=>`已换成 ${v}`, lsmNoSrc:'这首歌暂时只有一个音源', lsmFindMore:'再找找其他音源', lsmBusy:'正在找音源…', srcN_bodian:'波点音乐', srcN_netease:'网易云音乐', srcN_audius:'Audius', srcN_jamendo:'Jamendo', srcN_apple:'Apple Music', srcN_deezer:'Deezer', lpAskT:'你爱听什么？', lpAskD:'选几个，推荐会更准。只记在这台设备上。', lpAskGo:'好了', lpAskSkip:'先不用', askPop:'流行', askRock:'摇滚', askHiphop:'说唱', askElec:'电子', askJazz:'爵士', askClassic:'古典', askFolk:'民谣', askCn:'华语', askJpKr:'日韩', askWest:'欧美'});
+    Object.assign(I18N.en,{plFinding:'Finding a sound…', lsWholeS:'Full', lsmBigS:'about 30 MB', plLyrT:'Lyrics', plLyrL:'Show lyrics', plLyrD:'For songs that have lyrics, a “Lyrics” tab next to the queue', plLyrFrom:v=>`Lyrics from ${v}`, lpSearch:'Search', lpSearchPh:'Search songs or artists', lpSearchHint:'Type a song or an artist, two letters at least; each result says whether it is a full song or a preview', lpSearching:'Searching…', lpSearchErr:'Search is not available right now', lpSearchNone:v=>`Nothing found for “${v}”`, lpSearchPartial:'Some sources did not answer in time; here is what came in', lpSearchHist:'Recent searches', lpSearchClear:'Clear', lsmWhole:'Find the full song', lsmSrc:'Change source', lsmFinding:'Looking for the full song…', lsmNoWhole:'No full song found', lsmWholeDone:'Switched to the full song', lsmSrcDone:v=>`Switched to ${v}`, lsmNoSrc:'This song has only one source for now', lsmFindMore:'Look for other sources', lsmBusy:'Looking for sources…', srcN_bodian:'Bodian', srcN_netease:'NetEase Cloud Music', srcN_audius:'Audius', srcN_jamendo:'Jamendo', srcN_apple:'Apple Music', srcN_deezer:'Deezer', lpAskT:'What do you like to hear?', lpAskD:'Pick a few and the picks get better. Kept on this device only.', lpAskGo:'Done', lpAskSkip:'Not now', askPop:'Pop', askRock:'Rock', askHiphop:'Hip-hop', askElec:'Electronic', askJazz:'Jazz', askClassic:'Classical', askFolk:'Folk', askCn:'Chinese', askJpKr:'Japan & Korea', askWest:'Western'});
+    Object.assign(I18N.zh,{plDataL:'手机流量下小字提示', plDataD:'用手机流量放大文件（无损约 30–50 MB）时，播放条上写一句；这首歌有小文件的音源就先用它', plCellular:v=>`手机流量 · ${v}`});
+    Object.assign(I18N.en,{plDataL:'Say so on mobile data', plDataD:'When a big file (lossless, 30–50 MB) plays on mobile data the bar says so in small letters; a small source of the song, if there is one, comes first', plCellular:v=>`Mobile data · ${v}`});
     Object.assign(I18N.zh,{lfTip:(a,b)=>`内容语言：${a}（点一下换成 ${b}）`});
     Object.assign(I18N.en,{lfTip:(a,b)=>`Content language: ${a} (tap for ${b})`});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
@@ -5027,7 +5055,8 @@ const CHANGELOG=[{v:'2026-10-22',
       '精选图书页改简单了：没有“节目 / 栏目 / 平台”那套筛选，没有“已更新”那行字（发现世界所有页面都去掉了），侧栏里的标签列表也去掉了；标题下是站长手挑的几张“书单”（点一张只看这张里的书，每本有一句推荐理由）和一排类别（小说、哲学、科学、技术、杂志……），点书名下的作者名可以看他的全部书。书的卡片上不再写“站长推荐”“书籍”、授权和标签，只有语言、作者、来源、章数、喜欢、热度、收藏，读过的书写“读到 第 3 回 · 12%”，封面底边有一条细线。读书时点返回就是返回，不再弹出章节表。',
       '发现世界每个页面只剩一行筛选，没有下拉了：“节目 / 栏目”挑选和手机上的“筛选”面板去掉了，栏目（或平台）标签排成一行向左右滑；右端是排序（一个图标，点一下换一种排法，提示里写着现在是哪一种）和卡片 / 列表图标；内容语言（全部 / 中 / EN）只留在精选图书、精选文章、全部这几个内容多的页面。标签条下面的空白去掉了，热榜、今日听什么、精选图书标题下的说明文字也去掉了。“今日听什么”的推荐页更干净：去掉了“今日电台”卡；精选歌单在上，排头是“我喜欢的 / 最近播放 / 我的歌单”三个带数字的方块；为你推荐在下，一行一首，先 30 首，滚到底自动再加，标题右边是播放和换一批两个图标；“国内 ⇄ 国际”按钮去掉了，先推荐哪里的歌跟着界面语言和设备时区走。',
       '新增“反馈”：侧栏底部的“反馈”点开一个小窗，写下哪里不顺手、想要什么、哪里写错了，不用登录（站点接上反馈服务才有）。阅读指南的顶部多了“共读群”：QQ 群 869727153，二维码、群号、复制和保存都在那里，书架里指南那张卡的封面上也有。',
-      '语言筛选改成一个按钮：点一下依次换，全部 → 中 → EN → 全部，按钮上写的是现在的。听歌页：“为你推荐”在宽屏分两列，右边不再空着；歌曲右边的“⋯”菜单改成在屏幕中间弹出。手机上发现世界里的主题按钮恢复了（之前被误藏，点了没有反应）。'],
+      '语言筛选改成一个按钮：点一下依次换，全部 → 中 → EN → 全部，按钮上写的是现在的。听歌页：“为你推荐”在宽屏分两列，右边不再空着；歌曲右边的“⋯”菜单改成在屏幕中间弹出。手机上发现世界里的主题按钮恢复了（之前被误藏，点了没有反应）。',
+      '“今日听什么”能搜歌了：推荐页顶栏右边的放大镜，至少输入两个字，同时问好几个来源，每一首标明是“整首”还是“试听”。⋯ 菜单里多了“找整首”（试听的歌去找整首）和“换音源”（这首歌的每个音源列出来，点哪个就先用哪个）；没有声音地址的歌（比如抖音热歌榜）放的时候才去找声音，找到的地址过期了会自己再找，一首歌的声音全放不出来时也会再问一次。有歌词的歌，“正在播放”里列表旁边多一格“歌词”：当前这句高亮，点一句跳到那里（设置里可以关）。“为你推荐”现在会学你的口味：喜欢、听完、点“不想听这类”、很快切走都会记一笔（只记在这台设备上，30 天减半，“清除这台设备上的听歌记录”一键清掉），国内读者七成是国内的歌，每五首里有一首是没听过的歌手；第一次会问你爱听什么。原来只有 30 秒试听的歌，在国内会先去找整首（波点等来源），找不到才放试听；手机流量下放很大的整首（约 30 MB）不再弹窗，播放条上用小字写一句“手机流量 · 约 30 MB”。'],
   en:['New: “Back up & restore”: export the files, collections, subscriptions and reading places you added into one file, and restore it when you change device or fear a loss.',
       'Subscribed and saved links can now be read in the page: when a feed carries the full text it is shown at once; otherwise, and for any article link you paste and for the articles of the public directory, the original page is read and shown here and kept in your browser. Pages that need a login or do not let programs read them still open the original site (the card says “Original only”).',
       'New in the reading settings: “Download as a web page (HTML)” and “Print / save as PDF”.',
@@ -5069,7 +5098,8 @@ const CHANGELOG=[{v:'2026-10-22',
       'The page of the picked books is simpler: no “Programs / Columns / Platforms” filters, no “Updated” line (gone from every page of the public space), and the list of tags in the side is gone; under the title come a few hand-made “book lists” (tap one and only its books are shown, each with a line on why) and a row of genres (fiction, philosophy, science, tech, magazines …); the name of an author under a title shows all his books. A book’s card no longer says “Owner’s pick”, “Book”, the licence or tags, only the language, author, source, chapters, like, heat and bookmark; a book you have begun says “At Chapter 3 · 12%” and has a thin line along its cover. Tapping back in a book just goes back: the list of chapters no longer pops up.',
       'Every page of the public space now has one row of filters and no dropdown: the “Programs / Columns” picker and the phone’s “Filter” panel are gone, the tabs of columns (or platforms) sit in one row that slides sideways; at its right end are the sort (one icon: tap to go to the next way, the tooltip says which) and the cards / rows icon; the language of the content (All / 中 / EN) stays only on Book picks, Selected articles and All, where there is a lot to filter. The blank under the strip is gone, and so are the explaining lines under the titles of Hot lists, What to listen to today and Book picks. The “For you” tab of What to listen to today is cleaner: the “Today’s radio” card is gone; the play lists come first and begin with three squares with their numbers (Liked, Recent, My lists); the songs for you come below, one to a row, thirty at first and thirty more by themselves at the end, with a play icon and a next-batch icon at the right of the title; the “China ⇄ World” button is gone, whose songs come first follows the interface language and the time zone of the device.',
       'New: “Feedback”: the link at the foot of the side list opens a small window where you can write what is awkward, what you would like or what is wrong, with no sign-in (it shows when the site has the feedback service). The top of the user guide now has the “reading group”: QQ group 869727153, with its QR code, the number, copy and save, and the guide’s card on the shelf shows it on its cover too.',
-      'The language of the content is one button now: each tap the next, All → 中 → EN → All, and it says which is on. On the listening page the songs for you are two columns on a wide screen, so nothing is left blank at the right, and the “⋯” menu of a song opens in the middle of the screen. On a phone the theme button works again in the public space (it had been hidden there by mistake).']}];
+      'The language of the content is one button now: each tap the next, All → 中 → EN → All, and it says which is on. On the listening page the songs for you are two columns on a wide screen, so nothing is left blank at the right, and the “⋯” menu of a song opens in the middle of the screen. On a phone the theme button works again in the public space (it had been hidden there by mistake).',
+      'What to listen to today can search: the magnifier at the right end of the bar of the music side, two letters at least; several sources are asked at once and each song says “Full” or “Preview”. The “⋯” menu has “Find the full song” (for a preview) and “Change source” (every source of the song is listed, the one you tap comes first); a song with no sound yet (the Douyin chart, for one) gets its sound when it is played, an address that has run out is looked for again by itself, and when every sound of a song fails the service is asked once more. A song with lyrics has a “Lyrics” tab beside the list in “Now playing”: the line that is sung is lit, a tap on a line goes there (a switch in the settings turns it off). “For you” learns your taste now: a like, a song heard to the end, “not this kind” and a quick skip each count (kept on this device only, half the weight after 30 days, and “clear the records of this device” clears it); a reader in China gets seven in ten Chinese songs, and every fifth song is an artist you have not heard; the first time you are asked what you like. In China a song that used to have only a 30-second preview is first looked for as a whole song (Bodian and the others) and the preview plays only when none is found; on mobile data a very big whole song (about 30 MB) no longer asks, the bar says “Mobile data · about 30 MB” in small letters.']}];
 const guideItem = () => state.items.find(x=>(x.source==='static'||x.source==='server') && /(^|\/)notes\/guide\/index\.html$/.test(x.id));
 const canAsk=()=>!!state.dirCfg && !LS.get('dirIntroOff',0) && !state.dPickT.size;               // the question "what do you feel like reading?" is for somebody who has not answered it, where the site has a public space
 function introStep(n, ask){                                                                  // which buttons go with which step of the window
@@ -5130,7 +5160,11 @@ pl.mode=(m=>PL_MODES.includes(m)?m:'list')(LS.get('plMode','list'));
 const plSet=(s=>({src:PL_SRCS.includes(s.src)?s.src:'whole', data:s.data!==false, lyr:s.lyr!==false}))(LS.get('plSet',{}) || {});          // the few settings of the player: which sounds to prefer, spare the mobile data, show the words
 const plSetSave=()=>LS.set('plSet',{src:plSet.src, data:plSet.data, lyr:plSet.lyr});
 const fmtDur=s=>{ s=Math.max(0,Math.floor(+s||0)); const h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(x).padStart(2,'0'); };
-function plAudioOf(it){ return it && it.type==='link' && it.audio && httpUrl(it.audio.url) ? it.audio : null; }
+function plAudioOf(it){ return it && it.type==='link' && it.audio && (httpUrl(it.audio.url) || it.need) ? it.audio : null; }          // (a song that has no sound yet is in the list all the same: its sound is found when it is its turn)
+const plStale=it=>!!it && it.rsExp>0 && Date.now()>it.rsExp;
+const lpAsked=x=>x.rsAsked===true || state.lp.rsDone.has(String(x.id).replace(/^tmp:ls:/,''));          // (the service was asked for this song: by this object, or earlier by another one of the same song, in a search for instance)
+const lpUpgrade=x=>!!x && !x.pod && !lpAsked(x) && !x.need && x.preview===true && plSet.src!=='free' && state.lp.v2 && lpRegionPref()==='cn' && !(Array.isArray(x.cands) && x.cands.some(c=>c.audio && c.k==='full'));          // (a song that has only a 30-second preview, for a reader in China: a whole song is looked for first (Bodian and the others), the preview is played when none is found; a reader abroad has "find the full song" in the menu)
+const lpPromise=x=>!!x && !lpAsked(x) && plSet.src!=='free' && Array.isArray(x.cands) && x.cands.some(c=>c.rs && c.k==='full' && (c.net==='any' || c.net===(lpRegionPref()==='cn' ? 'cn' : 'global'))) && !x.cands.some(c=>c.audio && c.k==='full');          // (a source of the reader's side says it has the whole song, but gave no address: it is asked for before the preview that is at hand is played)                                          // (the address of a sound that was found has run out)
 const plFind=id=>state.items.find(x=>x.id===id) || state.tmp.get(id) || null;                        // (an episode of the shelf, or one that is only being played: a recommended podcast, a card of the directory)
 const plItem=id=>{ const it=plFind(id); return plAudioOf(it) ? it : null; };
 const plCur=()=>pl.i>=0 ? plItem(pl.q[pl.i]) : null;
@@ -5139,15 +5173,15 @@ const plSrc=u=>location.protocol==='https:' ? u.replace(/^http:/i,'https:') : u;
 const plIsMusic=it=>!!it && String(it.id).startsWith('tmp:ls:') && !it.pod;                          // a song of today's listening: it has a play mode (an episode has the speed and the jumps instead)
 const plMode=()=>plIsMusic(plCur()) ? pl.mode : 'order';                                              // (an episode: on to the next one, and stop at the end)
 const plCellular=()=>{ try{ const c=navigator.connection; return !!c && (c.saveData===true || c.type==='cellular' || /^(slow-2g|2g|3g)$/.test(c.effectiveType||'')); }catch(e){ return false; } };
-const plBlocked=(c,id)=>plSet.data && c.big===true && plCellular() && !pl.bigOk.has(id);                // a big file on mobile data is not played by itself
+const plSave3=c=>plSet.data && plCellular() && c.big===true;                                           // (a big file on mobile data: it is played all the same; the small ones of the song come first, and the bar says in small letters that it is mobile data)
 function plCands(it){                                                                                  // the sounds one song can be played from, in the order to try them (a song with one sound has one)
   const a=plAudioOf(it); if(!a) return [];
   let cs=(Array.isArray(it.cands) ? it.cands : []).filter(c=>c && httpUrl(c.audio));
-  if(!cs.length) cs=[{p:'', k:it.preview?'preview':'full', audio:a.url, net:'any', big:false}];
+  if(!cs.length && httpUrl(a.url)) cs=[{p:'', k:it.preview?'preview':'full', audio:a.url, net:'any', big:false}];
   if(plSet.src==='free') cs=cs.filter(c=>!c.p || PL_FREE.has(c.p));
   const home=LS.get('lpRegion', state.lang==='zh'?'cn':'global')==='cn' ? 'cn' : 'global';
-  const rank=c=>[plSet.src==='speed' ? +(c.big===true) : 0, c.k==='preview' ? 1 : 0, c.net==='any' || c.net===home ? 0 : 1];     // (whole before preview, a sound near the reader before one far away; "speed first": the small ones before the big ones)
-  return cs.map((c,i)=>({c,i,r:rank(c)})).sort((x,y)=>{ for(let k=0;k<3;k++) if(x.r[k]!==y.r[k]) return x.r[k]-y.r[k]; return x.i-y.i; }).map(x=>x.c);
+  const rank=c=>[it.pref && c.p===it.pref ? 0 : 1, plSet.src==='speed' ? +(c.big===true) : 0, c.k==='preview' ? 1 : 0, +plSave3(c), c.net==='any' || c.net===home ? 0 : 1];          // (the source the reader chose for this song first; whole before preview, then on mobile data a small file before a big one, then a sound near the reader before one far away; "speed first": the small ones before the big ones)
+  return cs.map((c,i)=>({c,i,r:rank(c)})).sort((x,y)=>{ for(let k=0;k<5;k++) if(x.r[k]!==y.r[k]) return x.r[k]-y.r[k]; return x.i-y.i; }).map(x=>x.c);
 }
 const PL_MODE_ICON={                                                                                  // the play mode, one picture each: the list again, one song again, shuffled, in order and stop
   list:'<svg class="icon" viewBox="0 0 24 24"><path d="M4 11V9a3 3 0 0 1 3-3h11M15 3l3 3-3 3M20 13v2a3 3 0 0 1-3 3H6M9 21l-3-3 3-3"/></svg>',
@@ -5174,8 +5208,8 @@ function plNav(){ $('#plPrev').disabled = pl.i<0; $('#plNext').disabled = pl.i<0
 function plTick(){
   const it=plCur(); if(!it) return; const a=plAudioOf(it), cur=pl.loaded?(plAudio.currentTime||0):pl.want, dur=pl.loaded && plAudio.duration>0 && isFinite(plAudio.duration) ? plAudio.duration : (a.dur||0);
   const tm=fmtDur(cur)+(dur?' / '+fmtDur(dur):''), v=dur?Math.round(Math.min(cur/dur,1)*1000):0;
-  $('#plSub').innerHTML=`<span class="pl-show">${esc(plShow(it))}</span><span class="pl-tm"> · ${esc(tm)}</span>`;
-  $('#plT0').textContent=fmtDur(cur); $('#plT1').textContent=dur?fmtDur(dur):'--:--';
+  $('#plSub').innerHTML=`<span class="pl-show">${esc(plShow(it))}</span><span class="pl-tm"> · ${esc(pl.find===it.id ? t('plFinding') : tm)}</span>${(c=>c && pl.loaded===it.id && plSave3(c) ? `<span class="pl-cell"> · ${esc(t('plCellular', c.size>0 ? Math.max(1,Math.round(c.size/1048576))+' MB' : t('lsmBigS')))}</span>` : '')(pl.cands[pl.ci])}`;
+  $('#plT0').textContent=fmtDur(cur); $('#plT1').textContent=dur?fmtDur(dur):'--:--'; plLyrFollow(it);
   if(!pl.drag){ $('#plSeek').value=v; $('#plSeekD').value=v; }
   if(plDlg.open){ $('#plDT0').textContent=fmtDur(cur); $('#plDT1').textContent=dur?fmtDur(dur):'--:--'; }
 }
@@ -5216,8 +5250,34 @@ function plTrouble(id, why){                                                    
   clearTimeout(pl.stallT);
   if(pl.ci<pl.cands.length-1){ if(plAudio.currentTime>3) pl.want=plAudio.currentTime; pl.ci++; plStart(pl.go); return; }
   if(why==='stall'){ toast(t('plSlow')); return; }
+  const it=plItem(id);
+  if(it && plIsMusic(it) && !it.rsTried && state.lp.v2){                                               // (every sound of the song failed: the service is asked for new ones once, an address may have run out)
+    it.rsTried=true; const at=plAudio.currentTime>3 ? plAudio.currentTime : pl.want, go=pl.go; pl.loaded=''; plAudio.pause(); plFinding(pl.q.indexOf(id), go, at, true); return;
+  }
   plFailed(id);
 }
+const plRs=new Map();
+function plResolve(id, force){                                                                                // -> a promise: true when the song now has a sound it did not have (the service found one); the song and the bar's copy of it are given the sounds and the words
+  const it=plItem(id), x=lpSeen.get(String(id).slice(7)); if(!it || !x || !state.lp.v2) return Promise.resolve(false);
+  if(plRs.has(id)) return plRs.get(id);
+  it.rsAsked=true; x.rsAsked=true; state.lp.rsDone.add(String(x.id));                                                                  // (asked for once: a promise that came to nothing is not asked for again at every play)
+  const p=lpResolve(x,force).then(r=>{ if(!r) return false; lpApplyResolve(x,it,r); return r.cands.length>0; }).finally(()=>plRs.delete(id));
+  plRs.set(id,p); return p;
+}
+function plFinding(i, go, start, force){                                                                      // the song has no sound (yet): the service is asked for one, then the song is loaded
+  const id=pl.q[i], it=plItem(id); if(!it) return;
+  const soft=!it.need && plCands(it).length>0;                                                        // (a sound is at hand, such as a 30-second preview: the service gets a few seconds to find a whole song, then the sound at hand is played, and a whole song that comes later takes over while the song is still at its beginning)
+  pl.loaded=''; pl.want=start||0; pl.find=id; plAudio.pause(); clearTimeout(pl.stallT); plSession(it); plRender(); plSave(); if(plDlg.open) plSheet();
+  let done=false;
+  const fin=late=>{
+    const k=pl.q.indexOf(id), cur=plItem(id); if(k<0 || pl.i!==k || !cur) return;                      // (another song was chosen meanwhile)
+    if(!done){ done=true; if(pl.find===id) pl.find=''; if(!cur.need && plCands(cur).length) plLoad(k,go,start); else { plTick(); plFailed(id); } return; }
+    if(late && pl.loaded===id && plAudio.currentTime<12 && !pl.cands.some(c=>c.k==='full') && plCands(cur).some(c=>c.k==='full')) plSwitch(id);          // (the whole song was found after the preview began)
+  };
+  plResolve(id,force).then(()=>fin(done));
+  if(soft) setTimeout(()=>{ if(!done) fin(false); },PL_UP_MS);
+}
+const PL_UP_MS=Math.max(500,+LS.get('plUpMs',4000)||4000);
 function plFailed(id){
   const it=plItem(id); pl.loaded=''; pl.want=0; plToggleIcon(); plMarkCards();
   if(id.startsWith('tmp:ls:') && pl.i<pl.q.length-1){ toast(t('lsSkip',cut(it ? it.title : '',24))); plNext(); return; }                 // a song of today's listening that the platform does not give out: on to the next one
@@ -5233,13 +5293,13 @@ function plLoad(i, go, at){
   if(!it){ pl.q.splice(i,1); if(i>=pl.q.length) i=pl.q.length-1; if(i<0){ plStop(); return; } return plLoad(i,go,at); }              // gone from the shelf meanwhile
   pl.i=i; pl.pre=''; pl.preA=null; pl.closed=false;
   const prog=plProgMap()[id], start = at!==undefined ? at : prog && !prog[2] && prog[0]>5 ? Math.max(0,prog[0]-3) : 0;                    // where it was left, a little before
-  const all=plCands(it), cs=all.filter(c=>!plBlocked(c,id));
+  if(plIsMusic(it) && (it.need || plStale(it) || lpPromise(it) || lpUpgrade(it)) && state.lp.v2){ plFinding(i,go,start); return; }
+  const cs=plCands(it);
   pl.want=start; pl.cands=cs; pl.ci=0;
   if(!cs.length){
     pl.loaded=''; plAudio.pause(); plAudio.removeAttribute('src'); plAudio.load();
     plSession(it); plRender(); plSave(); if(plDlg.open) plSheet();
-    if(all.length){ const mb=Math.max(1,Math.round((all[0].size||30e6)/1048576)); toast(t('plBigAsk',mb), t('plBigGo'), ()=>{ pl.bigOk.add(id); plLoad(pl.q.indexOf(id),true,start); }); }          // (only a big file is left and this is mobile data: asked for, not played by itself)
-    else plFailed(id);
+    plFailed(id);
     return;
   }
   pl.loaded=id; plStart(go);
@@ -5264,12 +5324,13 @@ function plPrefetch(){                                                          
   if(!plIsMusic(plCur()) || !pl.loaded) return;
   const d=plAudio.duration, c=plAudio.currentTime; if(!(d>0 && isFinite(d)) || (c/d<.5 && d-c>20)) return;
   const k=plNextIdx(true); if(k<0 || k===pl.i) return; const id=pl.q[k]; if(pl.pre===id) return; pl.pre=id;
-  const it=plItem(id), cs=it ? plCands(it).filter(x=>!x.big) : []; if(!cs.length) return;
+  const it=plItem(id); if(it && plIsMusic(it) && (it.need || plStale(it) || lpPromise(it) || lpUpgrade(it))){ plResolve(id); return; }          // (a song with no sound yet: the service looks for it now, so that it starts at once)
+  const cs=it ? plCands(it).filter(x=>!x.big) : []; if(!cs.length) return;
   try{ const a=new Audio(); a.preload='metadata'; a.src=plSrc(cs[0].audio); pl.preA=a; }catch(e){}
 }
 function plStop(){
   plAudio.pause(); plAudio.removeAttribute('src'); plAudio.load();
-  Object.assign(pl,{q:[], i:-1, loaded:'', want:0, shown:'', sleepAt:0, sleepEnd:false, sleepMin:0, closed:false}); clearTimeout(pl.stallT); plNewRound(); LS.set('pl',{q:[],cur:'',t:0,rate:pl.rate});
+  Object.assign(pl,{q:[], i:-1, loaded:'', want:0, shown:'', sleepAt:0, sleepEnd:false, sleepMin:0, closed:false, find:''}); clearTimeout(pl.stallT); plNewRound(); LS.set('pl',{q:[],cur:'',t:0,rate:pl.rate});
   if('mediaSession' in navigator){ try{ navigator.mediaSession.metadata=null; navigator.mediaSession.playbackState='none'; }catch(e){} }
   plRender();
 }
@@ -5280,7 +5341,11 @@ function plToggle(){
 }
 function plSkip(d){ if(!pl.loaded) return; const dur=plAudio.duration; plAudio.currentTime=Math.max(0, Math.min(isFinite(dur)&&dur>0?dur-1:1e9, (plAudio.currentTime||0)+d)); plTick(); }
 function plHistPush(){ if(pl.sn && pl.sn.fresh && pl.sn.from===pl.q[pl.i]) pl.hist=[]; pl.hist.push(pl.q[pl.i]); if(pl.hist.length>200) pl.hist.shift(); }          // the song that is left goes to the history (a shuffle that has played them all starts a new round here)
-function plNext(){ const k=plNextIdx(false); if(k<0) return; if(k!==pl.i || pl.q.length===1) plHistPush(); plLoad(k,true); }
+function plNext(){ const k=plNextIdx(false); if(k<0) return; plSkipSignal(); if(k!==pl.i || pl.q.length===1) plHistPush(); plLoad(k,true); }
+function plSkipSignal(){                                                                              // the reader moved on: within ten seconds it counts against the song, after six tenths of it for the song
+  const it=plCur(); if(!it || !plIsMusic(it) || !pl.loaded) return; const x=lpSeen.get(it.id.slice(7)), d=plAudio.duration, c=plAudio.currentTime||0;
+  if(c<10) lpSignal(x,LP_SIG.skip); else if(d>0 && isFinite(d) && c/d>=.6) lpSignal(x,LP_SIG.most);
+}
 function plPrev(){
   if(pl.loaded && plAudio.currentTime>5){ plAudio.currentTime=0; return; }
   if(plMode()==='shuffle' && pl.hist.length){ const k=pl.q.indexOf(pl.hist.pop()); if(k>=0){ plLoad(k,true); return; } }                 // (shuffled: the song that was before)
@@ -5312,9 +5377,47 @@ function plSheet(){                                                             
   $('#plSrcs').innerHTML=PL_SRCS.map(s=>`<button type="button" data-plsrc="${s}" aria-pressed="${s===plSet.src}">${esc(t('plSrc_'+s))}</button>`).join('');
   const sw=$('#plDataSw'); sw.setAttribute('aria-checked',String(plSet.data)); sw.classList.toggle('on',plSet.data);
   $('#plRatesRow').hidden=plIsMusic(it); $('#plQn').textContent=pl.q.length ? t(plIsMusic(it)?'plQnSongs':'plQnEps',pl.q.length) : '';
+  $('#plLyrRow').hidden=!(plIsMusic(it) && state.lp.v2); { const w=$('#plLyrSw'); w.setAttribute('aria-checked',String(plSet.lyr)); w.classList.toggle('on',plSet.lyr); }
+  plLyrAsk(it); plLyrPaint(it);
   const rows=pl.q.map((id,i)=>[id,i,plItem(id)]).filter(x=>x[2]);
   $('#plList').innerHTML = rows.length ? rows.map(([id,i,x])=>`<li class="${i===pl.i?'cur':''}" data-plid="${esc(id)}"><span class="t" data-plgo="${esc(id)}" title="${esc(x.title)}">${i===pl.i?'▶ ':''}${esc(x.title)}</span><span class="pl-dur">${plAudioOf(x).dur?esc(fmtDur(plAudioOf(x).dur)):''}</span><button type="button" data-plrm="${esc(id)}" title="${esc(t('plRemove'))}" aria-label="${esc(t('plRemove'))}"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></li>`).join('') : `<li class="pl-empty">${esc(t('plEmpty'))}</li>`;
   plToggleIcon(); plNav(); plTick();
+}
+function lpLrc(text){                                                                                  // the words of a song: lines "[mm:ss.xx] words" -> [{t: seconds, x}] in the order of time; plain text -> lines with no time (t: -1)
+  const re=/\[(\d{1,3}):(\d{2})(?:[.:](\d{1,3}))?\]/g, lines=[];
+  for(const raw of String(text||'').split(/\r?\n/)){
+    const st=[...raw.matchAll(re)], x=raw.replace(re,'').trim();
+    if(!st.length){ if(x && !/^\[(ti|ar|al|by|offset|length|re|ve):/i.test(raw.trim())) lines.push({t:-1,x}); continue; }
+    if(x) for(const m of st) lines.push({t:(+m[1])*60+(+m[2])+(m[3] ? +('0.'+m[3].padEnd(3,'0').slice(0,3)) : 0), x});
+  }
+  const timed=lines.filter(l=>l.t>=0).sort((a,b)=>a.t-b.t);
+  return timed.length>=2 ? timed : lines.map(l=>({t:-1,x:l.x}));
+}
+const plLyrOn=it=>!!it && plIsMusic(it) && plSet.lyr && state.lp.v2;
+function plLyrLines(it){ if(!it || !it.lyrics) return []; if(!it.lyrLines || it.lyrLines.src!==it.lyrics) { const a=lpLrc(it.lyrics.text); a.src=it.lyrics; it.lyrLines=a; } return it.lyrLines; }
+pl.lyrAsked=new Set(); pl.lyrK=-2; pl.qtab=LS.get('plQTab','q')==='lyr' ? 'lyr' : 'q';
+function plLyrAsk(it){                                                                                // a song that plays has no words yet: the service is asked once (its sources may have them)
+  if(!plLyrOn(it) || it.lyrics!==undefined || pl.lyrAsked.has(it.id)) return; pl.lyrAsked.add(it.id);
+  const x=lpSeen.get(it.id.slice(7)); if(!x) return;
+  lpResolve(x).then(r=>{ if(r) lpApplyResolve(x,it,r); else { it.lyrics=null; x.lyrics=null; } if(plDlg.open) plSheet(); });
+}
+function plLyrPaint(it){                                                                              // the tabs (list | words) and the words themselves; the words only when the song has some
+  const lines=plLyrOn(it) ? plLyrLines(it) : [], have=lines.length>0, tab=$('#plLyrTab'), ly=$('#plLyr');
+  tab.hidden=!have; if(!have && pl.qtab==='lyr') { /* (no words: the list is shown, the choice is kept for the next song) */ }
+  const show=have && pl.qtab==='lyr';
+  $('#plList').hidden=show; ly.hidden=!show; $('#plQn').hidden=show;
+  document.querySelectorAll('#plDlg [data-plq]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.plq==='lyr' ? show : !show)));
+  if(!show){ ly.innerHTML=''; pl.lyrK=-2; ly.dataset.id=''; return; }
+  if(ly.dataset.id!==it.id+'|'+lines.length){ ly.dataset.id=it.id+'|'+lines.length; pl.lyrK=-2; ly.scrollTop=0;
+    ly.innerHTML=lines.map(l=>`<p${l.t>=0 ? ` data-lt="${l.t}"` : ''}>${esc(l.x)}</p>`).join('') + (it.lyrics.from ? `<small>${esc(t('plLyrFrom',it.lyrics.from))}</small>` : ''); }
+  plLyrFollow(it);
+}
+function plLyrFollow(it){                                                                             // the line that is sung now is lit and kept in the middle; a click on a line goes there
+  const ly=$('#plLyr'); if(!plDlg.open || ly.hidden || !it) return; const ls=plLyrLines(it); if(!ls.length || ls[0].t<0) return;
+  const cur=pl.loaded ? (plAudio.currentTime||0) : pl.want; let k=-1; for(let j=0;j<ls.length;j++){ if(ls[j].t<=cur+.15) k=j; else break; }
+  if(k===pl.lyrK) return; pl.lyrK=k;
+  const ps=ly.querySelectorAll('p'); ps.forEach((q,j)=>q.classList.toggle('on',j===k));
+  const el=ps[k]; if(el) ly.scrollTo({top:Math.max(0, el.offsetTop-ly.clientHeight/2+el.clientHeight/2), behavior:'smooth'});
 }
 function plRemove(id){
   const k=pl.q.indexOf(id); if(k<0) return;
@@ -5340,6 +5443,7 @@ plAudio.addEventListener('loadedmetadata',()=>{ plTick(); plSessionState(); plLe
 plAudio.addEventListener('durationchange',plTick);
 plAudio.addEventListener('ended',()=>{
   const it=plCur(); if(it) plProgSave(it,plAudio.duration||0,plAudio.duration||0,true);
+  if(it && plIsMusic(it)) lpSignal(lpSeen.get(it.id.slice(7)),LP_SIG.whole);                           // (heard to the end)
   if(pl.sleepEnd){ pl.sleepEnd=false; pl.sleepMin=0; plToggleIcon(); plMarkCards(); return; }
   const k=plNextIdx(true);
   if(k>=0 && k===pl.i && plMode()==='one'){ plAudio.currentTime=0; const p=plAudio.play(); if(p && p.catch) p.catch(()=>{}); return; }              // (one song again)
@@ -5379,6 +5483,9 @@ plDlg.addEventListener('click',e=>{
   if(p){ const k=p.dataset.plp; if(k==='collapse') plDlg.close(); else { const open=k==='set' ? $('#plSetSheet').hidden : false; $('#plSetSheet').hidden=!open; $('#plSetBtn').setAttribute('aria-expanded',String(open)); } return; }
   const sr=e.target.closest('[data-plsrc]'); if(sr){ plSet.src=sr.dataset.plsrc; plSetSave(); plSheet(); return; }
   if(e.target.closest('#plDataSw')){ plSet.data=!plSet.data; plSetSave(); plSheet(); return; }
+  if(e.target.closest('#plLyrSw')){ plSet.lyr=!plSet.lyr; plSetSave(); plSheet(); return; }
+  const qt=e.target.closest('[data-plq]'); if(qt){ pl.qtab=qt.dataset.plq==='lyr' ? 'lyr' : 'q'; LS.set('plQTab',pl.qtab); plSheet(); return; }
+  const lt=e.target.closest('#plLyr p[data-lt]'); if(lt){ const at=+lt.dataset.lt; if(pl.loaded) plAudio.currentTime=at; else pl.want=at; plTick(); return; }
   const lk=e.target.closest('[data-ls-like]'); if(lk){ lpLikeToggle(lk.dataset.lsLike); return; }
   const c=e.target.closest('[data-pl]'); if(c && c.dataset.pl!=='menu' && c.dataset.pl!=='rate'){ plAct(c.dataset.pl); return; }
   const r=e.target.closest('[data-plrate]'); if(r){ plSetRate(+r.dataset.plrate); return; }
@@ -5396,7 +5503,7 @@ setInterval(()=>{ if(plDlg.open && Date.now()-pl.popAt>=PL_POP_IDLE_MS) plDlg.cl
 plDlg.addEventListener('close',()=>{ $('#plSetSheet').hidden=true; $('#plSetBtn').setAttribute('aria-expanded','false'); });
 plDlg.addEventListener('click',e=>{ if(e.target===plDlg) plDlg.close(); });                           // (a tap on what is behind the popup)
 function plClose(){                                                                                    // × : stop, hide the bar, keep the list (the next song played comes into it)
-  plAudio.pause(); clearTimeout(pl.stallT); pl.loaded=''; plAudio.removeAttribute('src'); plAudio.load();
+  plAudio.pause(); clearTimeout(pl.stallT); pl.loaded=''; pl.find=''; plAudio.removeAttribute('src'); plAudio.load();
   pl.closed=true; plSave(); plRender();
   if('mediaSession' in navigator){ try{ navigator.mediaSession.playbackState='none'; }catch(e){} }
 }
@@ -5409,7 +5516,7 @@ function plClearAll(){                                                          
 $('#plClear').addEventListener('click',plClearAll);
 $('#plShut').addEventListener('click',()=>{ plDlg.close(); plClose(); });
 $('#plWipe').addEventListener('click',()=>{                                                            // what this browser remembers of the listening goes (the songs liked and the play lists stay: they were made on purpose)
-  LS.set('lpRecent',[]); const m=plProgMap(); Object.keys(m).forEach(k=>{ if(k.startsWith('tmp:ls:')) delete m[k]; }); LS.set('plProg',m);
+  LS.set('lpRecent',[]); LS.set('lpTaste',null); LS.set('lpSearchHist',[]); state.lp.ask=null; lpRecReset(); const m=plProgMap(); Object.keys(m).forEach(k=>{ if(k.startsWith('tmp:ls:')) delete m[k]; }); LS.set('plProg',m);
   toast(t('plWiped'));
 });
 $('#readerPlay').addEventListener('click',()=>{ if(state.readingId) plPlay(state.readingId); });
@@ -6553,7 +6660,8 @@ state.dView='all'; state.dTab=''; state.dTabs=LS.get('dirTabs','topic')==='plat'
 state.ls={scene:String(LS.get('lsScene','')||'')};
 state.lp={idx:null, idxAt:0, busy:false, err:'', data:new Map(), pending:new Map(), g:String(LS.get('lpG','daily')||'daily'), mode:'music', g_music:String(LS.get('lpG_music','daily')||'daily'), g_podcast:String(LS.get('lpG_podcast','pod-hot')||'pod-hot'), show:'', shown:30, more:false, pods:null, podsKey:'', io:null,
   sort:(k=>['rank','new','dur','title','artist'].includes(k)?k:'rank')(LS.get('lpSort','rank')),
-  tab:(k=>['rec','chart','disc'].includes(k)?k:'rec')(LS.get('lpTab','rec')), open:false, cr:String(LS.get('lpCR','')||''), batch:0, styles:false};          // the music side has three tabs (for you / charts / discover); open: a list that was opened from the first or the third (a back arrow leaves it); cr: the region of the charts
+  tab:(k=>['rec','chart','disc'].includes(k)?k:'rec')(LS.get('lpTab','rec')), open:false, cr:String(LS.get('lpCR','')||''), batch:0, styles:false,
+  v2:false, rev:0, recSnap:null, rsDone:new Set(), rs:new Map(), search:false, sq:'', sres:null, sbusy:false, shist:null, pool:null, poolBusy:false};          // v2: the service can find a sound (resolve), search and give a pool (it said its region); rs: what resolve said (a moment); search: the search page is on; pool: the songs of the charts of the reader's side          // the music side has three tabs (for you / charts / discover); open: a list that was opened from the first or the third (a back arrow leaves it); cr: the region of the charts
 state.dListen=false;                    // today's listening: what the service said, when it was asked, the scene that is shown
 state.dHot=false; state.hot={idx:null, err:'', busy:false, data:new Map(), view:LS.get('hotView','mix')==='boards'?'boards':'mix', openId:null, visible:{}, mixBusy:false, mixRows:[], mixRun:0, period:LS.get('hotPeriod','day')==='week'?'week':'day', events:[], eventsAt:0, eventsBusy:false, eventsErr:'', eventsRun:0, region:(r=>/^[A-Za-z]{2}$/.test(r)||r==='auto' ? String(r).toUpperCase().replace('AUTO','auto') : 'auto')(LS.get('hotRegion','auto')), sel:(()=>{ const s=LS.get('hotSel',{}); return s && typeof s==='object' && !Array.isArray(s) ? s : {}; })()};
 const PUBLIC_ROUTES={discover:'/discover/',hot:'/hot/',listen:'/listen/',books:'/picks/books/',articles:'/picks/articles/',watch:'/watch/'};
@@ -7070,18 +7178,47 @@ const listenApi=()=>{ const b=hotBase(); return b ? b+'/api/listen' : ''; };
 const LP_STRIP=14, LP_FRESH=30*60000, LP_RETRY=60000, LP_PAGE=30, LP_QMAX=240, LP_KINDS=['daily','chart','list','style','scene'];
 const lpName=g=>state.lang==='zh' ? g.name : (g.name_en||g.name);
 const lpKey=id=>id+'|'+state.lang;                                                                  // (what the service says depends on the reader's language)
-function listenClean(x){                                                                           // one song as the service says it -> ours (only the fields that are used, https pictures, a sound that has an address), or null
+function lpCleanCand(c){                                                                           // one sound of a song as the service says it; a candidate with no address ("rs") is a promise: resolve gives it when the song is played
+  const s=v=>typeof v==='string' ? v : '';
+  if(!c || typeof c!=='object') return null;
+  const au=httpUrl(c.audio); if(!au && c.resolve!==true) return null;
+  return {p:s(c.p).slice(0,20), k:c.k==='preview'?'preview':'full', audio:au, rs:!au, net:c.net==='global'?'global':c.net==='any'?'any':'cn', big:c.big===true, size:+c.size>0?Math.floor(+c.size):0, dl:c.dl===true, lyr:c.lyr===true, lic:cut(s(c.lic),30)};
+}
+function lpCleanLyrics(l){                                                                         // the words of a song as resolve says them: {fmt: lrc | text, text, from}, or null
+  if(!l || typeof l!=='object' || typeof l.text!=='string' || !l.text.trim()) return null;
+  return {fmt:l.fmt==='lrc'?'lrc':'text', text:l.text.slice(0,30000), from:cut(String(l.from||''),30)};
+}
+function listenClean(x){                                                                           // one song as the service says it -> ours (only the fields that are used, https pictures, a sound that has an address or a promise of one), or null
   const s=v=>typeof v==='string' ? v : '';
   if(!x || typeof x!=='object' || !s(x.id) || !s(x.title)) return null;
-  const cs=(Array.isArray(x.cands) ? x.cands.slice(0,8) : []).map(c=>{                              // the other sounds of the song (a whole one, a preview ...): only those a player can play
-    if(!c || typeof c!=='object' || !httpUrl(c.audio)) return null;
-    return {p:s(c.p).slice(0,20), k:c.k==='preview'?'preview':'full', audio:httpUrl(c.audio), net:c.net==='global'?'global':c.net==='any'?'any':'cn', big:c.big===true, size:+c.size>0?Math.floor(+c.size):0, dl:c.dl===true, lyr:c.lyr===true, lic:cut(s(c.lic),30)};
-  }).filter(Boolean);
-  const first=httpUrl(x.audio) || (cs[0] ? cs[0].audio : '');
-  const stream=x.mode==='stream' && !!first;
+  const cs=(Array.isArray(x.cands) ? x.cands.slice(0,8) : []).map(lpCleanCand).filter(Boolean);       // the other sounds of the song (a whole one, a preview ...): only those a player can play, and promises
+  const first=httpUrl(x.audio) || (cs.find(c=>c.audio) || {}).audio || '';
+  const need=!first && (x.resolve===true || cs.some(c=>c.rs));                                    // no address yet (the Douyin chart, a search result): a sound is found when the song is played
+  const stream=x.mode==='stream' && (!!first || need);
   if(!stream && x.mode!=='embed') return null;
   return {id:s(x.id).slice(0,60), title:cut(s(x.title),120), artist:cut(s(x.artist),80), cover:s(x.cover).startsWith('https://')?s(x.cover):'', dur:+x.dur>0?Math.floor(+x.dur):0, mode:stream?'stream':'embed', cands:cs,
-          audio:stream?first:'', url:httpUrl(x.url), lic:cut(s(x.lic),30), from:cut(s(x.from),30), net:x.net==='global'?'global':'cn', preview:x.preview===true, date:/^\d{4}-\d{2}-\d{2}$/.test(s(x.date))?x.date:'', show:s(x.show).slice(0,20)};
+          audio:stream?first:'', need:stream && !first && need, url:httpUrl(x.url), lic:cut(s(x.lic),30), from:cut(s(x.from),30), net:x.net==='global'?'global':'cn', preview:x.preview===true, date:/^\d{4}-\d{2}-\d{2}$/.test(s(x.date))?x.date:'', show:s(x.show).slice(0,20),
+          market:['cn','jp-kr','west','global'].includes(x.market)?x.market:'', tags:(Array.isArray(x.tags) ? x.tags : []).slice(0,4).map(v=>cut(s(v),20)).filter(Boolean)};
+}
+async function lpResolve(x, force){                                                                   // -> {cands, ttl, lyrics} of a song (fresh sounds, and its words when a source has them), or null: the service says nothing (older service, no answer)
+  const api=listenApi(), L=state.lp; if(!api || !L.v2 || !x) return null;
+  const hit=L.rs.get(x.id); if(hit && !force && Date.now()<hit.exp) return hit.r;
+  try{
+    const u=api+'?resolve=1&id='+encodeURIComponent(x.id)+'&t='+encodeURIComponent(x.title)+'&a='+encodeURIComponent(x.artist||'')+'&d='+(x.dur||0)+'&lang='+state.lang+'&region='+lpRegionPref();
+    const r=await fetch(u,{credentials:'omit'}), d=await r.json().catch(()=>null);
+    if(!d || d.ok!==true || !Array.isArray(d.cands)) return null;
+    const out={cands:d.cands.slice(0,8).map(lpCleanCand).filter(c=>c && c.audio), ttl:Math.max(1,Math.min(3600,+d.ttl||600)), lyrics:lpCleanLyrics(d.lyrics)};
+    L.rs.set(x.id,{r:out, exp:Date.now()+Math.min(15000,out.ttl*800)});                                                    // (asked again within a moment: the same answer, not another question)
+    return out;
+  }catch(e){ return null; }
+}
+function lpApplyResolve(x, it, r){                                                                    // what resolve found goes into the song (and into the bar's copy of it): its new sounds first, the old ones of other sources after them
+  const keep=(x.cands||[]).filter(c=>c.audio && !r.cands.some(n=>n.p===c.p));
+  x.cands=r.cands.concat(keep).slice(0,8);
+  const whole=x.cands.find(c=>c.audio && c.k==='full'), any=whole || x.cands.find(c=>c.audio);
+  x.audio=any ? any.audio : ''; x.preview=!whole; x.need=!x.audio; if(r.cands.length) x.rsExp=Date.now()+r.ttl*800;
+  if(r.lyrics) x.lyrics=r.lyrics; else if(x.lyrics===undefined) x.lyrics=null;                      // (null: looked for and there are none)
+  if(it){ it.cands=x.cands; it.audio={...it.audio, url:x.audio}; it.need=x.need; it.preview=x.preview; it.rsExp=x.rsExp||0; it.lyrics=x.lyrics; }
 }
 function lpCleanGroup(g){
   const s=v=>typeof v==='string' ? v : '';
@@ -7108,13 +7245,14 @@ async function lpIndexAsk(api){
     L.idx={date:String(k.date||''), lang, groups:gs}; lpPaint(); lsEnsure(); if($('#lpRoot')) lpEnsure();
   });
   try{
-    const r=await fetch(api+'?lang='+lang,{credentials:'omit'}), d=await r.json().catch(()=>null), raw=d && d.ok && Array.isArray(d.groups) ? d.groups.slice(0,120) : [], gs=raw.map(lpCleanGroup).filter(Boolean);
+    const r=await fetch(api+'?lang='+lang+'&caps=resolve&region='+lpRegionPref(),{credentials:'omit'}), d=await r.json().catch(()=>null), raw=d && d.ok && Array.isArray(d.groups) ? d.groups.slice(0,120) : [], gs=raw.map(lpCleanGroup).filter(Boolean);
+    state.lp.v2=!!d && (d.region==='cn' || d.region==='global');                                       // (a service that echoes its region knows the newer questions; an older one does not, and the page works as before)
     if(!gs.length) throw new Error('index');
     L.idx={date:String(d.date||''), lang, groups:gs}; lpKeptPut(api,'idx|'+lang,{date:String(d.date||''), groups:raw});
   }catch(e){ if(!L.idx) L.err=t('lpErr'); }                                                        // (no service, no lists: the podcasts of the directory are still there)
   L.busy=false; lpPaint(); lsEnsure(); if($('#lpRoot')) lpEnsure();
 }
-function lpClean(id, rawItems){ const pod=lpTypeOf(id)==='podcast', items=(Array.isArray(rawItems) ? rawItems : []).slice(0,240).map(listenClean).filter(Boolean); items.forEach(x=>{ x.pod=pod; }); return items; }          // (an episode has the speed and the jumps, a song has the play mode)
+function lpClean(id, rawItems){ const pod=lpTypeOf(id)==='podcast', g=lpGroups().find(y=>y.id===id), kind=g && (g.kind==='style' || g.kind==='scene') ? id : '', items=(Array.isArray(rawItems) ? rawItems : []).slice(0,240).map(listenClean).filter(Boolean); items.forEach(x=>{ x.pod=pod; if(kind && !x.tags.length) x.tags=[kind]; }); return items; }          // (the songs of a style or a scene carry its name as their kind: what the recommendation learns from)          // (an episode has the speed and the jumps, a song has the play mode)
 function lpLoad(id, force){                                                                         // the songs of one list (asked for once in half an hour; a failure waits a minute); -> a promise
   const L=state.lp, api=listenApi(), key=lpKey(id), old=L.data.get(key);
   if(L.pending.has(key)) return L.pending.get(key);
@@ -7123,19 +7261,33 @@ function lpLoad(id, force){                                                     
   if(!old) lpKeptGet(api,'g|'+key).then(k=>{                                                         // (the songs of the last visit: shown at once, while the network is asked)
     const cur=L.data.get(key), items=k ? lpClean(id,k.items) : [];
     if(!items.length || !cur || (cur.items && cur.items.length) || cur.state==='ok') return;
-    L.data.set(key,{...cur, items, sub:cut(String(k.sub||''),120), sub_en:cut(String(k.sub_en||''),120), kept:true}); lpPaint();
+    L.data.set(key,{...cur, items, sub:cut(String(k.sub||''),120), sub_en:cut(String(k.sub_en||''),120), kept:true}); L.rev++; lpPaint();
   });
   const p=(async()=>{
     try{
-      const r=await fetch(api+'?g='+encodeURIComponent(id)+'&lang='+state.lang,{credentials:'omit'}), d=await r.json().catch(()=>null), g=d && d.ok ? d.group : null;
+      const r=await fetch(api+'?g='+encodeURIComponent(id)+'&lang='+state.lang+'&caps=resolve',{credentials:'omit'}), d=await r.json().catch(()=>null), g=d && d.ok ? d.group : null;
       const items=g ? lpClean(id,g.items) : [];
       if(!items.length) throw Object.assign(new Error('empty'), {svc:d && !d.ok ? (state.lang==='zh' ? d.message : d.message_en) : ''});
-      L.data.set(key,{state:'ok', t:Date.now(), items, sub:cut(String(g.sub||''),120), sub_en:cut(String(g.sub_en||''),120)});
+      L.data.set(key,{state:'ok', t:Date.now(), items, sub:cut(String(g.sub||''),120), sub_en:cut(String(g.sub_en||''),120)}); L.rev++;
       lpKeptPut(api,'g|'+key,{items:g.items.slice(0,240), sub:String(g.sub||''), sub_en:String(g.sub_en||'')});
     }catch(e){ const cur=L.data.get(key); L.data.set(key,{state:'err', t:Date.now(), items:(cur && cur.items) || (old && old.items) || [], msg:e.svc || t('lpErr')}); }          // (a failure keeps what is shown: the songs of the last visit stay)
     L.pending.delete(key); lpPaint();
   })();
   L.pending.set(key,p); lpPaint(); return p;
+}
+function lpPoolClean(a){ return (Array.isArray(a) ? a : []).slice(0,300).map(r=>{ if(!r || typeof r!=='object' || typeof r.id!=='string' || typeof r.title!=='string' || !r.title) return null;
+  return {id:r.id.slice(0,60), title:cut(r.title,120), artist:cut(String(r.artist||''),80), cover:String(r.cover||'').startsWith('https://')?r.cover:'', dur:+r.dur>0?Math.floor(+r.dur):0, mode:'stream', audio:'', need:true, cands:[], url:'', lic:'', from:cut(String(r.from||''),30), net:'cn',
+          preview:false, date:'', show:'', hot:+r.rank>0?Math.floor(+r.rank):0, market:['cn','jp-kr','west','global'].includes(r.market)?r.market:'', tags:(Array.isArray(r.tags) ? r.tags : []).slice(0,4).map(v=>cut(String(v),20)).filter(Boolean), pool:true}; }).filter(Boolean); }
+async function lpPoolEnsure(){                                                                         // the songs of the charts of the reader's side (names and places, no sounds: a sound is found when the song is played)
+  const L=state.lp, api=listenApi(); if(!api || !L.v2 || L.poolBusy) return;
+  const side=lpRegionPref(); if(L.pool && L.pool.side===side && Date.now()-L.pool.at<6*3600000) return;
+  L.poolBusy=true;
+  if(!L.pool){ const k=await lpKeptGet(api,'pool|'+side), items=k ? lpPoolClean(k.items) : []; if(items.length && !L.pool){ L.pool={side, at:Date.now()-5*3600000, items}; lpPaint(); } }
+  try{
+    const r=await fetch(api+'?pool='+side+'&lang='+state.lang,{credentials:'omit'}), d=await r.json().catch(()=>null), items=d && d.ok===true ? lpPoolClean(d.items) : [];
+    if(items.length){ L.pool={side, at:Date.now(), items, stale:d.stale===true}; lpKeptPut(api,'pool|'+side,{items:d.items.slice(0,300)}); }
+  }catch(e){}
+  L.poolBusy=false; lpPaint();
 }
 function lpPods(){                                                                                  // the episodes of the directory (newest first) and its shows (the one with the newest episode first), or null
   const d=state.dirData; if(!d || !Array.isArray(d.items)) return null;
@@ -7158,21 +7310,22 @@ const lpGroups=()=>{ const g=state.lp.idx ? state.lp.idx.groups : [], d=lpDirTil
 const lpTypeOf=id=>{ const g=lpGroups().find(x=>x.id===id); return g ? g.type : 'music'; };
 /* ---- what the reader keeps of the music (this browser only, nothing is sent): the songs liked, the play lists made by hand, the songs played last, the songs not wanted */
 const lpSeen=new Map();                                                                               // id -> the song as the page has it (a song that was seen can be liked or put in a list)
-const lpSongKeep=x=>({id:x.id, title:x.title, artist:x.artist||'', cover:x.cover||'', dur:x.dur||0, mode:'stream', audio:x.audio, url:x.url||'', lic:x.lic||'', from:x.from||'', net:x.net||'cn', preview:!!x.preview, cands:(x.cands||[]).slice(0,6), pod:false, date:'', show:''});
-const lpArr=k=>{ const a=LS.get(k,[]); return Array.isArray(a) ? a.filter(x=>x && typeof x==='object' && x.id && httpUrl(x.audio)) : []; };
+const lpSongKeep=x=>({id:x.id, title:x.title, artist:x.artist||'', cover:x.cover||'', dur:x.dur||0, mode:'stream', audio:x.audio||'', need:!x.audio, url:x.url||'', lic:x.lic||'', from:x.from||'', net:x.net||'cn', preview:!!x.preview, cands:(x.cands||[]).slice(0,6), pod:false, date:'', show:'', market:x.market||'', tags:(x.tags||[]).slice(0,4)});
+const lpKeepOk=x=>!!x && typeof x==='object' && !!x.id && (!!httpUrl(x.audio) || x.need===true);                  // (a song kept before it had a sound is a promise: it is found when it is played)
+const lpArr=k=>{ const a=LS.get(k,[]); return Array.isArray(a) ? a.filter(lpKeepOk) : []; };
 const lpLikes=()=>lpArr('lpLikes'), lpRecent=()=>lpArr('lpRecent');
 const lpIsLiked=id=>lpLikes().some(x=>x.id===id);
-const lpLists=()=>{ const a=LS.get('lpLists',[]); return Array.isArray(a) ? a.filter(l=>l && l.id && typeof l.name==='string' && Array.isArray(l.songs)).map(l=>({id:String(l.id), name:l.name, songs:l.songs.filter(x=>x && x.id && httpUrl(x.audio))})) : []; };
+const lpLists=()=>{ const a=LS.get('lpLists',[]); return Array.isArray(a) ? a.filter(l=>l && l.id && typeof l.name==='string' && Array.isArray(l.songs)).map(l=>({id:String(l.id), name:l.name, songs:l.songs.filter(lpKeepOk)})) : []; };
 const lpListsSave=a=>LS.set('lpLists',a);
 const lpNo=()=>{ const o=LS.get('lpNo',{}); return {ids:Array.isArray(o.ids)?o.ids.map(String):[], artists:o.artists && typeof o.artists==='object' ? o.artists : {}}; };
 function lpLikeToggle(id){
   const x=lpSeen.get(id); if(!x) return false;
   let a=lpLikes(); a=a.some(y=>y.id===id) ? a.filter(y=>y.id!==id) : [lpSongKeep(x)].concat(a);
-  LS.set('lpLikes',a.slice(0,2000)); lpLikeSync(); return a.some(y=>y.id===id);
+  LS.set('lpLikes',a.slice(0,2000)); lpLikeSync(); const on=a.some(y=>y.id===id); lpSignal(x, on ? LP_SIG.like : -LP_SIG.like); return on;
 }
 function lpLikeSync(){ document.querySelectorAll('[data-ls-like]').forEach(b=>{ const on=lpIsLiked(b.dataset.lsLike); b.setAttribute('aria-pressed',String(on)); b.title=t(on?'lsLiked':'lsLike'); b.setAttribute('aria-label',b.title); }); }
 function lpRecentAdd(x){ if(!x) return; LS.set('lpRecent',[lpSongKeep(x)].concat(lpRecent().filter(y=>y.id!==x.id)).slice(0,100)); }
-function lpNoAdd(x){ const o=lpNo(); if(!o.ids.includes(x.id)) o.ids.push(x.id); if(x.artist) o.artists[x.artist]=(+o.artists[x.artist]||0)+1; o.ids=o.ids.slice(-1000); LS.set('lpNo',o); }
+function lpNoAdd(x){ lpSignal(x, LP_SIG.no); const o=lpNo(); if(!o.ids.includes(x.id)) o.ids.push(x.id); if(x.artist) o.artists[x.artist]=(+o.artists[x.artist]||0)+1; o.ids=o.ids.slice(-1000); LS.set('lpNo',o); }
 function lpListNew(name){ const a=lpLists(), l={id:Date.now().toString(36)+Math.floor(Math.random()*1296).toString(36), name:cut(String(name||'').trim()||t('lpListDef',a.length+1),30), songs:[]}; a.push(l); lpListsSave(a); return l; }
 function lpListAdd(listId, x){ const a=lpLists(), l=a.find(y=>y.id===listId); if(!l || !x) return false; if(l.songs.some(y=>y.id===x.id)) return false; l.songs.push(lpSongKeep(x)); l.songs=l.songs.slice(-500); lpListsSave(a); return true; }
 function lpMyTitle(id){ return id==='my:likes' ? t('lpMyLikes') : id==='my:recent' ? t('lpMyRecent') : id==='my:lists' ? t('lpMyLists') : (lpLists().find(l=>'my:l:'+l.id===id)||{}).name||''; }
@@ -7207,9 +7360,9 @@ function lpSorted(items, id){
   if(k==='artist') return items.slice().sort((a,b)=>a.artist.localeCompare(b.artist,loc) || a.title.localeCompare(b.title,loc));
   return items;                                                                                      // (the service's order, or the newest episode first)
 }
-const lpShownItems=()=>{ const cur=lpCur(); if(!cur) return state.lp.tab==='rec' ? lpRecItems() : []; return lpSorted(lpGroupItems(cur, cur==='pod' ? state.lp.show : '').items, cur); };
+const lpShownItems=()=>{ if(state.lp.search && state.lp.sres) return state.lp.sres.items; const cur=lpCur(); if(!cur) return state.lp.tab==='rec' ? lpRecItems() : []; return lpSorted(lpGroupItems(cur, cur==='pod' ? state.lp.show : '').items, cur); };
 function lpEnsure(){                                                                                 // the lists that the page on the screen needs are asked for (the daily picks for the radio, the chart that is shown, the list that was opened)
-  if(!listenApi()) return; lpIndex(); const L=state.lp;
+  if(!listenApi()) return; lpIndex(); const L=state.lp; if(L.v2 && L.tab==='rec' && !lpPodMode()) lpPoolEnsure();
   if(!lpPodMode() && L.tab==='rec'){ const gs=lpGroups(), d=gs.find(g=>g.type==='music' && g.kind==='daily'), m=lpMixGroup(gs); if(d) lpLoad(d.id); if(m) lpLoad(m.id); }
   const cur=lpCur(); if(cur && cur!=='pod' && !cur.startsWith('my:')) lpLoad(cur);
 }
@@ -7226,7 +7379,7 @@ function listenRowHTML(x, playing, plain){                                      
     return `<li class="ls-row nonum${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}"><span class="ls-cv">${cv}${LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}</b><span class="ls-m"><span class="ls-w">${esc(lpMeta(x)[0]||'')}</span>${lpMeta(x).length>1 ? `<span class="ls-x"> · ${esc(lpMeta(x).slice(1).join(' · '))}</span>` : ''}</span></span><span class="ls-ic" aria-hidden="true">${ICON.play}</span></button>${src}</li>`;
   }
   const liked=lpIsLiked(x.id), num=x.hot>0 && !plain;          // (plain: a list that is not a chart, such as the songs for you, which mixes a chart in: no place in front of a song)
-  return `<li class="ls-row${num?'':' nonum'}${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}">${num ? `<span class="ls-n${x.hot<=3?' top':''}"><em>${x.hot}</em>${LP_BARS}</span>` : ''}<span class="ls-cv">${cv}${num?'':LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}${x.preview ? `<em class="ls-pv">${esc(t('lsPreviewS'))}</em>` : ''}</b><span class="ls-m">${esc(x.artist||x.from)}</span></span></button>`
+  return `<li class="ls-row${num?'':' nonum'}${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}">${num ? `<span class="ls-n${x.hot<=3?' top':''}"><em>${x.hot}</em>${LP_BARS}</span>` : ''}<span class="ls-cv">${cv}${num?'':LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}${x.preview && !lpPromise(x) && !lpUpgrade(x) ? `<em class="ls-pv">${esc(t('lsPreviewS'))}</em>` : x.sr && (!x.preview || lpPromise(x)) ? `<em class="ls-pv ls-wh">${esc(t('lsWholeS'))}</em>` : ''}</b><span class="ls-m">${esc(x.artist||x.from)}</span></span></button>`
     + `<button class="ls-like" type="button" data-ls-like="${esc(x.id)}" aria-pressed="${liked}" title="${esc(t(liked?'lsLiked':'lsLike'))}" aria-label="${esc(t(liked?'lsLiked':'lsLike'))}">${ICON.heart}</button><button class="ls-more" type="button" data-ls-more="${esc(x.id)}" aria-haspopup="dialog" title="${esc(t('lsMore'))}" aria-label="${esc(t('lsMore'))}">${ICON.more}</button></li>`;
 }
 function lpCardHTML(x, playing){                                                                     // a song as a card: a square cover with a play mark, the title, the artist, one line of what it is
@@ -7286,7 +7439,67 @@ function lpChartCur(){                                                          
 const lpPodMode=()=>state.lp.mode==='podcast' || !lpGroups().some(g=>g.type!=='podcast');                 // (the podcast side is shown when it was chosen, or when there is no music at all: the shows of the directory)
 function lpCur(){ const L=state.lp; if(lpPodMode()) return lpSel(); if(L.tab==='chart'){ const c=lpChartCur(); return c.g ? c.g.id : ''; } return L.open ? L.g : ''; }          // the list on the page ('' = the first or the third tab's own page)
 function lpMixGroup(gs){ const want=lpRegionPref()==='cn' ? ['west','global'] : ['cn']; return gs.find(g=>g.type==='music' && lpIsChart(g) && want.includes(lpRegionOf(g))); }          // (the chart of another region that is mixed in)
-function lpRecItems(all){                                                                            // songs for you: the day's picks with a chart of another region mixed in (two of ours, one of theirs); the whole mix, from where the batch begins (another batch = another start); thirty are shown, the rest come when the end is reached
+/* ---- the recommendation: what the reader does with songs is kept on this device only (a taste table: artists, kinds of music, parts of the world; every thing done counts half as much after 30 days), the songs of the day and of the charts
+   (and the pool the service gives: the songs of the charts of the reader's side) are scored against it and mixed by the part of the world: seven in ten of the reader's own side, one and a half of each of the others, until about twenty things
+   were done, then the table decides. Every fifth song is a stranger (an artist the table knows nothing about); an artist has at most two songs in a batch of thirty. */
+const LP_HALF=30*86400000, LP_SIG={like:3, whole:1, most:.5, skip:-1, no:-3};
+function lpTaste(){ const o=LS.get('lpTaste',null); return o && o.v===1 && o.a && o.g && o.m ? o : {v:1, a:{}, g:{}, m:{}, n:0}; }
+const lpDecay=(e,now)=>Array.isArray(e) ? e[0]*Math.pow(.5,(now-e[1])/LP_HALF) : 0;
+function lpSignal(x, w){                                                                              // something the reader did with a song: its artist, its kinds and its part of the world get the weight
+  if(!x || x.pod || !w) return; const o=lpTaste(), now=Date.now();
+  const add=(g,k)=>{ if(k) o[g][k]=[lpDecay(o[g][k],now)+w, now]; };
+  add('a', String(x.artist||'').slice(0,40)); (x.tags||[]).forEach(k=>add('g',k)); add('m', x.market); o.n++;
+  for(const g of ['a','g','m']){ const ks=Object.keys(o[g]); if(ks.length>300) ks.sort((u,v)=>Math.abs(lpDecay(o[g][u],now))-Math.abs(lpDecay(o[g][v],now))).slice(0,ks.length-300).forEach(k=>delete o[g][k]); }
+  LS.set('lpTaste',o);
+}
+const lpSongKey=x=>(String(x.title)+'|'+String(x.artist)).toLowerCase().replace(/\s+/g,'');
+const lpSideOf=(m,pref)=> pref==='cn' ? (m==='cn' || !m ? 0 : m==='jp-kr' ? 1 : 2) : (m==='west' || m==='global' || !m ? 0 : m==='jp-kr' ? 1 : 2);          // 0 = the reader's own side, 1 = the near one (Japan, Korea), 2 = the far one
+function lpScore(x, T, now, recent){
+  const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
+  let sc=cl(lpDecay(T.a[x.artist],now),-4,6) + .6*(x.tags||[]).reduce((a,k)=>a+cl(lpDecay(T.g[k],now),-3,4),0) + .3*cl(lpDecay(T.m[x.market],now),-3,4);
+  if(x.hot>0) sc+=Math.max(0,1.2-x.hot/60);                                                           // how hot it is (the place on a chart)
+  sc+=x.need ? 0 : x.preview ? .1 : .5;                                                               // a whole song that plays at once
+  if(recent.has(x.id)) sc-=2;                                                                         // played lately
+  return sc;
+}
+function lpRecRank(base){                                                                              // -> the songs for you: the base (the day's picks with a chart mixed in) and the pool, scored and mixed
+  const L=state.lp, pref=lpRegionPref(), T=lpTaste(), now=Date.now(), no=lpNo(), recent=new Set(lpRecent().slice(0,40).map(x=>x.id));
+  const seen=new Set(base.map(lpSongKey)), pool=(L.pool && L.pool.side===pref ? L.pool.items : []).filter(x=>!seen.has(lpSongKey(x)) && !no.ids.includes(x.id) && !(x.artist && no.artists[x.artist]>=2));
+  const all=base.concat(pool).map((x,i)=>({x,i,s:lpScore(x,T,now,recent),c:lpSideOf(x.market,pref)}));
+  if(all.length<2) return base;
+  const q=[[],[],[]]; all.sort((a,b)=>b.s-a.s || a.i-b.i).forEach(e=>q[e.c].push(e));
+  let sh=[.7,.15,.15];
+  if(T.n>=20){                                                                                         // (about twenty things done: the table decides how much of each part of the world)
+    const cs=[0,0,0]; Object.keys(T.m).forEach(m=>{ cs[lpSideOf(m,pref)]+=Math.max(0,lpDecay(T.m[m],now)); }); const tot=cs[0]+cs[1]+cs[2];
+    if(tot>0){ const v=cs.map(c=>.1+.9*c/tot), z=v[0]+v[1]+v[2]; sh=v.map(c=>c/z); }
+  }
+  const out=[], taken=[0,0,0], per=new Map(), later=[], stranger=e=>!T.a[e.x.artist] && !(e.x.tags||[]).some(k=>T.g[k]);
+  let rng=hashStr('rec|'+todayKey())>>>0; const rnd=()=>{ rng=(rng*1664525+1013904223)>>>0; return rng/4294967296; };          // (the day is the seed: another batch is the next slice of the same order, never a part of the first one again)
+  const total=all.length;
+  while(out.length+later.length<total){
+    const pos=out.length, avail=[0,1,2].filter(c=>q[c].length); if(!avail.length) break;
+    let c=avail.reduce((b,k)=>(sh[k]*(pos+1)-taken[k]) > (sh[b]*(pos+1)-taken[b]) ? k : b, avail[0]), e;
+    if(T.n>0 && pos%5===4){                                                                             // every fifth: a stranger, when there is one
+      const cand=[]; for(const k of avail){ q[k].some((z,j)=>{ if(stranger(z)){ cand.push([k,j]); return true; } return false; }); }
+      if(cand.length){ const pick=cand[Math.floor(rnd()*cand.length)]; c=pick[0]; e=q[c].splice(pick[1],1)[0]; }
+    }
+    if(!e) e=q[c].shift();
+    taken[c]++;
+    const chunk=Math.floor(out.length/LP_PAGE)+'|'+(e.x.artist||e.x.id);
+    if(e.x.artist && (per.get(chunk)||0)>=2){ later.push(e); continue; }                              // (an artist has two songs in a batch of thirty at most; the others wait)
+    per.set(chunk,(per.get(chunk)||0)+1); out.push(e);
+  }
+  return out.concat(later).map(e=>e.x);
+}
+const todayKey=()=>{ const d=new Date(); return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate(); };
+function lpRecItems(all){                                                                            // the songs for you; another batch = the list begins thirty songs further on. The order is made once and kept while the page is on the screen (what the reader does meanwhile changes the next order, not this one: the rows that come when the end is reached must follow the rows above)
+  const L=state.lp, key=[L.pool ? L.pool.at : 0, L.rev, L.v2, lpRegionPref()].join('|');
+  if(!L.recSnap || L.recSnap.k!==key){ const base=lpRecBase(all); L.recSnap={k:key, list:L.v2 ? lpRecRank(base) : base}; }
+  const list=L.recSnap.list, start=list.length ? (L.batch*LP_PAGE)%list.length : 0;
+  return start ? list.slice(start).concat(list.slice(0,start)) : list;
+}
+const lpRecReset=()=>{ state.lp.recSnap=null; };
+function lpRecBase(all){                                                                            // songs for you: the day's picks with a chart of another region mixed in (two of ours, one of theirs); the whole mix, from where the batch begins (another batch = another start); thirty are shown, the rest come when the end is reached
   const gs=all||lpGroups(), d=gs.find(g=>g.type==='music' && g.kind==='daily'); if(!d) return [];
   const own=lpGroupItems(d.id,'').items; if(!own.length) return [];
   const mg=lpMixGroup(gs), more=mg ? lpGroupItems(mg.id,'').items : [], seen=new Set(), mixed=[]; let i=0, j=0;
@@ -7294,7 +7507,7 @@ function lpRecItems(all){                                                       
     for(let k=0;k<2 && i<own.length;k++){ const x=own[i++]; if(!seen.has(x.id)){ seen.add(x.id); mixed.push(x); } }
     if(j<more.length){ const x=more[j++]; if(!seen.has(x.id)){ seen.add(x.id); mixed.push(x); } }
   }
-  const start=(state.lp.batch*LP_PAGE)%mixed.length; return start ? mixed.slice(start).concat(mixed.slice(0,start)) : mixed;
+  return mixed;
 }
 const LP_TONES=[['#1f5f55','#d2a96a'],['#2c2f6e','#d98a9c'],['#4a2a5e','#e3a65a'],['#173e63','#5fc2c0'],['#1f4d31','#b8c765'],['#5d1f36','#ee8a6a'],['#33414f','#e6b58d'],['#1b3f7a','#9b86d6']];          // (dark corner -> light corner: a pair for every id, always the same one)
 const LP_NOTES=['<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6.5l10-2V16"/><path d="M9 10.5l10-2"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>', '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17V4l5.5 2.5"/><circle cx="9.5" cy="17" r="2.5"/></svg>'];
@@ -7362,7 +7575,19 @@ function lpRecHTML(all){                                                        
   const mine=sq('my:likes',ICON.heart,lpLikes().length)+sq('my:recent',LP_CLOCK,lpRecent().length)+sq('my:lists',ICON.list,lpLists().length);
   const lists=all.filter(g=>g.type==='music' && g.kind==='list' && !lpIsChart(g)).slice(0,20);
   const shelf=`<div class="lp-secbar"><h3 class="lp-h">${esc(t('lpShelf'))}</h3></div><div class="lp-shelf">${mine}${lists.map(lpGcCard).join('')}</div>`;
-  return shelf+songs;
+  return shelf+lpAskHTML()+songs;
+}
+const LP_ASK=[['pop','askPop'],['rock','askRock'],['hiphop','askHiphop'],['electronic','askElec'],['jazz','askJazz'],['classical','askClassic'],['folk','askFolk'],['@cn','askCn'],['@jp-kr','askJpKr'],['@west','askWest']];
+function lpAskHTML(){                                                                                  // once, the first time: a few kinds of music to start the recommendation with (kept on this device only); "no thanks" is kept too
+  const L=state.lp; if(!L.v2 || LS.get('lpAsked',0) || lpTaste().n>0) return '';
+  const A=L.ask||new Set();
+  return `<section class="lp-ask" aria-label="${esc(t('lpAskT'))}"><b>${esc(t('lpAskT'))}</b><span>${esc(t('lpAskD'))}</span><div class="dr-pickcols">${LP_ASK.map(([k,w])=>`<button class="dr-chip" type="button" data-lp-askk="${k}" aria-pressed="${A.has(k)}">${esc(t(w))}</button>`).join('')}</div>`
+    + `<div class="lp-ask-go"><button class="btn primary" type="button" data-lp-askgo>${esc(t('lpAskGo'))}</button><button class="btn" type="button" data-lp-askskip>${esc(t('lpAskSkip'))}</button></div></section>`;
+}
+function lpAskDone(use){
+  const L=state.lp, A=L.ask||new Set(), o=lpTaste(), now=Date.now();
+  if(use && A.size){ A.forEach(k=>{ if(k[0]==='@') o.m[k.slice(1)]=[2.5,now]; else o.g[k]=[2.5,now]; }); o.n++; LS.set('lpTaste',o); }
+  LS.set('lpAsked',1); L.ask=null; L.batch=0; lpRecReset(); lpPaint();
 }
 function lpDiscHTML(all){
   const L=state.lp, music=all.filter(g=>g.type==='music'), scenes=music.filter(lpIsScene), styles=music.filter(g=>g.kind==='style' && !lpIsScene(g)), shown=L.styles ? styles : styles.slice(0,8);
@@ -7375,6 +7600,52 @@ function lpChartHTML(all){
   const pick=c.list.length>1 ? `<div class="lp-regs lp-cgs" role="tablist" aria-label="${esc(t('lpChartPick'))}">${c.list.map(g=>`<button class="lp-reg" type="button" role="tab" aria-selected="${g.id===c.g.id}" data-lp-cgb="${esc(g.id)}">${esc(lpName(g))}</button>`).join('')}</div>` : '';
   return regs+pick+lpSongsHTML(c.g.id, all);
 }
+const LP_SEARCH='<svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
+const lpHist=()=>{ const a=LS.get('lpSearchHist',[]); return Array.isArray(a) ? a.filter(v=>typeof v==='string' && v).slice(0,10) : []; };
+const lpHistAdd=q=>{ if(q) LS.set('lpSearchHist',[q].concat(lpHist().filter(v=>v!==q)).slice(0,10)); };
+function lpSearchHTML(){                                                                               // the search page: a back arrow and a box, then the history, or the songs found (each says whether it is a whole song or a preview)
+  const L=state.lp;
+  return `<div class="lp-sh"><button class="plp-ic lp-back" type="button" data-lp-sback aria-label="${esc(t('lpBack'))}">${LP_BACK}</button><input id="lpSrIn" class="lp-sin" type="search" enterkeyhint="search" autocomplete="off" maxlength="60" placeholder="${esc(t('lpSearchPh'))}" value="${esc(L.sq)}" aria-label="${esc(t('lpSearchPh'))}"></div><div id="lpSrRes">${lpSearchResHTML()}</div>`;
+}
+function lpSearchResHTML(){
+  const L=state.lp, r=L.sres, q=L.sq.trim(), h=lpHist();
+  if(!r || q.length<2){
+    return h.length ? `<div class="lp-secbar"><h3 class="lp-h">${esc(t('lpSearchHist'))}</h3><button class="btn dr-act" type="button" data-lp-sclear>${esc(t('lpSearchClear'))}</button></div><div class="dr-pickcols lp-sh-chips">${h.map(v=>`<button class="dr-chip" type="button" data-lp-shist="${esc(v)}">${esc(v)}</button>`).join('')}</div>` : `<p class="hot-state">${esc(t('lpSearchHint'))}</p>`;
+  }
+  if(r.state==='load') return `<p class="hot-state" aria-busy="true">${esc(t('lpSearching'))}</p>`;
+  if(r.state==='err') return `<p class="hot-state">${esc(t('lpSearchErr'))}<br><button class="btn" type="button" data-lp-sretry>${esc(t('dirRetry'))}</button></p>`;
+  if(!r.items.length) return `<p class="hot-state">${esc(t('lpSearchNone',cut(q,30)))}</p>`;
+  const now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '';
+  return (r.partial ? `<p class="dr-note lp-spart">${esc(t('lpSearchPartial'))}</p>` : '') + `<ol class="ls-rows lp-rows lp-srrows">${r.items.map(x=>listenRowHTML(x, !!now && now==='tmp:ls:'+x.id, true)).join('')}</ol>`;
+}
+let lpSrT=0, lpSrAbort=null;
+function lpSearchPaintRes(){ const el=$('#lpSrRes'); if(el){ el.innerHTML=lpSearchResHTML(); listenMark(); } }
+function lpSearchOpen(){ const L=state.lp; L.search=true; L.sq=''; L.sres=null; lpPaint(); const i=$('#lpSrIn'); if(i) i.focus(); }
+function lpSearchClose(){ const L=state.lp; clearTimeout(lpSrT); if(lpSrAbort) lpSrAbort.abort(); L.search=false; L.sres=null; L.sq=''; lpPaint(); }
+function lpSearchGo(q, now){                                                                           // two letters at least, and a third of a second after the last key
+  const L=state.lp; L.sq=q; clearTimeout(lpSrT); const w=q.trim();
+  if(w.length<2){ if(lpSrAbort) lpSrAbort.abort(); L.sres=null; lpSearchPaintRes(); return; }
+  lpSrT=setTimeout(()=>lpSearchRun(w), now ? 0 : 300);
+}
+async function lpSearchRun(w){
+  const L=state.lp, api=listenApi(); if(!api) return;
+  if(lpSrAbort) lpSrAbort.abort(); const ab=lpSrAbort=new AbortController();
+  L.sres={state:'load', items:[], q:w}; lpSearchPaintRes();
+  try{
+    const r=await fetch(api+'?search='+encodeURIComponent(w)+'&lang='+state.lang+'&region='+lpRegionPref(),{credentials:'omit', signal:ab.signal}), d=await r.json().catch(()=>null);
+    if(!d || d.ok!==true || !Array.isArray(d.items)) throw new Error('search');
+    const items=d.items.slice(0,40).map(listenClean).filter(Boolean); items.forEach(x=>{ x.sr=true; });
+    if(L.sq.trim()!==w) return;
+    L.sres={state:'ok', items, partial:d.partial===true, q:w};
+  }catch(e){ if(e.name==='AbortError' || L.sq.trim()!==w) return; L.sres={state:'err', items:[], q:w}; }
+  lpSearchPaintRes();
+}
+document.addEventListener('input',e=>{ const i=e.target && e.target.closest && e.target.closest('#lpSrIn'); if(i) lpSearchGo(i.value); });
+document.addEventListener('keydown',e=>{
+  const i=e.target && e.target.closest && e.target.closest('#lpSrIn'); if(!i) return;
+  if(e.key==='Enter'){ e.preventDefault(); lpSearchGo(i.value,true); lpHistAdd(i.value.trim()); }
+  else if(e.key==='Escape'){ e.preventDefault(); lpSearchClose(); }
+});
 function lpListsHTML(){                                                                              // "my play lists": a row each, and a button for a new one
   const ls=lpLists();
   return `<section class="lp-songs"><header class="lp-songs-h"><button class="plp-ic lp-back" type="button" data-lp-back aria-label="${esc(t('lpBack'))}">${LP_BACK}</button><h3>${esc(t('lpMyLists'))}</h3><span class="lp-acts"><button class="btn dr-act" type="button" data-lp-newlist>${esc(t('lpListNewBtn'))}</button></span></header>`
@@ -7383,9 +7654,11 @@ function lpListsHTML(){                                                         
 function lpMusicHTML(all){
   const L=state.lp, hasPod=all.some(g=>g.type==='podcast');
   const modes=hasPod ? `<div class="lp-modes seg" role="tablist" aria-label="${esc(t('lsTitle'))}">${['music','podcast'].map(m=>`<button type="button" role="tab" aria-selected="${m==='music'}" data-lp-mode="${m}">${esc(t('lpMode_'+m))}</button>`).join('')}</div>` : '';
-  const tabs=LP_TABS.map(k=>`<button class="lp-tab" type="button" role="tab" aria-selected="${k===L.tab}" data-lp-tab="${k}">${esc(t('lpTab_'+k))}</button>`).join('');
+  const tabs=LP_TABS.map(k=>`<button class="lp-tab" type="button" role="tab" aria-selected="${k===L.tab}" data-lp-tab="${k}">${esc(t('lpTab_'+k))}</button>`).join('') ;
+  if(L.v2 && L.search) return `<div class="lp lp-sp">${lpSearchHTML()}</div>`;
+  const sbtn=L.v2 ? `<button class="ibtn lp-sbtn" type="button" data-lp-search title="${esc(t('lpSearch'))}" aria-label="${esc(t('lpSearch'))}">${LP_SEARCH}</button>` : '';
   const body=L.tab==='chart' ? lpChartHTML(all) : L.open ? (L.g==='my:lists' ? lpListsHTML() : lpSongsHTML(L.g, all)) : L.tab==='disc' ? lpDiscHTML(all) : lpRecHTML(all);
-  return `<div class="lp"><div class="lp-bar">${modes}<nav class="lp-tabs" role="tablist" aria-label="${esc(t('lsTitle'))}">${tabs}</nav></div>${body}</div>`;
+  return `<div class="lp"><div class="lp-bar">${modes}<nav class="lp-tabs" role="tablist" aria-label="${esc(t('lsTitle'))}">${tabs}</nav>${sbtn}</div>${body}</div>`;
 }
 function lpHTML(){
   const L=state.lp, P=lpPods(), all=lpGroups();
@@ -7423,6 +7696,7 @@ function lpPaint(){
   const a=document.activeElement, d=a && a.dataset ? a.dataset : {}, att=d.lpG!==undefined ? ['data-lp-g',d.lpG] : d.lpShow!==undefined ? ['data-lp-show',d.lpShow] : d.lsScene ? ['data-ls-scene',d.lsScene] : d.lpMore!==undefined ? ['data-lp-more',''] : d.lpMode ? ['data-lp-mode',d.lpMode] : null;
   const b=$('#lsBlock'), p=$('#lpRoot');
   if(b) b.innerHTML=listenHTML();
+  if(p && state.lp.search && p.querySelector('#lpSrIn')){ lpSearchPaintRes(); return; }          // (the search page is not drawn again while somebody types: the box keeps its place and its words)
   if(p){
     const old=p.querySelector('.lp-strip'), was=old ? old.scrollLeft : null, wasCur=p.dataset.cur;
     p.innerHTML=lpHTML(); $('#viewSub').textContent=''; p.dataset.cur=lpSel();
@@ -7462,7 +7736,7 @@ function lpOpen(id){ lpPick(id); dirGoHome(); state.dListen=true; state.dLimit=D
 function lpToTop(){ const bar=$('#lpRoot .lp-bar'); if(!bar) return; const y=bar.getBoundingClientRect().top+window.scrollY-72; if(window.scrollY>y+8) window.scrollTo({top:Math.max(0,y)}); }          // (a list chosen from far down the page starts at its top, under the bar)
 function lpSelect(id){ lpPick(id); lpPaint(); lpEnsure(); lpToTop(); }
 const LP_TABS=['rec','chart','disc'];
-function lpTab(k){ const L=state.lp; if(!LP_TABS.includes(k)) return; L.tab=k; L.open=false; L.mode='music'; L.shown=LP_PAGE; LS.set('lpTab',k); lpPaint(); lpEnsure(); lpToTop(); }
+function lpTab(k){ const L=state.lp; if(!LP_TABS.includes(k)) return; if(k==='rec') lpRecReset(); L.tab=k; L.open=false; L.mode='music'; L.shown=LP_PAGE; LS.set('lpTab',k); lpPaint(); lpEnsure(); lpToTop(); }
 function lpStep(d){                                                                                  // a swipe on a phone: on the music side the next / the previous tab, on the podcast side the next / the previous list of the strip
   const L=state.lp;
   if(!lpPodMode()){ const i=LP_TABS.indexOf(L.tab), k=LP_TABS[i+d]; if(k) lpTab(k); return; }
@@ -7473,13 +7747,13 @@ function lpSetMode(mode){                                                       
   if(mode==='music'){ L.mode='music'; L.open=false; L.shown=LP_PAGE; lpPaint(); lpEnsure(); lpToTop(); return; }
   const gs=lpGroups(), want=L['g_'+mode], ok=gs.find(g=>g.id===want && g.type===mode) || gs.find(g=>g.type===mode); if(ok) lpSelect(ok.id);
 }
-function lpRegionFlip(){ const L=state.lp; LS.set('lpRegion', lpRegionPref()==='cn' ? 'global' : 'cn'); L.cr=''; L.cg=''; LS.set('lpCR',''); L.batch=0; lpPaint(); lpEnsure(); }
+function lpRegionFlip(){ const L=state.lp; lpRecReset(); LS.set('lpRegion', lpRegionPref()==='cn' ? 'global' : 'cn'); L.cr=''; L.cg=''; LS.set('lpCR',''); L.batch=0; lpPaint(); lpEnsure(); }
 function lpGoMy(id){ const L=state.lp; L.g=id; L.open=true; L.mode='music'; L.shown=LP_PAGE; if(L.tab==='chart') L.tab='rec'; lpPaint(); lpToTop(); }
 function listenMark(){ const cur=pl.i>=0 ? pl.q[pl.i] : '', on=plPlaying(); document.querySelectorAll('[data-ls-row]').forEach(r=>r.classList.toggle('is-playing', on && cur==='tmp:ls:'+r.dataset.lsRow)); }
 function listenTmp(x){                                                                              // a song as the player takes it (an item that is only being played, kept nowhere)
   const id='tmp:ls:'+x.id; lpSeen.set(x.id,x);
   if(!state.tmp.get(id)) state.tmp.set(id,{id, source:'tmp', type:'link', url:x.id.startsWith('pod:') ? x.url : '', title:x.title, summary:x.lic ? [x.artist, x.lic, x.lic.includes(x.from) ? '' : x.from].filter(Boolean).join(' · ') : '', image:x.cover||'',
-    audio:{url:x.audio, type:'audio/mpeg', dur:x.dur||0}, cands:x.cands||[], pod:!!x.pod, preview:!!x.preview, keywords:[], lang:'', date:x.date||'', category:'notes', from:x.artist||x.from});
+    audio:{url:x.audio||'', type:'audio/mpeg', dur:x.dur||0}, cands:x.cands||[], need:!x.audio, rsExp:x.rsExp||0, lyrics:x.lyrics, pod:!!x.pod, preview:!!x.preview, keywords:[], lang:'', date:x.date||'', category:'notes', from:x.artist||x.from});
   return id;
 }
 function listenGo(id, list){                                                                         // a song of `list`: it plays in the bar, and the songs after it in the list follow (what was in the bar's list stays); a video opens in its platform's player
@@ -7506,22 +7780,47 @@ async function lpPlayGroup(id){                                                 
 }
 /* ---- the menu of one song (its ⋯): play next, add to a play list (a second view of the same sheet), like, not this kind. It comes from below. */
 const lsMenu=$('#lsMenu');
-const LSM_ICON={next:'<svg class="icon" viewBox="0 0 24 24"><path d="M4 7h11M4 12h8M4 17h6M17 11v8M13.5 15h7"/></svg>', add:'<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>', ban:'<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/></svg>'};
+const LSM_ICON={whole:'<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 12.3l2.4 2.4 4.6-5"/></svg>', src:'<svg class="icon" viewBox="0 0 24 24"><path d="M7 7h12M16 4l3 3-3 3M17 17H5M8 14l-3 3 3 3"/></svg>', next:'<svg class="icon" viewBox="0 0 24 24"><path d="M4 7h11M4 12h8M4 17h6M17 11v8M13.5 15h7"/></svg>', add:'<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>', ban:'<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/></svg>'};
 function lsMenuOpen(id, view){
   const x=lpSeen.get(id); if(!x) return;
   lsMenu.dataset.id=id; lsMenu.dataset.view=view||'main';
   const cv=lpSongCover(x);
   $('#lsmHead').innerHTML=`<span class="ls-cv">${cv}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}${x.preview ? `<em class="ls-pv">${esc(t('lsPreviewS'))}</em>` : ''}</b><span class="ls-m">${esc(x.artist||x.from)}</span></span>`;
   const act=(k,ic,label)=>`<button class="lsm-act" type="button" data-lsm="${k}">${ic}<span>${esc(label)}</span></button>`, liked=lpIsLiked(id);
-  if(view==='add'){
+  const v2=state.lp.v2 && !x.pod;
+  if(view==='src'){
+    const cs=(x.cands||[]).filter(c=>c.audio), tid='tmp:ls:'+id, playing=pl.q[pl.i]===tid && pl.cands[pl.ci] ? pl.cands[pl.ci].p : '', first=(state.tmp.get(tid)||{}).pref || (plCands(state.tmp.get(tid)||{type:'link',audio:{url:x.audio},cands:cs})[0]||{}).p, cur=playing || first;
+    const mb=c=>c.size>0 ? ' · '+Math.max(1,Math.round(c.size/1048576))+' MB' : c.big ? ' · '+t('lsmBigS') : '';
+    $('#lsmBody').innerHTML=`<button class="lsm-act" type="button" data-lsm="back">${LP_BACK}<span>${esc(t('lpBack'))}</span></button>`
+      + (cs.length ? cs.map(c=>`<button class="lsm-act" type="button" data-lsm-src="${esc(c.p)}" aria-pressed="${c.p===cur}"><span>${esc(lpSrcName(c.p))}</span><span class="r">${esc((c.k==='preview' ? t('lsPreviewS') : t('lsWholeS'))+mb(c))}${c.p===cur ? ' ✓' : ''}</span></button>`).join('') : `<p class="lsm-note">${esc(t('lsmNoSrc'))}</p>`)
+      + `<button class="lsm-act" type="button" data-lsm="find">${LSM_ICON.src}<span>${esc(t(lsMenu.dataset.busy==='1' ? 'lsmBusy' : 'lsmFindMore'))}</span></button>`;
+  } else if(view==='add'){
     const ls=lpLists();
     $('#lsmBody').innerHTML=`<button class="lsm-act" type="button" data-lsm="back">${LP_BACK}<span>${esc(t('lpBack'))}</span></button>`
       + ls.map(l=>`<button class="lsm-act" type="button" data-lsm-list="${esc(l.id)}"><span class="lsm-dot">${esc(Array.from(l.name)[0]||'♪')}</span><span>${esc(l.name)}</span><span class="r">${esc(t('lsmListN',l.songs.length))}</span></button>`).join('')
       + `<form class="lsm-new" data-lsm-new><input type="text" maxlength="30" placeholder="${esc(t('lsmNewPh'))}" aria-label="${esc(t('lsmNewList'))}" autocomplete="off"><button class="btn primary" type="submit">${esc(t('lsmCreate'))}</button></form>`;
   } else {
-    $('#lsmBody').innerHTML=act('next',LSM_ICON.next,t('lsmNext'))+act('add',LSM_ICON.add,t('lsmAdd'))+act('like',ICON.heart,t(liked?'lsmUnlike':'lsmLike'))+act('no',LSM_ICON.ban,t('lsmNo'));
+    $('#lsmBody').innerHTML=act('next',LSM_ICON.next,t('lsmNext'))+act('add',LSM_ICON.add,t('lsmAdd'))+act('like',ICON.heart,t(liked?'lsmUnlike':'lsmLike'))+(v2 && x.preview ? act('whole',LSM_ICON.whole,t('lsmWhole')) : '')+(v2 ? act('src',LSM_ICON.src,t('lsmSrc')) : '')+act('no',LSM_ICON.ban,t('lsmNo'));
   }
   if(!lsMenu.open) lsMenu.showModal();
+}
+const lpSrcName=p=>{ const k='srcN_'+p; return I18N[state.lang][k] ? t(k) : (p||'?'); };
+function plSwitch(tid){ const k=pl.q.indexOf(tid); if(k<0) return; plLoad(k, plPlaying(), pl.loaded ? plAudio.currentTime : pl.want); }          // the song in the bar is played again from the sound now first, from where it was
+async function lpFindWhole(x){                                                                         // "find the whole song": a song that is a preview is looked for as a whole one; found: it is the whole one now (and plays on from where it was)
+  toast(t('lsmFinding'));
+  const r=await lpResolve(x,true), tid='tmp:ls:'+x.id, it=state.tmp.get(tid);
+  if(r) lpApplyResolve(x,it,r);
+  if(!r || !r.cands.some(c=>c.k==='full')){ toast(t('lsmNoWhole'), x.url ? t('plOpenOrig') : undefined, x.url ? ()=>window.open(x.url,'_blank','noopener,noreferrer') : undefined); return; }
+  document.querySelectorAll(`[data-ls-row="${CSS.escape(x.id)}"] .ls-pv:not(.ls-wh)`).forEach(e=>e.remove());
+  toast(t('lsmWholeDone')); if(it && pl.q[pl.i]===tid) plSwitch(tid);
+}
+function lpMoreSources(x, again){                                                                      // the sources of a song: the service is asked for the others (once, or again when asked)
+  const menu=lsMenu, id=x.id; menu.dataset.busy='1'; if(menu.open && menu.dataset.view==='src' && menu.dataset.id===id) lsMenuOpen(id,'src');
+  lpResolve(x, !!again).then(r=>{ if(r) lpApplyResolve(x, state.tmp.get('tmp:ls:'+id), r); menu.dataset.busy=''; if(menu.open && menu.dataset.view==='src' && menu.dataset.id===id) lsMenuOpen(id,'src'); });
+}
+function lpPickSource(x, p){                                                                           // the source the reader chose for a song comes first (for this visit); a song that plays is played again from the same place
+  const tid='tmp:ls:'+x.id, it=state.tmp.get(tid); x.pref=p; if(it) it.pref=p;
+  toast(t('lsmSrcDone',lpSrcName(p))); if(it && pl.q[pl.i]===tid) plSwitch(tid);
 }
 function lpPlayNext(x){                                                                              // "play next": right after the song that plays (or, with nothing in the bar, play it)
   const id=listenTmp(x);
@@ -7533,11 +7832,15 @@ function lpPlayNext(x){                                                         
 lsMenu.addEventListener('click',e=>{
   if(e.target===lsMenu){ lsMenu.close(); return; }
   const id=lsMenu.dataset.id, x=lpSeen.get(id); if(!x) return;
+  const sr=e.target.closest('[data-lsm-src]'); if(sr){ lpPickSource(x, sr.dataset.lsmSrc); lsMenu.close(); return; }
   const b=e.target.closest('[data-lsm]'), li=e.target.closest('[data-lsm-list]');
   if(li){ const l=lpLists().find(y=>y.id===li.dataset.lsmList); toast(lpListAdd(li.dataset.lsmList,x) ? t('lsmAdded',l?l.name:'') : t('lsmHave')); lsMenu.close(); if(state.lp.open) lpPaint(); return; }
   if(!b) return; const k=b.dataset.lsm;
   if(k==='back'){ lsMenuOpen(id); return; }
   if(k==='add'){ lsMenuOpen(id,'add'); return; }
+  if(k==='whole'){ lsMenu.close(); lpFindWhole(x); return; }
+  if(k==='src'){ lsMenu.dataset.busy=''; lsMenuOpen(id,'src'); if((x.cands||[]).filter(c=>c.audio).length<2) lpMoreSources(x); return; }
+  if(k==='find'){ lpMoreSources(x,true); return; }
   if(k==='next'){ lpPlayNext(x); toast(t('lsmNextDone',cut(x.title,24))); }
   else if(k==='like'){ const on=lpLikeToggle(id); toast(t(on?'lsmLikedDone':'lsmUnlikedDone')); if(!on && state.lp.g==='my:likes' && state.lp.open) lpPaint(); }
   else if(k==='no'){ lpNoAdd(x); toast(t('lsmNoDone')); document.querySelectorAll(`[data-ls-row="${CSS.escape(id)}"]`).forEach(r=>r.remove()); }
@@ -7550,6 +7853,14 @@ lsMenu.addEventListener('submit',e=>{
 });
 function listenClick(e){
   const q=s=>e.target.closest(s); let b;
+  if(q('[data-lp-search]')){ lpSearchOpen(); return true; }
+  if(q('[data-lp-sback]')){ lpSearchClose(); return true; }
+  if(q('[data-lp-sclear]')){ LS.set('lpSearchHist',[]); lpSearchPaintRes(); return true; }
+  if((b=q('[data-lp-shist]'))){ const i=$('#lpSrIn'); if(i) i.value=b.dataset.lpShist; lpSearchGo(b.dataset.lpShist,true); return true; }
+  if(q('[data-lp-sretry]')){ lpSearchGo(state.lp.sq,true); return true; }
+  if(q('[data-lp-askgo]')){ lpAskDone(true); return true; }
+  if(q('[data-lp-askskip]')){ lpAskDone(false); return true; }
+  if((b=q('[data-lp-askk]'))){ const A=state.lp.ask=state.lp.ask||new Set(), k=b.dataset.lpAskk; if(A.has(k)) A.delete(k); else A.add(k); b.setAttribute('aria-pressed',String(A.has(k))); return true; }
   if((b=q('[data-ls-scene]'))){ state.ls.scene=b.dataset.lsScene; LS.set('lsScene',state.ls.scene); lpPaint(); lsEnsure(); return true; }
   if((b=q('[data-ls-open]'))){ lpOpen(b.dataset.lsOpen); return true; }
   if(q('[data-lp-focus]')){ focusOpen(lpShownItems(), lpTypeOf(lpSel())); return true; }
@@ -7575,7 +7886,7 @@ function listenClick(e){
   if(q('[data-lp-more]')){ state.lp.more=!state.lp.more; lpPaint(); return true; }
   if(q('[data-lp-next]')){ lpNext(); return true; }
   if(q('[data-lp-retry]')){ state.lp.err=''; state.lp.idxAt=0; const cur=lpSel(); if(cur && cur!=='pod') lpLoad(cur,true); lpIndex(); return true; }
-  if((b=q('[data-ls-go]'))){ listenGo(b.dataset.lsGo, b.closest('#lsBlock') ? lsItems() : lpShownItems()); return true; }
+  if((b=q('[data-ls-go]'))){ if(state.lp.search && b.closest('.lp-srrows')) lpHistAdd(state.lp.sq.trim()); listenGo(b.dataset.lsGo, b.closest('#lsBlock') ? lsItems() : lpShownItems()); return true; }
   return false;
 }
 /* ---- what is behind a row (of a hot list, or a card of the directory that came from one) is shown here, not on another site: a video or a song plays in a window (the platform's own player,

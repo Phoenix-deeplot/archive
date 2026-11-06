@@ -63,7 +63,7 @@ if bookapi and not os.environ.get('E2E_REAL_BOOKS'):                    # (E2E_R
     bookapi.catalog = lambda: BOOKS
     bookapi.chapter_url = lambda ch, name: 'http://%s/wiki/%s' % (ch['s'], __import__('urllib.parse').parse.quote((ch['p'] + name).replace(' ', '_'), safe="/:()',;!*~"))
 STAT_STORE = syncapi.MemoryStore()                                      # the anonymous counters (a store of their own: /__peek only knows the sync keys)
-LISTEN = {'mode': 'ok', 'asked': 0, 'log': [], 'delay': 0, 'fail': set(), 'extra': False}      # extra: one more list, "fo-test", whose songs have several sounds each (/__listen?extra=1)
+LISTEN = {'mode': 'ok', 'asked': 0, 'log': [], 'delay': 0, 'fail': set(), 'extra': False, 'v2': False, 'rs': 'ok', 'search': 'ok', 'pool': 'ok', 'log2': []}      # extra: one more list, "fo-test", whose songs have several sounds each (/__listen?extra=1)
 POD = 'http://127.0.0.1:' + os.environ.get('E2E_POD_PORT', '8843')
 WORDS = ['Delta', 'Alpha', 'Echo', 'Charlie', 'Bravo', 'Foxtrot', 'Hotel', 'Golf', 'India', 'Juliet', 'Kilo', 'Lima', 'Mike', 'November', 'Oscar', 'Papa', 'Quebec', 'Romeo', 'Sierra', 'Tango', 'Uniform', 'Victor', 'Whiskey', 'Xray', 'Yankee', 'Zulu']
 
@@ -89,6 +89,72 @@ def listen_index(mode, lang='zh'):
     return {'ok': True, 'date': '2026-10-28', 'updated': 0, 'lang': lang, 'groups': groups}
 
 
+# ---- the newer questions of /api/listen (B1: caps=resolve, search, resolve, pool): the fake service answers them from a fixed catalogue (/__listen?v2=1 turns them on; without it the service is the one of before)
+REGION_OF = {'hot-cn': 'cn', 'hot-west': 'west', 'kr': 'jp-kr', 'dzp-1313621735': 'west', 'dzp-1111142221': 'west', 'dy-hot': 'cn', 'pod-cn': 'cn', 'pod-us': 'west'}
+LRC = ('[00:00.50]First line of the song\n[00:03.00]Second line of the song\n[00:06.00]Third line of the song\n[00:09.00]Fourth line of the song')
+SEARCH_SONGS = [   # title, artist, dur, how it sounds: 'whole' (a whole sound), 'preview' (a preview and a stub that resolve can fill), 'stub' (only a stub)
+    ('Search Alpha', 'Singer A', 200, 'whole'), ('Search Beta', 'Singer B', 210, 'preview'), ('Search Gamma', 'Singer C', 190, 'stub'), ('Search Delta', 'Singer A', 205, 'whole'),
+    ('Search Epsilon', 'Singer G', 195, 'both'), ('Search Nothing', 'Singer D', 180, 'stub'), ('Moon River', 'Singer E', 170, 'whole'), ('Moonlight', 'Singer F', 160, 'preview')]
+
+
+def listen_index_v2(lang, region):
+    groups = [dict(x) for x in listen_index('ok', lang)['groups']]
+    groups.append({'id': 'dy-hot', 'name': '抖音热歌榜', 'name_en': 'Douyin hot songs', 'kind': 'chart', 'type': 'music', 'net': 'cn', 'lang': 'zh', 'resolve': True})
+    for i, (gid, zh, en) in enumerate((('workout', '运动', 'Workout'), ('commute', '通勤', 'Commute'), ('study', '学习', 'Study'))):
+        groups.append({'id': gid, 'name': zh, 'name_en': en, 'kind': 'scene', 'type': 'music', 'net': 'cn'})
+    for x in groups:
+        if x['id'] in ('chill', 'focus', 'sleep'):
+            x['kind'] = 'scene'
+        if x['type'] == 'music':
+            x['region'] = REGION_OF.get(x['id'], 'global') if x['kind'] != 'daily' else x.get('region', 'global')
+        if x['id'] == 'dzp-7001':
+            x['cover'] = 'https://img.example/pl7001.jpg'
+    order = {'daily': 0, 'chart': 1, 'list': 2, 'scene': 3, 'style': 4}
+    rank = {'cn': {'cn': 0, 'jp-kr': 1, 'global': 2, 'west': 3}, 'global': {'west': 0, 'global': 1, 'jp-kr': 2, 'cn': 3}}[region]
+    groups.sort(key=lambda x: (order.get(x['kind'], 9), rank.get(x.get('region', 'global'), 2), 0 if x.get('lang') in (lang, '*') else 1 if not x.get('lang') else 2))
+    return {'ok': True, 'date': '2026-10-28', 'updated': 0, 'lang': lang, 'region': region, 'groups': groups}
+
+
+def dy_group():
+    items = [{'id': 'dy:%02d' % i, 'title': 'Douyin Song %d' % i, 'artist': 'DY Artist %d' % (i % 9), 'cover': ('https://img.example/dy%d.jpg' % i) if i % 3 == 0 else '', 'dur': 0, 'mode': 'stream', 'audio': '', 'url': '', 'lic': '',
+              'from': '抖音热歌榜', 'hot': i + 1, 'resolve': True, 'cands': [], 'market': 'cn'} for i in range(40)]
+    return {'id': 'dy-hot', 'name': '抖音热歌榜', 'name_en': 'Douyin hot songs', 'kind': 'chart', 'type': 'music', 'net': 'cn', 'region': 'cn', 'resolve': True, 'sub': '来源：抖音热歌榜', 'sub_en': 'From Douyin hot songs', 'items': items}
+
+
+def search_items(q):
+    c = lambda p, k, path=None, **ex: {'p': p, 'k': k, **({'audio': POD + path} if path else {}), 'net': ex.pop('net', 'any'), **ex}
+    out = []
+    for i, (title, artist, dur, how) in enumerate(SEARCH_SONGS):
+        if q.lower() not in (title + ' ' + artist).lower():
+            continue
+        if how == 'whole':
+            cs = [c('audius', 'full', '/ep1.wav', lic='Audius')]
+        elif how == 'preview':
+            cs = [c('deezer', 'preview', '/ep3.wav', lic='Deezer 30 秒试听')]
+        elif how == 'both':                                                       # a preview at hand, and a source of China that says it has the whole song (no address yet)
+            cs = [c('bodian', 'full', big=True, lyr=True, resolve=True, net='cn', lic='波点音乐'), c('deezer', 'preview', '/ep3.wav', lic='Deezer 30 秒试听')]
+        else:
+            cs = [c('bodian', 'full', big=True, lyr=True, resolve=True, net='cn', lic='波点音乐')]
+        first = next((x for x in cs if x.get('audio')), None)
+        it = {'id': 'sr:%02d' % i, 'title': title, 'artist': artist, 'cover': '', 'dur': dur, 'mode': 'stream', 'audio': first['audio'] if first else '', 'url': 'https://sr.example/track/%d' % i, 'lic': (first or {}).get('lic', ''), 'from': first['p'] if first else 'bodian', 'cands': cs}
+        if first and first['k'] == 'preview':
+            it['preview'] = True
+        if not first:
+            it['resolve'] = True
+        out.append(it)
+    return out
+
+
+def pool_items(side):
+    mk = ['cn', 'cn', 'cn', 'jp-kr', 'west'] if side == 'cn' else ['west', 'west', 'west', 'jp-kr', 'cn']
+    tags = ['pop', 'rock', 'hiphop', 'electronic', 'jazz', 'folk', 'classical']
+    out = []
+    for i in range(120):
+        m = mk[i % 5]
+        out.append({'id': 'pool:%s%03d' % (side, i), 'title': 'Pool %s Song %d' % (m, i), 'artist': 'Pool Artist %s%d' % (m[:2].upper(), (i // 5) % 12), 'cover': '', 'dur': 180 + i % 40, 'rank': i % 50 + 1, 'market': m, 'tags': [tags[i % 7]], 'from': 'Test'})
+    return out
+
+
 def listen_group(gid, mode, lang='zh'):
     """The songs of one list as /api/listen?g=ID says them (made-up songs; the sounds are the fake podcast's tones, so they really play); None for a list there is not."""
     ids = [x['id'] for x in listen_index('ok')['groups'] if isinstance(x, dict)]
@@ -105,7 +171,7 @@ def listen_group(gid, mode, lang='zh'):
                 ('Preview then whole', 6, [c('apple', 'preview', '/ep1.wav'), c('audius', 'full', '/ep3.wav')]),                        # a whole sound is tried before a preview (ep3 is 6 seconds long: the length of the song)
                 ('Big and small', 12, [c('bodian', 'full', '/ep1.wav', big=True, size=30000000), c('audius', 'full', '/ep2.wav')]),     # on mobile data the small one (ep1 is 12 seconds long)
                 ('Only big', 200, [c('bodian', 'full', '/ep3.wav', big=True, size=30000000)]),                                           # on mobile data it is asked for
-                ('Only bad', 200, [c('netease', 'full', '/missing2.mp3')]),                                                             # nothing plays: on to the next song
+                ('Only bad', 12, [c('netease', 'full', '/missing2.mp3')]),                                                             # nothing plays: on to the next song
                 ('Last one', 200, [c('audius', 'full', '/ep1.wav')])]
         items = [{'id': 'fo:%d' % i, 'title': 'fo %s' % name, 'artist': 'Artist F%d' % i, 'cover': '', 'dur': dur, 'mode': 'stream', 'audio': cs[0]['audio'], 'url': 'https://fo.example/track/%d' % i, 'lic': '', 'from': 'Test', 'cands': cs} for i, (name, dur, cs) in enumerate(rows)]
         return {'id': gid, 'name': '候选音源', 'name_en': 'Candidate sounds', 'kind': 'list', 'type': 'music', 'net': 'cn', 'sub': '来源：Test', 'sub_en': 'From Test', 'items': items}
@@ -319,6 +385,54 @@ class H(BaseHTTPRequestHandler):
                 self.wfile.write(body)
                 return
             lang = 'en' if (q.get('lang') or [''])[0].startswith('en') else 'zh'
+            if LISTEN['v2'] and LISTEN['mode'] == 'ok':
+                caps = (q.get('caps') or [''])[0].split(',')
+                region = (q.get('region') or [''])[0]
+                region = region if region in ('cn', 'global') else ('cn' if lang == 'zh' else 'global')
+                UA = 'HeadlessChrome' in (self.headers.get('User-Agent') or '')
+                if (q.get('search') or [''])[0]:
+                    word = (q.get('search') or [''])[0]
+                    if UA:
+                        LISTEN['log2'].append('search:' + word)
+                    if LISTEN['search'] == 'down':
+                        return self.reply(503, {'ok': False, 'error': 'down'})
+                    if LISTEN['search'] == 'slow':
+                        time.sleep(1.2)
+                    items = [] if LISTEN['search'] == 'empty' else search_items(word)
+                    return self.reply(200, {'ok': True, 'q': word, 'items': items, **({'partial': True} if LISTEN['search'] == 'partial' else {})})
+                if (q.get('resolve') or [''])[0]:
+                    title = (q.get('t') or [''])[0]
+                    if UA:
+                        LISTEN['log2'].append('resolve:' + title)
+                    if LISTEN['rs'] == 'down':
+                        return self.reply(503, {'ok': False, 'error': 'down'})
+                    if LISTEN['rs'] == 'slow':
+                        time.sleep(1.5)
+                    if LISTEN['rs'] == 'none' or 'Nothing' in title:
+                        return self.reply(200, {'ok': True, 'id': (q.get('id') or [''])[0], 'ttl': 60, 'cands': []})
+                    cand = {'p': 'bodian', 'k': 'full', 'audio': POD + '/ep1.wav', 'net': 'cn', 'lyr': True, 'lic': '波点音乐'}
+                    if LISTEN['rs'] == 'big':
+                        cand.update(big=True, size=31457280)
+                    if LISTEN['rs'] == 'short':
+                        cand['ttl_test'] = True
+                    body = {'ok': True, 'id': (q.get('id') or [''])[0], 'ttl': 2 if LISTEN['rs'] == 'short' else 600, 'cands': [cand]}
+                    if LISTEN['rs'] != 'nolyr':
+                        body['lyrics'] = {'fmt': 'lrc', 'text': LRC, 'from': '波点音乐'}
+                    return self.reply(200, body)
+                if (q.get('pool') or [''])[0]:
+                    side = (q.get('pool') or [''])[0]
+                    if UA:
+                        LISTEN['log2'].append('pool:' + side)
+                    if LISTEN['pool'] == 'down':
+                        return self.reply(503, {'ok': False, 'error': 'down'})
+                    return self.reply(200, {'ok': True, 'updated': 0, **({'stale': True} if LISTEN['pool'] == 'stale' else {}), 'items': pool_items(side) if side in ('cn', 'global') else []})
+                if 'resolve' in caps:
+                    if not gid:
+                        if UA:
+                            LISTEN['log2'].append('index:' + region)
+                        return self.reply(200, listen_index_v2(lang, region))
+                    if gid == 'dy-hot':
+                        return self.reply(200, {'ok': True, 'date': '2026-10-28', 'updated': 0, 'group': dy_group()})
             if not gid:
                 return self.reply(200, listen_index(LISTEN['mode'], lang))
             if LISTEN['mode'] == 'empty' or gid in LISTEN['fail']:
@@ -336,10 +450,17 @@ class H(BaseHTTPRequestHandler):
             LISTEN['mode'] = q.get('mode', ['ok'])[0]
             LISTEN['delay'] = int(q.get('delay', ['0'])[0] or 0)
             LISTEN['fail'] = {x for x in q.get('fail', [''])[0].split(',') if x}
+            LISTEN['v2'] = q.get('v2', [''])[0] == '1'                      # the newer questions (caps=resolve, search, resolve, pool)
+            LISTEN['rs'] = q.get('rs', ['ok'])[0]                           # resolve: ok | none | down | big | slow | nolyr | short (an address that is good for 2 seconds)
+            LISTEN['search'] = q.get('search', ['ok'])[0]                    # search: ok | partial | down | empty | slow
+            LISTEN['pool'] = q.get('pool', ['ok'])[0]                       # pool: ok | stale | down
             if q.get('reset'):
                 LISTEN['asked'] = 0
                 LISTEN['log'].clear()
+                LISTEN['log2'].clear()
             return self.json({'ok': True})
+        if p.path == '/__listen_log2':
+            return self.json(LISTEN['log2'])
         if p.path == '/__listen_asked':
             return self.json(LISTEN['asked'])
         if p.path == '/__listen_log':
