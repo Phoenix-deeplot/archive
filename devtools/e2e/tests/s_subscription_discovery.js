@@ -1,16 +1,18 @@
 // Isolated live preview: subscription_preview.py :8936, a separate Edge profile :9456.
 const {connect, sleep} = require('../cdp');
-const BASE = 'http://127.0.0.1:8936';
+const BASE = process.env.SUBSCRIPTION_PREVIEW_URL || 'http://127.0.0.1:8936';
+const CDP = Number(process.env.SUBSCRIPTION_CDP_PORT || 9456);
 let pass=0;
 function ok(name, value){ if(!value) throw new Error(name); pass++; console.log('PASS',name); }
 (async()=>{
-  const c=await connect(9456);
+  const c=await connect(CDP);
   try{
     const wait=async expr=>{ const end=Date.now()+30000; while(Date.now()<end){ if(await c.js(expr)) return; await sleep(150); } throw new Error('Timed out: '+expr); };
     await c.clearSite(BASE);
     await c.mobile(390,844,1);
     await c.goto(BASE+'/?lang=zh');
     await wait('!!window.__zt?.state.dirData');
+    await wait('!document.querySelector("#fbSpan").hidden');
     const open=async()=>c.js(`document.querySelectorAll('dialog[open]').forEach(d=>d.close()); document.querySelector('#addBtn').click(); document.querySelector('[data-atab="sub"]').click()`);
     const find=async url=>{ await c.js(`(()=>{const e=document.querySelector('#fsUrl'); e.value=${JSON.stringify(url)}; e.dispatchEvent(new Event('input')); document.querySelector('#fsFind').click()})()`); await wait("!document.querySelector('#fsFind').disabled"); };
     await open();
@@ -26,6 +28,17 @@ function ok(name, value){ if(!value) throw new Error(name); pass++; console.log(
     ok('duplicate subscription blocked',await c.js("document.querySelector('#fsGo').disabled"));
     await find('https://space.bilibili.com/2267573');
     ok('missing RSSHub is explained and save-link offered',await c.js("document.querySelector('#fsMsg').textContent.includes('RSSHub') && !document.querySelector('#fsGo').hidden"));
+    await find('https://x.com/example');
+    ok('X login/instance prerequisite and no-cookie notice appear',await c.js("document.querySelector('#fsResult').textContent.includes('X') && document.querySelector('#fsResult').textContent.includes('Cookie') && !!document.querySelector('[data-fs-auth=yes]')"));
+    await c.js("document.querySelector('[data-fs-auth=no]').click()");
+    ok('not-now dismisses the question without blocking link saving',await c.js("!document.querySelector('#fsResult').textContent.includes('暂时不需要') && !document.querySelector('#fsGo').hidden"));
+    await find('https://x.com/example');
+    await c.js("document.querySelector('[data-fs-auth=yes]').click()");
+    await wait("document.querySelector('#fbDlg').open && document.querySelector('#fbMsg').value.includes('X')");
+    ok('yes opens the existing feedback form with a prefilled request',true);
+    await c.js("document.querySelector('#fbSend').click()");
+    await wait("!document.querySelector('#fbDlg').open");
+    ok('the explicit opt-in request reaches the feedback inbox',await c.js("fetch('/__feedback').then(r=>r.json()).then(x=>x.some(e=>e.kind==='idea'&&e.where==='sub-auth'&&e.msg.includes('X')))"));
     await find('spotify:show:123');
     ok('unsupported app protocol has a clear message and no subscribe button',await c.js("!document.querySelector('#fsMsg').hidden && document.querySelector('#fsGo').hidden"));
     await c.js(`window.__oldSubscriptionFetch=window.fetch; window.fetch=(url,opt)=>String(url).endsWith('/api/feed')?new Promise(r=>{window.__finishSubscriptionFetch=r}):window.__oldSubscriptionFetch(url,opt); const e=document.querySelector('#fsUrl'); e.value='https://example.org/feed'; e.dispatchEvent(new Event('input')); document.querySelector('#fsFind').click(); e.value='https://other.example.org/feed'; e.dispatchEvent(new Event('input')); window.__finishSubscriptionFetch({status:200,json:async()=>({ok:true,kind:'feed',feed:'https://example.org/feed',title:'Stale feed',items:[]})});`);

@@ -274,6 +274,10 @@ body.dir-discover .dir-label,body.dir-discover #dir,body.dir-discover #tagbox,bo
 .fs-card .fs-note{margin:6px 0;font-size:13.5px;color:var(--c-tools)}
 .fs-card label{display:block;margin:8px 0 4px;font-size:13px;font-weight:700;color:var(--muted)}
 .fs-card input[type=text]{width:100%;font:inherit;font-size:14.5px;color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:8px 10px}
+.fs-auth{margin-top:10px;padding-top:9px;border-top:1px solid var(--rule)}
+.fs-auth p{margin:4px 0 8px;font-size:13px;line-height:1.5;color:var(--muted)}
+.fs-auth-actions{display:flex;flex-wrap:wrap;gap:7px}
+.fs-auth-actions .btn{min-height:36px}
 .reco-banner{max-width:1280px;margin:0 0 18px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:10px 12px 10px 16px;background:color-mix(in srgb,var(--accent) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 30%,var(--rule));border-radius:10px;font-size:14.5px}
 .reco-banner span{flex:1;min-width:200px}
 .reco-banner .ibtn{width:34px;height:34px}
@@ -5988,8 +5992,8 @@ $('#syncWipe').addEventListener('click',async()=>{
 });
 /* ---- feedback: a few words from a reader to the maintainer, anonymous (the directory's service keeps the words, the kind, an optional contact, the page, the language, the version and the day: nothing about who).
    The entry is a link at the foot of the side list, a link from the guide (#feedback), and ONE light line (a toast, once) after the first thing saved to the shelf or the first chapter read to its end: no window of its own, nothing over a text. */
-const fbSt={ready:false, kind:'idea', busy:false};
-function fbApi(){ const s=String((state.dirData&&state.dirData.submit_api)||''), a=/\/submit\/?$/.test(s)?s.replace(/\/submit\/?$/,'/feedback'):''; return /^https:\/\//.test(a) || /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//.test(a) ? a : ''; }
+const fbSt={ready:false, kind:'idea', busy:false, context:''};
+function fbApi(){ const d=state.dirData||{},s=String(d.submit_api||''),a=String(d.feedback_api||(/\/submit\/?$/.test(s)?s.replace(/\/submit\/?$/,'/feedback'):'')); return /^https:\/\//.test(a) || /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//.test(a) ? a : ''; }
 function fbUI(){ $('#fbSpan').hidden=!fbSt.ready; }
 async function fbProbe(){
   fbSt.ready=false; const a=fbApi();
@@ -5999,11 +6003,11 @@ async function fbProbe(){
 const fbWhere=()=>{ if(!$('#reader').hidden){ const it=itemById(state.readingId); return it && /(^|\/)notes\/guide\//.test(it.id) ? 'guide' : 'reader'; } return dirOn() ? (state.dHot ? 'hot' : state.dListen ? 'listen' : state.dLanding || 'dir') : 'shelf'; };
 function fbKind(k){ fbSt.kind=k; document.querySelectorAll('#fbKinds button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.k===k))); }
 function fbCount(){ const n=[...$('#fbMsg').value].length; $('#fbCount').textContent=n+' / 1000'; }
-function fbOpen(kind){
+function fbOpen(kind,context){
   if(!fbSt.ready) return;
   if(location.hash==='#feedback') history.replaceState(null,'',location.pathname+location.search);
   document.body.classList.remove('drawer');
-  fbKind(kind||fbSt.kind); $('#fbStatus').textContent=''; fbCount();
+  fbSt.context=context||''; fbKind(kind||fbSt.kind); $('#fbStatus').textContent=''; fbCount();
   if(!$('#fbDlg').open) $('#fbDlg').showModal();
   $('#fbMsg').focus();
 }
@@ -6013,7 +6017,7 @@ async function fbSend(){
   if(!msg){ st.textContent=t('fbEmpty'); $('#fbMsg').focus(); return; }
   fbSt.busy=true; $('#fbSend').disabled=true; st.textContent=t('fbSending');
   try{
-    const r=await fetch(fbApi(),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({msg, kind:fbSt.kind, contact:$('#fbContact').value.trim(), where:fbWhere(), lang:state.lang, ver:APP_VERSION, website:$('#fbWebsite').value})});
+    const r=await fetch(fbApi(),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({msg, kind:fbSt.kind, contact:$('#fbContact').value.trim(), where:fbSt.context||fbWhere(), lang:state.lang, ver:APP_VERSION, website:$('#fbWebsite').value})});
     let d=null; try{ d=await r.json(); }catch(e){}
     if(r.ok && d && d.ok){ $('#fbMsg').value=''; $('#fbContact').value=''; $('#fbDlg').close(); toast(t('fbThanks')); }
     else st.textContent = r.status===429 ? t('fbRate') : (d && (state.lang==='zh' ? d.message : d.message_en)) || t('fbFail');
@@ -6163,6 +6167,17 @@ function openAdd(dropped, tab){
 }
 /* the second tab: subscribe to somebody's feed (or save an article's address) */
 let fsFound=null, fsLookupVersion=0;
+Object.assign(I18N.zh,{fsAuthHint:n=>`这个 ${n} 链接可能需要平台登录或 RSSHub 实例权限。知树不会索取或保存你的密码、Cookie 或令牌。你希望以后支持通过平台官方授权跳转来订阅吗？`,fsAuthYes:'希望支持授权',fsAuthNo:'暂时不需要',fsAuthFeedbackOff:'反馈通道暂不可用。你仍可先仅收录这个原站链接。',fsAuthPrefill:n=>`希望知树阅读未来支持通过 ${n} 的官方授权跳转来订阅作者/合集。` ,fsAuthDismissed:'已收起；当前可以仅收录原站链接。'});
+Object.assign(I18N.en,{fsAuthHint:n=>`This ${n} link may need a platform sign-in or RSSHub instance permission. Zhitree will not ask for or store your password, cookie, or token. Would you like official sign-in authorization to be supported for subscriptions later?`,fsAuthYes:'I want this',fsAuthNo:'Not now',fsAuthFeedbackOff:'Feedback is unavailable. You can still save this as a link.',fsAuthPrefill:n=>`I would like Zhitree Reading to support official sign-in authorization for following ${n} creators/collections in the future.`,fsAuthDismissed:'Hidden. You can still save the original link.',fsRouteAuthNote:'Updates are read by the configured RSSHub instance; availability depends on that instance’s access and platform permissions. You do not need to provide sign-in details.'});
+Object.assign(I18N.zh,{fsRouteAuthNote:'更新由站长配置的 RSSHub 实例读取，能否持续更新取决于实例的访问能力和平台权限；你不需要提供登录信息。'});
+function fsAuthPlatform(raw,d){
+  const host=hostOf(httpUrl(raw)||raw).toLowerCase().replace(/^www\./,'');
+  const known=host.includes('zhihu.com')?'知乎 / Zhihu':host.includes('xiaohongshu.com')||host==='xhslink.com'?'小红书 / Xiaohongshu':host==='x.com'||host==='twitter.com'?'X':host==='space.bilibili.com'?'B站 / Bilibili':'';
+  const reason=d&&(d.reason||d.error);
+  if(['login','restricted','auth_required'].includes(reason)) return known|| (state.lang==='zh'?'这个网站':'this site');
+  if(known&&['platform_adapter','rsshub_required','feed_invalid','unreachable'].includes(reason)) return known;
+  return '';
+}
 function setAddTab(tab){
   const on=feedApi(), sub=tab==='sub' && on;
   $('#addTabs').hidden=!on;
@@ -6175,7 +6190,7 @@ function setAddTab(tab){
     $('#fsUrl').placeholder=state.lang==='zh' ? 'RSS、博客、播客节目或频道链接' : 'RSS, blog, podcast show or channel link';
     let help=$('#fsSupport');
     if(!help){ help=document.createElement('details'); help.id='fsSupport'; help.className='fs-note'; $('#fsUrl').closest('.fs-row').after(help); }
-    help.innerHTML='<summary>'+esc(state.lang==='zh' ? '支持哪些链接？' : 'Which links are supported?')+'</summary><p>'+esc(state.lang==='zh' ? '支持 RSS、Atom、JSON Feed，以及可发现订阅源的博客、播客节目、YouTube 频道和 GitHub 版本发布。B站 UP 等需站长配置 RSSHub。音乐分享链接和单篇文章可仅收录。订阅清单保存在当前浏览器，可在设置里同步或备份。' : 'RSS, Atom, JSON Feed, blogs with feeds, podcast shows, YouTube channels and GitHub releases. Bilibili UP channels need RSSHub. Music links and articles can be saved as links. Subscriptions stay in this browser; sync or back up in settings.')+'</p>';
+    help.innerHTML='<summary>'+esc(state.lang==='zh' ? '支持哪些链接？' : 'Which links are supported?')+'</summary><p>'+esc(state.lang==='zh' ? '支持 RSS、Atom、JSON Feed，以及可发现订阅源的博客、播客、YouTube 频道/歌单、GitHub 版本发布。配置 RSSHub 后，可尝试 B站 UP、X 作者、知乎用户/收藏夹、小红书作者；这些平台可能需要站长在自己的实例中配置访问权限。请勿把密码或 Cookie 粘贴到这里。音乐分享链接和单篇内容可仅收录。订阅清单保存在当前浏览器，可在设置里同步或备份。' : 'RSS, Atom, JSON Feed, blogs with feeds, podcast shows, YouTube channels/playlists and GitHub releases are supported. With RSSHub configured, Bilibili creators, X users, Zhihu users/collections and Xiaohongshu creators can be tried; the owner may need to configure access on their own instance. Never paste passwords or cookies here. Music shares and single posts can be saved as links. Subscriptions stay in this browser; sync or back up in settings.')+'</p>';
     renderStarter(); $('#fsUrl').focus();
   }
 }
@@ -6185,13 +6200,15 @@ function renderFound(d){
   const feed=d.kind==='feed', dup=feed && subCols().some(c=>urlKey(c.feed.url)===urlKey(d.feed));
   const name=d.title||hostOf(d.feed||d.url);
   const scope=d.resolution&&d.resolution.scope, scopeText=state.lang==='zh' ? ({show:'订阅整个节目，后续新单集会自动更新。',releases:'订阅该仓库的版本发布，不包含全部代码提交或文章。',videos:'订阅这位 UP 主的新投稿。',site:'这是页面声明的站点订阅源，更新范围可能包含整个网站。',route:'通过站长配置的 RSSHub 订阅此路由。'})[scope] : ({show:'Follow the whole show and receive new episodes.',releases:'Follow repository releases, not all commits or articles.',videos:'Follow new videos from this creator.',site:'This feed is declared by the page and may cover the whole site.',route:'Follow this route through the configured RSSHub instance.'})[scope];
+  const routeAuthNote=d.resolution&&d.resolution.auth_required?`<p class="fs-note">${esc(t('fsRouteAuthNote'))}</p>`:'';
+  const authAsk=d.authPlatform?`<div class="fs-auth"><p>${esc(t('fsAuthHint',d.authPlatform))}</p><div class="fs-auth-actions"><button class="btn" type="button" data-fs-auth="yes">${esc(t('fsAuthYes'))}</button><button class="btn" type="button" data-fs-auth="no">${esc(t('fsAuthNo'))}</button></div><p class="fs-auth-status" role="status" aria-live="polite"></p></div>`:'';
   $('#fsResult').innerHTML=`<div class="fs-card"><h3>${esc(name)}</h3><p class="fs-meta">${esc(t(feed?'fsKindFeed':'fsKindLink'))} · ${esc(hostOf(d.home||d.feed||d.url))}${feed&&d.found?' · '+esc(state.lang==='zh'?'已读取最近 '+d.found+' 条':'Read '+d.found+' recent items'):''}</p>`
-    + (scopeText ? `<p class="fs-note">${esc(scopeText)}</p>` : '')
+    + (scopeText ? `<p class="fs-note">${esc(scopeText)}</p>` : '') + routeAuthNote
     + (feed ? `<ul>${(d.items||[]).slice(0,4).map(i=>`<li>${esc(cut(i.title,70))}${i.date?` <span>(${esc(String(i.date).slice(0,10))})</span>`:''}</li>`).join('')}</ul>`
               + `<label for="fsName">${esc(t('fsName'))}</label><input type="text" id="fsName" maxlength="40" value="${esc(uniqueColName(name))}" autocomplete="off">`
             : (d.summary?`<p class="sum">${esc(cut(d.summary,200))}</p>`:'') + `<p class="fs-note">${esc(d.manual?t('fsSaveSelf'):t('fsLinkNote'))}</p>`
               + (d.readable===true ? `<p class="fs-note">${esc(t('fsReadable'))}</p>` : d.readable===false ? `<p class="fs-note">${esc(t('fsUnreadable',(state.lang==='zh'?d.reason_message:d.reason_message_en)||d.reason||'?'))}</p>` : ''))
-    + (dup?`<p class="fs-note">${esc(t('fsDup'))}</p>`:'') + '</div>';
+    + (dup?`<p class="fs-note">${esc(t('fsDup'))}</p>`:'') + authAsk + '</div>';
   $('#fsResult').hidden=false; $('#fsGo').hidden=false; $('#fsGo').textContent=t(feed?'fsGo':'fsSaveLink'); $('#fsGo').disabled=!!dup;
 }
 async function fsFind(){
@@ -6205,11 +6222,18 @@ async function fsFind(){
     else{                                                                              // could not be read: say why, and let the address be kept as a plain link
       fsMsg(t('fsFail')+((state.lang==='zh'?d.message:d.message_en)||d.message||'?'));
       const u=httpUrl(/^[a-z][a-z0-9+.-]*:\/\//i.test(raw)?raw:'https://'+raw);
-      if(u && ['unreachable','rsshub_required','platform_adapter','feed_missing','feed_invalid','api_adapter'].includes(d.error) && !/^(\d|\[)/.test(hostOf(u))){ fsFound={ok:true,kind:'link',url:u,title:hostOf(u),summary:'',manual:true}; renderFound(fsFound); }
+      if(u && ['unreachable','rsshub_required','platform_adapter','feed_missing','feed_invalid','api_adapter'].includes(d.error) && !/^(\d|\[)/.test(hostOf(u))){ fsFound={ok:true,kind:'link',url:u,title:hostOf(u),summary:'',manual:true,authPlatform:fsAuthPlatform(raw,d)}; renderFound(fsFound); }
     }
   }catch(e){ if(version===fsLookupVersion) fsMsg(t('fsFail')+e.message); }
   finally{ if(version===fsLookupVersion){ $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); renderStarter(); } }
 }
+$('#fsResult').addEventListener('click',e=>{
+  const b=e.target.closest('[data-fs-auth]'); if(!b) return;
+  if(b.dataset.fsAuth==='no'){ const box=b.closest('.fs-auth'); if(box) box.innerHTML=`<p>${esc(t('fsAuthDismissed'))}</p>`; return; }
+  if(!fbSt.ready){ const status=b.closest('.fs-auth').querySelector('.fs-auth-status'); if(status) status.textContent=t('fsAuthFeedbackOff'); return; }
+  const platform=fsFound&&fsFound.authPlatform||'平台';
+  dlg.close(); fbOpen('idea','sub-auth'); $('#fbMsg').value=t('fsAuthPrefill',platform); fbCount();
+});
 document.querySelectorAll('[data-atab]').forEach(b=>b.addEventListener('click',()=>setAddTab(b.dataset.atab)));
 $('#fsFind').addEventListener('click',fsFind);
 $('#fsUrl').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); fsFind(); } });

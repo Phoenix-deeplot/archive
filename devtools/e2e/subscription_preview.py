@@ -17,14 +17,16 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--api-root', required=True)
     ap.add_argument('--port', type=int, default=8936)
+    ap.add_argument('--demo-root', default=str(Path(__file__).resolve().parent / '.demo' / 'dist'))
     args = ap.parse_args()
     sys.path.insert(0, args.api_root)
     import feedapi
-    root = Path(__file__).resolve().parent / '.demo' / 'dist'
+    root = Path(args.demo_root).resolve()
     if not (root / 'index.html').is_file():
         ap.error('Build the isolated demo first with make_demo.py')
     base = 'http://127.0.0.1:' + str(args.port)
     env = {'ALLOW_LOCAL_ORIGIN': '1', 'IP_SALT': 'subscription-preview'}
+    feedback = []
     if os.environ.get('RSSHUB_BASE'):
         env['RSSHUB_BASE'] = os.environ['RSSHUB_BASE']
     lock = threading.Lock()  # aggregate's reading budget is process-wide
@@ -34,6 +36,15 @@ def main():
             if self.path == '/api/feed':
                 with lock:
                     feedapi.respond(self, env, 'POST')
+            elif self.path == '/api/feedback':
+                try:
+                    length = min(int(self.headers.get('Content-Length') or 0), 6000)
+                    feedback.append(json.loads(self.rfile.read(length).decode('utf-8')))
+                except (ValueError, UnicodeDecodeError):
+                    return self.send_error(400)
+                body = b'{"ok":true}'
+                self.send_response(200); self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(body))); self.end_headers(); self.wfile.write(body)
             else:
                 self.send_error(404)
 
@@ -41,9 +52,29 @@ def main():
             feedapi.respond(self, env, 'OPTIONS')
 
         def do_GET(self):
+            if self.path.split('?')[0] == '/api/feedback':
+                body = b'{"ok":true,"service":"shelf-feedback","configured":true}'
+                self.send_response(200); self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(body))); self.end_headers(); self.wfile.write(body)
+                return
+            if self.path.split('?')[0] == '/__feedback':
+                body = json.dumps(feedback, ensure_ascii=False).encode('utf-8')
+                self.send_response(200); self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(body))); self.end_headers(); self.wfile.write(body)
+                return
+            if self.path.split('?')[0] == '/site.json':
+                site_path = root / 'site.json'
+                if not site_path.is_file():
+                    site_path = root.parent / 'site.json'
+                data = json.loads(site_path.read_text(encoding='utf-8'))
+                data['directory'] = base + '/dir/'
+                body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+                self.send_response(200); self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(body))); self.end_headers(); self.wfile.write(body)
+                return
             if self.path.split('?')[0] == '/dir/directory.json':
                 data = json.loads((root / 'dir' / 'directory.json').read_text(encoding='utf-8'))
-                data.update(feed_api=base + '/api/feed', submit_api='', hot_api='', listen_api='')
+                data.update(feed_api=base + '/api/feed', submit_api='', feedback_api=base + '/api/feedback', hot_api='', listen_api='')
                 body = json.dumps(data, ensure_ascii=False).encode('utf-8')
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json; charset=utf-8')

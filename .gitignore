@@ -25,6 +25,7 @@ docs/promo/
 
 # browser tests: the demo build, logs of the rig, screenshots
 devtools/e2e/.demo/
+devtools/e2e/.demo-auth/
 devtools/e2e/.rig/
 devtools/e2e/shots/
 devtools/e2e/tests/bk_tmp/
