@@ -1,6 +1,6 @@
 # 订阅添加升级（2026-11-06）
 
-状态：待确认；完成现状检查后，用户确认此清单再开始业务代码修改。
+状态：用户已确认，开发完成，待预览和合并。
 
 ## 1. 任务清单（用户）
 
@@ -56,7 +56,35 @@ feedapi.handle 将 env 传入 discover；直接调用 discover(raw) 保持可用
 ## 3. 进度
 
 - 已检查两仓库状态、现有 discover/update 协议与订阅添加入口。
-- 待用户确认此具体规划后开始开发。
+- 用户确认“按此范围开始开发”后建立两个独立 worktree，均使用 codex/subscription-discovery 分支。
+- 前端：C:/Users/Wu/.codex/worktrees/subscription-discovery/my-archive。
+- 后端：E:/Ztree/wt/codex-subscription-discovery-api（managed 工具无法识别后端仓库，改用 Git worktree）。
+- 添加类型/范围说明、简化移动端文案、协议错误和仅收录选项；请求版本号防止旧响应覆盖新输入。
+- 后端 156 项回归通过；补充安全与 JSON API 用例后，解析器和 Feed API 的 52 项检查通过。
+- 移动端真实端到端 8 项通过：节目解析、范围、确认订阅、首次更新、重复检测、RSSHub 缺失、未知协议、旧请求防覆盖。JS 语法与重名检查通过。
+- 本机预览：http://127.0.0.1:8936/?lang=zh 。点击“添加 → 订阅”；这是使用示例资料的隔离预览，通过新后端读取真实公开订阅源。
+
+### 2026-11-06 在线抽测（本机网络；非可用性承诺）
+
+| 输入 | 结果 | 耗时 |
+|---|---|---|
+| https://pod.link/1714394532 | 旧接口 HTTP 429；新接口经 Apple 找到《鲶鱼夜话》，验证喜马拉雅 RSS，返回近期 50 条；直接解析原 Feed 共 304 期 | 新接口约 1.2 秒 |
+| https://podcasts.apple.com/cn/podcast/a/id1714394532 | 解析为同一节目 RSS | 1.12 秒 |
+| feed://www.ximalaya.com/album/66572833.xml | 协议转换后解析成功 | 0.70 秒 |
+| https://www.ruanyifeng.com/blog/atom.xml | Atom 成功，3 条 | 1.59 秒 |
+| https://www.jsonfeed.org/feed.json | JSON Feed 成功，2 条 | 1.62 秒 |
+| https://github.com/DIYgod/RSSHub | releases.atom 成功，10 条 | 2.73 秒 |
+| https://space.bilibili.com/2267573 | 正确识别需 RSSHUB_BASE；未有实例，不能标记在线成功 | 即时提示 |
+| spotify:show:123 | 提示复制网页分享链接，不误报可订阅 | 即时提示 |
+| YouTube 官方示例频道 ID | 此网络返回 404，未通过在线测试；原生转换及 handle ID 提取有隔离测试 | 0.67 秒 |
+| YouTube @GoogleDevelopers | 此网络读取超时，不能承诺在线可用。前端 28 秒超时保护仍在；底层安全抓取的 DNS/连接总耗时问题留在现有网络层 | 41.78 秒 |
+
+### 支持和限制
+
+- 原生 RSS/Atom/JSON Feed；显式 alternate 声明的网页；Apple 数字节目 ID 的 pod.link；Apple 节目页；GitHub 仓库版本更新；Feed 类协议可用。
+- B站 UP 与 rsshub:// 需要配置自己的 RSSHub HTTPS 实例。已核实官方路由 /bilibili/user/video/:uid，路由依赖浏览器环境，实例能力和上游风控可能导致失败；只验证成功后才可订阅。
+- 任意 JSON API 需专用字段适配；X/知乎/小红书需对应可用路由及实例权限；音乐分享不等于更新订阅。均有明确提示，可用安全网页链接仅收录。
+- 本轮不自动搜索全网替代源，也不代理用户登录；准确匹配的播客目录查询已实现。音乐播放与推荐不改。
 
 ## 4. 合并记录
 

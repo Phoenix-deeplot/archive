@@ -6162,21 +6162,31 @@ function openAdd(dropped, tab){
   if(!dlg.open) dlg.showModal(); if(dropped) takeDropped(dropped);
 }
 /* the second tab: subscribe to somebody's feed (or save an article's address) */
-let fsFound=null;
+let fsFound=null, fsLookupVersion=0;
 function setAddTab(tab){
   const on=feedApi(), sub=tab==='sub' && on;
   $('#addTabs').hidden=!on;
   document.querySelectorAll('[data-atab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.atab===(sub?'sub':'files'))));
   $('#addFilesPane').hidden=sub; $('#addSubPane').hidden=!sub; $('#addSave').hidden=sub; $('#fsGo').hidden=!(sub && fsFound); $('#fsGo').textContent=t(fsFound && fsFound.kind!=='feed' ? 'fsSaveLink' : 'fsGo');
   const h=$('#addTitle'); h.dataset.i=sub?'fsTitle':'addTitle'; h.textContent=t(h.dataset.i);
-  if(sub){ renderStarter(); $('#fsUrl').focus(); }
+  if(sub){
+    h.textContent=state.lang==='zh' ? '添加订阅' : 'Add a subscription';
+    $('#addSubPane .sub-hint').textContent=state.lang==='zh' ? '粘贴节目、频道或网站链接，查找订阅源。确认后，新内容会更新到你的书架。' : 'Paste a show, channel or website link to find its feed. New content will appear in your shelf after you subscribe.';
+    $('#fsUrl').placeholder=state.lang==='zh' ? 'RSS、博客、播客节目或频道链接' : 'RSS, blog, podcast show or channel link';
+    let help=$('#fsSupport');
+    if(!help){ help=document.createElement('details'); help.id='fsSupport'; help.className='fs-note'; $('#fsUrl').closest('.fs-row').after(help); }
+    help.innerHTML='<summary>'+esc(state.lang==='zh' ? '支持哪些链接？' : 'Which links are supported?')+'</summary><p>'+esc(state.lang==='zh' ? '支持 RSS、Atom、JSON Feed，以及可发现订阅源的博客、播客节目、YouTube 频道和 GitHub 版本发布。B站 UP 等需站长配置 RSSHub。音乐分享链接和单篇文章可仅收录。订阅清单保存在当前浏览器，可在设置里同步或备份。' : 'RSS, Atom, JSON Feed, blogs with feeds, podcast shows, YouTube channels and GitHub releases. Bilibili UP channels need RSSHub. Music links and articles can be saved as links. Subscriptions stay in this browser; sync or back up in settings.')+'</p>';
+    renderStarter(); $('#fsUrl').focus();
+  }
 }
 const fsMsg = m => { const w=$('#fsMsg'); w.textContent=m||''; w.hidden=!m; };
-function fsReset(){ fsFound=null; stAdded=[]; $('#fsUrl').value=''; $('#fsResult').hidden=true; $('#fsResult').innerHTML=''; fsMsg(''); $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); setFinish(false); renderStarter(); }
+function fsReset(){ fsLookupVersion++; fsFound=null; stAdded=[]; $('#fsUrl').value=''; $('#fsResult').hidden=true; $('#fsResult').innerHTML=''; fsMsg(''); $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); setFinish(false); renderStarter(); }
 function renderFound(d){
   const feed=d.kind==='feed', dup=feed && subCols().some(c=>urlKey(c.feed.url)===urlKey(d.feed));
   const name=d.title||hostOf(d.feed||d.url);
-  $('#fsResult').innerHTML=`<div class="fs-card"><h3>${esc(name)}</h3><p class="fs-meta">${esc(t(feed?'fsKindFeed':'fsKindLink'))} · ${esc(hostOf(d.home||d.feed||d.url))}${feed&&d.found?' · '+esc(t('fsFound',d.found)):''}</p>`
+  const scope=d.resolution&&d.resolution.scope, scopeText=state.lang==='zh' ? ({show:'订阅整个节目，后续新单集会自动更新。',releases:'订阅该仓库的版本发布，不包含全部代码提交或文章。',videos:'订阅这位 UP 主的新投稿。',site:'这是页面声明的站点订阅源，更新范围可能包含整个网站。',route:'通过站长配置的 RSSHub 订阅此路由。'})[scope] : ({show:'Follow the whole show and receive new episodes.',releases:'Follow repository releases, not all commits or articles.',videos:'Follow new videos from this creator.',site:'This feed is declared by the page and may cover the whole site.',route:'Follow this route through the configured RSSHub instance.'})[scope];
+  $('#fsResult').innerHTML=`<div class="fs-card"><h3>${esc(name)}</h3><p class="fs-meta">${esc(t(feed?'fsKindFeed':'fsKindLink'))} · ${esc(hostOf(d.home||d.feed||d.url))}${feed&&d.found?' · '+esc(state.lang==='zh'?'已读取最近 '+d.found+' 条':'Read '+d.found+' recent items'):''}</p>`
+    + (scopeText ? `<p class="fs-note">${esc(scopeText)}</p>` : '')
     + (feed ? `<ul>${(d.items||[]).slice(0,4).map(i=>`<li>${esc(cut(i.title,70))}${i.date?` <span>(${esc(String(i.date).slice(0,10))})</span>`:''}</li>`).join('')}</ul>`
               + `<label for="fsName">${esc(t('fsName'))}</label><input type="text" id="fsName" maxlength="40" value="${esc(uniqueColName(name))}" autocomplete="off">`
             : (d.summary?`<p class="sum">${esc(cut(d.summary,200))}</p>`:'') + `<p class="fs-note">${esc(d.manual?t('fsSaveSelf'):t('fsLinkNote'))}</p>`
@@ -6186,22 +6196,24 @@ function renderFound(d){
 }
 async function fsFind(){
   const raw=$('#fsUrl').value.trim(); if(!raw){ $('#fsUrl').focus(); return; }
+  const version=++fsLookupVersion;
   fsMsg(''); fsFound=null; $('#fsResult').hidden=true; $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsFind').disabled=true; $('#fsFind').textContent=t('fsFinding');
   try{
     const d=await callFeed({action:'discover',url:raw});
+    if(version!==fsLookupVersion || !dlg.open) return;
     if(d.ok){ fsFound=d; renderFound(d); }
     else{                                                                              // could not be read: say why, and let the address be kept as a plain link
       fsMsg(t('fsFail')+((state.lang==='zh'?d.message:d.message_en)||d.message||'?'));
       const u=httpUrl(/^[a-z][a-z0-9+.-]*:\/\//i.test(raw)?raw:'https://'+raw);
-      if(u && d.error==='unreachable' && !/^(\d|\[)/.test(hostOf(u))){ fsFound={ok:true,kind:'link',url:u,title:hostOf(u),summary:'',manual:true}; renderFound(fsFound); }
+      if(u && ['unreachable','rsshub_required','platform_adapter','feed_missing','feed_invalid','api_adapter'].includes(d.error) && !/^(\d|\[)/.test(hostOf(u))){ fsFound={ok:true,kind:'link',url:u,title:hostOf(u),summary:'',manual:true}; renderFound(fsFound); }
     }
-  }catch(e){ fsMsg(t('fsFail')+e.message); }
-  finally{ $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); renderStarter(); }
+  }catch(e){ if(version===fsLookupVersion) fsMsg(t('fsFail')+e.message); }
+  finally{ if(version===fsLookupVersion){ $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); renderStarter(); } }
 }
 document.querySelectorAll('[data-atab]').forEach(b=>b.addEventListener('click',()=>setAddTab(b.dataset.atab)));
 $('#fsFind').addEventListener('click',fsFind);
 $('#fsUrl').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); fsFind(); } });
-$('#fsUrl').addEventListener('input',()=>{ fsFound=null; $('#fsResult').hidden=true; $('#fsGo').disabled=true; $('#fsGo').hidden=true; renderStarter(); });
+$('#fsUrl').addEventListener('input',()=>{ fsLookupVersion++; fsFound=null; fsMsg(''); $('#fsResult').hidden=true; $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); renderStarter(); });
 $('#fsGo').addEventListener('click',async ()=>{
   const d=fsFound; if(!d) return;
   try{
