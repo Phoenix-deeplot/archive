@@ -335,9 +335,9 @@ def check_sitemap(rows, base, out):
     return problems
 
 
-LEGAL_PAGES = ('about.html', 'privacy.html', 'terms.html')      # hand-written files in the project root
-LEGAL_KIND = {'about.html': 'about', 'privacy.html': 'page', 'terms.html': 'page'}
-LEGAL_LINKS = '<a href="/all.html">全部内容</a> · <a href="/about.html">关于本站</a> · <a href="/privacy.html">隐私政策</a> · <a href="/terms.html">使用条款</a>'
+LEGAL_PAGES = ('about.html', 'privacy.html', 'privacy-en.html', 'terms.html')      # hand-written files in the project root
+LEGAL_KIND = {'about.html': 'about', 'privacy.html': 'page', 'privacy-en.html': 'page', 'terms.html': 'page'}
+LEGAL_LINKS = '<a href="/all.html">全部内容</a> · <a href="/about.html">关于本站</a> · <a href="/privacy.html">隐私政策</a> · <a href="/privacy-en.html">Privacy Policy (English)</a> · <a href="/terms.html">使用条款</a>'
 
 
 def _dupes(items, library):
@@ -1111,11 +1111,28 @@ def publish(items, base, root, library, front_matter, write_manifest, out_name='
             continue
         text = _fill_site(_read(target), cfg)
         t = re.search(r'<title>(.*?)</title>', text, re.S)
-        d = re.search(r'最后更新[：:]\s*(\d{4}-\d{2}-\d{2})', text)
-        pseudo = {'title': (t.group(1).strip() if t else name), 'summary': _meta_of(text, 'description'), 'date': d.group(1) if d else '', 'lang': 'zh'}
-        text, probs = patch_page(text, pseudo, base, brand, name, LEGAL_KIND[name], owner)
+        d = re.search(r'(?:最后更新[：:]\s*|Last updated:\s*)(\d{4}-\d{2}-\d{2})', text)
+        lang = 'en' if name.endswith('-en.html') else 'zh'
+        pseudo = {'title': (t.group(1).strip() if t else name), 'summary': _meta_of(text, 'description'), 'date': d.group(1) if d else '', 'lang': lang}
+        text, probs = patch_page(text, pseudo, base, brand_en if lang == 'en' else brand, name, LEGAL_KIND[name], owner)
         _write_if_changed(target, text)
         legal.append((name, pseudo['date']))
+
+    # Keep the Chinese and English privacy policies discoverable as language alternatives.
+    privacy_zh_url = base + '/privacy.html' if base else ''
+    privacy_en_url = base + '/privacy-en.html' if base else ''
+    if base and os.path.isfile(os.path.join(out, 'privacy.html')) and os.path.isfile(os.path.join(out, 'privacy-en.html')):
+        links = [('zh-CN', privacy_zh_url), ('en', privacy_en_url), ('x-default', privacy_zh_url)]
+        block = '<!-- seo:alternates -->\n' + '\n'.join('<link rel="alternate" hreflang="%s" href="%s">' % (h, esc(u)) for h, u in links) + '\n<!-- /seo:alternates -->\n'
+        for name in ('privacy.html', 'privacy-en.html'):
+            target = os.path.join(out, name)
+            text = _read(target)
+            if 'seo:alternates' not in text:
+                end = re.search(r'</head\s*>', text, re.I)
+                if end:
+                    text = text[:end.start()] + block + text[end.start():]
+                    _write_if_changed(target, text)
+        alt_links[privacy_zh_url] = alt_links[privacy_en_url] = links
 
     # --- manifest of the published site: no hidden items, public paths, article pages
     published = []
