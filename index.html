@@ -477,7 +477,7 @@ body.noting{overflow:hidden}
 @media(max-width:820px){.ls-rows{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:620px){.ls>.dr-note:not(.ls-sub){display:none}}
 /* the listening page: one row (music / podcasts, the sort, cards / rows), ONE strip of lists, and the songs straight under it; the title and its subtitle in one line */
-body.dir-listen #sort,body.dir-listen #viewBtn,body.dir-listen #langFilter{display:none}
+body.dir-listen #sort,body.dir-listen #viewBtn,body.dir-listen #langFilter,body.dir-audio #sort,body.dir-audio #viewBtn,body.dir-audio #langFilter{display:none}
 .lp-bar{display:flex;flex-wrap:nowrap;align-items:center;gap:10px;margin:0 0 6px;overflow-x:auto;scrollbar-width:none}
 .lp-bar::-webkit-scrollbar{display:none}
 .lp-bar>*{flex:none}
@@ -1570,7 +1570,8 @@ body.shell2 #noteBtn{display:none}                                          /* (
 .vh-ctl{display:none}
 .vh-txt{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 14px}
 .ctl-box{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-body.dir-listen .ctl-box,body.dir-hot .ctl-box{display:none}
+body.dir-listen .ctl-box,body.dir-hot .ctl-box,body.dir-audio .ctl-box{display:none}
+body.dir-audio .dir-line{display:none}                          /* (its only content on this page was those controls: no empty row) */
 @media (min-width:981px){
   body.shell2 .side-toggle{display:inline-flex}
   body.shell2.side-off .app{grid-template-columns:minmax(0,1fr)}
@@ -3829,7 +3830,7 @@ function render(){
   syncSubscribe();
   if(dirMode){ $('#colRow').hidden=true; $('#colNav').hidden=true; $('#recoPane').hidden=true; $('#recoBanner').hidden=true; renderDir(); updNoteSync(); renderPublicAd(); syncReader(); return; }
   renderPublicAd(); document.documentElement.classList.remove('ptr');
-  $('#moreRow').hidden=true; $('#dirLabel').textContent=t('dir'); $('#dirBar').hidden=true; document.body.classList.remove('dir-discover','dir-hot','dir-listen'); $('#dirReco').hidden=true; $('#dirReco').innerHTML='';          // (the directory's home page is made again when it is shown: its cards must not linger behind the shelf)
+  $('#moreRow').hidden=true; $('#dirLabel').textContent=t('dir'); $('#dirBar').hidden=true; document.body.classList.remove('dir-discover','dir-hot','dir-listen','dir-audio'); $('#dirReco').hidden=true; $('#dirReco').innerHTML='';          // (the directory's home page is made again when it is shown: its cards must not linger behind the shelf)
 
   renderCols();                                                            // also settles which part of the shelf is shown, before anything below counts it
   const tags=ownTags(); if(state.tag && !tags.some(g=>g.name.toLowerCase()===state.tag.toLowerCase())) state.tag='';
@@ -8703,6 +8704,7 @@ function renderDir(){
   const tk=tokens(), forType=dirList('type'), counts={}; forType.forEach(it=>{ const k=dirTypeOf(it); counts[k]=(counts[k]||0)+1; });
   const home=dirIsHome(), hot=home && state.dHot && !!hotBase(), listenOn=lpAvailable(), listen=home && state.dListen && listenOn && !hot, discover=home && !state.dBrowse && !hot && !listen;          // the first level of the public space is a discovery page; everything else (all sources, platforms, tags, a filter) is the second
   document.body.classList.toggle('dir-discover',discover); document.body.classList.toggle('dir-hot',hot); document.body.classList.toggle('dir-listen',listen);
+  document.body.classList.toggle('dir-audio',!hot && !listen && booksPage() && state.dGenre==='audio');          // (the audiobooks have no language filter, sort or card view: the controls of the page are not shown)
   const navRow=(k,label,on)=>`<a class="cat-btn" href="${k?'/':'/discover/'}" data-dbrowse="${k}" aria-current="${on}"><span class="dot" style="background:var(--accent)"></span><span>${esc(label)}</span></a>`;
   const row=(k,n)=>{
     const route=k==='article'?'articles':k==='video'?'watch':'';
