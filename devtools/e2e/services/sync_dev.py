@@ -63,7 +63,7 @@ if bookapi and not os.environ.get('E2E_REAL_BOOKS'):                    # (E2E_R
     bookapi.catalog = lambda: BOOKS
     bookapi.chapter_url = lambda ch, name: 'http://%s/wiki/%s' % (ch['s'], __import__('urllib.parse').parse.quote((ch['p'] + name).replace(' ', '_'), safe="/:()',;!*~"))
 STAT_STORE = syncapi.MemoryStore()                                      # the anonymous counters (a store of their own: /__peek only knows the sync keys)
-LISTEN = {'mode': 'ok', 'asked': 0, 'log': [], 'delay': 0, 'fail': set(), 'extra': False, 'v2': False, 'rs': 'ok', 'search': 'ok', 'pool': 'ok', 'log2': []}      # extra: one more list, "fo-test", whose songs have several sounds each (/__listen?extra=1)
+LISTEN = {'mode': 'ok', 'asked': 0, 'log': [], 'delay': 0, 'fail': set(), 'extra': False, 'v2': False, 'rs': 'ok', 'search': 'ok', 'pool': 'ok', 'ab': 'ok', 'log2': []}      # extra: one more list, "fo-test", whose songs have several sounds each (/__listen?extra=1)
 POD = 'http://127.0.0.1:' + os.environ.get('E2E_POD_PORT', '8843')
 WORDS = ['Delta', 'Alpha', 'Echo', 'Charlie', 'Bravo', 'Foxtrot', 'Hotel', 'Golf', 'India', 'Juliet', 'Kilo', 'Lima', 'Mike', 'November', 'Oscar', 'Papa', 'Quebec', 'Romeo', 'Sierra', 'Tango', 'Uniform', 'Victor', 'Whiskey', 'Xray', 'Yankee', 'Zulu']
 
@@ -109,6 +109,9 @@ def listen_index_v2(lang, region):
             x['region'] = REGION_OF.get(x['id'], 'global') if x['kind'] != 'daily' else x.get('region', 'global')
         if x['id'] == 'dzp-7001':
             x['cover'] = 'https://img.example/pl7001.jpg'
+    if lang == 'zh':
+        for gid, zh, en in STORY_GROUPS:
+            groups.append({'id': gid, 'name': zh, 'name_en': en, 'kind': 'list', 'type': 'podcast', 'net': 'cn', 'lang': 'zh', 'region': 'cn'})
     order = {'daily': 0, 'chart': 1, 'list': 2, 'scene': 3, 'style': 4}
     rank = {'cn': {'cn': 0, 'jp-kr': 1, 'global': 2, 'west': 3}, 'global': {'west': 0, 'global': 1, 'jp-kr': 2, 'cn': 3}}[region]
     groups.sort(key=lambda x: (order.get(x['kind'], 9), rank.get(x.get('region', 'global'), 2), 0 if x.get('lang') in (lang, '*') else 1 if not x.get('lang') else 2))
@@ -153,6 +156,39 @@ def pool_items(side):
         m = mk[i % 5]
         out.append({'id': 'pool:%s%03d' % (side, i), 'title': 'Pool %s Song %d' % (m, i), 'artist': 'Pool Artist %s%d' % (m[:2].upper(), (i // 5) % 12), 'cover': '', 'dur': 180 + i % 40, 'rank': i % 50 + 1, 'market': m, 'tags': [tags[i % 7]], 'from': 'Test'})
     return out
+
+
+# ---- the story podcasts and the audiobooks of /api/listen (for a page that sends caps=resolve; /__listen?v2=1&ab=ok|down|empty|slow)
+STORY_GROUPS = (('st-mystery', '悬疑怪谈', 'Mystery'), ('st-crime', '真实罪案', 'True crime'), ('st-hot-ximalaya', '喜马拉雅 · 故事热门', 'Ximalaya · hot stories'), ('st-hot-xiaoyuzhou', '小宇宙 · 故事热门', 'Xiaoyuzhou · hot stories'),
+                ('st-hot-lizhi', '荔枝FM · 故事热门', 'Lizhi FM · hot stories'))
+AB_STYLES = [{'id': 'classic', 'name': '经典名著', 'name_en': 'Classics'}, {'id': 'story', 'name': '故事悬疑', 'name_en': 'Stories & mystery'}, {'id': 'fairy', 'name': '童话寓言', 'name_en': 'Fairy tales & fables'},
+             {'id': 'guoxue', 'name': '国学经典', 'name_en': 'Chinese classics'}]
+AB_BOOKS = [  # id, title, English title, author, narrator, language, styles, hot, chapters, cover
+    ('cn-hlm', '红楼梦', 'Dream of the Red Chamber', '曹雪芹', '男中音朗读', 'zh', ['guoxue', 'classic'], 1, 30, ''),
+    ('lv-200', '爱丽丝梦游仙境', "Alice's Adventures in Wonderland", 'Lewis Carroll', 'LibriVox 志愿者', 'en', ['fairy', 'classic'], 2, 12, 'https://img.example/alice.jpg'),
+    ('lv-314', '福尔摩斯探案集：冒险史', 'Adventures of Sherlock Holmes', 'Arthur Conan Doyle', 'LibriVox 志愿者', 'en', ['story'], 3, 12, ''),
+    ('cn-lz', '聊斋志异', 'Strange Tales from a Chinese Studio', '蒲松龄', 'AI 朗读', 'zh', ['guoxue', 'story'], 4, 8, '')]
+
+
+def story_group(gid, lang='zh'):
+    names = {g[0]: g for g in STORY_GROUPS}
+    if gid not in names:
+        return None
+    sounds = ['/ep1.wav', '/ep2.wav', '/ep3.wav']
+    plat = {'st-hot-ximalaya': 'ximalaya', 'st-hot-xiaoyuzhou': 'xiaoyuzhou', 'st-hot-lizhi': 'lizhi'}.get(gid, 'ximalaya')
+    items = [{'id': 'pc:%s-%d' % (gid, i), 'title': 'Story episode %d of %s' % (i, gid[3:]), 'artist': 'Story show %s%d' % (gid[3:6], i), 'cover': ('https://img.example/st%d.jpg' % i) if i % 2 == 0 else '', 'dur': 1200 + i * 60, 'mode': 'stream',
+              'audio': POD + sounds[i % 3], 'url': 'https://podcasts.apple.com/cn/podcast/x/id%d' % (7000 + i), 'lic': '', 'from': 'Apple Podcasts', 'date': '2026-11-%02d' % (5 - i % 5), 'show': str(7000 + i), 'plat': plat} for i in range(8)]
+    return {'id': gid, 'name': names[gid][1], 'name_en': names[gid][2], 'kind': 'list', 'type': 'podcast', 'net': 'cn', 'region': 'cn', 'lang': 'zh', 'sub': '来源：Apple Podcasts', 'sub_en': 'From Apple Podcasts', 'items': items}
+
+
+def ab_public(row, chapters=False):
+    bid, zh, en, au, nar, lg, st, hot, n, cover = row
+    sounds, durs = ['/ep1.wav', '/ep2.wav', '/ep3.wav'], (12, 9, 6)
+    b = {'id': bid, 'title': zh, 'title_en': en, 'author': au, 'narrator': nar, 'lang': lg, 'style': st, 'rights': 'public-domain', 'net': 'global' if bid.startswith('lv-') else 'cn', 'source': 'librivox' if bid.startswith('lv-') else 'ximalaya.com', 'cover': cover, 'summary': 'The summary of %s.' % en,
+         'n': n, 'secs': sum(durs[i % 3] for i in range(n)), 'hot': hot, 'url': ''}
+    if chapters:
+        b['chapters'] = [{'n': i + 1, 'title': ('第%d回 %s' % (i + 1, zh)) if lg == 'zh' else 'Chapter %d' % (i + 1), 'audio': POD + sounds[i % 3], 'dur': durs[i % 3]} for i in range(n)]
+    return b
 
 
 def listen_group(gid, mode, lang='zh'):
@@ -426,7 +462,30 @@ class H(BaseHTTPRequestHandler):
                     if LISTEN['pool'] == 'down':
                         return self.reply(503, {'ok': False, 'error': 'down'})
                     return self.reply(200, {'ok': True, 'updated': 0, **({'stale': True} if LISTEN['pool'] == 'stale' else {}), 'items': pool_items(side) if side in ('cn', 'global') else []})
+                if (q.get('books') or [''])[0]:
+                    if UA:
+                        LISTEN['log2'].append('books')
+                    if LISTEN['ab'] == 'down':
+                        return self.reply(503, {'ok': False, 'error': 'down'})
+                    if LISTEN['ab'] == 'slow':
+                        time.sleep(1.2)
+                    return self.reply(200, {'ok': True, 'styles': AB_STYLES, 'books': [] if LISTEN['ab'] == 'empty' else [ab_public(r) for r in AB_BOOKS]})
+                if (q.get('book') or [''])[0]:
+                    bid = (q.get('book') or [''])[0]
+                    if UA:
+                        LISTEN['log2'].append('book:' + bid)
+                    if LISTEN['ab'] == 'down':
+                        return self.reply(502, {'ok': False, 'error': 'down'})
+                    if LISTEN['ab'] == 'slow':
+                        time.sleep(1.2)
+                    row = next((r for r in AB_BOOKS if r[0] == bid), None)
+                    if row is None:
+                        return self.reply(404, {'ok': False, 'error': 'none'})
+                    return self.reply(200, {'ok': True, **({'stale': True} if LISTEN['ab'] == 'stale' else {}), 'book': ab_public(row, True)})
                 if 'resolve' in caps:
+                    if gid.startswith('st-'):
+                        g = story_group(gid, lang)
+                        return self.reply(200, {'ok': True, 'date': '2026-10-28', 'updated': 0, 'group': g}) if g and lang == 'zh' else self.reply(404, {'ok': False, 'error': 'none'})
                     if not gid:
                         if UA:
                             LISTEN['log2'].append('index:' + region)
@@ -454,6 +513,7 @@ class H(BaseHTTPRequestHandler):
             LISTEN['rs'] = q.get('rs', ['ok'])[0]                           # resolve: ok | none | down | big | slow | nolyr | short (an address that is good for 2 seconds)
             LISTEN['search'] = q.get('search', ['ok'])[0]                    # search: ok | partial | down | empty | slow
             LISTEN['pool'] = q.get('pool', ['ok'])[0]                       # pool: ok | stale | down
+            LISTEN['ab'] = q.get('ab', ['ok'])[0]                           # the audiobooks: ok | down | empty | slow | stale
             if q.get('reset'):
                 LISTEN['asked'] = 0
                 LISTEN['log'].clear()

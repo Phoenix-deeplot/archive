@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-10-27",
+ "updated": "2026-11-06",
  "groups": [
   {
    "id": "hot",
@@ -688,6 +688,287 @@
      "tags_en": [
       "investing",
       "money"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    }
+   ]
+  },
+  {
+   "id": "stories-zh",
+   "zh": "故事 · 悬疑 · 睡前（每个都能先点“试听”，再决定订阅）",
+   "en": "Stories · mystery · bedtime (press “Listen” first, subscribe after)",
+   "podcast": true,
+   "items": [
+    {
+     "id": "pod-st-nianyu",
+     "name": "鲶鱼夜话",
+     "name_en": "鲶鱼夜话",
+     "zh": "听友投稿的民间灵异和怪谈，每期几个故事。",
+     "en": "Folk ghost stories sent in by listeners, a few in each episode.",
+     "home": "https://podcasts.apple.com/cn/podcast/id1714394532",
+     "feed": "https://www.ximalaya.com/album/66572833.xml",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "悬疑怪谈"
+     ],
+     "tags_en": [
+      "stories",
+      "mystery & the uncanny"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-st-haluo",
+     "name": "哈喽怪谈",
+     "name_en": "哈喽怪谈",
+     "zh": "怪谈和听友来稿，一千多期。",
+     "en": "Uncanny tales and stories from listeners, over a thousand episodes.",
+     "home": "https://podcasts.apple.com/cn/podcast/id512426799",
+     "feed": "https://s2.proxy.wavpub.com/helloguaitan.xml",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "悬疑怪谈"
+     ],
+     "tags_en": [
+      "stories",
+      "mystery & the uncanny"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-st-ruye",
+     "name": "入夜电波",
+     "name_en": "入夜电波",
+     "zh": "凶案还原、灵异故事、都市传说和神话。",
+     "en": "Murder cases, ghost stories, urban legends and myths.",
+     "home": "https://podcasts.apple.com/cn/podcast/id1784214454",
+     "feed": "https://feed.xyzfm.space/dwc8l4yrerq8",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "悬疑怪谈"
+     ],
+     "tags_en": [
+      "stories",
+      "mystery & the uncanny"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-st-tsp",
+     "name": "TSP怪奇档案",
+     "name_en": "TSP怪奇档案",
+     "zh": "怪奇、野史、神话和都市传说，带科普的脱口秀。",
+     "en": "Oddities, hidden history, myths and urban legends told as a talk show with some science.",
+     "home": "https://podcasts.apple.com/cn/podcast/id1488439861",
+     "feed": "http://www.ximalaya.com/album/19206387.xml",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "悬疑怪谈"
+     ],
+     "tags_en": [
+      "stories",
+      "mystery & the uncanny"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-st-heimao",
+     "name": "黑猫侦探社",
+     "name_en": "黑猫侦探社",
+     "zh": "讲述世界各地真实罪案的叙事类播客。",
+     "en": "A narrative podcast about real crimes from around the world.",
+     "home": "https://podcasts.apple.com/cn/podcast/id1596363758",
+     "feed": "https://feeds.heymeowfm.com/heymeow.xml",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "真实罪案"
+     ],
+     "tags_en": [
+      "stories",
+      "true crime"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-st-shengren",
+     "name": "生人勿近",
+     "name_en": "生人勿近",
+     "zh": "罪案、悬案和奇闻，每期几个故事。",
+     "en": "Crimes, cold cases and strange news, a few stories in each episode.",
+     "home": "https://podcasts.apple.com/cn/podcast/id1523445987",
+     "feed": "http://www.ximalaya.com/album/38415596.xml",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "真实罪案"
+     ],
+     "tags_en": [
+      "stories",
+      "true crime"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-st-luori",
+     "name": "落日之后",
+     "name_en": "落日之后",
+     "zh": "离奇的谋杀、失踪和难解的犯罪谜团。",
+     "en": "Strange murders, disappearances and puzzling crimes.",
+     "home": "https://podcasts.apple.com/cn/podcast/id1697309319",
+     "feed": "https://feed.xyzfm.space/9cpcu49mgt9h",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "真实罪案"
+     ],
+     "tags_en": [
+      "stories",
+      "true crime"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-st-buzhisheng",
+     "name": "不吱声",
+     "name_en": "不吱声",
+     "zh": "两位主播分享真实罪案和悬疑故事。",
+     "en": "Two hosts share real crimes and mystery stories.",
+     "home": "https://podcasts.apple.com/cn/podcast/id1771248028",
+     "feed": "https://feed.xyzfm.space/kqvyjmed9pj9",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "真实罪案"
+     ],
+     "tags_en": [
+      "stories",
+      "true crime"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-st-songshu",
+     "name": "松鼠大侦探",
+     "name_en": "松鼠大侦探",
+     "zh": "翻旧报纸、庭审记录和警方档案，把案件的细节找回来。",
+     "en": "Old newspapers, court records and police files, the details of a case found again.",
+     "home": "https://podcasts.apple.com/cn/podcast/id1708535393",
+     "feed": "https://feed.xyzfm.space/9483yrqbad98",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "真实罪案"
+     ],
+     "tags_en": [
+      "stories",
+      "true crime"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-st-yeshi",
+     "name": "野史下酒",
+     "name_en": "野史下酒",
+     "zh": "有趣的历史故事，边喝边听。",
+     "en": "Entertaining tales from history, to listen to with a drink.",
+     "home": "https://podcasts.apple.com/cn/podcast/id877607820",
+     "feed": "https://s1.proxy.wavpub.com/yeshixiajiu.xml",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "历史野史"
+     ],
+     "tags_en": [
+      "stories",
+      "history tales"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-st-shuiqian",
+     "name": "成人睡前故事",
+     "name_en": "成人睡前故事",
+     "zh": "成人睡前故事、中式志怪和民间故事，每天更新。",
+     "en": "Bedtime stories for adults, Chinese tales of the strange and folk tales, new every day.",
+     "home": "https://podcasts.apple.com/cn/podcast/id1667557531",
+     "feed": "https://www.ximalaya.com/album/67610333.xml",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "睡前故事"
+     ],
+     "tags_en": [
+      "stories",
+      "bedtime stories"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-st-shuiqian2",
+     "name": "成人睡前故事｜温柔男声",
+     "name_en": "成人睡前故事｜温柔男声",
+     "zh": "温柔男声，每晚一个故事哄你入睡。",
+     "en": "A soft male voice, one story every night to fall asleep to.",
+     "home": "https://podcasts.apple.com/cn/podcast/id1645823973",
+     "feed": "https://www.ximalaya.com/album/71029167.xml",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "睡前故事"
+     ],
+     "tags_en": [
+      "stories",
+      "bedtime stories"
+     ],
+     "rank": 0,
+     "full": false,
+     "podcast": true
+    },
+    {
+     "id": "pod-st-heisha",
+     "name": "黑鲨诡话",
+     "name_en": "黑鲨诡话",
+     "zh": "网友讲自己遇到的诡异经历。",
+     "en": "Listeners tell the strange things that happened to them.",
+     "home": "https://podcasts.apple.com/cn/podcast/id1603371127",
+     "feed": "http://rss.lizhi.fm/rss/3528895.xml",
+     "lang": "zh",
+     "tags": [
+      "故事",
+      "悬疑怪谈"
+     ],
+     "tags_en": [
+      "stories",
+      "mystery & the uncanny"
      ],
      "rank": 0,
      "full": false,
