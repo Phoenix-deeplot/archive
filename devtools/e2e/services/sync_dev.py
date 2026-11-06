@@ -169,7 +169,7 @@ def listen_group(gid, mode, lang='zh'):
                 ('Preview then whole', 6, [c('apple', 'preview', '/ep1.wav'), c('audius', 'full', '/ep3.wav')]),                        # a whole sound is tried before a preview (ep3 is 6 seconds long: the length of the song)
                 ('Big and small', 12, [c('bodian', 'full', '/ep1.wav', big=True, size=30000000), c('audius', 'full', '/ep2.wav')]),     # on mobile data the small one (ep1 is 12 seconds long)
                 ('Only big', 200, [c('bodian', 'full', '/ep3.wav', big=True, size=30000000)]),                                           # on mobile data it is asked for
-                ('Only bad', 200, [c('netease', 'full', '/missing2.mp3')]),                                                             # nothing plays: on to the next song
+                ('Only bad', 12, [c('netease', 'full', '/missing2.mp3')]),                                                             # nothing plays: on to the next song
                 ('Last one', 200, [c('audius', 'full', '/ep1.wav')])]
         items = [{'id': 'fo:%d' % i, 'title': 'fo %s' % name, 'artist': 'Artist F%d' % i, 'cover': '', 'dur': dur, 'mode': 'stream', 'audio': cs[0]['audio'], 'url': 'https://fo.example/track/%d' % i, 'lic': '', 'from': 'Test', 'cands': cs} for i, (name, dur, cs) in enumerate(rows)]
         return {'id': gid, 'name': '候选音源', 'name_en': 'Candidate sounds', 'kind': 'list', 'type': 'music', 'net': 'cn', 'sub': '来源：Test', 'sub_en': 'From Test', 'items': items}

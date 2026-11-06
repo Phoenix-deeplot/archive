@@ -5228,21 +5228,21 @@ function plTrouble(id, why){                                                    
   if(why==='stall'){ toast(t('plSlow')); return; }
   const it=plItem(id);
   if(it && plIsMusic(it) && !it.rsTried && state.lp.v2){                                               // (every sound of the song failed: the service is asked for new ones once, an address may have run out)
-    it.rsTried=true; const at=plAudio.currentTime>3 ? plAudio.currentTime : pl.want, go=pl.go; pl.loaded=''; plAudio.pause(); plFinding(pl.q.indexOf(id), go, at); return;
+    it.rsTried=true; const at=plAudio.currentTime>3 ? plAudio.currentTime : pl.want, go=pl.go; pl.loaded=''; plAudio.pause(); plFinding(pl.q.indexOf(id), go, at, true); return;
   }
   plFailed(id);
 }
 const plRs=new Map();
-function plResolve(id){                                                                                // -> a promise: true when the song now has a sound it did not have (the service found one); the song and the bar's copy of it are given the sounds and the words
+function plResolve(id, force){                                                                                // -> a promise: true when the song now has a sound it did not have (the service found one); the song and the bar's copy of it are given the sounds and the words
   const it=plItem(id), x=lpSeen.get(String(id).slice(7)); if(!it || !x || !state.lp.v2) return Promise.resolve(false);
   if(plRs.has(id)) return plRs.get(id);
-  const p=lpResolve(x).then(r=>{ if(!r) return false; lpApplyResolve(x,it,r); return r.cands.length>0; }).finally(()=>plRs.delete(id));
+  const p=lpResolve(x,force).then(r=>{ if(!r) return false; lpApplyResolve(x,it,r); return r.cands.length>0; }).finally(()=>plRs.delete(id));
   plRs.set(id,p); return p;
 }
-function plFinding(i, go, start){                                                                      // the song has no sound (yet): the service is asked for one, then the song is loaded
+function plFinding(i, go, start, force){                                                                      // the song has no sound (yet): the service is asked for one, then the song is loaded
   const id=pl.q[i], it=plItem(id); if(!it) return;
   pl.loaded=''; pl.want=start||0; pl.find=id; plAudio.pause(); clearTimeout(pl.stallT); plSession(it); plRender(); plSave(); if(plDlg.open) plSheet();
-  plResolve(id).then(ok=>{
+  plResolve(id,force).then(ok=>{
     if(pl.find===id) pl.find=''; const k=pl.q.indexOf(id), cur=plItem(id); if(k<0 || pl.i!==k || !cur) return;          // (another song was chosen meanwhile)
     if(ok && !cur.need && plCands(cur).length) plLoad(k,go,start); else { plTick(); plFailed(id); }
   });
@@ -5486,7 +5486,7 @@ function plClearAll(){                                                          
 $('#plClear').addEventListener('click',plClearAll);
 $('#plShut').addEventListener('click',()=>{ plDlg.close(); plClose(); });
 $('#plWipe').addEventListener('click',()=>{                                                            // what this browser remembers of the listening goes (the songs liked and the play lists stay: they were made on purpose)
-  LS.set('lpRecent',[]); const m=plProgMap(); Object.keys(m).forEach(k=>{ if(k.startsWith('tmp:ls:')) delete m[k]; }); LS.set('plProg',m);
+  LS.set('lpRecent',[]); LS.set('lpTaste',null); LS.set('lpSearchHist',[]); state.lp.ask=null; const m=plProgMap(); Object.keys(m).forEach(k=>{ if(k.startsWith('tmp:ls:')) delete m[k]; }); LS.set('plProg',m);
   toast(t('plWiped'));
 });
 $('#readerPlay').addEventListener('click',()=>{ if(state.readingId) plPlay(state.readingId); });
@@ -7178,7 +7178,7 @@ async function lpResolve(x, force){                                             
     const r=await fetch(u,{credentials:'omit'}), d=await r.json().catch(()=>null);
     if(!d || d.ok!==true || !Array.isArray(d.cands)) return null;
     const out={cands:d.cands.slice(0,8).map(lpCleanCand).filter(c=>c && c.audio), ttl:Math.max(1,Math.min(3600,+d.ttl||600)), lyrics:lpCleanLyrics(d.lyrics)};
-    L.rs.set(x.id,{r:out, exp:Date.now()+15000});                                                    // (asked again within a moment: the same answer, not another question)
+    L.rs.set(x.id,{r:out, exp:Date.now()+Math.min(15000,out.ttl*800)});                                                    // (asked again within a moment: the same answer, not another question)
     return out;
   }catch(e){ return null; }
 }
