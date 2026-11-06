@@ -174,3 +174,9 @@ GET /api/listen?diag=1
 - 合并顺序（用户说“合并”，2026-11-04）：`claude/music-core`（F1，前端）先合，`dfa3086`；`claude/books-page` 后合（它处理了和这里在更新说明、新增文字行、测试清单上的三处冲突，两边都留）。`shelf-directory` 这边没有改动。B1（Codex 的 `codex/music-sources`，后端）和 F2（`claude/music-reco`）还没开始。
 - 合并后的测试结果：合并前在 `claude/music-core` 上跑全套，34 项里只有一处新失败——`s_music_modes` 的“随机播放时‘上一首’回到刚才那首”，偶发（四次里三次失败）。原因是个小缺陷：随机播放把所有歌放过一遍后，“预取下一首”调用 `plNextIdx` 时顺手把历史清掉，之后点上一首就退回列表里的上一首。改成换歌时才清历史（`plHistPush`），连跑六次全过，提交 `1636334`。其余 33 项全绿，4 条已知的旧失败（`s_read` 第 92 行、`s_reco` 两条、`s_sync` 的 B）照旧。合并 `books-page` 之后又在合并后的树上跑了一次全套 35 项，除已知的 4 条外全绿（`s_lang` 因为电脑中途休眠超时，单独重跑 13 项全过）。
 - 删除的分支和 worktree：`claude/music-core`、`E:\Ztree\wt\claude-music-core`，预览服务（8830、8860–8863、8870）已停。
+
+F2 和后端 B1 的合并（用户说“继续”，2026-11-06）：
+- 合并顺序：先合 `shelf-directory` 的 `claude/music-sources`（`18c5e41`，master 没有新提交，分支上整套 829 个测试过，合并后再跑一遍 829 个过）；再把 `master`（Codex 合进来的视频观看体验、隐私政策英文版、订阅发现的规划）并进 `claude/music-reco`（没有冲突），在分支上跑完整 `run_all.ps1`，然后 `--no-ff` 合进 `master`（`6c02c82`）。
+- 合并后的测试结果：完整 `run_all.ps1` 42 项，只有 `s_first` 的“更新后回来的人只看到更新说明”在整套里失败了一次（单独重跑 29 项全过，之前几次相关测试也都过：状态依赖，没查出是哪一个前面的测试留下的）；其余 41 项全绿，已知的失败一条也没有了。合并后 `master` 上没有再跑整套（内容和分支一样，只多了 Codex 的一份规划文件），只跑了语法和重名函数检查。
+- 删除的分支和 worktree：`claude/music-sources`（`E:\Ztree\wt\claude-music-sources`）、`claude/music-reco`（`E:\Ztree\wt\claude-music-reco`）。
+- 之后要用户做的：先部署 shelf-directory，再 `vercel --prod`；在线上看真实的搜索、找整首、歌词和抖音榜。
