@@ -63,7 +63,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
     await fresh('v2=1&extra=1&rs=' + mode);
     await J(`Z.lpLoad('fo-test')`); await waitFor(`Z.lpGroupItems('fo-test','').items.length===8`);
     await play(6);
-    ok(name + ': the song is given up (once asked for) and the next one, the last of the list, plays; no crash, no endless wait', await waitFor(`pl.q[pl.i]==='tmp:ls:fo:7' && plAudio.currentTime>0.05`, 12000) && (await log2()).filter(x => x === 'resolve:fo Only bad').length === 1, [await J(`pl.q[pl.i]`), await log2()]);
+    ok(name + ': the song is given up (once asked for) and the next one, the last of the list, plays; nothing breaks, no endless wait', await waitFor(`pl.q[pl.i]==='tmp:ls:fo:7' && plAudio.currentTime>0.05`, 12000) && (await log2()).filter(x => x === 'resolve:fo Only bad').length === 1, [await J(`pl.q[pl.i]`), await log2()]);
     await J(`plAudio.pause()`);
   }
 
