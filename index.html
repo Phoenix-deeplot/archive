@@ -142,7 +142,11 @@ details.how ol{margin:6px 0 0;padding-left:1.3em}
 .brand{font-family:var(--serif);font-weight:900;font-size:22px;line-height:1.25;margin:0}
 .brand-sub{font-size:13px;color:var(--muted);margin:2px 0 0}
 .side-close{display:none}
-.side-scroll{flex:1;overflow-y:auto;padding:6px 12px 20px 14px}
+.side-scroll{flex:1;overflow-y:auto;padding:6px 12px 20px 14px;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--muted) 34%,transparent) transparent}
+.side-scroll::-webkit-scrollbar{width:5px}
+.side-scroll::-webkit-scrollbar-track{background:transparent}
+.side-scroll::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--muted) 30%,transparent);border-radius:999px}
+.side-scroll:hover::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--muted) 52%,transparent)}
 .cats{display:flex;flex-direction:column;gap:2px;margin:6px 0 18px}
 .cat-btn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:none;border-radius:6px;padding:7px 10px;cursor:pointer;font-size:15px}
 a.cat-btn{color:inherit;text-decoration:none}
@@ -1674,7 +1678,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     <header class="top">
       <button class="ibtn menu-btn" type="button" id="menuBtn" data-i-aria="menu"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
       <button class="ibtn lang-top" type="button" id="langTop" data-i-aria="langToggle">中</button>
-      <button class="ibtn th-top" type="button" id="themeTop" aria-expanded="false" aria-controls="themePop" data-i-aria="themeTop"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor"/></svg></button>
+      <button class="ibtn th-top" type="button" id="themeTop" data-i-aria="themeTop"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor"/></svg></button>
       <button class="ibtn set-btn" type="button" id="setBtn" data-i-aria="setTitle"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
       <button class="ibtn side-toggle" type="button" id="sideToggle" aria-expanded="true" data-i-aria="sideHide"><svg class="icon" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M9.5 5v14"/></svg></button>
       <div class="search">
@@ -1710,9 +1714,6 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
         <div class="fl-dir" id="flDir"></div>
       </section>
       <section class="fl-panel" id="colPop" hidden aria-label="合集"></section>
-      <section class="fl-panel" id="themePop" hidden aria-label="主题">
-        <div class="fl-row"><span data-i="thLabel">主题</span><span class="fl-slot"><span class="seg" role="group"><button type="button" data-thset="light" aria-pressed="false"><i class="sw sw-classic"></i><span data-i="thClassic">经典</span></button><button type="button" data-thset="dark" aria-pressed="false"><i class="sw sw-dark"></i><span data-i="thDark">深色</span></button><button type="button" data-thset="cloud" aria-pressed="false"><i class="sw sw-cloud"></i><span data-i="thCloud">云红</span></button></span></span></div>
-      </section>
     </header>
 
     <div class="col-row" id="colRow" hidden>
@@ -9275,11 +9276,12 @@ function applyTheme(){
   if(LS.get('palette','')==='cloud'){ state.theme='cloud'; LS.set('theme','cloud'); LS.set('palette',''); }          // (an earlier preview kept the red palette apart: it is the theme "cloud" now)
   const h=document.documentElement, th=themeNow(); if(th==='auto') h.removeAttribute('data-theme'); else h.setAttribute('data-theme',th);
 }
-$('#themeBtn').addEventListener('click',()=>{
+function cycleTheme(){
   if(shellSel()==='2') state.theme={light:'dark',dark:'cloud',cloud:'light'}[themeEff()];                      // (the new shell: three themes in a ring)
   else state.theme=state.theme==='auto'?'light':state.theme==='light'?'dark':'auto';
   LS.set('theme',state.theme); applyTheme(); render();
-});
+}
+$('#themeBtn').addEventListener('click',cycleTheme);
 $('#menuBtn').addEventListener('click',()=>document.body.classList.add('drawer'));
 $('#sideClose').addEventListener('click',()=>document.body.classList.remove('drawer'));
 document.addEventListener('click',e=>{ if(document.body.classList.contains('drawer') && !e.target.closest('.side') && !e.target.closest('#menuBtn') && !e.target.closest('#setBtn')) document.body.classList.remove('drawer'); });
@@ -9336,13 +9338,14 @@ function shLayout(){
   if(phone){ const st=$('#stripIn'), on2=$('#cats [aria-current="true"]'); if(st && on2 && st.scrollWidth>st.clientWidth+2) st.scrollLeft=Math.max(0, on2.offsetLeft-st.offsetLeft-(st.clientWidth-on2.offsetWidth)/2); }
 }
 function shPanels(which){                                                                          // the filter panel and the list of collections drop down under the strip, one at a time
-  const fl=$('#flPanel'), co=$('#colPop'), th=$('#themePop'), openFl=which==='fl' && fl.hidden, openCo=which==='col' && co.hidden, openTh=which==='theme' && th.hidden;
-  fl.hidden=!openFl; co.hidden=!openCo; th.hidden=!openTh; $('#flBtn').setAttribute('aria-expanded',String(openFl)); $('#colChip').setAttribute('aria-expanded',String(openCo)); $('#themeTop').setAttribute('aria-expanded',String(openTh));
+  const fl=$('#flPanel'), co=$('#colPop'), openFl=which==='fl' && fl.hidden, openCo=which==='col' && co.hidden;
+  fl.hidden=!openFl; co.hidden=!openCo; $('#flBtn').setAttribute('aria-expanded',String(openFl)); $('#colChip').setAttribute('aria-expanded',String(openCo));
 }
 function shTheme(){                                                                                   // the marks of the theme controls: the theme that is on screen, and the label of the button in the settings
   const eff=themeEff();
-  document.querySelectorAll('[data-thset]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.thset===eff)));
-  $('#themeBtn').textContent=t('thLabel')+(state.lang==='zh' ? '：' : ': ')+t({light:'thClassic', dark:'thDark', cloud:'thCloud'}[eff]);
+  const label=t({light:'thClassic', dark:'thDark', cloud:'thCloud'}[eff]||'thClassic'), hint=(state.lang==='zh'?'单击切换主题，当前：':'Tap to switch theme; current: ')+label;
+  $('#themeBtn').textContent=t('thLabel')+(state.lang==='zh' ? '：' : ': ')+label;
+  $('#themeTop').title=hint; $('#themeTop').setAttribute('aria-label',hint);
 }
 function shStep(d){ const bs=[...$('#cats').querySelectorAll('.cat-btn')], i=bs.findIndex(x=>x.getAttribute('aria-current')==='true'), n=bs[i+d]; if(n) n.click(); }          // (a swipe on a phone: the next / the previous section of the strip)
 new MutationObserver(shLayout).observe($('#cats'),{childList:true});
@@ -9355,11 +9358,10 @@ $('#colChip').addEventListener('click',e=>{ if(e.target.closest('[data-colclear]
 $('#colChip').addEventListener('keydown',e=>{ if((e.key==='Enter' || e.key===' ') && e.target.closest('[data-colclear]')){ e.preventDefault(); e.target.click(); } });
 $('#stripIn').addEventListener('click',e=>{ const b=e.target.closest('.cat-btn'); if(b && b.id!=='colChip') shPanels(''); });
 $('#colPop').addEventListener('click',e=>{ if(e.target.closest('[data-colnav]')) shPanels(''); });
-document.addEventListener('click',e=>{ if(!e.target.closest('.top') && (!$('#flPanel').hidden || !$('#colPop').hidden || !$('#themePop').hidden)) shPanels(''); });
+document.addEventListener('click',e=>{ if(!e.target.closest('.top') && (!$('#flPanel').hidden || !$('#colPop').hidden)) shPanels(''); });
 $('#setBtn').addEventListener('click',()=>document.body.classList.add('drawer'));          // (a phone: the side list is the settings)
 $('#langTop').addEventListener('click',()=>$('#langBtn').click());
-$('#themeTop').addEventListener('click',()=>shPanels('theme'));
-$('#themePop').addEventListener('click',e=>{ const a=e.target.closest('[data-thset]'); if(!a) return; state.theme=a.dataset.thset; LS.set('theme',state.theme); applyTheme(); render(); });
+$('#themeTop').addEventListener('click',cycleTheme);
 $('#cats').addEventListener('click',e=>{ if(shOn() && e.target.closest('.cat-btn')) window.scrollTo(0,0); });          // (another section starts at its top)
 { const tp=$('#tagPop'), tb2=$('#tagBtn'), shut=()=>{ tp.hidden=true; tb2.setAttribute('aria-expanded','false'); };
   tb2.addEventListener('click',()=>{ tp.hidden=!tp.hidden; tb2.setAttribute('aria-expanded',String(!tp.hidden)); });
