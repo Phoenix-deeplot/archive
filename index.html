@@ -5142,7 +5142,8 @@ const plSet=(s=>({src:PL_SRCS.includes(s.src)?s.src:'whole', data:s.data!==false
 const plSetSave=()=>LS.set('plSet',{src:plSet.src, data:plSet.data, lyr:plSet.lyr});
 const fmtDur=s=>{ s=Math.max(0,Math.floor(+s||0)); const h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(x).padStart(2,'0'); };
 function plAudioOf(it){ return it && it.type==='link' && it.audio && (httpUrl(it.audio.url) || it.need) ? it.audio : null; }          // (a song that has no sound yet is in the list all the same: its sound is found when it is its turn)
-const plStale=it=>!!it && it.rsExp>0 && Date.now()>it.rsExp;                                          // (the address of a sound that was found has run out)
+const plStale=it=>!!it && it.rsExp>0 && Date.now()>it.rsExp;
+const lpPromise=x=>!!x && !x.rsAsked && plSet.src!=='free' && Array.isArray(x.cands) && x.cands.some(c=>c.rs && c.k==='full' && (c.net==='any' || c.net===(lpRegionPref()==='cn' ? 'cn' : 'global'))) && !x.cands.some(c=>c.audio && c.k==='full');          // (a source of the reader's side says it has the whole song, but gave no address: it is asked for before the preview that is at hand is played)                                          // (the address of a sound that was found has run out)
 const plFind=id=>state.items.find(x=>x.id===id) || state.tmp.get(id) || null;                        // (an episode of the shelf, or one that is only being played: a recommended podcast, a card of the directory)
 const plItem=id=>{ const it=plFind(id); return plAudioOf(it) ? it : null; };
 const plCur=()=>pl.i>=0 ? plItem(pl.q[pl.i]) : null;
@@ -5238,6 +5239,7 @@ const plRs=new Map();
 function plResolve(id, force){                                                                                // -> a promise: true when the song now has a sound it did not have (the service found one); the song and the bar's copy of it are given the sounds and the words
   const it=plItem(id), x=lpSeen.get(String(id).slice(7)); if(!it || !x || !state.lp.v2) return Promise.resolve(false);
   if(plRs.has(id)) return plRs.get(id);
+  it.rsAsked=true; x.rsAsked=true;                                                                    // (asked for once: a promise that came to nothing is not asked for again at every play)
   const p=lpResolve(x,force).then(r=>{ if(!r) return false; lpApplyResolve(x,it,r); return r.cands.length>0; }).finally(()=>plRs.delete(id));
   plRs.set(id,p); return p;
 }
@@ -5264,7 +5266,7 @@ function plLoad(i, go, at){
   if(!it){ pl.q.splice(i,1); if(i>=pl.q.length) i=pl.q.length-1; if(i<0){ plStop(); return; } return plLoad(i,go,at); }              // gone from the shelf meanwhile
   pl.i=i; pl.pre=''; pl.preA=null; pl.closed=false;
   const prog=plProgMap()[id], start = at!==undefined ? at : prog && !prog[2] && prog[0]>5 ? Math.max(0,prog[0]-3) : 0;                    // where it was left, a little before
-  if(plIsMusic(it) && (it.need || plStale(it)) && state.lp.v2){ plFinding(i,go,start); return; }
+  if(plIsMusic(it) && (it.need || plStale(it) || lpPromise(it)) && state.lp.v2){ plFinding(i,go,start); return; }
   const all=plCands(it), cs=all.filter(c=>!plBlocked(c,id));
   pl.want=start; pl.cands=cs; pl.ci=0;
   if(!cs.length){
@@ -5296,7 +5298,7 @@ function plPrefetch(){                                                          
   if(!plIsMusic(plCur()) || !pl.loaded) return;
   const d=plAudio.duration, c=plAudio.currentTime; if(!(d>0 && isFinite(d)) || (c/d<.5 && d-c>20)) return;
   const k=plNextIdx(true); if(k<0 || k===pl.i) return; const id=pl.q[k]; if(pl.pre===id) return; pl.pre=id;
-  const it=plItem(id); if(it && plIsMusic(it) && (it.need || plStale(it))){ plResolve(id); return; }          // (a song with no sound yet: the service looks for it now, so that it starts at once)
+  const it=plItem(id); if(it && plIsMusic(it) && (it.need || plStale(it) || lpPromise(it))){ plResolve(id); return; }          // (a song with no sound yet: the service looks for it now, so that it starts at once)
   const cs=it ? plCands(it).filter(x=>!x.big) : []; if(!cs.length) return;
   try{ const a=new Audio(); a.preload='metadata'; a.src=plSrc(cs[0].audio); pl.preA=a; }catch(e){}
 }
@@ -7351,7 +7353,7 @@ function listenRowHTML(x, playing, plain){                                      
     return `<li class="ls-row nonum${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}"><span class="ls-cv">${cv}${LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}</b><span class="ls-m"><span class="ls-w">${esc(lpMeta(x)[0]||'')}</span>${lpMeta(x).length>1 ? `<span class="ls-x"> · ${esc(lpMeta(x).slice(1).join(' · '))}</span>` : ''}</span></span><span class="ls-ic" aria-hidden="true">${ICON.play}</span></button>${src}</li>`;
   }
   const liked=lpIsLiked(x.id), num=x.hot>0 && !plain;          // (plain: a list that is not a chart, such as the songs for you, which mixes a chart in: no place in front of a song)
-  return `<li class="ls-row${num?'':' nonum'}${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}">${num ? `<span class="ls-n${x.hot<=3?' top':''}"><em>${x.hot}</em>${LP_BARS}</span>` : ''}<span class="ls-cv">${cv}${num?'':LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}${x.preview ? `<em class="ls-pv">${esc(t('lsPreviewS'))}</em>` : x.sr ? `<em class="ls-pv ls-wh">${esc(t('lsWholeS'))}</em>` : ''}</b><span class="ls-m">${esc(x.artist||x.from)}</span></span></button>`
+  return `<li class="ls-row${num?'':' nonum'}${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}">${num ? `<span class="ls-n${x.hot<=3?' top':''}"><em>${x.hot}</em>${LP_BARS}</span>` : ''}<span class="ls-cv">${cv}${num?'':LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}${x.preview && !lpPromise(x) ? `<em class="ls-pv">${esc(t('lsPreviewS'))}</em>` : x.sr ? `<em class="ls-pv ls-wh">${esc(t('lsWholeS'))}</em>` : ''}</b><span class="ls-m">${esc(x.artist||x.from)}</span></span></button>`
     + `<button class="ls-like" type="button" data-ls-like="${esc(x.id)}" aria-pressed="${liked}" title="${esc(t(liked?'lsLiked':'lsLike'))}" aria-label="${esc(t(liked?'lsLiked':'lsLike'))}">${ICON.heart}</button><button class="ls-more" type="button" data-ls-more="${esc(x.id)}" aria-haspopup="dialog" title="${esc(t('lsMore'))}" aria-label="${esc(t('lsMore'))}">${ICON.more}</button></li>`;
 }
 function lpCardHTML(x, playing){                                                                     // a song as a card: a square cover with a play mark, the title, the artist, one line of what it is

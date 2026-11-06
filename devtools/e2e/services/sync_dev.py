@@ -94,7 +94,7 @@ REGION_OF = {'hot-cn': 'cn', 'hot-west': 'west', 'kr': 'jp-kr', 'dzp-1313621735'
 LRC = ('[00:00.50]First line of the song\n[00:03.00]Second line of the song\n[00:06.00]Third line of the song\n[00:09.00]Fourth line of the song')
 SEARCH_SONGS = [   # title, artist, dur, how it sounds: 'whole' (a whole sound), 'preview' (a preview and a stub that resolve can fill), 'stub' (only a stub)
     ('Search Alpha', 'Singer A', 200, 'whole'), ('Search Beta', 'Singer B', 210, 'preview'), ('Search Gamma', 'Singer C', 190, 'stub'), ('Search Delta', 'Singer A', 205, 'whole'),
-    ('Search Nothing', 'Singer D', 180, 'stub'), ('Moon River', 'Singer E', 170, 'whole'), ('Moonlight', 'Singer F', 160, 'preview')]
+    ('Search Epsilon', 'Singer G', 195, 'both'), ('Search Nothing', 'Singer D', 180, 'stub'), ('Moon River', 'Singer E', 170, 'whole'), ('Moonlight', 'Singer F', 160, 'preview')]
 
 
 def listen_index_v2(lang, region):
@@ -130,6 +130,8 @@ def search_items(q):
         if how == 'whole':
             cs = [c('audius', 'full', '/ep1.wav', lic='Audius')]
         elif how == 'preview':
+            cs = [c('deezer', 'preview', '/ep3.wav', lic='Deezer 30 秒试听')]
+        elif how == 'both':                                                       # a preview at hand, and a source of China that says it has the whole song (no address yet)
             cs = [c('bodian', 'full', big=True, lyr=True, resolve=True, net='cn', lic='波点音乐'), c('deezer', 'preview', '/ep3.wav', lic='Deezer 30 秒试听')]
         else:
             cs = [c('bodian', 'full', big=True, lyr=True, resolve=True, net='cn', lic='波点音乐')]

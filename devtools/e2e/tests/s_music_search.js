@@ -16,11 +16,11 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   const waitFor = async (expr, ms = 9000) => { const t0 = Date.now(); for (;;) { let v = false; try { v = await J(expr); } catch (e) { /* the page is busy */ } if (v || Date.now() - t0 > ms) return v; await sleep(100); } };
   const svc = q => fetch(SVC + '/__listen?mode=ok&' + q).then(r => r.json());
   const log2 = () => fetch(SVC + '/__listen_log2').then(r => r.json());
-  const fresh = async (q = 'v2=1') => {
+  const fresh = async (q = 'v2=1', lang = 'en') => {
     await svc('reset=1&' + q);
-    await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE + '?lang=en', 1200);
+    await c.goto('about:blank', 200); await c.clearSite('http://127.0.0.1:8820'); await c.goto(BASE + '?lang=' + lang, 1200);
     await J(`localStorage.setItem('archive.intro','1'); localStorage.setItem('archive.ver','"2026-10-22"'); localStorage.setItem('archive.dirIntroOff','1'); localStorage.setItem('archive.guideTipOff','1')`);
-    await c.goto(BASE + '?lang=en', 2500);
+    await c.goto(BASE + '?lang=' + lang, 2500);
     await J(`document.querySelector('[data-space="dir"]').click()`); await sleep(1200);
     await waitFor(`document.querySelector('#cats [data-dlisten]')`, 8000);
     await J(`document.querySelector('#cats [data-dlisten]').click()`);
@@ -29,6 +29,8 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   const type = async (text, enter) => { await J(`(()=>{ const i=document.querySelector('#lpSrIn'); i.focus(); i.value=${JSON.stringify(text)}; i.dispatchEvent(new Event('input',{bubbles:true})); ${enter ? "i.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));" : ''} })()`); };
   const results = () => J(`[...document.querySelectorAll('#lpSrRes .ls-row[data-ls-row]')].map(r=>({id:r.dataset.lsRow, t:r.querySelector('.ls-t').firstChild.textContent, b:[...r.querySelectorAll('.ls-pv')].map(e=>e.textContent).join('+')}))`);
   await c.desktop(1280, 900, 1);
+  const zone = tz => c.send('Emulation.setTimezoneOverride', { timezoneId: tz });          // (whose songs come first follows the language AND the time zone of the device)
+  await zone('America/New_York');
 
   // ------------------------------------------------ an older service has no search
   await fresh('v2=0');
@@ -45,11 +47,11 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   const lg = (await log2()).filter(x => x.startsWith('search:'));
   ok('typing fast sends ONE question, a third of a second after the last key', lg.length === 1 && lg[0] === 'search:Search', lg);
   const res = await results();
-  ok('the songs found: five, each says whole or preview (a song that has a preview and can be had whole says “Preview”; one that has only a promise of a whole song says “Full”)', res.length === 5 && res[0].t === 'Search Alpha' && res[0].b === 'Full' && res[1].t === 'Search Beta' && res[1].b === 'Preview' && res[2].t === 'Search Gamma' && res[2].b === 'Full', res);
+  ok('the songs found: six, each says whole or preview (a song that has a preview and can be had whole says “Preview”; one that has only a promise of a whole song says “Full”)', res.length === 6 && res[0].t === 'Search Alpha' && res[0].b === 'Full' && res[1].t === 'Search Beta' && res[1].b === 'Preview' && res[2].t === 'Search Gamma' && res[2].b === 'Full' && res[4].t === 'Search Epsilon' && res[4].b === 'Preview', res);          // (Epsilon has a preview and a source of China that has the whole song: for a reader outside China it is a preview)
 
   // ------------------------------------------------ playing a result
   await J(`document.querySelector('#lpSrRes .ls-row[data-ls-row="${res[0].id}"] .ls-main').click()`);
-  ok('a click on a result plays it, and the results are the list of the bar', await waitFor(`pl.q.length===5 && pl.q[pl.i]==='tmp:ls:${res[0].id}' && plAudio.currentTime>0.05`, 8000), [await J(`pl.q.length`), await J(`pl.q[pl.i]`)]);
+  ok('a click on a result plays it, and the results are the list of the bar', await waitFor(`pl.q.length===6 && pl.q[pl.i]==='tmp:ls:${res[0].id}' && plAudio.currentTime>0.05`, 8000), [await J(`pl.q.length`), await J(`pl.q[pl.i]`)]);
   ok('the search is kept in the history when a result is played', (await J(`LS.get('lpSearchHist',[])`)).join() === 'Search');
   await J(`plAudio.pause()`);
   await J(`document.querySelector('#lpSrRes .ls-row[data-ls-row="${res[2].id}"] .ls-main').click()`);
@@ -60,7 +62,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await J(`plAudio.pause()`);
 
   // ------------------------------------------------ a song nobody can find
-  await J(`document.querySelector('#lpSrRes .ls-row[data-ls-row="${res[4].id}"] .ls-main').click()`);
+  await J(`document.querySelector('#lpSrRes .ls-row[data-ls-row="${res[5].id}"] .ls-main').click()`);
   ok('a song the service cannot find a sound for (the last one of the list) is given up with a message', await waitFor(`!pl.loaded && /couldn|play|Skip/i.test(document.querySelector('#toastMsg').textContent)`, 9000) && (await log2()).includes('resolve:Search Nothing'), await J(`document.querySelector('#toastMsg').textContent`));
 
   // ------------------------------------------------ find the whole song / change source
@@ -80,13 +82,18 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   ok('and it is the sound that plays', await waitFor(`pl.q[pl.i]==='tmp:ls:${res[1].id}' && pl.cands[0] && pl.cands[0].p==='deezer' && plAudio.currentTime>0.05`, 8000), await J(`pl.cands.map(c=>c.p).join()`));
   await J(`plAudio.pause()`);
 
+  // ------------------------------------------------ outside China a preview at hand is played as it is
+  await J(`document.querySelector('#lpSrRes .ls-row[data-ls-row="${res[4].id}"] .ls-main').click()`);
+  ok('a reader outside China: a song that has a preview at hand and a source of China that has the whole one plays the preview (nothing is looked for first)', await waitFor(`pl.q[pl.i]==='tmp:ls:${res[4].id}' && plAudio.currentTime>0.05 && pl.cands[0] && pl.cands[0].p==='deezer'`, 8000) && !(await log2()).includes('resolve:Search Epsilon'), await log2());
+  await J(`plAudio.pause()`);
+
   // ------------------------------------------------ the history, the other answers
   await J(`document.querySelector('#lpRoot [data-lp-sback]').click()`); await sleep(300);
   ok('the arrow leaves the search page: the three tabs are back', await J(`!!document.querySelector('#lpRoot .lp-tabs') && !document.querySelector('#lpSrIn')`));
   await J(`document.querySelector('#lpRoot [data-lp-search]').click()`); await sleep(300);
   ok('the history of searches is shown as chips (this device only)', await J(`[...document.querySelectorAll('#lpSrRes [data-lp-shist]')].map(b=>b.textContent).join()`) === 'Search');
   await svc('v2=1&search=partial'); await J(`document.querySelector('#lpSrRes [data-lp-shist]').click()`);
-  ok('a chip searches again; a partial answer says that some sources did not answer', await waitFor(`document.querySelectorAll('#lpSrRes .ls-row').length===5 && /did not answer in time/.test(document.querySelector('#lpSrRes').textContent)`, 8000));
+  ok('a chip searches again; a partial answer says that some sources did not answer', await waitFor(`document.querySelectorAll('#lpSrRes .ls-row').length===6 && /did not answer in time/.test(document.querySelector('#lpSrRes').textContent)`, 8000));
   await svc('v2=1&search=empty'); await type('Search zzz', true);
   ok('nothing found: it says so', await waitFor(`/Nothing found for/.test(document.querySelector('#lpSrRes').textContent)`, 6000));
   await svc('v2=1&search=down'); await type('Searc', true);
@@ -98,6 +105,16 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await J(`document.querySelector('#lpSrRes [data-lp-sclear]').click()`); await sleep(200);
   ok('“clear” empties the history', (await J(`LS.get('lpSearchHist',[]).length`)) === 0 && /two letters/.test(await J(`document.querySelector('#lpSrRes').textContent`)));
   ok('Escape leaves the search page', await (async () => { await J(`document.querySelector('#lpSrIn').dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}))`); await sleep(300); return J(`!document.querySelector('#lpSrIn')`); })());
+  // ------------------------------------------------ in China the whole song that a source of China has is looked for first
+  await zone('Asia/Shanghai');
+  await fresh('v2=1', 'zh');
+  await J(`document.querySelector('#lpRoot [data-lp-search]').click()`); await sleep(300);
+  await type('Search Epsilon', true);
+  await waitFor(`document.querySelectorAll('#lpSrRes .ls-row').length===1`, 8000);
+  ok('a reader in China: the same song says “整首” (a source of China has the whole one)', (await results())[0].b === '整首', await results());
+  await J(`document.querySelector('#lpSrRes .ls-row .ls-main').click()`);
+  ok('and it is looked for first: the whole song of that source plays, not the preview', await waitFor(`pl.loaded && plAudio.currentTime>0.05 && pl.cands[0] && pl.cands[0].p==='bodian' && pl.cands[0].k==='full'`, 9000) && (await log2()).includes('resolve:Search Epsilon'), [await J(`pl.cands.map(c=>c.p+':'+c.k).join()`), await log2()]);
+  await J(`plAudio.pause()`);
   ok('no errors in the page', errs.length === 0, errs);
   await fetch(SVC + '/__listen?mode=ok&reset=1');                                  // (the fake service answers as it did before again: the tests after this one do not know the newer questions)
   console.log(`${pass} passed, ${fail} failed`);
