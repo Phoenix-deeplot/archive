@@ -6174,7 +6174,7 @@ function fsAuthPlatform(raw,d){
   const host=hostOf(httpUrl(raw)||raw).toLowerCase().replace(/^www\./,'');
   const known=host.includes('zhihu.com')?'知乎 / Zhihu':host.includes('xiaohongshu.com')||host==='xhslink.com'?'小红书 / Xiaohongshu':host==='x.com'||host==='twitter.com'?'X':host==='space.bilibili.com'?'B站 / Bilibili':'';
   const reason=d&&(d.reason||d.error);
-  if(['login','restricted','auth_required'].includes(reason)) return known|| (state.lang==='zh'?'这个网站':'this site');
+  if(['login','login_required','restricted','access_restricted','cookie_required','auth_required'].includes(reason)) return known|| (state.lang==='zh'?'这个网站':'this site');
   if(known&&['platform_adapter','rsshub_required','feed_invalid','unreachable'].includes(reason)) return known;
   return '';
 }
@@ -6222,7 +6222,7 @@ async function fsFind(){
     else{                                                                              // could not be read: say why, and let the address be kept as a plain link
       fsMsg(t('fsFail')+((state.lang==='zh'?d.message:d.message_en)||d.message||'?'));
       const u=httpUrl(/^[a-z][a-z0-9+.-]*:\/\//i.test(raw)?raw:'https://'+raw);
-      if(u && ['unreachable','rsshub_required','platform_adapter','feed_missing','feed_invalid','api_adapter'].includes(d.error) && !/^(\d|\[)/.test(hostOf(u))){ fsFound={ok:true,kind:'link',url:u,title:hostOf(u),summary:'',manual:true,authPlatform:fsAuthPlatform(raw,d)}; renderFound(fsFound); }
+      if(u && ['unreachable','rsshub_required','platform_adapter','feed_missing','feed_invalid','api_adapter','login','login_required','restricted','access_restricted','cookie_required','auth_required'].includes(d.error) && !/^(\d|\[)/.test(hostOf(u))){ fsFound={ok:true,kind:'link',url:u,title:hostOf(u),summary:'',manual:true,authPlatform:fsAuthPlatform(raw,d)}; renderFound(fsFound); }
     }
   }catch(e){ if(version===fsLookupVersion) fsMsg(t('fsFail')+e.message); }
   finally{ if(version===fsLookupVersion){ $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); renderStarter(); } }

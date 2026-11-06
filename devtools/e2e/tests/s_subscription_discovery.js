@@ -39,6 +39,11 @@ function ok(name, value){ if(!value) throw new Error(name); pass++; console.log(
     await c.js("document.querySelector('#fbSend').click()");
     await wait("!document.querySelector('#fbDlg').open");
     ok('the explicit opt-in request reaches the feedback inbox',await c.js("fetch('/__feedback').then(r=>r.json()).then(x=>x.some(e=>e.kind==='idea'&&e.where==='sub-auth'&&e.msg.includes('X')))"));
+    await open();
+    await c.js(`window.__oldSubscriptionFetch=window.fetch; window.fetch=(url,opt)=>String(url).endsWith('/api/feed')?Promise.resolve({ok:false,status:401,json:async()=>({ok:false,error:'login_required',message:'Please sign in'})}):window.__oldSubscriptionFetch(url,opt);`);
+    await find('https://members.example/feed.xml');
+    ok('generic login-required errors offer link saving and authorization feedback',await c.js("document.querySelector('#fsResult').textContent.includes('members.example') && document.querySelector('#fsResult').textContent.includes('登录') && !!document.querySelector('[data-fs-auth=yes]')"));
+    await c.js('window.fetch=window.__oldSubscriptionFetch');
     await find('spotify:show:123');
     ok('unsupported app protocol has a clear message and no subscribe button',await c.js("!document.querySelector('#fsMsg').hidden && document.querySelector('#fsGo').hidden"));
     await c.js(`window.__oldSubscriptionFetch=window.fetch; window.fetch=(url,opt)=>String(url).endsWith('/api/feed')?new Promise(r=>{window.__finishSubscriptionFetch=r}):window.__oldSubscriptionFetch(url,opt); const e=document.querySelector('#fsUrl'); e.value='https://example.org/feed'; e.dispatchEvent(new Event('input')); document.querySelector('#fsFind').click(); e.value='https://other.example.org/feed'; e.dispatchEvent(new Event('input')); window.__finishSubscriptionFetch({status:200,json:async()=>({ok:true,kind:'feed',feed:'https://example.org/feed',title:'Stale feed',items:[]})});`);
