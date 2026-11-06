@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>网易云音乐 OpenAPI 本机测试器</title>
+  <style>
+    :root{color-scheme:light dark;--bg:#f4f8f6;--card:#fff;--ink:#13251d;--muted:#60746a;--line:#d8e4de;--brand:#087254;--warn:#fff6de;--bad:#b42318;--code:#102119}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}main{max-width:1080px;margin:auto;padding:34px 20px 60px}h1{font-size:28px;margin:0 0 8px}h2{font-size:17px;margin:0 0 13px}p{margin:7px 0;color:var(--muted)}.notice{margin:20px 0;padding:13px 15px;border:1px solid #efd78b;border-radius:12px;background:var(--warn);color:#6b4f00}.notice strong{color:#4f3a00}.layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 2px 12px #14352808}label{display:block;margin:13px 0 5px;color:var(--muted);font-size:13px;font-weight:650}input,textarea,select,button{font:inherit}input,textarea,select{width:100%;border:1px solid var(--line);border-radius:9px;background:transparent;color:inherit;padding:9px 10px}textarea{min-height:94px;resize:vertical;font:13px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}input:focus,textarea:focus,select:focus{outline:3px solid #2e96752e;border-color:var(--brand)}.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}.row{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-top:18px}button{cursor:pointer;color:#fff;background:var(--brand);border:1px solid var(--brand);border-radius:9px;padding:9px 14px;font-weight:650}button.secondary{color:var(--brand);background:transparent}button:disabled{opacity:.55;cursor:wait}.status{min-height:22px;font-size:13px;color:var(--muted)}.status.bad{color:var(--bad)}pre{overflow:auto;min-height:150px;max-height:540px;white-space:pre-wrap;word-break:break-word;margin:0;padding:14px;border-radius:10px;color:#d8f5e4;background:var(--code);font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.help{margin-top:18px;font-size:13px}.pill{display:inline-block;padding:2px 8px;border-radius:999px;background:#e6f4ed;color:#076143;font-size:12px;font-weight:700}.tiny{font-size:12px;color:var(--muted)}.hidden{display:none}@media(max-width:760px){main{padding:22px 13px 40px}.layout,.split{grid-template-columns:1fr}.card{padding:16px}}@media(prefers-color-scheme:dark){:root{--bg:#101714;--card:#17221d;--ink:#e9f4ee;--muted:#a9bdb3;--line:#31443a;--warn:#332c16;--code:#07100c}.notice{color:#f7dfa1;border-color:#695b2c}.notice strong{color:#fff0bb}.pill{background:#123d2e;color:#a8f1cd}}
+  </style>
+</head>
+<body>
+<main>
+  <span class="pill">仅限本机开发测试</span>
+  <h1>网易云音乐 OpenAPI 测试器</h1>
+  <p>按网易云文档示例组装公共参数。App Secret、Access Token 都只在当前测试请求的内存中使用；页面不会生成或要求 RSA 私钥。</p>
+  <div class="notice"><strong>仅在本机使用：</strong>请从 <code>http://127.0.0.1:8000</code> 打开本页。凭据会随当前测试请求从浏览器发到本机转发器，再由它发往官方 <code>openapi.music.163.com</code>；它不会写入文件、浏览器存储、控制台日志或项目代码。不要将这个文件部署到 Vercel。</div>
+  <div class="layout">
+    <section class="card">
+      <h2>1. 填写当前接口所需凭据</h2>
+      <div class="split"><div><label for="appId">App ID</label><input id="appId" autocomplete="off" spellcheck="false" placeholder="网易云开发者平台的 App ID"></div><div><label for="appSecret">App Secret / 开发者密钥</label><input id="appSecret" type="password" autocomplete="off" spellcheck="false" placeholder="仅用于当前请求"></div></div>
+      <label for="preset">测试项目</label>
+      <select id="preset"><option value="songlist">推荐歌单：严格按你提供的实例</option><option value="qrcode">用户登录：获取登录二维码</option><option value="custom">自定义：按官方文档填写接口</option></select>
+      <div id="tokenFields"><label for="accessToken">Access Token（推荐歌单接口必填）</label><input id="accessToken" type="password" autocomplete="off" spellcheck="false" placeholder="不是 App Secret；由网易云授权流程签发的临时令牌"></div>
+      <div id="customFields" class="hidden"><div class="split"><div><label for="method">请求方法</label><select id="method"><option>GET</option><option>POST</option></select></div><div><label for="path">文档中的接口路径</label><input id="path" spellcheck="false" value="/openapi/music/"></div></div><label for="bizContent">bizContent（合法 JSON）</label><textarea id="bizContent" spellcheck="false">{}</textarea><label for="device">device（只有文档要求时才填写，合法 JSON）</label><textarea id="device" spellcheck="false" placeholder='例如：{"deviceType":"andrwear","os":"andrwear"}'></textarea><p class="tiny">自定义接口是否携带 Access Token / App Secret，按文档的“公共参数”开关决定。</p><label><input id="useToken" type="checkbox" style="width:auto"> 此接口需要 Access Token</label><label><input id="useSecret" type="checkbox" style="width:auto"> 此接口明确要求 App Secret</label></div>
+      <div id="songlistHint"><p class="tiny">严格匹配示例：<code>GET /openapi/music/basic/recommend/songlist/get/v2</code>、<code>bizContent={"limit":100}</code>、<code>accessToken</code>、<code>device</code>、当前毫秒 <code>timestamp</code>。示例没有 App Secret 与 <code>sign</code>。</p></div>
+      <div id="qrcodeHint" class="hidden"><p class="tiny">该探测使用获取登录二维码接口。成功时应返回二维码地址或唯一键；这只能证明凭据和“用户登录”接口可用，不能自动证明歌单、榜单、播放 URL 等业务权限。</p></div>
+      <div class="row"><button id="send">发送接口测试</button><button class="secondary" id="preview" type="button">预览脱敏请求</button><span id="status" class="status"></span></div>
+    </section>
+    <aside class="card"><h2>2. 怎么判断结果</h2><pre id="requestPreview">填写该接口所需凭据后，点击“预览脱敏请求”。</pre><div class="help"><strong>推荐歌单的必要条件</strong><p>只填 App ID 和 App Secret，不能替代 <code>accessToken</code>。这条接口是用户态请求：必须先走网易云授权，取得未过期的 Access Token；设备字段也必须带上。</p><p><code>code: 200</code>：该接口已通过。<br><code>1405</code>：App ID 无效。<br><code>1402</code>：公共参数或接口鉴权不符合要求。<br>其他非 200：以官方 <code>message</code>、<code>subCode</code> 为准。</p><p>选择“自定义”时，路径、<code>bizContent</code>、是否带 Token / Secret 都按该具体接口文档设置；时间戳和 <code>signType=RSA_SHA256</code> 会自动带上。</p></div></aside>
+  </div>
+  <section class="card" style="margin-top:18px"><h2>3. 官方响应</h2><pre id="response">尚未发送请求。</pre></section>
+</main>
+<script>
+(() => {
+  const $=id=>document.getElementById(id), preset=$('preset'), custom=$('customFields'), tokenFields=$('tokenFields'), songlistHint=$('songlistHint'), qrcodeHint=$('qrcodeHint'), method=$('method'), path=$('path'), biz=$('bizContent'), device=$('device'), appId=$('appId'), secret=$('appSecret'), token=$('accessToken'), useToken=$('useToken'), useSecret=$('useSecret'), send=$('send'), preview=$('requestPreview'), response=$('response'), status=$('status');
+  const QR_PATH='/openapi/music/basic/user/oauth2/qrcodekey/get/v2', QR_BIZ={type:2,expiredKey:'300'};
+  const SONG_LIST_PATH='/openapi/music/basic/recommend/songlist/get/v2', SONG_LIST_BIZ={limit:100}, SONG_LIST_DEVICE={deviceType:'andrwear',os:'andrwear',appVer:'0.1',channel:'hm',model:'kys',deviceId:'321',brand:'hm',osVer:'8.1.0'};
+  const setStatus=(message,bad=false)=>{status.textContent=message;status.className='status'+(bad?' bad':'')};
+  preset.addEventListener('change',()=>{const isCustom=preset.value==='custom', isSonglist=preset.value==='songlist';custom.classList.toggle('hidden',!isCustom);tokenFields.classList.toggle('hidden',!isSonglist);songlistHint.classList.toggle('hidden',!isSonglist);qrcodeHint.classList.toggle('hidden',preset.value!=='qrcode');setStatus('');response.textContent='尚未发送请求。'});
+  function parseJson(value,name){try{return JSON.parse(value)}catch{throw new Error(name+' 不是合法 JSON')}}
+  function build(){const id=appId.value.trim();if(!id)throw new Error('请填写 App ID');const isCustom=preset.value==='custom', isSonglist=preset.value==='songlist';const business=isCustom?parseJson(biz.value,'bizContent'):isSonglist?SONG_LIST_BIZ:QR_BIZ;const dev=isCustom&&device.value.trim()?parseJson(device.value,'device'):isSonglist?SONG_LIST_DEVICE:null;const params={appId:id,signType:'RSA_SHA256',timestamp:String(Date.now()),bizContent:JSON.stringify(business)};if(dev)params.device=JSON.stringify(dev);const needsToken=isSonglist||(isCustom&&useToken.checked), needsSecret=!isSonglist&&(!isCustom||useSecret.checked);if(needsToken){if(!token.value.trim())throw new Error('该接口必须填写未过期的 Access Token；App Secret 不能替代它');params.accessToken=token.value.trim()}if(needsSecret){if(!secret.value.trim())throw new Error('该接口要求填写 App Secret / 开发者密钥');params.appSecret=secret.value.trim()}return{method:isCustom?method.value:isSonglist?'GET':'POST',path:isCustom?path.value.trim():isSonglist?SONG_LIST_PATH:QR_PATH,params};}
+  function safe(req){const params={...req.params};if(params.appSecret)params.appSecret='*** 已填写，不显示 ***';if(params.accessToken)params.accessToken='*** 已填写，不显示 ***';return{method:req.method,path:req.path,params}}
+  $('preview').addEventListener('click',()=>{try{preview.textContent=JSON.stringify(safe(build()),null,2);setStatus('已生成脱敏预览。')}catch(err){setStatus(err.message||String(err),true)}});
+  send.addEventListener('click',async()=>{try{send.disabled=true;const req=build();preview.textContent=JSON.stringify(safe(req),null,2);setStatus('正在请求网易云官方 OpenAPI…');response.textContent='请求中…';const res=await fetch('/api/netease-openapi-test',{method:'POST',headers:{'Content-Type':'application/json'},cache:'no-store',body:JSON.stringify(req)});const payload=await res.json().catch(()=>({error:'本机转发器返回了非 JSON 响应'}));response.textContent=JSON.stringify(payload,null,2);if(!res.ok||!payload.ok)setStatus('测试未通过；请查看 code、subCode 与 message。',true);else setStatus('测试通过：该接口返回 code: 200。')}catch(err){response.textContent=String(err.stack||err);setStatus(err.message||String(err),true)}finally{send.disabled=false}});
+})();
+</script>
+</body>
+</html>
