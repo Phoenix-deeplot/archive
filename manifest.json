@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-29 16:45",
+ "generated": "2026-11-05 19:49",
  "directory": "https://adminbook.zhitree.cn/",
  "items": [
   {
@@ -20,9 +20,9 @@
     "教程"
    ],
    "lang": "mixed",
-   "minutes": 33,
-   "date": "2026-10-29",
-   "cover": "",
+   "minutes": 35,
+   "date": "2026-11-05",
+   "cover": "cover.webp",
    "featured": false,
    "pinned": 1,
    "title_en": "ZhiTree Books User Guide: an illustrated tutorial",
@@ -38,8 +38,8 @@
     "deploy"
    ],
    "type": "html",
-   "size": 1717395,
-   "added": 1793263517,
+   "size": 1703178,
+   "added": 1793879385,
    "project": true,
    "files": 34,
    "alt_en": "library/notes/guide/en/index.html"

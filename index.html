@@ -15,6 +15,7 @@
 <meta property="og:description" content="知树阅读是个人数字图书馆：在线阅读书籍、电子书、PDF 与 Markdown，整理读书笔记，订阅喜欢的博客（RSS），还有公共目录，免注册投稿。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:locale:alternate" content="en_US">
+<meta name="baidu-site-verification" content="codeva-kelfQAH73F" />
 <meta name="twitter:card" content="summary">
 <meta name="google-adsense-account" content="ca-pub-9444360386337348">
 <link rel="manifest" href="manifest.webmanifest">
@@ -1145,11 +1146,26 @@ body.pl-music .pl-btn.sk,body.pl-music .pl-btn.pl-rate{display:none}
   .pl-cover{width:46px;height:46px}
   .pl-btn.sk{width:42px}
 }
-#embedDlg{width:min(860px,calc(100vw - 16px))}
+#embedDlg{width:min(1120px,calc(100vw - 24px));max-height:calc(100dvh - 24px)}
+#embedDlg .dlg{max-height:calc(100dvh - 26px)}
+#embedDlg .dlg-head{padding:16px 20px 6px}
+#embedDlg .dlg-body{padding:8px 16px 12px}
 .emb-box{position:relative;width:100%;background:#000;border-radius:8px;overflow:hidden}
 .emb-box iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
 .emb-sub{margin:4px 0 0;color:var(--muted);font-size:13px}
 .emb-body{margin:12px 0 0;white-space:pre-line;color:var(--muted);font-size:14px;line-height:1.7;max-height:8em;overflow:auto}
+#embedDlg[data-kind="video"] .emb-box{width:min(100%,calc((100dvh - 170px)*16/9));margin-inline:auto;aspect-ratio:16/9}
+#embedDlg[data-kind="video"] .dlg-foot .btn{min-height:44px}
+@media(max-width:760px){
+  #embedDlg{width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}
+  #embedDlg .dlg{max-height:calc(100dvh - 18px)}
+  #embedDlg .dlg-head{padding:12px 14px 5px}
+  #embedDlg .dlg-head h2{font-size:18px;line-height:1.35}
+  #embedDlg .dlg-body{padding:6px 10px 10px}
+  #embedDlg .dlg-foot{gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px))}
+  #embedDlg .dlg-foot .btn{flex:1;min-width:0;min-height:46px;padding-inline:8px}
+  #embedDlg[data-kind="video"] .emb-box{width:min(100%,calc((100dvh - 150px)*16/9));border-radius:6px}
+}
 #bookDlg{width:min(720px,calc(100vw - 16px))}
 .bo-sum{margin:0 0 10px;line-height:1.75}
 .bo-facts{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
@@ -7570,12 +7586,12 @@ function embedOf(u){                                                            
   let x; try{ x=new URL(u); }catch(e){ return null; }
   if(x.protocol!=='https:') return null;
   const h=x.hostname.replace(/^www\./,''), p=x.pathname; let m;
-  if(/(^|\.)bilibili\.com$/.test(h) && (m=p.match(/^\/video\/(BV\w{10})/))) return {src:'https://player.bilibili.com/player.html?bvid='+m[1]+'&autoplay=0&high_quality=1&danmaku=0'};
+  if(/(^|\.)bilibili\.com$/.test(h) && (m=p.match(/^\/video\/(BV\w{10})/))) return {src:'https://player.bilibili.com/player.html?bvid='+m[1]+'&autoplay=0&high_quality=1&danmaku=0',kind:'video'};
   if(h==='youtu.be' || /(^|\.)youtube\.com$/.test(h)){
     const id = h==='youtu.be' ? p.slice(1,12) : p==='/watch' ? (x.searchParams.get('v')||'') : ((m=p.match(/^\/(?:shorts|embed|live)\/([\w-]{11})/)) ? m[1] : '');
-    if(/^[\w-]{11}$/.test(id)) return {src:'https://www.youtube-nocookie.com/embed/'+id+'?rel=0&playsinline=1'};
+    if(/^[\w-]{11}$/.test(id)) return {src:'https://www.youtube-nocookie.com/embed/'+id+'?rel=0&playsinline=1',kind:'video'};
   }
-  if(h==='vimeo.com' && (m=p.match(/^\/(\d{6,12})$/))) return {src:'https://player.vimeo.com/video/'+m[1]};
+  if(h==='vimeo.com' && (m=p.match(/^\/(\d{6,12})$/))) return {src:'https://player.vimeo.com/video/'+m[1],kind:'video'};
   if(h==='music.163.com' && /song/.test(x.hash+p) && (m=(x.hash+x.search).match(/(?:\/song\?|[?&])id=(\d+)/))) return {src:'https://music.163.com/outchain/player?type=2&id='+m[1]+'&auto=0&height=66', h:86};
   if(h==='music.163.com' && (m=(p+x.hash+x.search).match(/\/playlist\?(?:[^#]*&)?id=(\d+)/))) return {src:'https://music.163.com/outchain/player?type=0&id='+m[1]+'&auto=0&height=430', h:450};
   if(h==='open.spotify.com' && (m=p.match(/^\/(track|episode|album|playlist|show)\/(\w{22})/))) return {src:'https://open.spotify.com/embed/'+m[1]+'/'+m[2], h:m[1]==='track'||m[1]==='episode'?152:352};
@@ -7585,15 +7601,16 @@ const RICH_DETAIL=/^https:\/\/(?:www\.v2ex\.com\/t\/\d{3,9}(?:[?#].*)?|daily\.zh
 const RICH_KW=/^https:\/\/(?:s\.weibo\.com\/|www\.douyin\.com\/hot\/|www\.zhihu\.com\/question\/|www\.toutiao\.com\/trending\/)/;                // (a row that is only a phrase: a hot search)
 function openEmbed(o, em){
   if(plPlaying()) plToggle();                                                                      // two sounds at once are noise: the player waits
-  $('#embedTitle').textContent=o.title; $('#embedSub').textContent=[o.from||hostOf(o.url), o.heat, o.note].filter(Boolean).join(' · ');
+  const video=em.kind==='video', dlg=$('#embedDlg'); dlg.dataset.kind=video?'video':'media';
+  $('#embedTitle').textContent=o.title; $('#embedSub').textContent=[o.from||hostOf(o.url), o.heat, o.note, video?(state.lang==='en'?'Platform playback; sign-in or regional restrictions may apply.':'平台播放器可能受登录或地区限制。'):''].filter(Boolean).join(' · ');
   const box=$('#embedBox'); box.style.height=em.h ? em.h+'px' : ''; box.style.aspectRatio=em.h ? '' : '16 / 9';
   box.innerHTML=`<iframe src="${esc(em.src)}" title="${esc(o.title)}" ${EMBED_ATTR}></iframe>`;
   const body=cut(o.body||'',600); $('#embedBody').textContent=body; $('#embedBody').hidden=!body;
-  const a=$('#embedOrig'); a.href=httpUrl(o.url)||'#'; a.textContent=t('embedOrig',hostOf(o.url));
-  $('#embedDone').textContent=t('embedDone');
-  if(!$('#embedDlg').open) $('#embedDlg').showModal();
+  const a=$('#embedOrig'); a.href=httpUrl(o.url)||'#'; a.textContent=t('embedOrig',hostOf(o.url)); a.className=video?'btn primary':'btn';
+  const done=$('#embedDone'); done.textContent=t('embedDone'); done.className=video?'btn':'btn primary';
+  if(!dlg.open) dlg.showModal();
 }
-$('#embedDlg').addEventListener('close',()=>{ $('#embedBox').innerHTML=''; });                  // (the video stops with the window)
+$('#embedDlg').addEventListener('close',()=>{ $('#embedBox').innerHTML=''; delete $('#embedDlg').dataset.kind; });                  // (the video stops with the window)
 $('#embedDone').addEventListener('click',()=>$('#embedDlg').close());
 $('#embedDlg').addEventListener('click',e=>{ if(e.target===$('#embedDlg')) $('#embedDlg').close(); });
 async function hotGet(kind, val){                                                                  // what hotdetail.py says about an address (detail) or a phrase (related)
