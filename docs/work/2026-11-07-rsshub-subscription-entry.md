@@ -1,6 +1,6 @@
 # RSSHub 添加与收录入口（2026-11-07）
 
-状态：待用户确认；本计划仅涵盖前端入口提示，不改订阅数据结构或 API 合同。
+状态：前端入口已实现；RSSHub 真实路由联调待运行时 API 分支就绪。
 
 ## 1. 任务清单（用户）
 
@@ -48,7 +48,10 @@
 ### Codex
 
 - 已审查现有前端：订阅页已有 `/api/feed` discover；普通收录入口尚未提供 RSSHub 到订阅的明确入口。
-- 当前等待 shelf-directory RSSHub 自托管方案与本计划得到用户确认。
+- 已新增 RSSHub scheme、已知 RSSHub host 和自托管 /rsshub/ 路径检测及“按订阅解析”入口；点击后仅切换到订阅页并预填，查找和确认仍由用户主动完成。
+- 普通 HTTP(S) 链接继续保留原收录入口与通用订阅跳转。
+- 移动端 E2E s_rsshub_entry.js：8 项通过（mock discover preview）；页面语法、重名、diff 检查均通过。
+- 未运行真实 RSSHub Preview API；运行时 API 分支尚在开发，集成验收由主线程统一执行。
 
 ## 4. 合并记录
 

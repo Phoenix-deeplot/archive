@@ -2174,6 +2174,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
       <div id="paneUrl">
         <p class="sub-hint" data-i="submitHint"></p>
         <p class="sub-tip" id="submitSubTip" hidden><span data-i="submitSubTip">只想自己读、不想公开？同一个网址也可以直接订阅到你的书架，不用提交审核。</span> <button class="link-btn" type="button" id="submitToSub" data-i="submitSubBtn">改为订阅这个网址</button></p>
+        <p class="sub-tip" id="submitRsshubTip" hidden><span data-i="rsshubEntryHint">识别到 RSSHub 订阅地址，可持续更新。按订阅解析后会进入订阅页预览；确认前不会订阅。</span> <button class="link-btn" type="button" id="submitRsshubToSub" data-i="rsshubEntryAction">按订阅解析</button></p>
         <label for="submitUrl" data-i="submitUrl">网址</label>
         <input type="text" id="submitUrl" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://">
         <p class="kind-line" id="submitKind" role="status"></p>
@@ -6328,6 +6329,8 @@ let fsFound=null, fsLookupVersion=0;
 Object.assign(I18N.zh,{fsAuthHint:n=>`这个 ${n} 链接可能需要平台登录或 RSSHub 实例权限。知树不会索取或保存你的密码、Cookie 或令牌。你希望以后支持通过平台官方授权跳转来订阅吗？`,fsAuthYes:'希望支持授权',fsAuthNo:'暂时不需要',fsAuthFeedbackOff:'反馈通道暂不可用。你仍可先仅收录这个原站链接。',fsAuthPrefill:n=>`希望知树阅读未来支持通过 ${n} 的官方授权跳转来订阅作者/合集。` ,fsAuthDismissed:'已收起；当前可以仅收录原站链接。'});
 Object.assign(I18N.en,{fsAuthHint:n=>`This ${n} link may need a platform sign-in or RSSHub instance permission. Zhitree will not ask for or store your password, cookie, or token. Would you like official sign-in authorization to be supported for subscriptions later?`,fsAuthYes:'I want this',fsAuthNo:'Not now',fsAuthFeedbackOff:'Feedback is unavailable. You can still save this as a link.',fsAuthPrefill:n=>`I would like Zhitree Reading to support official sign-in authorization for following ${n} creators/collections in the future.`,fsAuthDismissed:'Hidden. You can still save the original link.',fsRouteAuthNote:'Updates are read by the configured RSSHub instance; availability depends on that instance’s access and platform permissions. You do not need to provide sign-in details.'});
 Object.assign(I18N.zh,{fsRouteAuthNote:'更新由站长配置的 RSSHub 实例读取，能否持续更新取决于实例的访问能力和平台权限；你不需要提供登录信息。'});
+Object.assign(I18N.zh,{rsshubEntryHint:'识别到 RSSHub 订阅地址，可持续更新。按订阅解析后会进入订阅页预览；确认前不会订阅。',rsshubEntryAction:'按订阅解析'});
+Object.assign(I18N.en,{rsshubEntryHint:'RSSHub feed detected. Open the subscription lookup to preview it; nothing is subscribed until you confirm.',rsshubEntryAction:'Look up as a subscription'});
 function fsAuthPlatform(raw,d){
   const host=hostOf(httpUrl(raw)||raw).toLowerCase().replace(/^www\./,'');
   const known=host.includes('zhihu.com')?'知乎 / Zhihu':host.includes('xiaohongshu.com')||host==='xhslink.com'?'小红书 / Xiaohongshu':host==='x.com'||host==='twitter.com'?'X':host==='space.bilibili.com'?'B站 / Bilibili':'';
@@ -8950,6 +8953,12 @@ function classifyUrl(raw){
   if(/\.(md|markdown|txt)$/i.test(u.pathname)) return k('md');
   return k('site');
 }
+function isRsshubSubscriptionAddress(raw){
+  const s=String(raw||'').trim();
+  if(/^rsshub:\/\//i.test(s)) return true;
+  const c=classifyUrl(s); if(!c || !c.url || c.key==='bad') return false;
+  try{ const u=new URL(c.url); return /(^|[.-])rsshub([.-]|$)/i.test(u.hostname) || /(?:^|\/)rsshub(?:\/|$)/i.test(u.pathname); }catch(e){ return false; }
+}
 const BAD_KINDS=['bad','ghUser','ghOther'];
 /* Is this address in the public directory already? Answered from the directory the page has loaded, before anything is sent: the same spelling rules as the
    aggregator (urlKey), a repository or a folder under a listed repository counts too. The service and the Action check again; this only saves the visitor's time. */
@@ -9003,8 +9012,9 @@ function renderCheck(r){
   box.innerHTML=`<p class="chk-title">${esc(t('chkOk'))}</p><table class="chk">${rows}</table>${latest?`<p class="chk-sub">${esc(t('chkLatest'))}</p><ul class="chk-list">${latest}</ul>`:''}${own}${warn}`;
   box.hidden=false;
 }
-function subscribeThis(url){ submitDlg.close(); openAdd(null,'sub'); if(url){ $('#fsUrl').value=url; fsFind(); } }          // the "收录" window -> "添加 → 订阅" with the address filled in and looked up
+function subscribeThis(url,lookup=true){ submitDlg.close(); openAdd(null,'sub'); if(url){ $('#fsUrl').value=url; if(lookup) fsFind(); } }          // the "收录" window -> "添加 → 订阅" with the address filled in
 $('#submitToSub').addEventListener('click',()=>{ const c=classifyUrl($('#submitUrl').value); subscribeThis((c && c.url) || $('#submitUrl').value.trim()); });
+$('#submitRsshubToSub').addEventListener('click',()=>{ const url=$('#submitUrl').value.trim(); if(isRsshubSubscriptionAddress(url)) subscribeThis(url,false); });
 $('#submitCheck').addEventListener('click',e=>{ const b=e.target.closest('[data-sub-this]'); if(b) subscribeThis(b.dataset.subThis); });
 const msgOf = (d,r) => (d && (state.lang==='zh' ? d.message : d.message_en || d.message)) || (t('saveFail')+(r&&r.status||''));
 async function runCheck(){
@@ -9027,7 +9037,8 @@ async function runCheck(){
   updateSubmit();
 }
 function updateSubmit(){
-  $('#submitSubTip').hidden = !(feedApi() && submitTab==='url');                                  // (the same address can be followed for oneself)
+  const canFollowAddress=!!feedApi() && submitTab==='url', rsshubAddress=canFollowAddress && isRsshubSubscriptionAddress($('#submitUrl').value);
+  $('#submitSubTip').hidden = !canFollowAddress || !!rsshubAddress; $('#submitRsshubTip').hidden = !rsshubAddress;
   const api=submitApi(), post=submitTab==='post', card=submitTab==='card', ticked=$('#submitRights').checked, checked=!!submitCheck;
   $('#rightsRow').hidden = api && !checked;                              // with the service the declaration comes after the result
   $('#submitRightsText').textContent=t(post?'postRights':card?'cardRights':'submitRights');
