@@ -1019,7 +1019,9 @@ body.in-dir #sort,#langFilter[hidden],#sort[hidden],#sortBtn[hidden],#ctlBox[hid
 .fs-tools{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
 .col-tools{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
 .col-item.is-feed{flex-wrap:wrap}
-.col-item .col-sub{flex-basis:100%;margin:-2px 0 2px;font-size:12.5px;color:var(--muted)}
+.col-item .col-sub{display:flex;align-items:center;gap:8px;flex-basis:100%;margin:-2px 0 2px;font-size:12.5px;color:var(--muted)}
+.col-item .col-sub>span{flex:1;min-width:0}
+.col-item .col-sub .btn{flex:none;padding:5px 8px;font-size:12px}
 .col-item .col-sub.bad{color:var(--danger)}
 .col-nav .new{margin-left:6px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--surface);font-size:11.5px;font-style:normal;font-weight:700;line-height:1.55}
 #source .link-btn{border:0;background:none;padding:0;font:inherit;font-weight:600;color:var(--accent);text-decoration:underline;cursor:pointer}
@@ -1152,6 +1154,7 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
 #fbDlg input[type=text]{margin-bottom:8px}
 .fb-hp{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none}
 @media (max-width:620px){#fbDlg .fb-kinds{display:flex}#fbDlg .fb-kinds button{flex:1;min-height:44px;padding:5px 4px}}
+@media (max-width:620px){#addDlg .dlg-foot{flex-wrap:wrap;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px))}#addDlg .dlg-foot .btn{flex:1 1 40%;min-width:0;min-height:42px;padding-inline:8px}}
 .pending{border:1px solid var(--rule);border-radius:8px;padding:10px 12px 12px;margin-top:12px}
 .pending .fname{font-family:var(--mono);font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
 .row2{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end}
@@ -1909,6 +1912,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     <div class="dlg-body">
       <p class="sub-hint" data-i="colHint">合集只存在这个浏览器里：一次导入的一批文件放在一起，随时切换。</p>
       <div class="col-tools" id="colTools" hidden></div>
+      <p class="sub-hint" id="colPublicHint" hidden></p>
       <div id="colList"></div>
       <div class="col-new"><input type="text" id="colNewName" maxlength="40" autocomplete="off" data-i-ph="colNamePh" placeholder="合集名称"><button class="btn" type="button" id="colNewBtn" data-i="colNew">＋ 新建合集</button></div>
       <p class="sub-hint" id="colStorage"></p>
@@ -2298,6 +2302,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     <div class="dlg-foot">
       <button class="btn" type="button" id="addCancel" data-i="cancel">取消</button>
       <button class="btn primary" type="button" id="addSave" data-i="save" disabled>保存</button>
+      <button class="btn" type="button" id="fsPublicSubmit" hidden>申请加入公共空间</button>
       <button class="btn primary" type="button" id="fsGo" hidden disabled>订阅</button>
     </div>
   </div>
@@ -2408,6 +2413,7 @@ const I18N = {
     fsHint:'订阅你想读的博客或文章源（RSS / Atom / JSON Feed）：新文章会出现在你自己的书架里，每个订阅一个合集。文章点开就在这里读：订阅源自带全文的直接显示，只带摘要的会读取原文页面后显示（需要登录或不让程序读取的页面除外，会打开原站）。订阅清单和读过的正文都只存在这个浏览器里。',
     stTitle:'试试这些', stHint:'站长挑的几个值得订阅的源，点一下就订阅，随时可以在“管理”里取消。', stGo:'订阅', stDone:'已订阅', stFinish:'完成', stAdded:n=>`这次已订阅 ${n} 个，点“完成”就能在书架里看到它们。`,
     fsKindFeed:'订阅源', fsKindLink:'单个页面', fsFound:n=>`共 ${n} 篇`, fsLatest:'最近的几篇', fsName:'合集名称', fsGo:'订阅', fsSaveLink:'存成链接',
+    sourceApply:'申请加入公共空间', sourceSubmitting:'正在提交…', sourceQueued:'已提交，等待审核', sourceNote:'只提交公开订阅源地址供站长审核；审核通过后才会进入公共目录，不会复制你的个人订阅或阅读记录。', sourceNoApi:'公共目录提交服务暂不可用。',
     fsLinkNote:'这个地址是一个页面，没有订阅源可以跟着更新，会存成一条链接（和“收藏的链接”一样）。', fsDup:'已经订阅过这个源了。', fsMax:n=>`最多订阅 ${n} 个源，请先取消一些。`,
     fsNoApi:'这个站点没有开通订阅更新服务。', fsFail:'查找失败：', fsOffline:'现在没有网络。', fsRate:'查得太频繁了，请稍等几分钟再试。', fsSlow:'服务没有及时回答，请稍后再试。',
     fsSubscribed:name=>`已订阅「${name}」`, fsLinkSaved:name=>`已存成链接：「${name}」`, fsSaveSelf:'读不到这个地址，也可以直接把它存成一条链接。', fsSaveSelfBtn:'直接存成链接',
@@ -2602,6 +2608,7 @@ const I18N = {
     fsHint:'Follow the blogs and article feeds (RSS / Atom / JSON Feed) you want to read: new articles appear in your own shelf, one collection per subscription. Articles open right here: when a feed carries the full text it is shown at once; with only excerpts, the original page is read and shown (pages that need a login or keep programs out open on their own site). The list and the text you read stay in this browser.',
     stTitle:'Try these', stHint:'A few sources the site owner picked. One click subscribes; you can unsubscribe any time in “Manage”.', stGo:'Subscribe', stDone:'Subscribed', stFinish:'Done', stAdded:n=>`Subscribed to ${n} this time; click “Done” to see them on your shelf.`,
     fsKindFeed:'Feed', fsKindLink:'A single page', fsFound:n=>`${n} articles`, fsLatest:'Latest', fsName:'Collection name', fsGo:'Subscribe', fsSaveLink:'Save as a link',
+    sourceApply:'Suggest for public directory', sourceSubmitting:'Submitting…', sourceQueued:'Submitted for review', sourceNote:'Only the public feed address is submitted for review. It appears in the public directory only after approval; your personal subscriptions and reading history are not copied.', sourceNoApi:'The public directory submission service is unavailable.',
     fsLinkNote:'This address is a page without a feed to follow. It is saved as a link (like a “saved link”).', fsDup:'You follow this feed already.', fsMax:n=>`At most ${n} subscriptions: remove some first.`,
     fsNoApi:'This site has no update service for subscriptions.', fsFail:'Could not look it up: ', fsOffline:'You are offline.', fsRate:'Too many requests; wait a few minutes.', fsSlow:'The service did not answer in time; try again later.',
     fsSubscribed:name=>`Subscribed to “${name}”`, fsLinkSaved:name=>`Saved as a link: “${name}”`, fsSaveSelf:'This address could not be read; you can still save it as a link.', fsSaveSelfBtn:'Save as a link anyway',
@@ -3296,13 +3303,14 @@ async function renderColDlg(){
   const subs=subCols();
   $('#colTools').hidden=!subs.length;
   $('#colTools').innerHTML = subs.length ? `<button class="btn" type="button" data-fs="refresh"${subBusy?' disabled':''}>${esc(t('feedRefreshAll'))}</button><button class="btn" type="button" data-fs="export">${esc(t('feedExport'))}</button><button class="btn" type="button" data-fs="copy">${esc(t('feedCopy'))}</button>` : '';
+  $('#colPublicHint').hidden=!(subs.length&&submitApi()); $('#colPublicHint').textContent=t('sourceNote');
   $('#colList').innerHTML = state.cols.map(c=>{
     const mine=state.items.filter(x=>x.source==='local' && x.collection===c.id), n=mine.length;
     if(!c.feed) return `<div class="col-item" data-id="${esc(c.id)}"><input type="text" value="${esc(c.name)}" maxlength="40" aria-label="${esc(t('colLabel'))}"><span class="n">${n}</span><button class="btn danger" type="button" data-del="${esc(c.id)}">${esc(t('colDelete'))}</button></div>`;
     const u=mine.filter(x=>x.unread).length, st = c.feed.error ? t('feedErr',c.feed.error) : c.feed.checked ? t('feedChecked',ago(c.feed.checked)) : t('feedNever');
     return `<div class="col-item is-feed" data-id="${esc(c.id)}"><input type="text" value="${esc(c.name)}" maxlength="40" aria-label="${esc(t('colLabel'))}"><span class="n">${n}</span>`
       + `<button class="btn" type="button" data-refresh="${esc(c.id)}"${subBusy?' disabled':''}>${esc(t('feedRefresh'))}</button>${u?`<button class="btn" type="button" data-readall="${esc(c.id)}">${esc(t('feedMarkRead'))}</button>`:''}<button class="btn danger" type="button" data-del="${esc(c.id)}">${esc(t('feedUnsub'))}</button>`
-      + `<div class="col-sub${c.feed.error?' bad':''}">${esc(hostOf(c.feed.home||c.feed.url))} · ${esc(subBusy?t('feedRefreshing'):st)}${u?` · ${esc(t('feedNewN',u))}`:''}</div></div>`;
+      + `<div class="col-sub${c.feed.error?' bad':''}"><span>${esc(hostOf(c.feed.home||c.feed.url))} · ${esc(subBusy?t('feedRefreshing'):st)}${u?` · ${esc(t('feedNewN',u))}`:''}</span>${submitApi()?`<button class="btn" type="button" data-source-submit="${esc(c.id)}">${esc(t('sourceApply'))}</button>`:''}</div></div>`;
   }).join('');
   let line=t('colStorageNone');
   try{ const e=await navigator.storage.estimate(), p=navigator.storage.persisted ? await navigator.storage.persisted() : false; line=t('colStorage',fmtMB(e.usage||0),fmtMB(e.quota||0),p); }catch(err){}
@@ -3324,6 +3332,7 @@ $('#colList').addEventListener('change',e=>{                                    
 $('#colList').addEventListener('click',async e=>{                                     // delete the collection and the files in it (they exist nowhere else); for a subscription: unsubscribe
   const rf=e.target.closest('[data-refresh]'); if(rf){ refreshSubs({ids:[rf.dataset.refresh],force:true,manual:true}); return; }
   const ra=e.target.closest('[data-readall]'); if(ra){ markAllRead(ra.dataset.readall); return; }
+  const sr=e.target.closest('[data-source-submit]'); if(sr){ const c=colById(sr.dataset.sourceSubmit); if(c&&c.feed) submitPublicSource({url:c.feed.home||c.feed.url,feed_url:c.feed.url,homepage_url:c.feed.home||'',name:c.name},sr); return; }
   const b=e.target.closest('[data-del]'); if(!b) return;
   const c=colById(b.dataset.del), mine=state.items.filter(x=>x.source==='local' && x.collection===b.dataset.del); if(!c) return;
   if(!confirm(c.feed ? t('feedAsk',c.name,mine.length) : t('colDeleteAsk',mine.length,c.name))) return;
@@ -6340,7 +6349,7 @@ function setAddTab(tab){
   const on=feedApi(), sub=tab==='sub' && on;
   $('#addTabs').hidden=!on;
   document.querySelectorAll('[data-atab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.atab===(sub?'sub':'files'))));
-  $('#addFilesPane').hidden=sub; $('#addSubPane').hidden=!sub; $('#addSave').hidden=sub; $('#fsGo').hidden=!(sub && fsFound); $('#fsGo').textContent=t(fsFound && fsFound.kind!=='feed' ? 'fsSaveLink' : 'fsGo');
+  $('#addFilesPane').hidden=sub; $('#addSubPane').hidden=!sub; $('#addSave').hidden=sub; $('#fsGo').hidden=!(sub && fsFound); $('#fsGo').textContent=t(fsFound && fsFound.kind!=='feed' ? 'fsSaveLink' : 'fsGo'); $('#fsPublicSubmit').hidden=!(sub && fsFound&&fsFound.kind==='feed'&&submitApi());
   const h=$('#addTitle'); h.dataset.i=sub?'fsTitle':'addTitle'; h.textContent=t(h.dataset.i);
   if(sub){
     h.textContent=state.lang==='zh' ? '添加订阅' : 'Add a subscription';
@@ -6353,7 +6362,7 @@ function setAddTab(tab){
   }
 }
 const fsMsg = m => { const w=$('#fsMsg'); w.textContent=m||''; w.hidden=!m; };
-function fsReset(){ fsLookupVersion++; fsFound=null; stAdded=[]; $('#fsUrl').value=''; $('#fsResult').hidden=true; $('#fsResult').innerHTML=''; fsMsg(''); $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); setFinish(false); renderStarter(); }
+function fsReset(){ fsLookupVersion++; fsFound=null; stAdded=[]; $('#fsUrl').value=''; $('#fsResult').hidden=true; $('#fsResult').innerHTML=''; fsMsg(''); $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsPublicSubmit').hidden=true; $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); setFinish(false); renderStarter(); }
 function renderFound(d){
   const feed=d.kind==='feed', dup=feed && subCols().some(c=>urlKey(c.feed.url)===urlKey(d.feed));
   const name=d.title||hostOf(d.feed||d.url);
@@ -6361,18 +6370,32 @@ function renderFound(d){
   const routeAuthNote=d.resolution&&d.resolution.auth_required?`<p class="fs-note">${esc(t('fsRouteAuthNote'))}</p>`:'';
   const authAsk=d.authPlatform?`<div class="fs-auth"><p>${esc(t('fsAuthHint',d.authPlatform))}</p><div class="fs-auth-actions"><button class="btn" type="button" data-fs-auth="yes">${esc(t('fsAuthYes'))}</button><button class="btn" type="button" data-fs-auth="no">${esc(t('fsAuthNo'))}</button></div><p class="fs-auth-status" role="status" aria-live="polite"></p></div>`:'';
   $('#fsResult').innerHTML=`<div class="fs-card"><h3>${esc(name)}</h3><p class="fs-meta">${esc(t(feed?'fsKindFeed':'fsKindLink'))} · ${esc(hostOf(d.home||d.feed||d.url))}${feed&&d.found?' · '+esc(state.lang==='zh'?'已读取最近 '+d.found+' 条':'Read '+d.found+' recent items'):''}</p>`
-    + (scopeText ? `<p class="fs-note">${esc(scopeText)}</p>` : '') + routeAuthNote
+    + (scopeText ? `<p class="fs-note">${esc(scopeText)}</p>` : '') + (feed&&submitApi()?`<p class="fs-note">${esc(t('sourceNote'))}</p>`:'') + routeAuthNote
     + (feed ? `<ul>${(d.items||[]).slice(0,4).map(i=>`<li>${esc(cut(i.title,70))}${i.date?` <span>(${esc(String(i.date).slice(0,10))})</span>`:''}</li>`).join('')}</ul>`
               + `<label for="fsName">${esc(t('fsName'))}</label><input type="text" id="fsName" maxlength="40" value="${esc(uniqueColName(name))}" autocomplete="off">`
             : (d.summary?`<p class="sum">${esc(cut(d.summary,200))}</p>`:'') + `<p class="fs-note">${esc(d.manual?t('fsSaveSelf'):t('fsLinkNote'))}</p>`
               + (d.readable===true ? `<p class="fs-note">${esc(t('fsReadable'))}</p>` : d.readable===false ? `<p class="fs-note">${esc(t('fsUnreadable',(state.lang==='zh'?d.reason_message:d.reason_message_en)||d.reason||'?'))}</p>` : ''))
     + (dup?`<p class="fs-note">${esc(t('fsDup'))}</p>`:'') + authAsk + '</div>';
-  $('#fsResult').hidden=false; $('#fsGo').hidden=false; $('#fsGo').textContent=t(feed?'fsGo':'fsSaveLink'); $('#fsGo').disabled=!!dup;
+  $('#fsResult').hidden=false; $('#fsGo').hidden=false; $('#fsGo').textContent=t(feed?'fsGo':'fsSaveLink'); $('#fsGo').disabled=!!dup; $('#fsPublicSubmit').hidden=!(feed&&submitApi());
+}
+let sourceSubmitBusy=false;
+async function submitPublicSource(payload,button){
+  const api=submitApi(); if(!api){ toast(t('sourceNoApi')); return; }
+  if(sourceSubmitBusy) return;
+  sourceSubmitBusy=true; if(button){button.disabled=true;button.textContent=t('sourceSubmitting');}
+  const ctl=new AbortController(), timer=setTimeout(()=>ctl.abort(),28000);
+  try{
+    const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:'source',...payload}),signal:ctl.signal});
+    const d=await r.json().catch(()=>({}));
+    if(r.ok&&d.ok){ if(button){button.textContent=t('sourceQueued');} toast(t('sourceQueued')); return; }
+    const msg=msgOf(d,r); if(button){button.disabled=false;button.textContent=t('sourceApply');} toast(msg);
+  }catch(e){ if(button){button.disabled=false;button.textContent=t('sourceApply');} toast(t(e&&e.name==='AbortError'?'checkSlow':'submitNet')); }
+  finally{ clearTimeout(timer); sourceSubmitBusy=false; }
 }
 async function fsFind(){
   const raw=$('#fsUrl').value.trim(); if(!raw){ $('#fsUrl').focus(); return; }
   const version=++fsLookupVersion;
-  fsMsg(''); fsFound=null; $('#fsResult').hidden=true; $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsFind').disabled=true; $('#fsFind').textContent=t('fsFinding');
+  fsMsg(''); fsFound=null; $('#fsResult').hidden=true; $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsPublicSubmit').hidden=true; $('#fsFind').disabled=true; $('#fsFind').textContent=t('fsFinding');
   try{
     const d=await callFeed({action:'discover',url:raw});
     if(version!==fsLookupVersion || !dlg.open) return;
@@ -6395,7 +6418,12 @@ $('#fsResult').addEventListener('click',e=>{
 document.querySelectorAll('[data-atab]').forEach(b=>b.addEventListener('click',()=>setAddTab(b.dataset.atab)));
 $('#fsFind').addEventListener('click',fsFind);
 $('#fsUrl').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); fsFind(); } });
-$('#fsUrl').addEventListener('input',()=>{ fsLookupVersion++; fsFound=null; fsMsg(''); $('#fsResult').hidden=true; $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); renderStarter(); });
+$('#fsUrl').addEventListener('input',()=>{ fsLookupVersion++; fsFound=null; fsMsg(''); $('#fsResult').hidden=true; $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsPublicSubmit').hidden=true; $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); renderStarter(); });
+$('#fsPublicSubmit').addEventListener('click',()=>{
+  const d=fsFound; if(!d||d.kind!=='feed') return;
+  const name=($('#fsName')&&$('#fsName').value.trim())||d.title||hostOf(d.feed);
+  submitPublicSource({url:$('#fsUrl').value.trim()||d.home||d.feed,feed_url:d.feed,homepage_url:d.home||'',name,title:name,description:d.description||d.summary||''},$('#fsPublicSubmit'));
+});
 $('#fsGo').addEventListener('click',async ()=>{
   const d=fsFound; if(!d) return;
   try{
