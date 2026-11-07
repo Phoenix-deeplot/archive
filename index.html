@@ -106,6 +106,17 @@ a.cover{text-decoration:none;color:inherit}
 .shelf-row span:first-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .shelf-row .n{font-size:12px;font-variant-numeric:tabular-nums}
 #submitDlg{width:min(560px,calc(100vw - 24px))}
+#sourceApplyDlg{width:min(640px,calc(100vw - 24px))}
+.source-apply-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.source-apply-grid label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+.source-apply-grid select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:8px}
+.source-apply-group{margin:14px 0 0}
+.source-apply-group>strong{display:block;margin-bottom:6px;font-size:13px}
+.source-apply-choices{display:flex;flex-wrap:wrap;gap:7px}
+.source-apply-choice{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);border-radius:999px;padding:5px 10px;font-size:13px;line-height:1.4;background:var(--surface)}
+.source-apply-choice input{margin:0;accent-color:var(--accent)}
+.source-apply-note{margin:8px 0 0;color:var(--muted);font-size:12.5px}
+@media(max-width:620px){.source-apply-grid{grid-template-columns:1fr}}
 #submitTabs{margin:0 0 12px}
 .hp{position:absolute !important;left:-9999px !important;width:1px !important;height:1px !important;opacity:0 !important}
 .counter{margin:4px 0 0;font-size:12.5px;color:var(--muted);text-align:right}
@@ -2229,6 +2240,21 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
   </div>
 </dialog>
 
+<dialog id="sourceApplyDlg" aria-labelledby="sourceApplyTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h2 id="sourceApplyTitle">申请加入公共空间</h2></div>
+    <div class="dlg-body">
+      <p class="sub-hint" id="sourceApplyLead">先检查订阅内容并给出分类建议。你可以调整，最终由管理员审核。</p>
+      <p class="result-line" id="sourceApplyStatus" role="status" aria-live="polite"></p>
+      <div id="sourceApplyOptions" hidden></div>
+    </div>
+    <div class="dlg-foot">
+      <button class="btn" type="button" id="sourceApplyCancel">取消</button>
+      <button class="btn primary" type="button" id="sourceApplySubmit" disabled>提交申请</button>
+    </div>
+  </div>
+</dialog>
+
 <dialog id="moveDlg" aria-labelledby="moveTitle">
   <div class="dlg">
     <div class="dlg-head"><h2 id="moveTitle"></h2></div>
@@ -3332,7 +3358,7 @@ $('#colList').addEventListener('change',e=>{                                    
 $('#colList').addEventListener('click',async e=>{                                     // delete the collection and the files in it (they exist nowhere else); for a subscription: unsubscribe
   const rf=e.target.closest('[data-refresh]'); if(rf){ refreshSubs({ids:[rf.dataset.refresh],force:true,manual:true}); return; }
   const ra=e.target.closest('[data-readall]'); if(ra){ markAllRead(ra.dataset.readall); return; }
-  const sr=e.target.closest('[data-source-submit]'); if(sr){ const c=colById(sr.dataset.sourceSubmit); if(c&&c.feed) submitPublicSource({url:c.feed.home||c.feed.url,feed_url:c.feed.url,homepage_url:c.feed.home||'',name:c.name},sr); return; }
+  const sr=e.target.closest('[data-source-submit]'); if(sr){ const c=colById(sr.dataset.sourceSubmit); if(c&&c.feed){ colDlg.close(); openSourceApplication({url:c.feed.home||c.feed.url,feed_url:c.feed.url,homepage_url:c.feed.home||'',name:c.name}); } return; }
   const b=e.target.closest('[data-del]'); if(!b) return;
   const c=colById(b.dataset.del), mine=state.items.filter(x=>x.source==='local' && x.collection===b.dataset.del); if(!c) return;
   if(!confirm(c.feed ? t('feedAsk',c.name,mine.length) : t('colDeleteAsk',mine.length,c.name))) return;
@@ -6380,18 +6406,92 @@ function renderFound(d){
 }
 let sourceSubmitBusy=false;
 async function submitPublicSource(payload,button){
-  const api=submitApi(); if(!api){ toast(t('sourceNoApi')); return; }
-  if(sourceSubmitBusy) return;
+  const api=submitApi(); if(!api){ toast(t('sourceNoApi')); return false; }
+  if(sourceSubmitBusy) return false;
   sourceSubmitBusy=true; if(button){button.disabled=true;button.textContent=t('sourceSubmitting');}
   const ctl=new AbortController(), timer=setTimeout(()=>ctl.abort(),28000);
   try{
     const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:'source',...payload}),signal:ctl.signal});
     const d=await r.json().catch(()=>({}));
-    if(r.ok&&d.ok){ if(button){button.textContent=t('sourceQueued');} toast(t('sourceQueued')); return; }
-    const msg=msgOf(d,r); if(button){button.disabled=false;button.textContent=t('sourceApply');} toast(msg);
-  }catch(e){ if(button){button.disabled=false;button.textContent=t('sourceApply');} toast(t(e&&e.name==='AbortError'?'checkSlow':'submitNet')); }
+    if(r.ok&&d.ok){ if(button){button.textContent=t('sourceQueued');} $('#sourceApplyDlg').close(); toast(t('sourceQueued')); return true; }
+    const msg=msgOf(d,r); if(button){button.disabled=false;button.textContent=t('sourceApply');} toast(msg); return false;
+  }catch(e){ if(button){button.disabled=false;button.textContent=t('sourceApply');} toast(t(e&&e.name==='AbortError'?'checkSlow':'submitNet')); return false; }
   finally{ clearTimeout(timer); sourceSubmitBusy=false; }
 }
+const SOURCE_TYPE_LABELS={article:['文章','Article'],video:['视频','Video'],audio:['音频','Audio'],podcast:['播客','Podcast'],music:['音乐','Music'],book:['图书','Book'],news:['新闻','News'],other:['其他','Other']};
+const SOURCE_CATEGORY_LABELS={hot:['热榜与趋势','Trends'],tech:['AI 与科技','AI & Tech'],study:['学习与研究','Study & Research'],business:['财经与商业','Business & Finance'],world:['全球正在发生','World Now'],audio:['播客与创作者','Audio & Creators'],books:['读书与深度','Books & Long Reads'],other:['其他','Other']};
+const SOURCE_PLACEMENT_LABELS={featured:['精选','Featured'],selected:['今日精选','Today’s picks'],personalized:['个性化推荐','For you'],trending:['正在发生','Trending'],latest:['最新','Latest']};
+const SOURCE_TOPIC_LABELS={tech:['科技','Technology'],dev:['编程','Programming'],business:['商业','Business'],finance:['金融','Finance'],academic:['学术','Academic'],education:['教育','Education'],books:['图书','Books'],culture:['文化','Culture'],music:['音乐','Music'],entertainment:['娱乐','Entertainment'],games:['游戏','Games'],news:['新闻','News'],tools:['工具','Tools'],design:['设计','Design'],life:['生活','Lifestyle'],health:['健康','Health']};
+let sourceApplyCurrent=null, sourceApplyBusy=false;
+const sourceApplyDlg=$('#sourceApplyDlg');
+function sourceApplyLabel(pair){ return pair[state.lang==='zh'?0:1]; }
+function sourceApplyModules(){
+  const known=['featured','selected','personalized','trending','latest'];
+  const live=state.dirOps&&state.dirOps.modules instanceof Map ? [...state.dirOps.modules.values()].filter(m=>m&&m.enabled).map(m=>m.slug) : null;
+  return (live&&live.length?live:known).filter(x=>SOURCE_PLACEMENT_LABELS[x]);
+}
+function sourceApplySelect(id,entries,value){
+  return '<select id="'+id+'">'+entries.map(([key,label])=>'<option value="'+esc(key)+'"'+(key===value?' selected':'')+'>'+esc(label)+'</option>').join('')+'</select>';
+}
+function sourceApplyCheck(slug,label,checked){
+  return '<label class="source-apply-choice"><input type="checkbox" value="'+esc(slug)+'"'+(checked?' checked':'')+'><span>'+esc(label)+'</span></label>';
+}
+function renderSourceApplyOptions(d){
+  const zh=state.lang==='zh', box=$('#sourceApplyOptions');
+  const types=Object.keys(SOURCE_TYPE_LABELS), categories=Object.keys(SOURCE_CATEGORY_LABELS);
+  const configuredTopics=Array.isArray(state.dirData&&state.dirData.topics)?state.dirData.topics:[];
+  const selectedTopics=new Set(Array.isArray(d.topics)?d.topics:[]);
+  const topicMap=new Map(configuredTopics.filter(x=>x&&x.id).map(x=>[x.id,x]));
+  [...selectedTopics].forEach(id=>{ if(!topicMap.has(id)){ const label=SOURCE_TOPIC_LABELS[id]||[id.replace(/[-_]+/g,' '),id.replace(/[-_]+/g,' ')]; topicMap.set(id,{id,zh:label[0],en:label[1]}); } });
+  const topics=[...topicMap.values()];
+  const modules=sourceApplyModules(), selectedModules=new Set(Array.isArray(d.placements)?d.placements:[]);
+  const typeOptions=types.map(x=>[x,sourceApplyLabel(SOURCE_TYPE_LABELS[x])]);
+  const categoryOptions=categories.map(x=>[x,sourceApplyLabel(SOURCE_CATEGORY_LABELS[x])]);
+  const languageOptions=[['zh',zh?'中文':'Chinese'],['en',zh?'英文':'English'],['multi',zh?'多语言':'Multilingual'],['unknown',zh?'待确认':'Unknown']];
+  const topicChoices=topics.map(x=>sourceApplyCheck(x.id,zh?x.zh:x.en,selectedTopics.has(x.id))).join('');
+  const placementChoices=modules.map(x=>sourceApplyCheck(x,sourceApplyLabel(SOURCE_PLACEMENT_LABELS[x]),selectedModules.has(x))).join('');
+  const ai=d.ai||{}, aiText=ai.status==='completed'?(zh?'AI 已给出建议，提交后仍由管理员审核。':'AI suggestions are ready; an administrator still reviews the request.'):(zh?'当前使用规则建议，AI 未配置或未运行；管理员会最终审核。':'Rule-based suggestions are shown; AI did not run. An administrator makes the final decision.');
+  const risks=[...(Array.isArray(d.warnings)?d.warnings:[]),...(Array.isArray(ai.risk_flags)?ai.risk_flags:[])].filter(Boolean);
+  box.innerHTML='<div class="source-apply-grid"><label>'+(zh?'内容形式':'Content type')+sourceApplySelect('sourceApplyType',typeOptions,d.content_type||'other')+'</label><label>'+(zh?'主分类':'Category')+sourceApplySelect('sourceApplyCategory',categoryOptions,d.category||'other')+'</label><label>'+(zh?'语言':'Language')+sourceApplySelect('sourceApplyLanguage',languageOptions,d.language||'unknown')+'</label></div>'
+    +'<div class="source-apply-group" data-kind="placements"><strong>'+(zh?'申请栏目（可多选）':'Requested sections (choose any)')+'</strong><div class="source-apply-choices">'+(placementChoices||'<span class="source-apply-note">'+(zh?'暂时没有可用栏目，管理员审核时会分配。':'No sections are available; an administrator will assign one during review.')+'</span>')+'</div><p class="source-apply-note">'+esc(aiText)+'</p></div>'
+    +'<div class="source-apply-group" data-kind="topics"><strong>'+(zh?'主题标签（可多选）':'Topic tags (choose any)')+'</strong><div class="source-apply-choices">'+(topicChoices||'<span class="source-apply-note">'+(zh?'目录暂时没有标签选项，可先提交给管理员判断。':'No topic tags are configured yet; submit for administrator review.')+'</span>')+'</div></div>'
+    +(risks.length?'<p class="source-apply-note">'+esc((zh?'审核提示：':'Review notes: ')+risks.join('；'))+'</p>':'');
+  box.hidden=false;
+}
+async function openSourceApplication(payload){
+  const api=submitApi(); if(!api){toast(t('sourceNoApi'));return;}
+  sourceApplyCurrent=payload; sourceApplyBusy=true;
+  $('#sourceApplyStatus').className='result-line'; $('#sourceApplyStatus').textContent=state.lang==='zh'?'正在读取少量公开条目并生成建议…':'Reading a small sample and preparing suggestions…';
+  $('#sourceApplyOptions').hidden=true; $('#sourceApplyOptions').textContent=''; $('#sourceApplySubmit').disabled=true;
+  if(!sourceApplyDlg.open) sourceApplyDlg.showModal();
+  const ctl=new AbortController(), timer=setTimeout(()=>ctl.abort(),28000);
+  try{
+    const response=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:'check',what:'source',...payload}),signal:ctl.signal});
+    const body=await response.json().catch(()=>({}));
+    if(!response.ok||!body.ok||!body.result) throw new Error(msgOf(body,response));
+    sourceApplyCurrent={...payload,analysis:body.result};
+    renderSourceApplyOptions(body.result);
+    $('#sourceApplyStatus').textContent=state.lang==='zh'?('已识别：'+(body.result.name||payload.name||'')+' · '+(body.result.sample_count||0)+' 条样本'):('Detected: '+(body.result.name||payload.name||'')+' · '+(body.result.sample_count||0)+' samples');
+    $('#sourceApplySubmit').disabled=false;
+  }catch(e){
+    $('#sourceApplyStatus').className='result-line bad';
+    $('#sourceApplyStatus').textContent=e&&e.name==='AbortError'?t('checkSlow'):e instanceof TypeError?t('submitNet'):e.message;
+  }finally{clearTimeout(timer);sourceApplyBusy=false;}
+}
+function sourceApplyValues(){
+  const box=$('#sourceApplyOptions');
+  return {content_type:$('#sourceApplyType').value,category:$('#sourceApplyCategory').value,language:$('#sourceApplyLanguage').value,
+    topics:[...box.querySelectorAll('[data-kind="topics"] input:checked')].map(x=>x.value),
+    placements:[...box.querySelectorAll('[data-kind="placements"] input:checked')].map(x=>x.value)};
+}
+$('#sourceApplyCancel').addEventListener('click',()=>sourceApplyDlg.close());
+$('#sourceApplySubmit').addEventListener('click',async()=>{
+  if(sourceApplyBusy||!sourceApplyCurrent||!sourceApplyCurrent.analysis)return;
+  const {analysis,...base}=sourceApplyCurrent, button=$('#sourceApplySubmit');
+  button.disabled=true;
+  const ok=await submitPublicSource({...base,...sourceApplyValues()},null);
+  if(!ok) button.disabled=false;
+});
 async function fsFind(){
   const raw=$('#fsUrl').value.trim(); if(!raw){ $('#fsUrl').focus(); return; }
   const version=++fsLookupVersion;
@@ -6422,7 +6522,8 @@ $('#fsUrl').addEventListener('input',()=>{ fsLookupVersion++; fsFound=null; fsMs
 $('#fsPublicSubmit').addEventListener('click',()=>{
   const d=fsFound; if(!d||d.kind!=='feed') return;
   const name=($('#fsName')&&$('#fsName').value.trim())||d.title||hostOf(d.feed);
-  submitPublicSource({url:$('#fsUrl').value.trim()||d.home||d.feed,feed_url:d.feed,homepage_url:d.home||'',name,title:name,description:d.description||d.summary||''},$('#fsPublicSubmit'));
+  dlg.close();
+  openSourceApplication({url:$('#fsUrl').value.trim()||d.home||d.feed,feed_url:d.feed,homepage_url:d.home||'',name,title:name,description:d.description||d.summary||''});
 });
 $('#fsGo').addEventListener('click',async ()=>{
   const d=fsFound; if(!d) return;
