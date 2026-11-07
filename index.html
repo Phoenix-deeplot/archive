@@ -129,6 +129,16 @@ a.cover{text-decoration:none;color:inherit}
 table.chk{border-collapse:collapse;width:100%;font-size:13.5px}
 table.chk th{text-align:left;color:var(--muted);font-weight:500;padding:2px 12px 2px 0;vertical-align:top;white-space:nowrap}
 table.chk td{padding:2px 0;word-break:break-word}
+.apply-meta{border-top:1px solid var(--rule);margin-top:12px;padding-top:12px}
+.apply-meta-title{font-weight:650;margin:0 0 9px}
+.apply-meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.apply-meta-grid label{display:block;margin:0 0 4px;font-size:13px;color:var(--muted)}
+.apply-meta-grid select,.apply-meta-grid input{width:100%;min-width:0}
+.apply-placement-list{display:flex;flex-wrap:wrap;gap:6px;margin:5px 0}
+.apply-placement-list label{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--rule);border-radius:999px;padding:5px 9px;color:var(--text);margin:0}
+.apply-placement-list input{width:auto;margin:0}
+.apply-meta-note{margin:4px 0 0;font-size:12px;color:var(--muted)}
+@media(max-width:520px){.apply-meta-grid{grid-template-columns:1fr}}
 .chk-sub{margin:8px 0 2px;color:var(--muted);font-size:13px}
 .chk-list{margin:0;padding-left:1.2em;font-size:13.5px}
 .where.good{color:var(--accent);border-color:var(--accent)}
@@ -2535,6 +2545,11 @@ const I18N = {
     kind_reader: s=>`这是你书架里《${s}》在阅读器里的地址，别人打不开，不是公开网址。点“检查”会改为直接申请这一本。`, kind_readerGone:'这是阅读器里的地址，别人打不开，不是公开网址；而且这一项已经不在你的书架里了。请用书架里卡片上的地球图标申请。',
     kindListed: s=>`公共目录里已经有这个网址了（${s}），不需要再提交`, checkSlow:'这个网站响应太慢，检查没有完成。稍后再点“检查”试一次。', checkBtn:'检查', checking:'正在检查…', chkOk:'检查结果如下。确认无误后勾选下面的声明并提交，站长审核通过后才会出现在目录里。',
     chkKind:'识别为', chkName:'名称', chkSource:'来源', chkFound:'找到', chkLang:'语言', chkTags:'标签', chkLicense:'许可', chkAbout:'简介', chkTitle:'标题', chkAuthor:'作者', chkPages:'页数', chkToc:'目录', chkTocN:n=>`${n} 条`,
+    applyMetaTitle:'内容建议（自动识别，可修改）', applyMetaType:'内容形式', applyMetaCategory:'内容分类', applyMetaLanguage:'内容语言', applyMetaTopics:'主题标签', applyMetaTagsHint:'可填写逗号分隔的标签，最多 5 个。', applyMetaTagsFormHint:'在上方标签框编辑后重新检查。', applyMetaPlacements:'申请进入栏目', applyMetaPlacementHint:'栏目为你的推荐建议，需审核后生效；未选择时由管理员安排。',
+    type_article:'文章', type_video:'视频', type_audio:'音频', type_podcast:'播客', type_music:'音乐', type_book:'书籍', type_news:'新闻', type_other:'其他',
+    cat_hot:'综合热点', cat_tech:'科技', cat_study:'学习与专业提升', cat_business:'商业财经', cat_world:'国际时事', cat_entertainment:'娱乐', cat_audio:'影音社区', cat_books:'图书', cat_shopping:'购物', cat_other:'其他',
+    lang_auto:'自动识别', lang_zh:'中文', lang_en:'英文', lang_multi:'多语言',
+    module_featured:'精选', module_selected:'推荐', module_personalized:'为你推荐', module_trending:'正在发生', module_latest:'最新',
     chkChars:'长度', chkLinks:'链接', chkExcerpt:'开头', chkLatest:'最新几条', chkFoundN:n=>`${n} 条`, chkCharsN:n=>`${n} 个字符`, chkLinksN:(n,d)=>`${n} 个${d?`：${d}`:''}`, publishNoApi:'这个目录还没有开通在线投稿。',
     badgeInDir:'公共目录 ✓', badgeSame:x=>`重复：与《${x}》相同`, dupAsk:x=>`库里已经有内容完全相同的《${x}》。\n仍然要添加吗？`,
     confirmPurgeLocal:t=>`彻底删除《${t}》？\n它只保存在这个浏览器里，删除后无法恢复。`,
@@ -2720,6 +2735,11 @@ const I18N = {
     kind_reader: s=>`This is the reader address of “${s}” on your shelf: nobody else can open it, it is not a public address. “Check” will ask for that item itself instead.`, kind_readerGone:'This is a reader address, not a public one, and the item is no longer on your shelf. Use the globe on its card instead.',
     kindListed: s=>`The public directory has this address already (${s}); there is no need to submit it again`, checkSlow:'This site answers too slowly, so the check did not finish. Try “Check” again a little later.', checkBtn:'Check', checking:'Checking…', chkOk:'This is what the check found. If it is right, tick the declaration below and submit; it appears in the directory once the maintainer approves.',
     chkKind:'Recognised as', chkName:'Name', chkSource:'Source', chkFound:'Found', chkLang:'Language', chkTags:'Tags', chkLicense:'License', chkAbout:'About', chkTitle:'Title', chkAuthor:'Author', chkPages:'Pages', chkToc:'Contents', chkTocN:n=>`${n} headings`,
+    applyMetaTitle:'Content suggestions (auto-detected; editable)', applyMetaType:'Content type', applyMetaCategory:'Category', applyMetaLanguage:'Language', applyMetaTopics:'Topics', applyMetaTagsHint:'Separate tags with commas (up to 5).', applyMetaTagsFormHint:'Edit in the tags field above, then check again.', applyMetaPlacements:'Request these sections', applyMetaPlacementHint:'These are suggestions for review; an administrator assigns a section if none is selected.',
+    type_article:'Article', type_video:'Video', type_audio:'Audio', type_podcast:'Podcast', type_music:'Music', type_book:'Book', type_news:'News', type_other:'Other',
+    cat_hot:'Top stories', cat_tech:'Technology', cat_study:'Learning & work', cat_business:'Business & finance', cat_world:'World affairs', cat_entertainment:'Entertainment', cat_audio:'Audio & community', cat_books:'Books', cat_shopping:'Shopping', cat_other:'Other',
+    lang_auto:'Auto-detect', lang_zh:'Chinese', lang_en:'English', lang_multi:'Multiple languages',
+    module_featured:'Featured', module_selected:'Recommended', module_personalized:'For you', module_trending:'Trending', module_latest:'Latest',
     chkChars:'Length', chkLinks:'Links', chkExcerpt:'Beginning', chkLatest:'Latest', chkFoundN:n=>`${n}`, chkCharsN:n=>`${n} characters`, chkLinksN:(n,d)=>`${n}${d?`: ${d}`:''}`, publishNoApi:'This directory does not take online submissions yet.',
     badgeInDir:'In the directory ✓', badgeSame:x=>`Duplicate of “${x}”`, dupAsk:x=>`The library has “${x}” with exactly the same content.\nAdd it anyway?`,
     confirmPurgeLocal:t=>`Delete “${t}” for good?\nIt lives only in this browser and cannot be recovered.`,
@@ -9108,9 +9128,9 @@ function syncForms(){
   document.querySelectorAll('#postForms [data-pform]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.pform===postForm)));
   const h=$('#cardFormHint'), x=t('formHint_'+cardForm); h.textContent=x; h.hidden=!x;
 }
-function postData(){ return {title:$('#postTitle').value.trim(), author:$('#postAuthor').value.trim(), tags:withForm($('#postTags').value,postForm), body:$('#postBody').value}; }
+function postData(){ return {title:$('#postTitle').value.trim(), author:$('#postAuthor').value.trim(), tags:withForm($('#postTags').value,postForm), body:$('#postBody').value, content_type:postForm==='novel'||postForm==='list'?'book':'article'}; }
 let cardExtra={pages:0, toc:[]};                                                                      // what the picked item says of itself (not typed): its pages and the headings of its contents
-function cardData(){ return {title:$('#cardTitle').value.trim(), author:$('#cardAuthor').value.trim(), tags:withForm($('#cardTags').value,cardForm), summary:$('#cardSummary').value.replace(/\s+/g,' ').trim(), url:$('#cardUrl').value.trim(),
+function cardData(){ return {title:$('#cardTitle').value.trim(), author:$('#cardAuthor').value.trim(), tags:withForm($('#cardTags').value,cardForm), summary:$('#cardSummary').value.replace(/\s+/g,' ').trim(), url:$('#cardUrl').value.trim(), content_type:'book',
   ...(cardExtra.pages?{pages:cardExtra.pages}:{}), ...(cardExtra.toc.length?{toc:cardExtra.toc}:{})}; }
 const CARD_MIN=10, CARD_MAX=1000;
 const plainLen = md => String(md).replace(/```[\s\S]*?```/g,' ').replace(/!\[[^\]]*\]\([^)]*\)/g,' ').replace(/\[([^\]]*)\]\([^)]*\)/g,'$1').replace(/[#>*_`~|\-]+/g,'').replace(/\s+/g,' ').trim().length;
@@ -9119,6 +9139,36 @@ function setResult(msg, kind){ const r=$('#submitResult'); r.textContent=msg||''
    Any change of the input throws the result away. */
 let submitCheck=null, submitFrom=null;
 function resetCheck(){ submitCheck=null; const b=$('#submitCheck'); b.hidden=true; b.textContent=''; }
+const APPLY_TYPES=['article','video','audio','podcast','music','book','news','other'];
+const APPLY_CATEGORIES=['hot','tech','study','business','world','entertainment','audio','books','shopping','other'];
+function applyMetaControls(r){
+  const type=APPLY_TYPES.includes(r.content_type)?r.content_type:'article', category=APPLY_CATEGORIES.includes(r.category)?r.category:'other';
+  const lang=['zh','en','multi'].includes(r.language)?r.language:'multi', selected=new Set(Array.isArray(r.placements)?r.placements:[]);
+  const types=APPLY_TYPES.map(x=>'<option value="'+x+'"'+(x===type?' selected':'')+'>'+esc(t('type_'+x))+'</option>').join('');
+  const cats=APPLY_CATEGORIES.map(x=>'<option value="'+x+'"'+(x===category?' selected':'')+'>'+esc(t('cat_'+x))+'</option>').join('');
+  const langs=['zh','en','multi'].map(x=>'<option value="'+x+'"'+(x===lang?' selected':'')+'>'+esc(t('lang_'+x))+'</option>').join('');
+  const live=state.dirOps&&state.dirOps.modules instanceof Map?[...state.dirOps.modules.values()].filter(m=>m&&m.enabled).map(m=>m.slug):[];
+  const modules=(live.length?live:['featured','selected','personalized','trending','latest']).filter(x=>/^[a-z0-9][a-z0-9-]{0,79}$/.test(x));
+  const placementHtml=modules.map(x=>{const label=t('module_'+x),pair=SOURCE_PLACEMENT_LABELS[x],fallback=pair?sourceApplyLabel(pair):x;return '<label><input type="checkbox" data-placement="'+esc(x)+'"'+(selected.has(x)?' checked':'')+'><span>'+esc(label&&label!=='module_'+x?label:fallback)+'</span></label>';}).join('');
+  const topicHTML=r.what==='url'
+    ? '<label for="applyTopics">'+esc(t('applyMetaTopics'))+'</label><input id="applyTopics" type="text" value="'+esc((r.topics||r.tags||[]).join(', '))+'" autocomplete="off"><p class="apply-meta-note">'+esc(t('applyMetaTagsHint'))+'</p>'
+    : '<p class="apply-meta-note">'+esc(t('applyMetaTopics')+': '+((r.topics||r.tags||[]).join(', ')||'—'))+' '+esc(t('applyMetaTagsFormHint'))+'</p>';
+  return '<section class="apply-meta"><p class="apply-meta-title">'+esc(t('applyMetaTitle'))+'</p><div class="apply-meta-grid">'
+    +'<div><label for="applyType">'+esc(t('applyMetaType'))+'</label><select id="applyType">'+types+'</select></div>'
+    +'<div><label for="applyCategory">'+esc(t('applyMetaCategory'))+'</label><select id="applyCategory">'+cats+'</select></div>'
+    +'<div><label for="applyLanguage">'+esc(t('applyMetaLanguage'))+'</label><select id="applyLanguage">'+langs+'</select></div>'
+    +'<div>'+topicHTML+'</div></div><div><label>'+esc(t('applyMetaPlacements'))+'</label><div class="apply-placement-list">'+placementHtml+'</div>'
+    +'<p class="apply-meta-note">'+esc(t('applyMetaPlacementHint'))+'</p></div></section>';
+}
+function applyMetaPayload(){
+  const r=submitCheck||{}, type=$('#applyType'), category=$('#applyCategory'), language=$('#applyLanguage'), topic=$('#applyTopics');
+  const topics=r.what==='url'&&topic ? topic.value.split(/[,，、]/).map(x=>x.trim()).filter(Boolean).slice(0,5)
+    : submitTab==='post' ? withForm($('#postTags').value,postForm).split(/[,，、]/).map(x=>x.trim()).filter(Boolean).slice(0,5)
+    : submitTab==='card' ? withForm($('#cardTags').value,cardForm).split(/[,，、]/).map(x=>x.trim()).filter(Boolean).slice(0,5) : (r.topics||r.tags||[]);
+  const placements=[...document.querySelectorAll('#submitCheck [data-placement]:checked')].map(x=>x.dataset.placement);
+  return {content_type:type?type.value:r.content_type||'article',category:category?category.value:r.category||'other',
+          language:language?language.value:r.language||'',topics,placements};
+}
 function renderCheck(r){
   const box=$('#submitCheck'), zh=state.lang==='zh', row=(k,v)=>v?`<tr><th>${esc(t(k))}</th><td>${esc(v)}</td></tr>`:'';
   const rows = r.what==='post'
@@ -9130,6 +9180,7 @@ function renderCheck(r){
   const warn=(r.warnings||[]).map(w=>`<p class="warn">⚠️ ${esc(zh?w[0]:w[1])}</p>`).join('');
   const own = feedApi() && r.what!=='post' && r.what!=='record' && r.kind==='feed' && httpUrl(r.source) ? `<p class="chk-sub">${esc(t('chkSubNote'))} <button class="link-btn" type="button" data-sub-this="${esc(r.source)}">${esc(t('chkSubBtn'))}</button></p>` : '';
   box.innerHTML=`<p class="chk-title">${esc(t('chkOk'))}</p><table class="chk">${rows}</table>${latest?`<p class="chk-sub">${esc(t('chkLatest'))}</p><ul class="chk-list">${latest}</ul>`:''}${own}${warn}`;
+  box.insertAdjacentHTML('beforeend',applyMetaControls(r));
   box.hidden=false;
 }
 function subscribeThis(url){ submitDlg.close(); openAdd(null,'sub'); if(url){ $('#fsUrl').value=url; fsFind(); } }          // the "收录" window -> "添加 → 订阅" with the address filled in and looked up
@@ -9239,7 +9290,8 @@ async function sendSubmit(){
     window.open(`https://github.com/${repo}/issues/new?${q}`,'_blank','noopener'); submitDlg.close(); return;
   }
   const hp=$('#submitHp').value;
-  const payload = post ? {kind:'post', ...postData(), rights:true, website:hp} : card ? {kind:'record', ...cardData(), rights:true, website:hp} : {kind:'url', url:classifyUrl($('#submitUrl').value).url, rights:true, website:hp};
+  const meta=applyMetaPayload();
+  const payload = post ? {kind:'post', ...postData(), ...meta, rights:true, website:hp} : card ? {kind:'record', ...cardData(), ...meta, rights:true, website:hp} : {kind:'url', url:classifyUrl($('#submitUrl').value).url, ...meta, rights:true, website:hp};
   $('#submitGo').disabled=true; setResult('…');
   try{
     const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});

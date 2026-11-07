@@ -1,6 +1,6 @@
 # 公共订阅源提交与栏目分发（2026-11-07）
 
-状态：方案已由用户确认；开发中。
+状态：方案已确认；订阅与单篇提交流程已实现并通过本地验证，待用户预览与合并。
 
 ## 1. 用户需求
 
@@ -52,7 +52,7 @@
 
 - 订阅源申请仍走 `kind=source` 的运营待审队列；单篇网页、读者文章和书籍/资源卡继续走现有 GitHub issue 审核，二者不合并。
 - 单篇检查结果预填 `content_type`、`category`、`language`、`topics` 与候选 `placements`；用户可在提交前修改。检查/提交 payload 和 issue 解析统一使用这些字段，旧字段缺失时按原规则兼容。
-- `content_type` 复用 `article/video/audio/podcast/music/book/news/other`；`category` 复用 `hot/tech/study/business/world/audio/books/other`；`placements` 只接受当前已配置的 `channel_modules.slug`；标签保留为人工可编辑的主题列表。分类与栏目是建议，最终仍由维护者审核。
+- `content_type` 复用 `article/video/audio/podcast/music/book/news/other`；`category` 复用 `hot/tech/study/business/world/entertainment/audio/books/shopping/other`；栏目 slug 先做格式校验，目录同步时只应用当前已配置的 `channel_modules.slug`；标签保留为人工可编辑的主题列表。分类与栏目是建议，最终仍由维护者审核。
 - 审核通过后，`aggregate.py` 将这些元数据写入托管文章/书籍卡 front matter；单篇 URL 将元数据保存在来源 registry，并附到其唯一条目。`directory.json` 输出内容形式、分类、主题与栏目建议。
 - `opsapi.sync_directory` 导入目录时读取栏目建议，并仅将数据库中实际存在的模块写入 `content_placements`；未知/已删除模块安全忽略。无需新增数据库表或迁移。
 - 内容提交成功仍是待 GitHub 审核；用户界面明确这是“申请加入公共空间”，不要展示成已发布。
@@ -78,12 +78,14 @@
 - 已完成：申请动作复用现有 `/api/submit`；申请前先检查，编辑内容形式、主分类、语言、主题标签与申请栏目，再提交待审。
 - 已完成：修复本地订阅预览服务：保留 `submit_api` 并同时提供 `/api/feed`、`/api/submit`；无数据库时仍可预览识别表单，提交端点会明确报告服务未配置。
 - 已完成：扩展订阅 E2E 脚本，检查新发现 feed 与已有订阅管理都能打开公共申请表单。
-- 待开发：单篇内容申请表展示识别建议，并允许调整形式、分类、标签和目标栏目；订阅源申请表保持独立。
-- 待验收：中文/英文、手机与桌面，以及旧收录路径回归。
+- 已完成：单篇网页、文章和书籍/资源卡申请表展示内容形式、分类、语言、标签和栏目建议；用户可修改；同一流程继续区分 URL、文章和卡片，不改个人书架存储格式。
+- 已验证：桌面/移动共享表单的 HTML/JS 语法、重名函数检查通过；本地预览 `http://127.0.0.1:8987/` 返回 HTTP 200，响应已包含单篇分类表单。
+- 待用户预览：在实际添加流程中确认中文/英文文案、长栏目列表和手机布局。
 
 ### shelf-directory（Codex）
-- 待开发：待审提交表、受限审核 API、后台审核列表与处理、AI/规则审核状态。
-- 待验收：迁移可重复执行、审核前不公开、通过后复用既有目录发布链路。
+- 已完成：单篇 URL、文章和书籍卡的元数据校验、issue 透传、通过后目录输出；目录同步记录分类/内容形式/标签和栏目建议，安全忽略未知栏目且不覆盖已有人工投放。
+- 已验证：`tests.test_submission`、`tests.test_records`、`tests.test_opsapi`、`tests.test_posts_dedupe`、`tests.test_book_info` 共 125 项通过；Python AST 与 `git diff --check` 通过。
+- 待后续：真实审核和数据库写入需在部署环境验证；本轮未部署。
 
 ## 8. 合并记录
 待用户要求合并。
