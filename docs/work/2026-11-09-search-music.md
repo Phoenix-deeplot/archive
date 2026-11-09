@@ -1,6 +1,6 @@
 # 搜索分栏、音乐音源和歌手页、音乐缓存（2026-11-09）
 
-状态：规划中（等用户确认；没确认不开工）
+状态：已确认（用户 2026-11-09：自动歌单“点存为歌单才存”可以；范围标签在搜索框左边、随栏目自动换、有“在全站搜 ›”可以；服务端已经有 Redis，用；“播不了”说的是**音乐**不是播客；网易云直连和旧分支清理 Codex 已处理）；开发中
 
 ## 1. 任务清单（用户）
 
@@ -32,7 +32,13 @@
 5. **切歌慢的主因**：一首没有现成地址的歌，`resolve` 要等所有来源答完或 8 秒到（`concurrent.futures.wait(timeout=8)` 等的是“全部”），波点一慢，每次都拖满 8 秒；列表（榜单、歌单）在页面里只缓存在内存（半小时），刷新或第二天打开又要重新请求，服务端冷启动 3–5 秒；服务端缓存只在单个实例的内存里（6 小时）加 CDN 头（搜索 10 分钟、解析 60 秒、榜单 1 小时）。**没有数据库缓存**；同步服务里已有 Upstash Redis（`syncapi.UpstashStore`），音乐没用它。
 6. **搜索入口**：顶栏的搜索框（`#q`）在“今日听什么”页不搜音乐，它搜的是目录里的文章和书；搜歌要点页面里一个小放大镜，进到另一个页面。所以用户在听页输入歌手，搜到的是文章。
 
-### 做什么（四块）
+### 用户的补充（2026-11-09）
+
+- “播不了”是**音乐**，不是播客：提示是“这一集在站内放不了（网站不让外部播放，或地址不是 https）”。我在真实浏览器里测了音乐列表的第一批歌（结果记在“进度”里）；`claude/fixes` 里的提示已经会写出服务器名和原因，合并后再遇到请把提示发给我。
+- 服务端**已经有 Redis**（Upstash）：D 的服务端缓存直接用它（没配时退回内存，行为照旧），不再是“可选、以后再说”。
+- 用户提出：能不能部署 SPlayer 服务器，或者用 Node 加载它的服务，来提供多音源（它的 API 支持）。查过的结论（见 E）：SPlayer 不是可部署的服务端；值得用的是它背后那类解灰库 UnblockNeteaseMusic。
+
+### 做什么（五块）
 
 **A. 搜索按栏目分（页面，`index.html`）**
 
@@ -78,12 +84,20 @@
   1. 解析结果、搜索结果、歌手页在服务端按歌留 10–30 分钟（内存），并加长 CDN 头（解析 60 秒 → 10 分钟，带 `stale-while-revalidate`）；
   2. **可选的 Redis 层**：环境里配了 Upstash（`UPSTASH_REDIS_REST_URL/TOKEN`，同步服务已经在用）就把榜单、歌手页、解析结果也放进去，多个实例共用；没配就只用内存，行为照旧。这一层要你在服务器上配好才生效，我不动你的环境变量。
 
+**E. 可选的外部解析服务（后端，新增）**
+
+- 查到的事实：SPlayer 的 `streaming.html` 讲的是播放器去连 Navidrome / Subsonic 服务器；它的 `api.html` 是桌面应用**内置的本地接口**（`localhost:25884`，只在应用运行时可用；`/api/netease/*` 转发 NeteaseCloudMusicApi，`/api/unblock/{netease|kuwo|bodian}` 返回 `{code,url}`），文档写着“仅供学习使用，请勿用于商业用途”，协议 AGPL-3.0。它的“多音源”就是网易云 / 酷我 / 波点三个，和我们现在用的是同一批来源。真正不稳的是我们走的第三方转接口 `api.xcvts.cn`（这里 8.9 秒超时），不是波点本身。
+- 做法：后端加一个**外部解析服务**的接口（环境变量 `LISTEN_RESOLVER_URL`，可选）：`GET {URL}/match?title=&artist=&id=&sources=` → `{ok, url, source, br, ms}`；配了就和其他来源一起问（超时 4 秒，进熔断），没配行为照旧。我们的仓库不夹带 AGPL 代码。
+- 解析服务本身：用 UnblockNeteaseMusic（`@unblockneteasemusic/server`，LGPL-3.0，`match(网易云歌曲 id, [来源])`，来源有酷我、酷狗、波点、咪咕、QQ（要 cookie）、B 站、YouTube 等）包一个很小的 Node HTTP 外壳，放在 `shelf-directory/tools/resolver/`（独立的包，**不随主站部署**）。先**只在本机跑**，量各来源能出多少整首、要多久，结果写进“进度”；**部署在哪里由用户定**（酷我、酷狗、咪咕这类来源要中国大陆或香港的 IP 才稳；Vercel 函数在海外，不一定通，要上线才知道）。
+- 风险：这些来源是未授权的转接，对外提供得越多暴露越大；服务只给我们自己的后端调用（共享密钥 `LISTEN_RESOLVER_KEY`），不公开。
+
 ### 分工
 
 | 任务 | 负责 | 分支 / worktree | 会改的文件 | 不许碰 |
 |---|---|---|---|---|
 | A 搜索分栏；B-4/5 页面的来源小字；C 歌手卡；D 页面缓存 | claude | `claude/search-music` · `E:\Ztree\wt\claude-search-music` | `index.html`（搜索框 `#q` 的处理、`lp*` 函数、新增 i18n 行）、`devtools/e2e/tests/`（新测试 `s_search_scope.js`、`s_artist.js`，更新 `s_music_search.js`）、`devtools/e2e/services/sync_dev.py`（假服务加歌手和 `src`） | 订阅添加相关的函数（Codex 的 `docs/work/2026-11-06-subscription-discovery.md`）、热榜页函数（Codex）、翻译词典的超长行 |
 | B-1/2/3/5 搜索和解析；C 歌手接口；D 服务端缓存、Redis 可选层 | claude | `claude/search-music` · `E:\Ztree\wt\claude-search-music-sd`（shelf-directory） | `music_sources.py`、`listen.py`（只加 `artist=`、`psearch=` 的分支）、新测试 `tests/test_music_artist.py`，更新 `tests/test_music_sources.py` | `hotapi.py`、`aggregate.py`、`registry/*` |
+| E 外部解析服务的接口和 Node 外壳 | claude | 同上（shelf-directory） | `music_sources.py`、新目录 `tools/resolver/`（package.json、server.js、README）、`tests/test_music_sources.py` | 不部署、不改线上环境变量 |
 | — | codex | 不参与 | | |
 
 ### 接口约定
@@ -127,7 +141,7 @@
 
 ### claude
 
-（等用户确认后开始。）
+- 2026-11-09 用户确认规划；旧分支 `claude/stories` 已清理；新分支 `claude/search-music`（my-archive 在 `E:\Ztree\wt\claude-search-music`，shelf-directory 在 `E:\Ztree\wt\claude-search-music-sd`）。
 
 ## 4. 合并记录
 
