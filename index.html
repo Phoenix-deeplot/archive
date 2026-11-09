@@ -1070,6 +1070,73 @@ html{overscroll-behavior-x:none}
   .grid:not(.list) .card.acts-open .acts.collapsible .ibtn{display:inline-flex}
 }
 
+/* My shelf keeps item-level cards, but lets the mixed stream use the full content width. */
+body:not(.in-dir) #grid:not(.list){width:100%;max-width:none;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:18px}
+body:not(.in-dir) #grid.list{width:100%;max-width:none;grid-template-columns:minmax(0,1fr);gap:10px}
+body:not(.in-dir) #grid.list .card{display:grid;grid-template-columns:clamp(168px,19vw,250px) minmax(0,1fr);align-items:stretch;min-height:166px}
+body:not(.in-dir) #grid.list .cover{width:auto;min-width:0;min-height:132px;height:100%;aspect-ratio:auto;align-self:stretch;margin:12px;border-radius:8px}
+body:not(.in-dir) #grid.list .card-body{min-width:0;padding:14px 18px 10px 2px}
+body:not(.in-dir) #grid.list .meta{min-width:0}
+body:not(.in-dir) #grid.list .sum{display:-webkit-box;-webkit-line-clamp:2}
+body:not(.in-dir) #grid.list .card-foot{margin-top:8px}
+body:not(.in-dir) #grid .cover-gallery{position:absolute;inset:0;display:grid;grid-template-columns:1.25fr .75fr;grid-template-rows:1fr 1fr;gap:3px;background:var(--surface)}
+body:not(.in-dir) #grid .cover-gallery-cell{position:relative;min-width:0;min-height:0;overflow:hidden;background:var(--bg)}
+body:not(.in-dir) #grid .cover-gallery-cell:first-child{grid-row:1 / span 2}
+body:not(.in-dir) #grid .cover-gallery.count-2 .cover-gallery-cell{grid-row:1 / span 2}
+body:not(.in-dir) #grid .cover-gallery-cell img,
+body:not(.in-dir) #grid .cover-gallery-cell svg{display:block;width:100%;height:100%;object-fit:cover}
+body:not(.in-dir) #grid .media-count{position:absolute;left:10px;bottom:10px;z-index:2;padding:5px 8px;border-radius:999px;background:rgba(15,22,26,.78);color:#fff;font:600 12px/1.1 var(--sans);letter-spacing:.01em}
+body:not(.in-dir) #grid .video-mark{position:absolute;left:12px;bottom:12px;z-index:2;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:rgba(15,22,26,.78);color:#fff}
+body:not(.in-dir) #grid .video-mark .icon{width:22px;height:22px}
+body:not(.in-dir) #grid .ftype{z-index:2}
+body:not(.in-dir) #grid .card-foot .acts.shelf-acts{position:relative;flex:none;flex-wrap:nowrap;align-items:center;gap:4px}
+body:not(.in-dir) #grid .shelf-acts>.ibtn{display:inline-flex}
+body:not(.in-dir) #grid .shelf-acts>.ibtn.more{display:inline-flex}
+body:not(.in-dir) #grid .shelf-acts .shelf-more{position:absolute;right:0;bottom:calc(100% + 8px);z-index:5;display:none;width:min(252px,calc(100vw - 36px));grid-template-columns:repeat(4,minmax(42px,1fr));gap:4px;padding:7px;border:1px solid var(--rule);border-radius:12px;background:var(--surface);box-shadow:0 8px 28px rgba(0,0,0,.2)}
+body:not(.in-dir) #grid .card.acts-open .shelf-acts .shelf-more{display:grid}
+body:not(.in-dir) #grid .shelf-more .ibtn{width:44px;height:44px;opacity:1;border:1px solid var(--rule);background:var(--bg)}
+body:not(.in-dir) #grid .shelf-more .ibtn:hover{color:var(--accent)}
+body:not(.in-dir) #grid .shelf-more .hide-menu{display:none}
+body:not(.in-dir) #grid .shelf-acts>.ibtn.hide-primary{display:inline-flex}
+.shelf-gallery-dialog{width:min(1000px,calc(100vw - 24px));height:min(900px,calc(100dvh - 24px));max-width:none;max-height:none;padding:0;border:1px solid var(--rule);border-radius:16px;background:var(--surface);color:var(--ink);overflow:hidden}
+.shelf-gallery-dialog::backdrop{background:rgba(5,10,12,.78);backdrop-filter:blur(4px)}
+.shelf-gallery-shell{display:flex;flex-direction:column;width:100%;height:100%;min-height:0}
+.shelf-gallery-head,.shelf-gallery-foot{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--surface)}
+.shelf-gallery-head{border-bottom:1px solid var(--rule)}
+.shelf-gallery-heading{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.shelf-gallery-heading strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:15px}
+.shelf-gallery-heading small,.shelf-gallery-foot{font-size:12.5px;color:var(--muted)}
+.shelf-gallery-foot{justify-content:space-between;border-top:1px solid var(--rule)}
+.shelf-gallery-foot a{color:var(--accent);text-decoration:none}
+.shelf-gallery-stage{position:relative;display:grid;grid-template-columns:56px minmax(0,1fr) 56px;align-items:center;justify-items:center;gap:8px;flex:1;min-height:0;padding:12px;background:#090d0f;touch-action:pan-y}
+.shelf-gallery-stage img{display:block;max-width:100%;max-height:100%;object-fit:contain}
+.shelf-gallery-stage img[hidden],.gallery-fallback[hidden]{display:none}
+.gallery-fallback{color:#fff;font-size:14px}
+.gallery-nav{z-index:1;width:44px;height:52px;border:1px solid rgba(255,255,255,.25);border-radius:12px;background:rgba(20,28,32,.72);color:#fff;font-size:34px;line-height:1;cursor:pointer}
+.gallery-nav:disabled{opacity:.38;cursor:default}
+@media (max-width:620px){
+  body:not(.in-dir) #grid:not(.list){grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  body:not(.in-dir) #grid.list .card{grid-template-columns:112px minmax(0,1fr);min-height:148px}
+  body:not(.in-dir) #grid.list .cover{min-height:126px;margin:8px;border-radius:7px}
+  body:not(.in-dir) #grid.list .card-body{padding:9px 10px 8px 2px}
+  body:not(.in-dir) #grid.list .card-title{font-size:16px;line-height:1.35}
+  body:not(.in-dir) #grid.list .sum{display:-webkit-box;-webkit-line-clamp:2;margin-bottom:6px;font-size:12.5px;line-height:1.5}
+  body:not(.in-dir) #grid.list .card-foot{gap:3px}
+  body:not(.in-dir) #grid.list .card-foot>span:first-child{flex:1 1 100%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  body:not(.in-dir) #grid.list .shelf-acts>.ibtn.hide-primary{display:none}
+  body:not(.in-dir) #grid.list .shelf-more .hide-menu{display:inline-flex}
+  body:not(.in-dir) #grid:not(.list) .card-foot>span:first-child{display:none}
+  body:not(.in-dir) #grid:not(.list) .card-foot .ibtn{width:34px;height:34px}
+  body:not(.in-dir) #grid:not(.list) .shelf-acts{gap:2px}
+  body:not(.in-dir) #grid:not(.list) .shelf-acts>.ibtn.hide-primary{display:inline-flex}
+  body:not(.in-dir) #grid:not(.list) .shelf-more .hide-menu{display:none}
+  body:not(.in-dir) #grid .shelf-acts .shelf-more{width:min(244px,calc(100vw - 28px))}
+  .shelf-gallery-dialog{width:100vw;height:100dvh;max-height:100dvh;border:0;border-radius:0}
+  .shelf-gallery-head,.shelf-gallery-foot{padding:10px 14px}
+  .shelf-gallery-stage{grid-template-columns:42px minmax(0,1fr) 42px;gap:4px;padding:8px}
+  .gallery-nav{width:38px;height:46px}
+}
+
 .empty{max-width:760px;padding:28px 0}
 .empty h2{font-family:var(--serif);font-size:24px;margin:0 0 8px}
 .empty ol{padding-left:1.3em;margin:10px 0 18px}
@@ -3564,16 +3631,91 @@ function coverSVG(it){
   const W=320,H=200,g=coverPattern(r,mid,ink,W,H);
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="${W}" height="${H}" fill="${bg}"/>${g}<rect x="16" y="${H-94}" width="78" height="78" rx="4" fill="${bg}" opacity=".9"/><text x="55" y="${H-36}" text-anchor="middle" font-family="'Noto Serif SC','Songti SC',Georgia,serif" font-weight="900" font-size="50" fill="${ink}">${esc(glyphOf(it.title))}</text></svg>`;
 }
-function coverHTML(it, noImg){
+function shelfHttpsImage(value, base){
+  const raw=typeof value==='string'?value:value&&typeof value==='object'?(value.url||value.src||value.href):'';
+  if(!raw) return '';
+  try{ const u=new URL(String(raw).trim(),base||location.href); return u.protocol==='https:'?u.href.slice(0,1200):''; }catch(e){ return ''; }
+}
+function shelfCardImages(it){
+  if(!it || it.type!=='link') return [];
+  const out=[], seen=new Set(), base=httpUrl(it.url)||location.href;
+  const add=value=>{ const u=shelfHttpsImage(value,base); if(u&&!seen.has(u)&&out.length<12){ seen.add(u); out.push(u); } };
+  add(it.image);
+  for(const group of [it.images,it.gallery,it.photos,it.media&&it.media.images]){
+    if(Array.isArray(group)) group.slice(0,12).forEach(add);
+  }
+  if(typeof it.content==='string' && /<img\b/i.test(it.content)){
+    try{
+      const doc=new DOMParser().parseFromString(it.content,'text/html');
+      doc.querySelectorAll('img').forEach(img=>{
+        const w=Number(img.getAttribute('width')||0), h=Number(img.getAttribute('height')||0);
+        if((w&&w<48)||(h&&h<48)) return;
+        const src=img.getAttribute('src')||img.getAttribute('data-src')||(img.getAttribute('srcset')||'').split(',')[0].trim().split(/\s+/)[0];
+        add(src);
+      });
+    }catch(e){}
+  }
+  return out;
+}
+function shelfVideoUrl(it){
+  const base=httpUrl(it&&it.url)||location.href, candidates=[it&&it.video,it&&it.video_url,it&&it.videoUrl,it&&it.media&&it.media.video];
+  for(const value of candidates){ const u=shelfHttpsImage(value,base); if(u) return u; }
+  if(typeof (it&&it.content)==='string' && /<(?:video|source)\b/i.test(it.content)){
+    try{
+      const doc=new DOMParser().parseFromString(it.content,'text/html');
+      const el=doc.querySelector('video[src],video source[src],source[src]');
+      const u=el&&shelfHttpsImage(el.getAttribute('src'),base); if(u) return u;
+    }catch(e){}
+  }
+  return '';
+}
+const shelfMediaCache=new WeakMap();
+function shelfMediaOf(it){
+  const cached=it&&shelfMediaCache.get(it), imageRef=it&&it.images, content=it&&it.content, audioRef=it&&it.audio;
+  if(cached&&cached.image===it.image&&cached.imageRef===imageRef&&cached.content===content&&cached.audioRef===audioRef&&cached.type===it.type&&cached.url===it.url&&cached.video===it.video) return cached.value;
+  const audio=plAudioOf(it), images=shelfCardImages(it), video=shelfVideoUrl(it);
+  let videoPage=false;
+  try{
+    const u=new URL(httpUrl(it&&it.url)||'');
+    const h=u.hostname.replace(/^www\./,'');
+    videoPage=(h==='youtu.be'||h==='youtube.com'||h==='m.youtube.com')&&(/^\/watch$/.test(u.pathname)||/^\/(?:shorts|embed|live)\/[\w-]{11}/.test(u.pathname))
+      ||h==='bilibili.com'&&/^\/video\/BV\w{10}/.test(u.pathname)||h==='vimeo.com'&&/^\/\d{6,12}$/.test(u.pathname);
+  }catch(e){}
+  const kind=audio?'audio':(video||videoPage)?'video':images.length>1?'gallery':images.length?'image':
+    (it&&(['pdf','epub','book'].includes(it.type)||it.bk)?'book':it&&(['md','txt','html'].includes(it.type)?'article':'link'));
+  const value={audio,images,video,kind,summary:it&&it.summary?cut(it.summary,320):content?cut(ftHTMLText(content),260):''};
+  if(it) shelfMediaCache.set(it,{image:it.image,imageRef,content,audioRef,type:it.type,url:it.url,video:it.video,value});
+  return value;
+}
+function shelfMediaLabel(kind,it){
+  if(it&&it.project) return 'APP';
+  if(kind==='gallery') return state.lang==='zh'?'图集':'Gallery';
+  if(kind==='image') return state.lang==='zh'?'图文':'Photo';
+  if(kind==='book') return it&&it.type==='pdf'?'PDF':t('ty_book');
+  if(kind==='article') return t('ty_article');
+  if(kind==='video') return t('ty_video');
+  if(kind==='audio') return t('ty_audio');
+  return it&&it.type&&it.type!=='html'?it.type.toUpperCase():'';
+}
+function shelfCardSummary(it){
+  return shelfMediaOf(it).summary;
+}
+function coverHTML(it, noImg, media){
+  media=media||shelfMediaOf(it);
   let inner;
-  if(!noImg && it.cover && (it.source==='server'||it.source==='static')){
+  if(!noImg && media.kind==='gallery' && media.images.length>1){
+    const tiles=media.images.slice(0,3).map((src,i)=>`<span class="cover-gallery-cell cell-${i+1}"><img src="${esc(src)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fb="1"></span>`).join('');
+    inner=`<span class="cover-gallery">${tiles}</span><span class="media-count">${media.images.length} ${state.lang==='zh'?'张':'photos'}</span>`;
+  } else if(!noImg && media.images.length){
+    inner=`<img src="${esc(media.images[0])}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fb="1">`;
+  } else if(!noImg && it.cover && (it.source==='server'||it.source==='static')){
     const src=/^(https?:|data:|\/)/.test(it.cover)?it.cover:encPath(it.path.replace(/[^/]*$/,'')+it.cover);
     inner=`<img src="${esc(src)}" alt="" loading="lazy">`;
   } else if(!noImg && it.type==='link' && it.image && it.image.startsWith('https://')){
     inner=`<img src="${esc(it.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fb="1">`;      // someone else's picture: no referrer, and the generated cover if it fails to load
   } else inner=coverSVG(it);
-  const tag = it.project ? 'APP' : (it.type && it.type!=='html' ? it.type.toUpperCase() : '');
-  return inner + (tag ? `<span class="ftype">${tag}</span>` : '');
+  const tag=shelfMediaLabel(media.kind,it);
+  return inner + (tag ? `<span class="ftype">${esc(tag)}</span>` : '');
 }
 
 /* ================= filtering & render ================= */
@@ -3775,7 +3917,7 @@ const directHref = it => it.type==='link' ? httpUrl(it.url) : !(it.source==='ser
 const kwChips = (list, n) => (list||[]).slice(0,n).map(k=>`<button class="kw" type="button" data-tag="${esc(k)}">#${esc(k)}</button>`).join('');
 const canDelete = it => it.source==='server' || it.source==='local' || it.source==='folder';
 function cardHTML(it, tk, hiddenView){
-  const au=plAudioOf(it), star=isFeatured(it), pinned=pinRank(it)>0, prog=au ? plPct(it) : Math.round((state.progress[it.id]||{}).pct||0), href=directHref(it), isLink=it.type==='link';
+  const media=shelfMediaOf(it), au=media.audio, summary=shelfCardSummary(it), star=isFeatured(it), pinned=pinRank(it)>0, prog=au ? plPct(it) : Math.round((state.progress[it.id]||{}).pct||0), href=directHref(it), isLink=it.type==='link';
   const lang = it.lang==='en'?t('langEn'):(it.lang==='mixed'?t('langMixed'):t('langZh'));
   const ib = (act,icon,label,pressed) => `<button class="ibtn" type="button" data-act="${act}"${pressed!==undefined?` aria-pressed="${pressed}"`:''} title="${esc(label)}" aria-label="${esc(label)}">${icon}</button>`;
   const sizeInfo = isLink ? (au && au.dur ? fmtDur(au.dur)+' · ' : '')+hostOf(it.url) : it.project ? t('projInfo',it.files||1,fmtSize(it.size||0))
@@ -3786,6 +3928,9 @@ function cardHTML(it, tk, hiddenView){
   const canMove = manage || it.source==='static';                                  // on a deployed site a move is kept in this browser only; in a connected folder, in the folder's _meta.json
   const where = isLink ? t(it.feed?'feedBadge':'badgeLink') : it.source==='local' ? t('badgeLocal') : it.source==='folder' ? t('badgeFolder') : '';
   const ext = isLink ? ' target="_blank" rel="noopener noreferrer"' : '';
+  const hideTip=it.source==='static'?t('hideSiteTip'):t('hide');
+  const mainHide=ib('hide',ICON.hide,hideTip).replace('class="ibtn"','class="ibtn hide-primary"');
+  const menuHide=ib('hide',ICON.hide,hideTip).replace('class="ibtn"','class="ibtn hide-menu"');
   // the public directory: is this one in it (a deployed page whose address the directory lists), does the owner keep it out, is it a copy of another file
   const inDir = !!(state.dirKeys && ((it.source==='static' && href && state.dirKeys.has(urlKey(new URL(href,document.baseURI).href))) || (isLink && state.dirKeys.has(urlKey(it.url)))));
   const same = it.same ? state.items.find(x=>x.id===it.same) : null;
@@ -3798,18 +3943,79 @@ function cardHTML(it, tk, hiddenView){
   const badges = (it.unread?`<span class="where good new-badge">${esc(t('feedNew'))}</span>`:'') + (au?`<span class="where good">${esc(t('plPodcast'))}</span>`:'') + (hasText(it)?`<span class="where">${esc(t('fullText'))}</span>`:'') + (isLink && isNoread(it)?`<span class="where" title="${esc(it.noread.msg||'')}">${esc(t('origOnly'))}</span>`:'') + (it.source==='local' && !isLink && it.data===undefined && it.html===undefined?`<span class="where">${esc(t(it.bk?'syncCloud':'syncListOnly'))}</span>`:'') + (listed?`<span class="where good">${esc(t('badgeInDir'))}</span>`:'') + (asked?`<span class="where">${esc(t('badgeAsked'))}</span>`:'') + (same?`<span class="where warn" title="${esc(same.title)}">${esc(t('badgeSame',cut(same.title,16)))}</span>`:'');
   const acts = hiddenView
     ? `<button class="btn restore-btn" type="button" data-act="restore">${ICON.restore}${esc(t('restore'))}</button>${manage?`<button class="btn danger" type="button" data-act="purge">${ICON.trash}${esc(t('delForever'))}</button>`:''}`
-    : `<span class="acts collapsible">${au?ib('play',ICON.play,t('plListen'))+ib('enqueue',ICON.queue,t('plEnq'))+ib('notes',ICON.notes,t('plNotes')):''}${ib('star',ICON.star,star?t('unstarTip'):t('starTip'),star)}${ib('pin',ICON.pin,pinned?t('unpinTip'):t('pinTip'),pinned)}${ib('hide',ICON.hide,it.source==='static'?t('hideSiteTip'):t('hide'))}${it.source==='local' && it.type==='md'?ib('edit',ICON.pen,t('editNote')):''}${canMove?ib('move',ICON.move,t('move')):''}${canPublish?ib('publish',ICON.globe,t(asked?'publishAgain':'publishTip')):listed&&pubKind?`<button class="ibtn is-done" type="button" data-act="published" title="${esc(t('publishDone'))}" aria-label="${esc(t('publishDone'))}">${ICON.globe}</button>`:''}${ib('shuffle',ICON.shuffle,t('shuffle'))}${href?`<a class="ibtn" href="${esc(href)}" target="_blank" rel="noopener" title="${esc(t('newTab'))}" aria-label="${esc(t('newTab'))}">${ICON.ext}</a>`:''}${manage?ib('purge',ICON.trash,t('delTip')).replace('class="ibtn"','class="ibtn is-del"'):''}${ib('more',ICON.more,t('cardMore')).replace('class="ibtn"','class="ibtn more"')}</span>`;
+    : `<span class="acts collapsible shelf-acts">${au?ib('play',ICON.play,t('plListen')):''}${ib('star',ICON.star,star?t('unstarTip'):t('starTip'),star)}${mainHide}<button class="ibtn more" type="button" data-act="more" aria-haspopup="true" aria-expanded="false" title="${esc(t('cardMore'))}" aria-label="${esc(t('cardMore'))}">${ICON.more}</button><span class="shelf-more" role="group" aria-label="${state.lang==='zh'?'更多操作':'More actions'}">${au?ib('enqueue',ICON.queue,t('plEnq'))+ib('notes',ICON.notes,t('plNotes')):''}${ib('pin',ICON.pin,pinned?t('unpinTip'):t('pinTip'),pinned)}${menuHide}${it.source==='local' && it.type==='md'?ib('edit',ICON.pen,t('editNote')):''}${canMove?ib('move',ICON.move,t('move')):''}${canPublish?ib('publish',ICON.globe,t(asked?'publishAgain':'publishTip')):listed&&pubKind?`<button class="ibtn is-done" type="button" data-act="published" title="${esc(t('publishDone'))}" aria-label="${esc(t('publishDone'))}">${ICON.globe}</button>`:''}${ib('shuffle',ICON.shuffle,t('shuffle'))}${href?`<a class="ibtn" href="${esc(href)}" target="_blank" rel="noopener" title="${esc(t('newTab'))}" aria-label="${esc(t('newTab'))}">${ICON.ext}</a>`:''}${manage?ib('purge',ICON.trash,t('delTip')).replace('class="ibtn"','class="ibtn is-del"'):''}</span></span>`;
+  const coverAct=media.kind==='gallery'?'gallery':'open';
   return `<article class="card${hiddenView?' is-hidden':''}${pinned&&!hiddenView?' is-pinned':''}" data-id="${esc(it.id)}">
-    <button class="cover" type="button" data-act="open" aria-label="${esc(it.title)}">${coverHTML(it)}${prog>1?`<span class="prog" style="width:${Math.min(prog,100)}%"></span>`:''}${au?`<span class="play" role="button" data-act="play" aria-label="${esc(t('plPlayThis'))}">${ICON.play}</span>`:''}</button>
+    <button class="cover" type="button" data-act="${coverAct}" aria-label="${esc(media.kind==='gallery'?(state.lang==='zh'?'查看图片':'View photos'):it.title)}">${coverHTML(it,false,media)}${prog>1?`<span class="prog" style="width:${Math.min(prog,100)}%"></span>`:''}${au?`<span class="play" role="button" data-act="play" aria-label="${esc(t('plPlayThis'))}">${ICON.play}</span>`:media.kind==='video'?`<span class="video-mark" aria-hidden="true">${ICON.play}</span>`:''}</button>
     <div class="card-body">
       <p class="meta">${pinned&&!hiddenView?`<span class="pin-badge">${ICON.pin}${esc(t('pinned'))}</span>`:''}<span class="tag ${catClass(it.category)}">${esc(catName(it.category))}</span>${where?`<span class="where">${esc(where)}</span>`:''}${badges}${star&&it.category!=='featured'?`<span class="star-badge">★ ${esc(t('featured'))}</span>`:''}<span>${esc(lang)}</span><span>${esc(it.date||'')}</span></p>
       <h3 class="card-title"><a href="${esc(href||'#')}"${ext} data-act="open">${hl(it.title,tk)}</a></h3>
-      ${it.summary?`<p class="sum">${hl(it.summary,tk)}</p>`:''}
+      ${summary?`<p class="sum">${hl(summary,tk)}</p>`:''}
       ${ftSnip(it)}
       ${(it.keywords||[]).length?`<div class="chips">${kwChips(it.keywords,4)}</div>`:''}
       <div class="card-foot"><span>${esc(sizeInfo)}</span>${prog>1&&!hiddenView?`<span>${esc(t('readPct',Math.min(prog,100)))}</span>`:''}${acts}</div>
     </div>
   </article>`;
+}
+let shelfGalleryState=null;
+function shelfGalleryDialog(){
+  let dlg=$('#shelfGalleryDlg');
+  if(dlg) return dlg;
+  dlg=document.createElement('dialog'); dlg.id='shelfGalleryDlg'; dlg.className='shelf-gallery-dialog';
+  dlg.innerHTML='<div class="shelf-gallery-shell"><header class="shelf-gallery-head"><div class="shelf-gallery-heading"><strong data-gallery-title></strong><small data-gallery-source></small></div><button class="ibtn" type="button" data-gallery-act="close" aria-label="Close">×</button></header><div class="shelf-gallery-stage"><button class="gallery-nav prev" type="button" data-gallery-act="prev" aria-label="Previous image">‹</button><img data-gallery-image alt=""><span class="gallery-fallback" hidden></span><button class="gallery-nav next" type="button" data-gallery-act="next" aria-label="Next image">›</button></div><footer class="shelf-gallery-foot"><span data-gallery-count></span><a data-gallery-origin target="_blank" rel="noopener noreferrer"></a></footer></div>';
+  document.body.append(dlg);
+  dlg.addEventListener('click',e=>{
+    if(e.target===dlg){ dlg.close(); return; }
+    const b=e.target.closest('[data-gallery-act]'); if(!b) return;
+    const act=b.dataset.galleryAct;
+    if(act==='close') dlg.close();
+    else if(act==='prev') moveShelfGallery(-1);
+    else if(act==='next') moveShelfGallery(1);
+  });
+  dlg.addEventListener('keydown',e=>{
+    if(e.key==='ArrowLeft'){ e.preventDefault(); moveShelfGallery(-1); }
+    else if(e.key==='ArrowRight'){ e.preventDefault(); moveShelfGallery(1); }
+  });
+  const stage=dlg.querySelector('.shelf-gallery-stage'); let touch=null;
+  stage.addEventListener('pointerdown',e=>{ touch={x:e.clientX,y:e.clientY}; });
+  stage.addEventListener('pointerup',e=>{
+    if(!touch) return;
+    const dx=e.clientX-touch.x, dy=e.clientY-touch.y; touch=null;
+    if(Math.abs(dx)>48 && Math.abs(dx)>Math.abs(dy)*1.25) moveShelfGallery(dx<0?1:-1);
+  });
+  dlg.querySelector('[data-gallery-image]').addEventListener('error',()=>{
+    const g=dlg.querySelector('[data-gallery-image]'), fallback=dlg.querySelector('.gallery-fallback');
+    g.hidden=true; fallback.hidden=false; fallback.textContent=state.lang==='zh'?'图片暂时无法加载':'Image could not be loaded';
+  });
+  dlg.addEventListener('close',()=>{
+    const im=dlg.querySelector('[data-gallery-image]'); im.removeAttribute('src'); im.hidden=false;
+    dlg.querySelector('.gallery-fallback').hidden=true; shelfGalleryState=null;
+  });
+  return dlg;
+}
+function paintShelfGallery(){
+  const g=shelfGalleryState, dlg=$('#shelfGalleryDlg'); if(!g||!dlg) return;
+  const it=state.items.find(x=>x.id===g.id), src=g.images[g.index]; if(!it||!src) return;
+  dlg.querySelector('[data-gallery-title]').textContent=it.title||'';
+  dlg.querySelector('[data-gallery-source]').textContent=[it.from||hostOf(it.url),it.date||''].filter(Boolean).join(' · ');
+  dlg.querySelector('[data-gallery-image]').hidden=false;
+  dlg.querySelector('.gallery-fallback').hidden=true;
+  dlg.querySelector('[data-gallery-image]').src=src;
+  dlg.querySelector('[data-gallery-image]').alt=it.title||'';
+  dlg.querySelector('[data-gallery-count]').textContent=`${g.index+1} / ${g.images.length}`;
+  const origin=dlg.querySelector('[data-gallery-origin]'); origin.href=httpUrl(it.url)||'#'; origin.textContent=state.lang==='zh'?'打开原文':'Open original';
+  dlg.querySelector('[data-gallery-act="prev"]').disabled=g.images.length<2;
+  dlg.querySelector('[data-gallery-act="next"]').disabled=g.images.length<2;
+}
+function moveShelfGallery(step){
+  const g=shelfGalleryState; if(!g||g.images.length<2) return;
+  g.index=(g.index+step+g.images.length)%g.images.length; paintShelfGallery();
+}
+function openShelfGallery(id, images){
+  const it=state.items.find(x=>x.id===id), list=(images||[]).map(x=>shelfHttpsImage(x)).filter(Boolean);
+  if(!it||!list.length) return;
+  shelfGalleryState={id,images:list,index:0};
+  const dlg=shelfGalleryDialog(); paintShelfGallery(); if(!dlg.open) dlg.showModal();
 }
 function render(){
   document.documentElement.lang = state.lang==='zh'?'zh-CN':'en';
@@ -9599,7 +9805,8 @@ $('#grid').addEventListener('click',e=>{                            // the parts
   if(dirLikeClick(e)) return;
   if(dirOpenClick(e)) return;
 });
-document.addEventListener('click',e=>{ if(!e.target.closest('.acts.collapsible')) document.querySelectorAll('.card.acts-open').forEach(c=>c.classList.remove('acts-open')); });          // a tap anywhere else closes the buttons of a card
+document.addEventListener('click',e=>{ if(!e.target.closest('.acts.collapsible')) document.querySelectorAll('.card.acts-open').forEach(c=>{ c.classList.remove('acts-open'); const b=c.querySelector('[data-act="more"]'); if(b) b.setAttribute('aria-expanded','false'); }); });          // a tap anywhere else closes the buttons of a card
+document.addEventListener('click',e=>{ const a=e.target.closest('.shelf-more a'); if(!a) return; const c=a.closest('.card'); if(c){ c.classList.remove('acts-open'); const b=c.querySelector('[data-act="more"]'); if(b) b.setAttribute('aria-expanded','false'); } });
 function coverFailed(e){                                            // someone else's cover picture failed to load: the generated cover instead
   const im=e.target; if(!im || im.tagName!=='IMG' || !im.dataset.fb) return;
   const card=im.closest('.card'), did=card && state.dirData && card.dataset.did, it=card && (did ? state.dirData.items.find(x=>x.id===did) : state.items.find(x=>x.id===card.dataset.id));
@@ -9614,10 +9821,20 @@ $('#grid').addEventListener('click',async e=>{
   const el=e.target.closest('[data-act]'); if(!el) return;
   const card=el.closest('.card'), id=card&&card.dataset.id; if(!id) return;
   const act=el.dataset.act;
-  if(act==='more'){ const on=!card.classList.contains('acts-open'); document.querySelectorAll('.card.acts-open').forEach(c=>c.classList.remove('acts-open')); card.classList.toggle('acts-open',on); el.setAttribute('aria-expanded',String(on)); return; }
+  if(act==='more'){ const on=!card.classList.contains('acts-open'); document.querySelectorAll('.card.acts-open').forEach(c=>{ c.classList.remove('acts-open'); const b=c.querySelector('[data-act="more"]'); if(b) b.setAttribute('aria-expanded','false'); }); card.classList.toggle('acts-open',on); el.setAttribute('aria-expanded',String(on)); return; }
+  if(act==='gallery'){ e.preventDefault(); markRead(id,card); openShelfGallery(id,shelfMediaOf(state.items.find(x=>x.id===id)||{}).images); return; }
   if(act==='open'){
     const it0=state.items.find(x=>x.id===id);
     if(it0 && plAudioOf(it0) && !(e.metaKey||e.ctrlKey||e.shiftKey)){ e.preventDefault(); markRead(id,card); plPlay(id); return; }                  // an episode: a click plays it here (the page of the episode is behind "notes")
+    if(it0 && it0.type==='link' && shelfMediaOf(it0).kind==='video'){
+      if(el.tagName==='A' && (e.metaKey||e.ctrlKey||e.shiftKey)) return;
+      markRead(id,card);
+      if(el.tagName==='A'){ if(richFromItem(it0)) e.preventDefault(); return; }
+      e.preventDefault();
+      if(richFromItem(it0)) return;
+      const target=shelfVideoUrl(it0)||httpUrl(it0.url); if(target) window.open(target,'_blank','noopener,noreferrer');
+      return;
+    }
     if(it0 && it0.type==='link'){
       markRead(id,card);
       if(canReadHere(it0)){ if(el.tagName==='A' && (e.metaKey||e.ctrlKey||e.shiftKey)) return; e.preventDefault(); openReader(id); return; }       // read it here (a modified click still opens the original)
