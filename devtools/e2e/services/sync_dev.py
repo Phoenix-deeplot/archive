@@ -94,7 +94,10 @@ REGION_OF = {'hot-cn': 'cn', 'hot-west': 'west', 'kr': 'jp-kr', 'dzp-1313621735'
 LRC = ('[00:00.50]First line of the song\n[00:03.00]Second line of the song\n[00:06.00]Third line of the song\n[00:09.00]Fourth line of the song')
 SEARCH_SONGS = [   # title, artist, dur, how it sounds: 'whole' (a whole sound), 'preview' (a preview and a stub that resolve can fill), 'stub' (only a stub)
     ('Search Alpha', 'Singer A', 200, 'whole'), ('Search Beta', 'Singer B', 210, 'preview'), ('Search Gamma', 'Singer C', 190, 'stub'), ('Search Delta', 'Singer A', 205, 'whole'),
-    ('Search Epsilon', 'Singer G', 195, 'both'), ('Search Nothing', 'Singer D', 180, 'stub'), ('Moon River', 'Singer E', 170, 'whole'), ('Moonlight', 'Singer F', 160, 'preview')]
+    ('Search Epsilon', 'Singer G', 195, 'both'), ('Search Nothing', 'Singer D', 180, 'stub'), ('Moon River', 'Singer E', 170, 'whole'), ('Moonlight', 'Singer F', 160, 'preview'),
+    ('Artist Song One', '测试歌手', 200, 'both'), ('Artist Song Two', '测试歌手', 210, 'preview'), ('Artist Song Three', '测试歌手', 190, 'whole'), ('Artist Song Four', '測試歌手', 205, 'preview')]
+ARTIST = {'name': '测试歌手', 'cover': 'https://img.example/art.jpg', 'names': ['测试歌手', 'Test Singer', '測試歌手'], 'words': ('测试歌手', 'test singer', '測試歌手')}
+SRC_NAMES = {'bodian': '波点音乐', 'deezer': 'Deezer', 'audius': 'Audius', 'apple': 'Apple Music', 'netease': '网易云音乐'}
 
 
 def listen_index_v2(lang, region):
@@ -124,12 +127,9 @@ def dy_group():
     return {'id': 'dy-hot', 'name': '抖音热歌榜', 'name_en': 'Douyin hot songs', 'kind': 'chart', 'type': 'music', 'net': 'cn', 'region': 'cn', 'resolve': True, 'sub': '来源：抖音热歌榜', 'sub_en': 'From Douyin hot songs', 'items': items}
 
 
-def search_items(q):
+def song_item(i, title, artist, dur, how):
     c = lambda p, k, path=None, **ex: {'p': p, 'k': k, **({'audio': POD + path} if path else {}), 'net': ex.pop('net', 'any'), **ex}
-    out = []
-    for i, (title, artist, dur, how) in enumerate(SEARCH_SONGS):
-        if q.lower() not in (title + ' ' + artist).lower():
-            continue
+    if True:
         if how == 'whole':
             cs = [c('audius', 'full', '/ep1.wav', lic='Audius')]
         elif how == 'preview':
@@ -144,8 +144,27 @@ def search_items(q):
             it['preview'] = True
         if not first:
             it['resolve'] = True
-        out.append(it)
-    return out
+        it['src'] = [{'p': x['p'], 'name': SRC_NAMES.get(x['p'], x['p']), 'k': x['k'], 'state': 'pending' if x.get('resolve') and not x.get('audio') else 'ok'} for x in cs]
+        return it
+
+
+def search_items(q):
+    return [song_item(i, title, artist, dur, how) for i, (title, artist, dur, how) in enumerate(SEARCH_SONGS) if q.lower() in (title + ' ' + artist).lower()]
+
+
+def artist_of(word):
+    w = (word or '').strip().lower()
+    return ARTIST if w and w in ARTIST['words'] else None
+
+
+def artist_page():
+    songs = [song_item(i, t, a, d, h) for i, (t, a, d, h) in enumerate(SEARCH_SONGS) if a in ('测试歌手', '測試歌手')]
+    return {'artist': {'name': ARTIST['name'], 'cover': ARTIST['cover'], 'names': ARTIST['names']}, 'songs': songs,
+            'lists': [{'id': 'ne:pl:555', 'name': '测试歌手热门单曲', 'cover': 'https://img.example/pl555.jpg', 'n': 48}, {'id': 'ne:pl:556', 'name': '测试歌手演唱会', 'cover': '', 'n': 30}]}
+
+
+def plist_items():
+    return [{'id': 'ne:%d' % (7000 + i), 'title': 'List Song %d' % i, 'artist': '测试歌手', 'cover': '', 'dur': 200 + i, 'mode': 'stream', 'audio': POD + '/ep1.wav', 'url': 'https://music.163.com/#/song?id=%d' % (7000 + i), 'lic': '网易云音乐', 'from': '网易云音乐', 'cands': []} for i in range(4)]
 
 
 def pool_items(side):
@@ -435,7 +454,28 @@ class H(BaseHTTPRequestHandler):
                     if LISTEN['search'] == 'slow':
                         time.sleep(1.2)
                     items = [] if LISTEN['search'] == 'empty' else search_items(word)
-                    return self.reply(200, {'ok': True, 'q': word, 'items': items, **({'partial': True} if LISTEN['search'] == 'partial' else {})})
+                    art = artist_of(word)
+                    return self.reply(200, {'ok': True, 'q': word, 'items': items, **({'partial': True} if LISTEN['search'] == 'partial' else {}), **({'artist': {'name': art['name'], 'cover': art['cover']}} if art and items else {})})
+                if (q.get('artist') or [''])[0]:
+                    word = (q.get('artist') or [''])[0]
+                    if UA:
+                        LISTEN['log2'].append('artist:' + word)
+                    if LISTEN.get('artist') == 'down':
+                        return self.reply(502, {'ok': False, 'error': 'empty'})
+                    if not artist_of(word):
+                        return self.reply(200, {'ok': True, 'q': word, 'artist': None, 'songs': [], 'lists': []})
+                    return self.reply(200, {'ok': True, 'q': word, **artist_page()})
+                if (q.get('plist') or [''])[0]:
+                    pid = (q.get('plist') or [''])[0]
+                    if UA:
+                        LISTEN['log2'].append('plist:' + pid)
+                    return self.reply(200, {'ok': True, 'items': plist_items()})
+                if (q.get('psearch') or [''])[0]:
+                    word = (q.get('psearch') or [''])[0]
+                    if UA:
+                        LISTEN['log2'].append('psearch:' + word)
+                    shows = [{'id': '1234567', 'name': 'Test Podcast Show', 'artist': 'Tester', 'cover': 'https://img.example/pod.jpg', 'feed': POD + '/feed.xml', 'n': 12}, {'id': '1234568', 'name': 'Another Podcast', 'artist': 'Other', 'cover': '', 'feed': POD + '/feed.xml?b=1', 'n': 3}] if 'pod' in word.lower() else []
+                    return self.reply(200, {'ok': True, 'q': word, 'shows': shows})
                 if (q.get('resolve') or [''])[0]:
                     title = (q.get('t') or [''])[0]
                     if UA:
@@ -512,6 +552,7 @@ class H(BaseHTTPRequestHandler):
             LISTEN['v2'] = q.get('v2', [''])[0] == '1'                      # the newer questions (caps=resolve, search, resolve, pool)
             LISTEN['rs'] = q.get('rs', ['ok'])[0]                           # resolve: ok | none | down | big | slow | nolyr | short (an address that is good for 2 seconds)
             LISTEN['search'] = q.get('search', ['ok'])[0]                    # search: ok | partial | down | empty | slow
+            LISTEN['artist'] = q.get('artist', ['ok'])[0]                   # artist: ok | down
             LISTEN['pool'] = q.get('pool', ['ok'])[0]                       # pool: ok | stale | down
             LISTEN['ab'] = q.get('ab', ['ok'])[0]                           # the audiobooks: ok | down | empty | slow | stale
             if q.get('reset'):
