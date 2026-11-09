@@ -1143,6 +1143,45 @@ body:not(.in-dir) #grid .shelf-acts>.ibtn.hide-primary{display:inline-flex}
 .empty li{margin:.5em 0}
 .empty code{font-family:var(--mono);font-size:13.5px;background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:1px 6px}
 
+/* A shelf grid keeps the same image window for every content type; row heights follow the text, not the media dimensions. */
+body:not(.in-dir) #grid:not(.list){grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));align-items:stretch;gap:16px}
+body:not(.in-dir) #grid:not(.list) .card{height:100%;min-width:0}
+body:not(.in-dir) #grid:not(.list) .cover{aspect-ratio:4/3}
+body:not(.in-dir) #grid:not(.list) .meta{min-height:18px;max-height:18px;overflow:hidden;flex-wrap:nowrap;white-space:nowrap}
+body:not(.in-dir) #grid:not(.list) .card-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:2.8em}
+body:not(.in-dir) #grid:not(.list) .sum{-webkit-line-clamp:2}
+body:not(.in-dir) #grid.list{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:12px}
+body:not(.in-dir) #grid.list .card{display:grid;grid-template-columns:116px minmax(0,1fr);align-items:stretch;min-height:142px}
+body:not(.in-dir) #grid.list .cover{width:auto;min-width:0;min-height:0;height:auto;aspect-ratio:auto;align-self:stretch;margin:10px 0 10px 10px;border-radius:8px}
+body:not(.in-dir) #grid.list .card-body{min-width:0;padding:10px 10px 8px 0}
+body:not(.in-dir) #grid.list .meta{min-width:0;max-height:17px;overflow:hidden;flex-wrap:nowrap;white-space:nowrap;gap:4px 7px;margin-bottom:4px;font-size:11px}
+body:not(.in-dir) #grid.list .card-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin:0 0 4px;font-size:16px;line-height:1.32}
+body:not(.in-dir) #grid.list .sum{display:-webkit-box;-webkit-line-clamp:2;margin:0 0 4px;font-size:13px;line-height:1.45}
+body:not(.in-dir) #grid.list .ft-snip{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;overflow:hidden;margin:2px 0;font-size:12px}
+body:not(.in-dir) #grid.list .chips{display:none}
+body:not(.in-dir) #grid.list .card-foot{min-width:0;gap:4px;margin-top:auto;padding-top:4px}
+body:not(.in-dir) #grid.list .card-foot>span:first-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body:not(.in-dir) #grid.list .card-foot .ibtn{width:32px;height:32px}
+@media (max-width:620px){
+  body:not(.in-dir) #grid:not(.list){grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  body:not(.in-dir) #grid:not(.list) .cover{aspect-ratio:4/3}
+  body:not(.in-dir) #grid:not(.list) .meta{min-height:15px;max-height:15px;font-size:10.5px;gap:0 6px;margin-bottom:3px}
+  body:not(.in-dir) #grid:not(.list) .card-title{min-height:2.65em;font-size:14.5px;line-height:1.32;-webkit-line-clamp:2;margin-bottom:3px}
+  body:not(.in-dir) #grid.list{grid-template-columns:minmax(0,1fr);gap:8px}
+  body:not(.in-dir) #grid.list .card{grid-template-columns:78px minmax(0,1fr);min-height:104px}
+  body:not(.in-dir) #grid.list .cover{aspect-ratio:1/1;margin:7px;border-radius:7px}
+  body:not(.in-dir) #grid.list .card-body{padding:7px 8px 6px 0}
+  body:not(.in-dir) #grid.list .meta{max-height:14px;min-height:14px;font-size:10px;gap:0 5px;margin-bottom:2px}
+  body:not(.in-dir) #grid.list .meta .where,body:not(.in-dir) #grid.list .meta .star-badge,body:not(.in-dir) #grid.list .meta>span:nth-last-child(-n+2){display:none}
+  body:not(.in-dir) #grid.list .card-title{font-size:14px;line-height:1.25;margin-bottom:2px}
+  body:not(.in-dir) #grid.list .sum{display:-webkit-box;-webkit-line-clamp:1;margin:0;font-size:11.5px;line-height:1.3}
+  body:not(.in-dir) #grid.list .ft-snip{display:none}
+  body:not(.in-dir) #grid.list .card-foot{min-height:29px;gap:2px;padding-top:2px}
+  body:not(.in-dir) #grid.list .card-foot>span:first-child{flex:0 1 auto;max-width:42%;font-size:10px}
+  body:not(.in-dir) #grid.list .card-foot .ibtn{width:30px;height:30px}
+  body:not(.in-dir) #grid.list .shelf-acts>.ibtn.hide-primary{display:none}
+  body:not(.in-dir) #grid.list .shelf-more .hide-menu{display:inline-flex}
+}
 /* ---------- reader ---------- */
 .reader{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;background:var(--bg);padding-top:env(safe-area-inset-top,0px)}
 
@@ -3283,6 +3322,25 @@ async function scanFolder(dir){
   }
   return out;
 }
+function shelfDemoItems(){
+  if(!['localhost','127.0.0.1','::1'].includes(location.hostname) || new URLSearchParams(location.search).get('shelf-demo')!=='1') return [];
+  const photos=[
+    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=960&auto=format&fit=crop&q=82',
+    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=960&auto=format&fit=crop&q=82',
+    'https://images.unsplash.com/photo-1500534623283-312aade485b7?w=960&auto=format&fit=crop&q=82',
+    'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=960&auto=format&fit=crop&q=82',
+    'https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=960&auto=format&fit=crop&q=82'
+  ];
+  const make=(id,extra,order)=>({id:'preview:'+id,source:'preview',category:'notes',lang:'zh',date:today(),added:Math.floor((Date.now()-order*60000)/1000),...extra});
+  return [
+    make('photo-story',{type:'link',title:'城市醒来之前：一组清晨街景',url:'https://example.com/preview/photo-story',image:photos[0],from:'知树样例',summary:'以图文卡片展示一篇有封面、有摘要的摄影文章。点开封面即可快速判断内容。',keywords:['摄影','城市']},0),
+    make('photo-gallery',{type:'link',title:'山野周末：四张照片记录一次徒步',url:'https://example.com/preview/gallery',images:photos.slice(1,5),from:'知树样例',summary:'图集直接露出多张图片，卡片上标明图片数量，点击后可左右浏览。',keywords:['旅行','图集']},1),
+    make('video',{type:'link',title:'五分钟看懂一座城市如何运转',url:'https://example.com/preview/video',video:'https://example.com/preview/video.mp4',image:photos[2],from:'知树样例',summary:'视频封面突出画面与播放标记，标题和摘要保持简洁。',keywords:['视频','城市']},2),
+    make('podcast',{type:'link',title:'慢一点听：雨声与林间电台',url:'https://example.com/preview/audio',audio:{url:'https://example.com/preview/audio.mp3',dur:418},image:photos[3],from:'知树样例',summary:'播客卡片突出封面、时长和播放入口。此模拟项目不会真的播放音频。',keywords:['播客','放松']},3),
+    make('novel',{type:'epub',category:'books',title:'窗边的树：一部适合慢读的短篇小说',cover:photos[4],minutes:36,summary:'小说与书籍保持封面比例，显示书名和试读简介。此模拟项目用于检查列表与卡片的占位。',keywords:['小说','阅读']},4),
+    make('text-article',{type:'html',title:'没有封面的文章，也要清楚易读',from:'知树样例',summary:'无图文章采用统一的生成式封面，不因封面缺失而改变卡片大小或打乱网格。',keywords:['文章','设计']},5)
+  ];
+}
 /* What is shown is three lists side by side, none replacing another:
    1. the site's own list: serve.py live (mode 'server'), or the deployed manifest (mode 'static')
    2. the visitor's own local folder, if they connected one
@@ -3309,7 +3367,7 @@ async function loadAll(){
   if(!primary){ primary=await loadStatic(); if(primary) state.mode='static'; }
   let folder=[]; if(state.dir && state.mode!=='server'){ try{ folder=await scanFolder(state.dir); }catch(e){ state.dir=null; } }
   const local = (await idb.all()).map(x=>({type:'html',...x, source:'local'}));
-  state.items = (primary||[]).concat(folder, local); applyItemLang(); state.loaded=true; render();
+  state.items = (primary||[]).concat(folder, local, shelfDemoItems()); applyItemLang(); state.loaded=true; render();
 }
 /* Where "Add" writes: the site's own library when running serve.py; otherwise the visitor's connected folder, or else this browser. Never a deployed server. */
 const addMode = () => state.mode==='server' ? 'server' : state.dir ? 'folder' : 'local';
@@ -3566,6 +3624,7 @@ const isHidden = it => flag(it,'hidden');
 const isFeatured = it => it.category==='featured' || flag(it,'featured');
 async function setFlag(id, k, v){
   const it = state.items.find(x=>x.id===id); if(!it) return false;
+  if(it.source==='preview'){ it[k]=v; return true; }
   try{
     if(it.source==='server'){
       const r=await fetch('api/meta',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,[k]:v})}); if(!r.ok) throw new Error(r.status);
@@ -3708,7 +3767,7 @@ function coverHTML(it, noImg, media){
     inner=`<span class="cover-gallery">${tiles}</span><span class="media-count">${media.images.length} ${state.lang==='zh'?'张':'photos'}</span>`;
   } else if(!noImg && media.images.length){
     inner=`<img src="${esc(media.images[0])}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fb="1">`;
-  } else if(!noImg && it.cover && (it.source==='server'||it.source==='static')){
+  } else if(!noImg && it.cover && (it.source==='server'||it.source==='static'||(it.source==='preview'&&it.cover.startsWith('https://')))){
     const src=/^(https?:|data:|\/)/.test(it.cover)?it.cover:encPath(it.path.replace(/[^/]*$/,'')+it.cover);
     inner=`<img src="${esc(src)}" alt="" loading="lazy">`;
   } else if(!noImg && it.type==='link' && it.image && it.image.startsWith('https://')){
@@ -3917,7 +3976,7 @@ const directHref = it => it.type==='link' ? httpUrl(it.url) : !(it.source==='ser
 const kwChips = (list, n) => (list||[]).slice(0,n).map(k=>`<button class="kw" type="button" data-tag="${esc(k)}">#${esc(k)}</button>`).join('');
 const canDelete = it => it.source==='server' || it.source==='local' || it.source==='folder';
 function cardHTML(it, tk, hiddenView){
-  const media=shelfMediaOf(it), au=media.audio, summary=shelfCardSummary(it), star=isFeatured(it), pinned=pinRank(it)>0, prog=au ? plPct(it) : Math.round((state.progress[it.id]||{}).pct||0), href=directHref(it), isLink=it.type==='link';
+  const media=shelfMediaOf(it), au=media.audio, summary=shelfCardSummary(it), star=isFeatured(it), pinned=pinRank(it)>0, prog=au ? plPct(it) : Math.round((state.progress[it.id]||{}).pct||0), href=it.source==='preview'?'':directHref(it), isLink=it.type==='link';
   const lang = it.lang==='en'?t('langEn'):(it.lang==='mixed'?t('langMixed'):t('langZh'));
   const ib = (act,icon,label,pressed) => `<button class="ibtn" type="button" data-act="${act}"${pressed!==undefined?` aria-pressed="${pressed}"`:''} title="${esc(label)}" aria-label="${esc(label)}">${icon}</button>`;
   const sizeInfo = isLink ? (au && au.dur ? fmtDur(au.dur)+' · ' : '')+hostOf(it.url) : it.project ? t('projInfo',it.files||1,fmtSize(it.size||0))
@@ -3926,7 +3985,7 @@ function cardHTML(it, tk, hiddenView){
   // The deployed site's own books are not: nobody can delete them from a page, only the owner, in library/ on their own computer (serve.py), and then deploy again.
   const manage = canDelete(it);
   const canMove = manage || it.source==='static';                                  // on a deployed site a move is kept in this browser only; in a connected folder, in the folder's _meta.json
-  const where = isLink ? t(it.feed?'feedBadge':'badgeLink') : it.source==='local' ? t('badgeLocal') : it.source==='folder' ? t('badgeFolder') : '';
+  const where = it.source==='preview' ? (state.lang==='zh'?'模拟':'Demo') : isLink ? t(it.feed?'feedBadge':'badgeLink') : it.source==='local' ? t('badgeLocal') : it.source==='folder' ? t('badgeFolder') : '';
   const ext = isLink ? ' target="_blank" rel="noopener noreferrer"' : '';
   const hideTip=it.source==='static'?t('hideSiteTip'):t('hide');
   const mainHide=ib('hide',ICON.hide,hideTip).replace('class="ibtn"','class="ibtn hide-primary"');
@@ -4003,7 +4062,7 @@ function paintShelfGallery(){
   dlg.querySelector('[data-gallery-image]').src=src;
   dlg.querySelector('[data-gallery-image]').alt=it.title||'';
   dlg.querySelector('[data-gallery-count]').textContent=`${g.index+1} / ${g.images.length}`;
-  const origin=dlg.querySelector('[data-gallery-origin]'); origin.href=httpUrl(it.url)||'#'; origin.textContent=state.lang==='zh'?'打开原文':'Open original';
+  const origin=dlg.querySelector('[data-gallery-origin]'); origin.href=it.source==='preview'?'#':httpUrl(it.url)||'#'; origin.textContent=it.source==='preview'?(state.lang==='zh'?'模拟内容':'Demo item'):(state.lang==='zh'?'打开原文':'Open original');
   dlg.querySelector('[data-gallery-act="prev"]').disabled=g.images.length<2;
   dlg.querySelector('[data-gallery-act="next"]').disabled=g.images.length<2;
 }
@@ -9054,6 +9113,7 @@ function publishAddress(it){
   try{ const x=new URL(u,document.baseURI); return /^https?:$/.test(x.protocol) && /^[\w-]+(\.[\w-]+)+$/.test(x.hostname) && !/^\d+\.\d+\.\d+\.\d+$/.test(x.hostname) ? x.href : ''; }catch(e){ return ''; }      // a public-looking name, not localhost or an IP
 }
 function publishKind(it){
+  if(it.source==='preview') return '';
   if(!state.dirCfg || !submitApi()) return '';
   if(publishAddress(it)) return 'url';
   if(!(it.source==='local' || it.source==='folder' || it.source==='server')) return '';
@@ -9822,7 +9882,8 @@ $('#grid').addEventListener('click',async e=>{
   const card=el.closest('.card'), id=card&&card.dataset.id; if(!id) return;
   const act=el.dataset.act;
   if(act==='more'){ const on=!card.classList.contains('acts-open'); document.querySelectorAll('.card.acts-open').forEach(c=>{ c.classList.remove('acts-open'); const b=c.querySelector('[data-act="more"]'); if(b) b.setAttribute('aria-expanded','false'); }); card.classList.toggle('acts-open',on); el.setAttribute('aria-expanded',String(on)); return; }
-  if(act==='gallery'){ e.preventDefault(); markRead(id,card); openShelfGallery(id,shelfMediaOf(state.items.find(x=>x.id===id)||{}).images); return; }
+  if((act==='open'||act==='play') && state.items.find(x=>x.id===id)?.source==='preview'){ e.preventDefault(); toast(state.lang==='zh'?'这是布局预览用的模拟内容':'Demo content for layout preview'); return; }
+  if(act==='gallery'){ e.preventDefault(); const galleryItem=state.items.find(x=>x.id===id); if(galleryItem && galleryItem.source!=='preview') markRead(id,card); openShelfGallery(id,shelfMediaOf(galleryItem||{}).images); return; }
   if(act==='open'){
     const it0=state.items.find(x=>x.id===id);
     if(it0 && plAudioOf(it0) && !(e.metaKey||e.ctrlKey||e.shiftKey)){ e.preventDefault(); markRead(id,card); plPlay(id); return; }                  // an episode: a click plays it here (the page of the episode is behind "notes")
