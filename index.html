@@ -229,6 +229,36 @@ body.dir-discover .dir-label,body.dir-discover #dir,body.dir-discover #tagbox,bo
 .search.has-ft input{padding-right:92px}.search.has-ft kbd{display:none}
 .ft-snip{margin:6px 0 2px;font-size:13px;line-height:1.6;color:var(--muted)}.ft-snip mark{background:rgba(255,196,0,.45);color:inherit;border-radius:2px;padding:0 1px}
 .ft-where{display:inline-block;margin-right:6px;padding:0 7px;border:1px solid var(--rule);border-radius:999px;font-size:11.5px;color:var(--accent)}
+.search .q-scope{position:absolute;left:33px;top:50%;transform:translateY(-50%);font-size:12px;line-height:1;padding:3px 8px;border-radius:999px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-weight:600;white-space:nowrap;pointer-events:none;max-width:40%;overflow:hidden;text-overflow:ellipsis}
+.search .q-scope:empty{display:none}
+.search input{padding-left:calc(36px + var(--qs,0px))}
+.q-hist{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:30;padding:10px 12px;background:var(--bg);border:1px solid var(--rule);border-radius:10px;box-shadow:0 12px 24px rgba(0,0,0,.14);max-height:min(50vh,320px);overflow:auto}
+.q-hist[hidden]{display:none}
+.q-hist-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 8px;font-size:13px;color:var(--muted)}
+.q-hist-h button{border:0;background:none;color:var(--accent);font:inherit;cursor:pointer;padding:2px 4px}
+.q-hist-c{display:flex;flex-wrap:wrap;gap:6px}
+.q-wide{border-style:dashed;color:var(--accent);font-weight:600}
+.q-wide-row{margin:14px 0 4px;text-align:center}
+.lp-sq{flex:1;min-width:0;font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ls-from{color:var(--muted);font-size:12px}
+.lp-art{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:6px 0 10px;padding:12px;border:1px solid var(--rule);border-radius:12px;background:var(--surface)}
+.lp-art-cv{flex:none;width:64px;height:64px;border-radius:50%;overflow:hidden;background:var(--rule);display:grid;place-items:center;font-size:26px;font-weight:700;color:var(--muted)}
+.lp-art-cv img{width:100%;height:100%;object-fit:cover}
+.lp-art-tx{flex:1 1 160px;min-width:0}
+.lp-art-tx b{display:block;font-size:18px;font-family:var(--serif)}
+.lp-art-n{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lp-art-acts{display:flex;gap:8px;flex-wrap:wrap}
+.lp-art-h{margin:14px 0 6px;font-size:15px}
+.lp-art-ls{display:flex;gap:12px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:thin}
+.lp-art-ls .lp-gc{flex:none;width:112px}
+.ps-rows{list-style:none;margin:0;padding:0}
+.ps-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--rule)}
+.ps-cv{flex:none;width:56px;height:56px;border-radius:8px;overflow:hidden;background:var(--rule)}
+.ps-cv img{width:100%;height:100%;object-fit:cover}
+.ps-tx{flex:1;min-width:0}
+.ps-tx b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps-m{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps-acts{flex:none;display:flex;gap:6px}
 .search kbd{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--rule);border-radius:4px;padding:0 6px;background:var(--bg)}
 .toolbar{display:flex;align-items:center;gap:8px;margin-left:auto}
 .toolbar select,.ctl-box select,.fl-slot select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:6px 8px}
@@ -1822,7 +1852,7 @@ body.dir-audio .dir-line{display:none}                          /* (its only con
   body.shell2.side-off .side{display:none}
   body.shell2.side-off.has-player .player{left:0}
   body.shell2.side-off.has-player .pl-mini{left:max(12px,env(safe-area-inset-left))}
-  body.shell2 .view-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  body.shell2 .view-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;min-height:76px;box-sizing:border-box}          /* (76 px: the height of the heading with the controls of my shelf in it: the list under it does not jump when the section changes) */
   body.shell2 .vh-ctl{display:block;padding-bottom:6px}
   body.shell2 .dir-line .ctl-box{margin-left:auto}
   body.shell2 .view-head p{min-height:25px}                                   /* (the heading has the same height on every page: the content under it does not move) */
@@ -1984,9 +2014,11 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
       <button class="ibtn side-toggle" type="button" id="sideToggle" aria-expanded="true" data-i-aria="sideHide"><svg class="icon" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M9.5 5v14"/></svg></button>
       <div class="search">
         <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <span class="q-scope" id="qScope" aria-hidden="true"></span>
         <input id="q" type="search" autocomplete="off" data-i-ph="search" placeholder="搜索标题、摘要、关键词">
         <kbd>/</kbd>
         <button class="ft" type="button" id="ftBtn" aria-pressed="false" data-i="ftLabel" data-i-aria="ftTip" hidden>搜正文</button>
+        <div class="q-hist" id="qHist" hidden></div>
       </div>
       <div class="toolbar">
         <div class="seg lf-one" role="group" id="langFilter" aria-label="Content language">
@@ -2293,7 +2325,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     </div>
     <div class="plp-set" id="plSetSheet" hidden>
       <div class="plp-set-h"><b data-i="plSetT">播放设置</b><button class="plp-ic" type="button" data-plp="setx" data-i-aria="plSetClose"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-      <div class="plp-row"><div class="l" data-i="plSrcL">音源</div><div class="pl-chips" id="plSrcs"></div></div>
+      <div class="plp-row"><div class="l" data-i="plSrcL">音源</div><div class="d" data-i="plSrcD">VIP 歌曲只有很大的整首文件：前两项都会放整首，“只用免费合规源”不放，只有 30 秒试听</div><div class="pl-chips" id="plSrcs"></div></div>
       <div class="plp-row plp-tg"><div><div class="l" data-i="plDataL">手机流量下小字提示</div><div class="d" data-i="plDataD">用手机流量放大文件（无损约 30–50 MB）时，播放条上写一句；这首歌有小文件的音源就先用它</div></div><button class="plp-sw" type="button" id="plDataSw" role="switch" data-i-aria="plDataL"></button></div>
       <div class="plp-row"><div class="l" data-i="plSleep">定时关闭</div><div class="pl-chips" id="plSleeps"></div></div>
       <div class="plp-row plp-tg" id="plLyrRow" hidden><div><div class="l" data-i="plLyrL">显示歌词</div><div class="d" data-i="plLyrD">有歌词的歌，在播放列表旁边多一格“歌词”</div></div><button class="plp-sw" type="button" id="plLyrSw" role="switch" data-i-aria="plLyrL"></button></div>
@@ -3027,6 +3059,10 @@ Object.assign(I18N.en,{shelfMediaHeading:'Content type',shelfMediaAll:'All',shel
 const $ = s => document.querySelector(s);
 Object.assign(I18N.zh,{themeTop:'主题', thLabel:'主题', thClassic:'经典', thCloud:'云红', setTitle:'设置', viewIsCards:'卡片', viewIsList:'列表'});
 Object.assign(I18N.en,{themeTop:'Theme', thLabel:'Theme', thClassic:'Classic', thCloud:'Cloud red', setTitle:'Settings', viewIsCards:'Cards', viewIsList:'List'});
+Object.assign(I18N.zh,{plWhy2:'网络连不上它的服务器', plWhy3:'声音文件有问题', plWhy4:'浏览器不接受：格式不支持，或网站不让外部播放'});
+Object.assign(I18N.en,{plWhy2:'the network cannot reach its server', plWhy3:'the sound file is broken', plWhy4:'the browser does not accept it: a format it cannot play, or the site does not let other sites play it'});
+Object.assign(I18N.zh,{qAll:'全站', qMusic:'音乐', qPodcast:'播客', qBooks:'书籍', qAudio:'有声书', qArticles:'文章', qVideo:'视频', qHot:'热榜', qMine:'书架', qp_all:'搜索全站：标题、摘要、关键词', qp_music:'搜索音乐：歌名、歌手', qp_podcast:'搜索播客：节目名', qp_books:'搜索精选图书', qp_audiobooks:'搜索有声书', qp_articles:'搜索精选文章', qp_video:'搜索视频', qp_hot:'搜索热榜里的条目', qp_mine:'搜索我的书架：标题、摘要、关键词', qWide:'在全站搜 ›', qWideQ:q=>`在全站搜“${q}” ›`, hotQNone:q=>`热榜里没有“${q}”`, lpSearchFor:'搜索音乐', lpSearchForPod:'搜索播客', lsSrcPv:'（试听）', lpArtistPlay:'播放全部', lpArtistSave:'存为歌单', lpArtistSaved:(n,c)=>`已存为歌单“${n}”（${c} 首）`, lpArtistTop:'热门歌曲', lpArtistLists:'相关歌单', lpArtistLoading:'正在读取这位歌手的歌……', lpArtistErr:'现在读不到这位歌手的歌，下面是搜到的歌曲', lpPlBack:'返回', lpPlLoading:'正在读取歌单……', lpPlErr:'这张歌单现在读不到', lpPlN:n=>`${n} 首`, psNone:q=>`没有找到和“${q}”有关的播客`, psErr:'现在搜不了播客', psSearching:'正在搜索播客……', psListen:'试听', psSub:'订阅', psN:n=>`${n} 期`, psHint:'输入节目名，例如“日谈”。', psSubbed:n=>`已订阅“${n}”`});
+Object.assign(I18N.en,{qAll:'Whole site', qMusic:'Music', qPodcast:'Podcasts', qBooks:'Books', qAudio:'Audiobooks', qArticles:'Articles', qVideo:'Videos', qHot:'Hot lists', qMine:'My shelf', qp_all:'Search the whole site: titles, summaries, keywords', qp_music:'Search music: songs, artists', qp_podcast:'Search podcasts: show names', qp_books:'Search the picked books', qp_audiobooks:'Search audiobooks', qp_articles:'Search the picked articles', qp_video:'Search videos', qp_hot:'Search the entries of the hot lists', qp_mine:'Search my shelf: titles, summaries, keywords', qWide:'Search the whole site ›', qWideQ:q=>`Search the whole site for “${q}” ›`, hotQNone:q=>`Nothing in the hot lists for “${q}”`, lpSearchFor:'Searching music', lpSearchForPod:'Searching podcasts', lsSrcPv:' (preview)', lpArtistPlay:'Play all', lpArtistSave:'Save as a play list', lpArtistSaved:(n,c)=>`Saved as the play list “${n}” (${c} songs)`, lpArtistTop:'Top songs', lpArtistLists:'Related play lists', lpArtistLoading:'Reading the songs of this artist…', lpArtistErr:'The songs of this artist cannot be read right now; here is what the search found', lpPlBack:'Back', lpPlLoading:'Reading the play list…', lpPlErr:'This play list cannot be read right now', lpPlN:n=>`${n} songs`, psNone:q=>`No podcast found for “${q}”`, psErr:'Podcasts cannot be searched right now', psSearching:'Searching podcasts…', psListen:'Listen', psSub:'Subscribe', psN:n=>`${n} episodes`, psHint:'Type the name of a show, such as “Daily”.', psSubbed:n=>`Subscribed to “${n}”`});
 Object.assign(I18N.zh,{bookLicLine:(l,h,from)=>`授权：${l} · 来源：${h}${from?` · 这一章来自：${from}`:''}`, bookTier:x=>({local:'这个浏览器里的副本', hot:'服务器上的副本', durable:'服务器上的副本', source:'刚从原站读取', feed:'刚从原站读取'})[x]||'', bookChN:n=>`${n} 章`, bookStart:'从头开始读', bookOrig:'打开原站', bookChapters:'章节', bookLic:'授权', bookNote:'点一章就在这里读；阅读页顶上的“上一篇 / 下一篇”翻章，字号和颜色在“Aa”里调。',
   'lic_public-domain':'公有领域', lic_cc0:'CC0', 'lic_cc-by':'CC BY', 'lic_cc-by-sa':'CC BY-SA', 'lic_cc-by-nc':'CC BY-NC', 'lic_cc-by-nc-sa':'CC BY-NC-SA', 'lic_free-to-read':'免费阅读'});
 Object.assign(I18N.en,{bookLicLine:(l,h,from)=>`Licence: ${l} · From ${h}${from?` · This chapter came from: ${from}`:''}`, bookTier:x=>({local:'a copy kept in this browser', hot:'the copy on the server', durable:'the copy on the server', source:'the original page, just now', feed:'the original page, just now'})[x]||'', bookChN:n=>n===1?'1 chapter':`${n} chapters`, bookStart:'Start reading', bookOrig:'Open the original', bookChapters:'Chapters', bookLic:'Licence', bookNote:'Tap a chapter to read it here; “Previous / Next” at the top of the reader turns the chapters, and the text size and colours are under “Aa”.',
@@ -3047,8 +3083,8 @@ Object.assign(I18N.zh,{pinTip:'固定在左边', unpinTip:'取消固定', eyeLbl
 Object.assign(I18N.en,{pinTip:'Pin at the left', unpinTip:'Unpin', eyeLbl:'Eye care', eye_follow:'Follow system', eye_sepia:'Sepia', eye_green:'Green', eye_dark:'Dark', eyeTip:x=>`Eye care: now "${x}", click for the next`, eyeNow:x=>`Eye care: ${x}`, fsNow:n=>`Text size ${n}%`, pgPrev:'Previous page', pgNext:'Next page', fsSmaller:'Smaller text', fsBigger:'Bigger text', rbarTip:'Text size and page'});
 Object.assign(I18N.zh,{lpTab_rec:'推荐', lpTab_chart:'榜单', lpTab_disc:'发现', lpRegionCn:'国内', lpRegionGlobal:'国际', lpRegionTip:'国内 / 国际：先推荐哪里的歌', lpRadio:'今日电台', lpRadioPlay:'播放', lpRadioN:n=>`${n} 首`, lpBatch:'换一批', lpShelf:'精选歌单', lpForYou:'为你推荐', lpMyLikes:'我喜欢的', lpMyRecent:'最近播放', lpMyLists:'我的歌单', lpStyles:'风格', lpScenes:'场景', lpMoreStyles:n=>`更多风格（${n}）`, lpLessStyles:'收起', lpBack:'返回', lpR_cn:'中国', lpR_west:'欧美', 'lpR_jp-kr':'日韩', lpR_global:'全球', lpChartPick:'换一个榜单', lsLike:'喜欢', lsLiked:'取消喜欢', lsMore:'更多', lsmNext:'下一首播放', lsmAdd:'加入歌单', lsmLike:'喜欢', lsmUnlike:'取消喜欢', lsmNo:'不想听这类', lsmNextDone:s=>`下一首播放：${s}`, lsmNoDone:'已隐藏这首，以后少推荐类似的', lsmLikedDone:'已加入“我喜欢的”', lsmUnlikedDone:'已取消喜欢', lsmAdded:n=>`已加入“${n}”`, lsmHave:'歌单里已经有这首了', lsmNewList:'新建歌单', lsmNewPh:'新歌单的名字', lsmCreate:'新建并加入', lsmListN:n=>`${n} 首`, lpListDef:n=>`歌单 ${n}`, lpNoLists:'还没有歌单。在歌曲的 ⋯ 里点“加入歌单”就会建一个。', lpEmptyList:'这里还没有歌曲', lpListRename:'重命名', lpListDelete:'删除', lpListDelAsk:n=>`删除歌单“${n}”？`, lpListNewBtn:'新建歌单', lpListName:'歌单的名字'});
 Object.assign(I18N.en,{lpTab_rec:'For you', lpTab_chart:'Charts', lpTab_disc:'Discover', lpRegionCn:'China', lpRegionGlobal:'World', lpRegionTip:'China / World: whose songs to suggest first', lpRadio:'Today’s radio', lpRadioPlay:'Play', lpRadioN:n=>`${n} songs`, lpBatch:'Next batch', lpShelf:'Play lists', lpForYou:'For you', lpMyLikes:'Liked songs', lpMyRecent:'Recently played', lpMyLists:'My play lists', lpStyles:'Styles', lpScenes:'Scenes', lpMoreStyles:n=>`More styles (${n})`, lpLessStyles:'Fewer', lpBack:'Back', lpR_cn:'China', lpR_west:'West', 'lpR_jp-kr':'Japan · Korea', lpR_global:'World', lpChartPick:'Another chart', lsLike:'Like', lsLiked:'Unlike', lsMore:'More', lsmNext:'Play next', lsmAdd:'Add to a play list', lsmLike:'Like', lsmUnlike:'Unlike', lsmNo:'Not this kind', lsmNextDone:s=>`Plays next: ${s}`, lsmNoDone:'Hidden, and fewer like it from now on', lsmLikedDone:'Added to “Liked songs”', lsmUnlikedDone:'Unliked', lsmAdded:n=>`Added to “${n}”`, lsmHave:'It is in the play list already', lsmNewList:'New play list', lsmNewPh:'Name of the new play list', lsmCreate:'Create and add', lsmListN:n=>`${n} songs`, lpListDef:n=>`Play list ${n}`, lpNoLists:'No play lists yet. “Add to a play list” in the ⋯ of a song makes one.', lpEmptyList:'No songs here yet', lpListRename:'Rename', lpListDelete:'Delete', lpListDelAsk:n=>`Delete the play list “${n}”?`, lpListNewBtn:'New play list', lpListName:'Name of the play list'});
-Object.assign(I18N.zh,{plCollapse:'收起', plSetTip:'播放设置', plSetT:'播放设置', plSetClose:'关闭设置', plSrcL:'音源', plSrc_whole:'整首优先', plSrc_speed:'速度优先', plSrc_free:'只用免费合规源', plDataL:'手机流量下省流量', plDataD:'不自动播放大文件（无损约 30–50 MB）', plClearS:'清空', plQnSongs:n=>`${n} 首`, plQnEps:n=>`${n} 集`, plFocusL:'专注模式 ›', plWipe:'清除这台设备上的听歌记录', plWiped:'听歌记录已清除', plCleared:'已清空', plUndo:'撤销'});
-Object.assign(I18N.en,{plCollapse:'Fold', plSetTip:'Player settings', plSetT:'Player settings', plSetClose:'Close settings', plSrcL:'Source', plSrc_whole:'Whole songs first', plSrc_speed:'Fastest first', plSrc_free:'Free sources only', plDataL:'Spare mobile data', plDataD:'Big files (lossless, 30–50 MB) are not played by themselves', plClearS:'Clear', plQnSongs:n=>`${n} songs`, plQnEps:n=>`${n} episodes`, plFocusL:'Focus mode ›', plWipe:'Clear what this device remembers of listening', plWiped:'Listening history cleared', plCleared:'Cleared', plUndo:'Undo'});
+Object.assign(I18N.zh,{plCollapse:'收起', plSetTip:'播放设置', plSetT:'播放设置', plSetClose:'关闭设置', plSrcL:'音源', plSrcD:'VIP 歌曲只有很大的整首文件：前两项都会放整首，“只用免费合规源”不放，只有 30 秒试听', plSrc_whole:'整首优先', plSrc_speed:'速度优先', plSrc_free:'只用免费合规源', plDataL:'手机流量下省流量', plDataD:'不自动播放大文件（无损约 30–50 MB）', plClearS:'清空', plQnSongs:n=>`${n} 首`, plQnEps:n=>`${n} 集`, plFocusL:'专注模式 ›', plWipe:'清除这台设备上的听歌记录', plWiped:'听歌记录已清除', plCleared:'已清空', plUndo:'撤销'});
+Object.assign(I18N.en,{plCollapse:'Fold', plSetTip:'Player settings', plSetT:'Player settings', plSetClose:'Close settings', plSrcL:'Source', plSrcD:'A VIP song only has a big whole file: the first two play it, “Free sources only” does not (30-second previews only)', plSrc_whole:'Whole songs first', plSrc_speed:'Fastest first', plSrc_free:'Free sources only', plDataL:'Spare mobile data', plDataD:'Big files (lossless, 30–50 MB) are not played by themselves', plClearS:'Clear', plQnSongs:n=>`${n} songs`, plQnEps:n=>`${n} episodes`, plFocusL:'Focus mode ›', plWipe:'Clear what this device remembers of listening', plWiped:'Listening history cleared', plCleared:'Cleared', plUndo:'Undo'});
 Object.assign(I18N.zh,{plMode_list:'列表循环', plMode_one:'单曲循环', plMode_shuffle:'随机播放', plMode_order:'顺序播放', plSlow:'这个音源加载有点慢，再等一下', plBigAsk:mb=>`这首歌的文件很大（约 ${mb} MB），现在是手机流量`, plBigGo:'仍然播放'});
 Object.assign(I18N.en,{plMode_list:'Repeat the list', plMode_one:'Repeat one', plMode_shuffle:'Shuffle', plMode_order:'In order', plSlow:'This source is slow to load; waiting a little longer', plBigAsk:mb=>`This file is big (about ${mb} MB) and you are on mobile data`, plBigGo:'Play anyway'});
 Object.assign(I18N.zh,{newVer:'有新版本了', newVerGo:'刷新', newVerLater:'以后再说', updBusy:'更新中…', pullDown:'下拉刷新', pullGo:'松开刷新', pullOk:'已更新', pullOff:'没连上网，还是上次的'});
@@ -5550,7 +5586,8 @@ const CHANGELOG=[{v:'2026-10-22',
       '新增“反馈”：侧栏底部的“反馈”点开一个小窗，写下哪里不顺手、想要什么、哪里写错了，不用登录（站点接上反馈服务才有）。阅读指南的顶部多了“共读群”：QQ 群 869727153，二维码、群号、复制和保存都在那里，书架里指南那张卡的封面上也有。',
       '语言筛选改成一个按钮：点一下依次换，全部 → 中 → EN → 全部，按钮上写的是现在的。听歌页：“为你推荐”在宽屏分两列，右边不再空着；歌曲右边的“⋯”菜单改成在屏幕中间弹出。手机上发现世界里的主题按钮恢复了（之前被误藏，点了没有反应）。',
       '“今日听什么”能搜歌了：推荐页顶栏右边的放大镜，至少输入两个字，同时问好几个来源，每一首标明是“整首”还是“试听”。⋯ 菜单里多了“找整首”（试听的歌去找整首）和“换音源”（这首歌的每个音源列出来，点哪个就先用哪个）；没有声音地址的歌（比如抖音热歌榜）放的时候才去找声音，找到的地址过期了会自己再找，一首歌的声音全放不出来时也会再问一次。有歌词的歌，“正在播放”里列表旁边多一格“歌词”：当前这句高亮，点一句跳到那里（设置里可以关）。“为你推荐”现在会学你的口味：喜欢、听完、点“不想听这类”、很快切走都会记一笔（只记在这台设备上，30 天减半，“清除这台设备上的听歌记录”一键清掉），国内读者七成是国内的歌，每五首里有一首是没听过的歌手；第一次会问你爱听什么。原来只有 30 秒试听的歌，在国内会先去找整首（波点等来源），找不到才放试听；手机流量下放很大的整首（约 30 MB）不再弹窗，播放条上用小字写一句“手机流量 · 约 30 MB”。',
-      '新增故事类播客：“今日听什么 → 播客”里，热门播客后面是故事的几张列表——悬疑怪谈、真实罪案、真实故事、历史野史、轻松段子、睡前故事，以及喜马拉雅、小宇宙、荔枝FM 的故事热门（各平台节目在 Apple 播客中国榜上的位置）；“推荐订阅”里多了一组“故事 · 悬疑 · 段子 · 睡前”，热榜那一组也多了抖音、头条、小红书、公众号、微信读书、起点、QQ 音乐、Apple 播客榜、36氪、雪球、豆瓣的榜单，公共目录也收了几个，带“故事”标签。“精选图书”里多了“有声书”：第 1 章在前、一章一章往后放、放完自动放下一章、“接着听”回到上次的章和秒、一章放不了不会跳过去；只收公版的书和电台自己的节目（《红楼梦》《西游记》《水浒传》《聊斋志异》，“民国往事”里的《金粉世家》《骆驼祥子》《啼笑因缘》《四世同堂》《民国风云史》《闲话上海滩》等，和 LibriVox 的经典与故事；LibriVox 的声音在国外，标“海外”）。各页的标题、标题下的开关和按钮统一了样子：标题不再一页大一页小。'],
+      '新增故事类播客：“今日听什么 → 播客”里，热门播客后面是故事的几张列表——悬疑怪谈、真实罪案、真实故事、历史野史、轻松段子、睡前故事，以及喜马拉雅、小宇宙、荔枝FM 的故事热门（各平台节目在 Apple 播客中国榜上的位置）；“推荐订阅”里多了一组“故事 · 悬疑 · 段子 · 睡前”，热榜那一组也多了抖音、头条、小红书、公众号、微信读书、起点、QQ 音乐、Apple 播客榜、36氪、雪球、豆瓣的榜单，公共目录也收了几个，带“故事”标签。“精选图书”里多了“有声书”：第 1 章在前、一章一章往后放、放完自动放下一章、“接着听”回到上次的章和秒、一章放不了不会跳过去；只收公版的书和电台自己的节目（《红楼梦》《西游记》《水浒传》《聊斋志异》，“民国往事”里的《金粉世家》《骆驼祥子》《啼笑因缘》《四世同堂》《民国风云史》《闲话上海滩》等，和 LibriVox 的经典与故事；LibriVox 的声音在国外，标“海外”）。各页的标题、标题下的开关和按钮统一了样子：标题不再一页大一页小。',
+      '搜索按栏目分：页面最上面的搜索框左边多了个小标签，写着它搜什么（全站 / 音乐 / 播客 / 书籍 / 有声书 / 文章 / 视频 / 热榜 / 书架）；在“今日听什么”里直接在这个框里搜歌或搜播客节目，不再跳到全站搜索；书籍、文章、视频里搜不到时旁边有“在全站搜 ›”。搜到歌手时，结果最上面是歌手卡（播放全部、存为歌单），下面是各个来源合在一起的热门歌曲和相关歌单，邓紫棋、G.E.M.、鄧紫棋认作同一个人；每首歌的小字里写着它能从哪些来源听到（波点、网易云、Deezer 试听……）。点歌更快了：鼠标放在一行上就先去找它的声音，开始播放时会提前找接下来两首的声音。“今日听什么”里的搜索放大镜去掉了，只用最上面的搜索框；点一下空的搜索框，它下面就列出搜索记录。繁体和简体写的同一首歌（告白气球 / 告白氣球）合成一首。播放设置里选“速度优先”时，VIP 歌曲也会放整首，不再退到 30 秒试听。'],
   en:['New: “Back up & restore”: export the files, collections, subscriptions and reading places you added into one file, and restore it when you change device or fear a loss.',
       'Subscribed and saved links can now be read in the page: when a feed carries the full text it is shown at once; otherwise, and for any article link you paste and for the articles of the public directory, the original page is read and shown here and kept in your browser. Pages that need a login or do not let programs read them still open the original site (the card says “Original only”).',
       'New in the reading settings: “Download as a web page (HTML)” and “Print / save as PDF”.',
@@ -5594,7 +5631,8 @@ const CHANGELOG=[{v:'2026-10-22',
       'New: “Feedback”: the link at the foot of the side list opens a small window where you can write what is awkward, what you would like or what is wrong, with no sign-in (it shows when the site has the feedback service). The top of the user guide now has the “reading group”: QQ group 869727153, with its QR code, the number, copy and save, and the guide’s card on the shelf shows it on its cover too.',
       'The language of the content is one button now: each tap the next, All → 中 → EN → All, and it says which is on. On the listening page the songs for you are two columns on a wide screen, so nothing is left blank at the right, and the “⋯” menu of a song opens in the middle of the screen. On a phone the theme button works again in the public space (it had been hidden there by mistake).',
       'What to listen to today can search: the magnifier at the right end of the bar of the music side, two letters at least; several sources are asked at once and each song says “Full” or “Preview”. The “⋯” menu has “Find the full song” (for a preview) and “Change source” (every source of the song is listed, the one you tap comes first); a song with no sound yet (the Douyin chart, for one) gets its sound when it is played, an address that has run out is looked for again by itself, and when every sound of a song fails the service is asked once more. A song with lyrics has a “Lyrics” tab beside the list in “Now playing”: the line that is sung is lit, a tap on a line goes there (a switch in the settings turns it off). “For you” learns your taste now: a like, a song heard to the end, “not this kind” and a quick skip each count (kept on this device only, half the weight after 30 days, and “clear the records of this device” clears it); a reader in China gets seven in ten Chinese songs, and every fifth song is an artist you have not heard; the first time you are asked what you like. In China a song that used to have only a 30-second preview is first looked for as a whole song (Bodian and the others) and the preview plays only when none is found; on mobile data a very big whole song (about 30 MB) no longer asks, the bar says “Mobile data · about 30 MB” in small letters.',
-      'Story podcasts: under “What to listen to today → Podcasts”, after the top list there are lists of stories — mystery, true crime, true stories, history tales, funny talk, bedtime stories — and the hot stories of Ximalaya, Xiaoyuzhou and Lizhi FM (where the shows of each platform stand on Apple Podcasts’ China chart); “Recommended subscriptions” has a group “Stories · mystery · funny talk · bedtime” and its hot-lists group has the charts of Douyin, Toutiao, Xiaohongshu, WeChat articles, WeRead, Qidian, QQ Music, Apple Podcasts, 36Kr, Xueqiu and Douban, and the public directory took in a few, tagged “故事”. “Picked books” has “Audiobooks”: the first chapter first, chapter after chapter, the next one by itself, “Carry on” goes back to the chapter and the second you left, and a chapter that does not play is not skipped; only public-domain books and a broadcaster’s own programmes (Dream of the Red Chamber, Journey to the West, Water Margin, Strange Tales from a Chinese Studio, and LibriVox’s classics and stories; LibriVox’s sounds are abroad, marked “Overseas”).']}];
+      'Story podcasts: under “What to listen to today → Podcasts”, after the top list there are lists of stories — mystery, true crime, true stories, history tales, funny talk, bedtime stories — and the hot stories of Ximalaya, Xiaoyuzhou and Lizhi FM (where the shows of each platform stand on Apple Podcasts’ China chart); “Recommended subscriptions” has a group “Stories · mystery · funny talk · bedtime” and its hot-lists group has the charts of Douyin, Toutiao, Xiaohongshu, WeChat articles, WeRead, Qidian, QQ Music, Apple Podcasts, 36Kr, Xueqiu and Douban, and the public directory took in a few, tagged “故事”. “Picked books” has “Audiobooks”: the first chapter first, chapter after chapter, the next one by itself, “Carry on” goes back to the chapter and the second you left, and a chapter that does not play is not skipped; only public-domain books and a broadcaster’s own programmes (Dream of the Red Chamber, Journey to the West, Water Margin, Strange Tales from a Chinese Studio, and LibriVox’s classics and stories; LibriVox’s sounds are abroad, marked “Overseas”).',
+      'Search by section: the search box at the top has a small label that says what it searches (whole site / music / podcasts / books / audiobooks / articles / videos / hot lists / my shelf); on “What to listen to today” it searches songs or podcast shows right there, no longer jumping to a whole-site search; in books, articles and videos a “Search the whole site ›” is next to the words. When the words name an artist the top of the results is an artist card (play all, save as a play list), then the top songs of all the sources and the related play lists, and 邓紫棋, G.E.M. and 鄧紫棋 are one artist; each song says in small letters which sources it can be heard from (Bodian, NetEase, Deezer preview …). Playing is quicker: a pointer resting on a row looks for its sound beforehand, and when a song begins the sounds of the next two are looked for. The search magnifier on “What to listen to today” is gone: the box at the top is the one way in, and a click in the empty box lists what was searched before. The same song written in traditional and in simplified characters (告白气球 / 告白氣球) is one song. With “Fastest first” in the player settings a VIP song is still played whole instead of falling back to the 30-second preview.']}];
 const guideItem = () => state.items.find(x=>(x.source==='static'||x.source==='server') && /(^|\/)notes\/guide\/index\.html$/.test(x.id));
 const canAsk=()=>!!state.dirCfg && !LS.get('dirIntroOff',0) && !state.dPickT.size;               // the question "what do you feel like reading?" is for somebody who has not answered it, where the site has a public space
 function introStep(n, ask){                                                                  // which buttons go with which step of the window
@@ -5675,7 +5713,7 @@ function plCands(it){                                                           
   if(!cs.length && httpUrl(a.url)) cs=[{p:'', k:it.preview?'preview':'full', audio:a.url, net:'any', big:false}];
   if(plSet.src==='free') cs=cs.filter(c=>!c.p || PL_FREE.has(c.p));
   const home=LS.get('lpRegion', state.lang==='zh'?'cn':'global')==='cn' ? 'cn' : 'global';
-  const rank=c=>[it.pref && c.p===it.pref ? 0 : 1, plSet.src==='speed' ? +(c.big===true) : 0, c.k==='preview' ? 1 : 0, +plSave3(c), c.net==='any' || c.net===home ? 0 : 1];          // (the source the reader chose for this song first; whole before preview, then on mobile data a small file before a big one, then a sound near the reader before one far away; "speed first": the small ones before the big ones)
+  const rank=c=>[it.pref && c.p===it.pref ? 0 : 1, c.k==='preview' ? 1 : 0, plSet.src==='speed' ? +(c.big===true) : 0, +plSave3(c), c.net==='any' || c.net===home ? 0 : 1];          // (the source the reader chose for this song first; whole before preview in every setting (a VIP song has only a big whole file: "speed first" must not give it up for 30 seconds), then "speed first": the small ones before the big ones, on mobile data a small file before a big one, then a sound near the reader before one far away)
   return cs.map((c,i)=>({c,i,r:rank(c)})).sort((x,y)=>{ for(let k=0;k<5;k++) if(x.r[k]!==y.r[k]) return x.r[k]-y.r[k]; return x.i-y.i; }).map(x=>x.c);
 }
 const PL_MODE_ICON={                                                                                  // the play mode, one picture each: the list again, one song again, shuffled, in order and stop
@@ -5743,21 +5781,42 @@ function plStart(go){                                                           
 function plTrouble(id, why){                                                                          // this sound does not play (an error, nothing for a few seconds, a length that is not the song's): the next sound of the song; none left: the song is given up (or, if it is only slow, waited for)
   if(pl.loaded!==id) return;
   clearTimeout(pl.stallT);
+  const it0=plItem(id), c0=pl.cands[pl.ci];
+  if(it0 && plIsMusic(it0) && state.lp.v2 && c0 && c0.k==='full' && plSet.src!=='free' && !lpAsked(it0) && !pl.cands.slice(pl.ci+1).some(c=>c.k==='full')
+     && (it0.cands||[]).some(c=>c.rs && c.k==='full' && !c.audio && (c.net==='any' || c.net===(lpRegionPref()==='cn' ? 'cn' : 'global')))){          // (a whole sound at hand is gone, only previews are left, and a source of the reader's side has promised another whole song with no address yet: it is asked for before a preview is taken)
+    const at=plAudio.currentTime>3 ? plAudio.currentTime : pl.want, go=pl.go; pl.loaded=''; plAudio.pause(); plFinding(pl.q.indexOf(id), go, at, true); return;
+  }
   if(pl.ci<pl.cands.length-1){ if(plAudio.currentTime>3) pl.want=plAudio.currentTime; pl.ci++; plStart(pl.go); return; }
   if(why==='stall'){ toast(t('plSlow')); return; }
+  const rk=id+'#'+pl.ci;
+  if(why==='error' && !plRetried.has(rk)){ plRetried.add(rk); const go=pl.go, at=plAudio.currentTime>3 ? plAudio.currentTime : pl.want; pl.want=at; setTimeout(()=>{ if(pl.loaded===id) plStart(go); },900); return; }          // (a dropped connection or a server that was busy is not a sound that is gone: one more try of the same sound)
   const it=plItem(id);
   if(it && plIsMusic(it) && !it.rsTried && state.lp.v2){                                               // (every sound of the song failed: the service is asked for new ones once, an address may have run out)
     it.rsTried=true; const at=plAudio.currentTime>3 ? plAudio.currentTime : pl.want, go=pl.go; pl.loaded=''; plAudio.pause(); plFinding(pl.q.indexOf(id), go, at, true); return;
   }
   plFailed(id);
 }
-const plRs=new Map();
+const plRs=new Map(), plRetried=new Set();
+function plWhy(){                                                                                      // " · the server · what the browser said": the toast of a sound that does not play says where it comes from, so that a reader can say it back
+  let h=''; try{ h=new URL(plAudio.currentSrc).hostname; }catch(e){}
+  const r={2:'plWhy2', 3:'plWhy3', 4:'plWhy4'}[plAudio.error && plAudio.error.code];
+  return (h ? ' · '+h : '')+(r ? ' · '+t(r) : '');
+}
 function plResolve(id, force){                                                                                // -> a promise: true when the song now has a sound it did not have (the service found one); the song and the bar's copy of it are given the sounds and the words
   const it=plItem(id), x=lpSeen.get(String(id).slice(7)); if(!it || !x || !state.lp.v2) return Promise.resolve(false);
   if(plRs.has(id)) return plRs.get(id);
+  const promised=lpPromise(it) || lpUpgrade(it);                                                      // (a whole song was promised: a source of the reader's side says it has it)
   it.rsAsked=true; x.rsAsked=true; state.lp.rsDone.add(String(x.id));                                                                  // (asked for once: a promise that came to nothing is not asked for again at every play)
-  const p=lpResolve(x,force).then(r=>{ if(!r) return false; lpApplyResolve(x,it,r); return r.cands.length>0; }).finally(()=>plRs.delete(id));
+  const p=lpResolve(x,force).then(r=>{ if(!r) return false; lpApplyResolve(x,it,r); if(promised && !r.cands.some(c=>c.k==='full')){ it.rsMissed=true; x.rsMissed=true; } return r.cands.length>0; }).finally(()=>plRs.delete(id));
   plRs.set(id,p); return p;
+}
+function plRetryWhole(id){                                                                            // the answer had no whole song though a source had promised one (that source was slow or failing for a moment): one more question a little later; a whole song that comes takes over while the song is at its beginning
+  const it=plItem(id), x=lpSeen.get(String(id).slice(7)); if(!it || !x || !it.rsMissed || it.rsRetry || !state.lp.v2) return;
+  it.rsRetry=true; x.rsRetry=true;
+  setTimeout(()=>{ plResolve(id,'fresh').then(()=>{
+    const k=pl.q.indexOf(id), cur=plItem(id);
+    if(k>=0 && pl.i===k && cur && pl.loaded===id && plAudio.currentTime<12 && !pl.cands.some(c=>c.k==='full') && plCands(cur).some(c=>c.k==='full')) plSwitch(id);
+  }); },2500);
 }
 function plFinding(i, go, start, force){                                                                      // the song has no sound (yet): the service is asked for one, then the song is loaded
   const id=pl.q[i], it=plItem(id); if(!it) return;
@@ -5769,7 +5828,7 @@ function plFinding(i, go, start, force){                                        
     if(!done){ done=true; if(pl.find===id) pl.find=''; if(!cur.need && plCands(cur).length) plLoad(k,go,start); else { plTick(); plFailed(id); } return; }
     if(late && pl.loaded===id && plAudio.currentTime<12 && !pl.cands.some(c=>c.k==='full') && plCands(cur).some(c=>c.k==='full')) plSwitch(id);          // (the whole song was found after the preview began)
   };
-  plResolve(id,force).then(()=>fin(done));
+  plResolve(id,force).then(()=>{ fin(done); plRetryWhole(id); });
   if(soft) setTimeout(()=>{ if(!done) fin(false); },PL_UP_MS);
 }
 const PL_UP_MS=Math.max(500,+LS.get('plUpMs',4000)||4000);
@@ -5777,7 +5836,7 @@ function plFailed(id){
   const it=plItem(id); pl.loaded=''; pl.want=0; plToggleIcon(); plMarkCards();
   if(id.startsWith('tmp:ls:ab:') && it){ toast(t('abChFail',cut(it.title,24)), t('abRetry'), ()=>{ const k=pl.q.indexOf(id); if(k>=0) plLoad(k,true); }); return; }          // (a chapter of an audiobook that does not play is not skipped: a book is heard in order; the reader may try again)
   if(id.startsWith('tmp:ls:') && pl.i<pl.q.length-1){ toast(t('lsSkip',cut(it ? it.title : '',24))); plNext(); return; }                 // a song of today's listening that the platform does not give out: on to the next one
-  if(it) toast(t('plFail'), it.url ? t('plOpenOrig') : undefined, it.url ? ()=>window.open(it.url,'_blank','noopener,noreferrer') : undefined);
+  if(it) toast(t('plFail')+plWhy(), it.url ? t('plOpenOrig') : undefined, it.url ? ()=>window.open(it.url,'_blank','noopener,noreferrer') : undefined);
 }
 function plLenCheck(){                                                                                // the length of the sound is not the song's (a cut, a wrong song): the next sound, when there is one
   const it=plCur(), c=pl.cands[pl.ci]; if(!it || !c || c.k==='preview' || pl.ci>=pl.cands.length-1) return;
@@ -5790,6 +5849,7 @@ function plLoad(i, go, at){
   pl.i=i; pl.pre=''; pl.preA=null; pl.closed=false;
   const prog=plProgMap()[id], start = at!==undefined ? at : prog && !prog[2] && prog[0]>5 ? Math.max(0,prog[0]-3) : 0;                    // where it was left, a little before
   if(plIsMusic(it) && (it.need || plStale(it) || lpPromise(it) || lpUpgrade(it)) && state.lp.v2){ plFinding(i,go,start); return; }
+  if(plIsMusic(it) && it.rsMissed) plRetryWhole(id);                                                   // (its question was asked beforehand, at a hover or at the song before, and came back without the whole song)
   const cs=plCands(it);
   pl.want=start; pl.cands=cs; pl.ci=0;
   if(!cs.length){
@@ -5798,7 +5858,7 @@ function plLoad(i, go, at){
     plFailed(id);
     return;
   }
-  pl.loaded=id; plStart(go);
+  pl.loaded=id; plStart(go); plWarmNext();
   if(id.startsWith('tmp:ls:ab:')) abNote(id);                                                          // (a chapter of an audiobook: the book remembers it, so that "carry on" begins here)
   if(plIsMusic(it)) lpRecentAdd(lpSeen.get(id.slice(7)));                                              // (the songs played last: "recent" on the first tab)
   if(it.unread) markRead(id);
@@ -5825,6 +5885,25 @@ function plPrefetch(){                                                          
   const cs=it ? plCands(it).filter(x=>!x.big) : []; if(!cs.length) return;
   try{ const a=new Audio(); a.preload='metadata'; a.src=plSrc(cs[0].audio); pl.preA=a; }catch(e){}
 }
+function plWarmNext(){                                                                                 // when a song begins, the sounds of the next two songs of the list are looked for (a press of "next" finds them ready; the service keeps what it found, so a song is not asked for twice)
+  if(!state.lp.v2 || !plIsMusic(plCur()) || plMode()==='shuffle') return;
+  for(let k=pl.i+1, n=0; k<pl.q.length && n<2; k++, n++){
+    const id=pl.q[k], it=plItem(id);
+    if(it && plIsMusic(it) && (it.need || plStale(it) || lpPromise(it) || lpUpgrade(it))) plResolve(id);
+  }
+}
+/* a song that is about to be pressed is looked for beforehand: the pointer on a row for a moment (or a finger put down) asks the service for its sound, so that the press finds it ready */
+let lpWarmT=0, lpWarmId='';
+function lpWarm(row){
+  const L=state.lp; if(!L.v2 || !row) return;
+  const id=row.dataset.lsGo, x=lpSeen.get(id); if(!x || x.pod || x.mode!=='stream' || lpWarmId===id) return;
+  if(!(x.need || lpPromise(x) || lpUpgrade(x)) || L.rsDone.has(String(x.id))) return;          // (only a song that needs it, once)
+  lpWarmId=id;
+  lpResolve(x).then(r=>{ if(r && r.cands.length){ lpApplyResolve(x,null,r); L.rsDone.add(String(x.id)); } });
+}
+document.addEventListener('pointerover',e=>{ const b=e.target.closest && e.target.closest('.ls-main[data-ls-go]'); if(!b) return; clearTimeout(lpWarmT); lpWarmT=setTimeout(()=>lpWarm(b),180); },{passive:true});
+document.addEventListener('pointerout',()=>clearTimeout(lpWarmT),{passive:true});
+document.addEventListener('touchstart',e=>{ const b=e.target.closest && e.target.closest('.ls-main[data-ls-go]'); if(b) lpWarm(b); },{passive:true});
 function plStop(){
   plAudio.pause(); plAudio.removeAttribute('src'); plAudio.load();
   Object.assign(pl,{q:[], i:-1, loaded:'', want:0, shown:'', sleepAt:0, sleepEnd:false, sleepMin:0, closed:false, find:''}); clearTimeout(pl.stallT); plNewRound(); LS.set('pl',{q:[],cur:'',t:0,rate:pl.rate});
@@ -7741,13 +7820,14 @@ function listenClean(x){                                                        
   if(!stream && x.mode!=='embed') return null;
   return {id:s(x.id).slice(0,60), title:cut(s(x.title),120), artist:cut(s(x.artist),80), cover:s(x.cover).startsWith('https://')?s(x.cover):'', dur:+x.dur>0?Math.floor(+x.dur):0, mode:stream?'stream':'embed', cands:cs,
           audio:stream?first:'', need:stream && !first && need, url:httpUrl(x.url), lic:cut(s(x.lic),30), from:cut(s(x.from),30), net:x.net==='global'?'global':'cn', preview:x.preview===true, date:/^\d{4}-\d{2}-\d{2}$/.test(s(x.date))?x.date:'', show:s(x.show).slice(0,20),
-          market:['cn','jp-kr','west','global'].includes(x.market)?x.market:'', tags:(Array.isArray(x.tags) ? x.tags : []).slice(0,4).map(v=>cut(s(v),20)).filter(Boolean)};
+          market:['cn','jp-kr','west','global'].includes(x.market)?x.market:'', tags:(Array.isArray(x.tags) ? x.tags : []).slice(0,4).map(v=>cut(s(v),20)).filter(Boolean),
+          src:(Array.isArray(x.src) ? x.src : []).slice(0,6).filter(v=>v && typeof v.name==='string' && v.name).map(v=>({p:s(v.p).slice(0,12), name:cut(v.name,20), k:v.k==='full'?'full':'preview', state:v.state==='pending'?'pending':'ok'}))};
 }
 async function lpResolve(x, force){                                                                   // -> {cands, ttl, lyrics} of a song (fresh sounds, and its words when a source has them), or null: the service says nothing (older service, no answer)
   const api=listenApi(), L=state.lp; if(!api || !L.v2 || !x) return null;
   const hit=L.rs.get(x.id); if(hit && !force && Date.now()<hit.exp) return hit.r;
   try{
-    const u=api+'?resolve=1&id='+encodeURIComponent(x.id)+'&t='+encodeURIComponent(x.title)+'&a='+encodeURIComponent(x.artist||'')+'&d='+(x.dur||0)+'&lang='+state.lang+'&region='+lpRegionPref();
+    const u=api+'?resolve=1&id='+encodeURIComponent(x.id)+'&t='+encodeURIComponent(x.title)+'&a='+encodeURIComponent(x.artist||'')+'&d='+(x.dur||0)+'&lang='+state.lang+'&region='+lpRegionPref()+(force==='fresh' ? '&fresh=1' : '');
     const r=await fetch(u,{credentials:'omit'}), d=await r.json().catch(()=>null);
     if(!d || d.ok!==true || !Array.isArray(d.cands)) return null;
     const out={cands:d.cands.slice(0,8).map(lpCleanCand).filter(c=>c && c.audio), ttl:Math.max(1,Math.min(3600,+d.ttl||600)), lyrics:lpCleanLyrics(d.lyrics)};
@@ -7903,7 +7983,7 @@ function lpSorted(items, id){
   if(k==='artist') return items.slice().sort((a,b)=>a.artist.localeCompare(b.artist,loc) || a.title.localeCompare(b.title,loc));
   return items;                                                                                      // (the service's order, or the newest episode first)
 }
-const lpShownItems=()=>{ if(state.lp.search && state.lp.sres) return state.lp.sres.items; const cur=lpCur(); if(!cur) return state.lp.tab==='rec' ? lpRecItems() : []; return lpSorted(lpGroupItems(cur, cur==='pod' ? state.lp.show : '').items, cur); };
+const lpShownItems=()=>{ const L=state.lp; if(L.search){ if(L.spl && L.spl.state==='ok') return L.spl.items; if(L.sres){ const S=L.sres.artist && L.sart && L.sart.name===L.sres.artist.name && L.sart.state==='ok' ? L.sart : null; return S ? S.songs : L.sres.items; } } const cur=lpCur(); if(!cur) return state.lp.tab==='rec' ? lpRecItems() : []; return lpSorted(lpGroupItems(cur, cur==='pod' ? state.lp.show : '').items, cur); };
 function lpEnsure(){                                                                                 // the lists that the page on the screen needs are asked for (the daily picks for the radio, the chart that is shown, the list that was opened)
   if(!listenApi()) return; lpIndex(); const L=state.lp; if(L.v2 && L.tab==='rec' && !lpPodMode()) lpPoolEnsure();
   if(!lpPodMode() && L.tab==='rec'){ const gs=lpGroups(), d=gs.find(g=>g.type==='music' && g.kind==='daily'), m=lpMixGroup(gs); if(d) lpLoad(d.id); if(m) lpLoad(m.id); }
@@ -7913,6 +7993,7 @@ function lpDate(){ const ymd=String((state.lp.idx && state.lp.idx.date) || today
 function lpMeta(x){ return [x.artist || x.from, x.hot ? '🔥 '+t('lpRank',x.hot) : '', x.preview ? t('lsPreviewS') : '', x.net==='global' ? t('lsGlobal') : ''].filter(Boolean); }          // (who it is by, how hot it is (the place in a chart), "preview" when it is one, "overseas": nothing else)
 const lpIsRows=()=> LS.get('lpView','rows')!=='cards';                                              // (rows by default: a chart is read down a list; the cards are one tap away; the shelf's own view choice is not touched)
 const LP_BARS='<i class="ls-bars" aria-hidden="true"><b></b><b></b><b></b></i>';                       // (the little bars that dance on the row that plays)
+const lpFromLine=x=>x.sr && x.src && x.src.length ? `<span class="ls-from"> · ${esc(x.src.map(v=>v.name+(v.k==='preview' ? t('lsSrcPv') : '')).join(' · '))}</span>` : '';          // (a song that was searched for says where it can be heard from: the sources, a preview marked)
 function listenRowHTML(x, playing, plain){                                                                 // a song as a row: [rank] cover, title (a small "preview" when it is one), artist, ♥ and ⋯; an episode keeps a play mark and a link to its page
   lpSeen.set(x.id,x);
   const stream=x.mode==='stream';
@@ -7922,7 +8003,7 @@ function listenRowHTML(x, playing, plain){                                      
     return `<li class="ls-row nonum${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}"><span class="ls-cv">${cv}${LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}</b><span class="ls-m"><span class="ls-w">${esc(lpMeta(x)[0]||'')}</span>${lpMeta(x).length>1 ? `<span class="ls-x"> · ${esc(lpMeta(x).slice(1).join(' · '))}</span>` : ''}</span></span><span class="ls-ic" aria-hidden="true">${ICON.play}</span></button>${src}</li>`;
   }
   const liked=lpIsLiked(x.id), num=x.hot>0 && !plain;          // (plain: a list that is not a chart, such as the songs for you, which mixes a chart in: no place in front of a song)
-  return `<li class="ls-row${num?'':' nonum'}${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}">${num ? `<span class="ls-n${x.hot<=3?' top':''}"><em>${x.hot}</em>${LP_BARS}</span>` : ''}<span class="ls-cv">${cv}${num?'':LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}${x.preview && !lpPromise(x) && !lpUpgrade(x) ? `<em class="ls-pv">${esc(t('lsPreviewS'))}</em>` : x.sr && (!x.preview || lpPromise(x)) ? `<em class="ls-pv ls-wh">${esc(t('lsWholeS'))}</em>` : ''}</b><span class="ls-m">${esc(x.artist||x.from)}</span></span></button>`
+  return `<li class="ls-row${num?'':' nonum'}${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}">${num ? `<span class="ls-n${x.hot<=3?' top':''}"><em>${x.hot}</em>${LP_BARS}</span>` : ''}<span class="ls-cv">${cv}${num?'':LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}${x.preview && !lpPromise(x) && !lpUpgrade(x) ? `<em class="ls-pv">${esc(t('lsPreviewS'))}</em>` : x.sr && (!x.preview || lpPromise(x)) ? `<em class="ls-pv ls-wh">${esc(t('lsWholeS'))}</em>` : ''}</b><span class="ls-m">${esc(x.artist||x.from)}${lpFromLine(x)}</span></span></button>`
     + `<button class="ls-like" type="button" data-ls-like="${esc(x.id)}" aria-pressed="${liked}" title="${esc(t(liked?'lsLiked':'lsLike'))}" aria-label="${esc(t(liked?'lsLiked':'lsLike'))}">${ICON.heart}</button><button class="ls-more" type="button" data-ls-more="${esc(x.id)}" aria-haspopup="dialog" title="${esc(t('lsMore'))}" aria-label="${esc(t('lsMore'))}">${ICON.more}</button></li>`;
 }
 function lpCardHTML(x, playing){                                                                     // a song as a card: a square cover with a play mark, the title, the artist, one line of what it is
@@ -8146,33 +8227,74 @@ function lpChartHTML(all){
   const pick=c.list.length>1 ? `<div class="lp-regs lp-cgs" role="tablist" aria-label="${esc(t('lpChartPick'))}">${c.list.map(g=>`<button class="lp-reg" type="button" role="tab" aria-selected="${g.id===c.g.id}" data-lp-cgb="${esc(g.id)}">${esc(lpName(g))}</button>`).join('')}</div>` : '';
   return regs+pick+lpSongsHTML(c.g.id, all);
 }
-const LP_SEARCH='<svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
 const lpHist=()=>{ const a=LS.get('lpSearchHist',[]); return Array.isArray(a) ? a.filter(v=>typeof v==='string' && v).slice(0,10) : []; };
 const lpHistAdd=q=>{ if(q) LS.set('lpSearchHist',[q].concat(lpHist().filter(v=>v!==q)).slice(0,10)); };
-function lpSearchHTML(){                                                                               // the search page: a back arrow and a box, then the history, or the songs found (each says whether it is a whole song or a preview)
-  const L=state.lp;
-  return `<div class="lp-sh"><button class="plp-ic lp-back" type="button" data-lp-sback aria-label="${esc(t('lpBack'))}">${LP_BACK}</button><input id="lpSrIn" class="lp-sin" type="search" enterkeyhint="search" autocomplete="off" maxlength="60" placeholder="${esc(t('lpSearchPh'))}" value="${esc(L.sq)}" aria-label="${esc(t('lpSearchPh'))}"></div><div id="lpSrRes">${lpSearchResHTML()}</div>`;
+function lpSqText(){ const L=state.lp, q=L.sq.trim(); return t(lpPodMode() ? 'lpSearchForPod' : 'lpSearchFor')+(q ? ' · '+cut(q,30) : ''); }
+function lpSearchHTML(){                                                                               // the search page: a back arrow and what is being searched (the words are typed in the box at the top, which says "music" or "podcasts"), then the history, or what was found
+  return `<div class="lp-sh"><button class="plp-ic lp-back" type="button" data-lp-sback aria-label="${esc(t('lpBack'))}">${LP_BACK}</button><span class="lp-sq">${esc(lpSqText())}</span></div><div id="lpSrRes">${lpSearchResHTML()}</div>`;
+}
+function lpWideHTML(q){ return q ? `<p class="q-wide-row"><button class="btn q-wide" type="button" data-qwide-top>${esc(t('qWideQ',cut(q,24)))}</button></p>` : ''; }
+function lpHistHTML(h){
+  return h.length ? `<div class="lp-secbar"><h3 class="lp-h">${esc(t('lpSearchHist'))}</h3><button class="btn dr-act" type="button" data-lp-sclear>${esc(t('lpSearchClear'))}</button></div><div class="dr-pickcols lp-sh-chips">${h.map(v=>`<button class="dr-chip" type="button" data-lp-shist="${esc(v)}">${esc(v)}</button>`).join('')}</div>` : `<p class="hot-state">${esc(t(lpPodMode() ? 'psHint' : 'lpSearchHint'))}</p>`;
+}
+function lpArtistHTML(a, now){                                                                          // the artist of a search: a card (name, the other names, play all, save as a play list), the best songs, the play lists that go with the name
+  const L=state.lp, S=L.sart && L.sart.name===a.name ? L.sart : null, songs=S && S.state==='ok' ? S.songs : [];
+  const cv=a.cover ? `<img src="${esc(a.cover)}" alt="" referrerpolicy="no-referrer">` : esc(Array.from(a.name)[0]||'♪');
+  const names=S && S.names && S.names.length>1 ? `<span class="lp-art-n">${esc(S.names.filter(n=>n!==a.name).slice(0,4).join(' · '))}</span>` : '';
+  const acts=`<span class="lp-art-acts"><button class="btn dr-act primary" type="button" data-lp-artplay>${esc(t('lpArtistPlay'))}</button><button class="btn dr-act" type="button" data-lp-artsave>${esc(t('lpArtistSave'))}</button></span>`;
+  const head=`<section class="lp-art"><span class="lp-art-cv">${cv}</span><span class="lp-art-tx"><b>${esc(a.name)}</b>${names}</span>${acts}</section>`;
+  if(S && S.state==='ok'){
+    const rows=songs.map(x=>listenRowHTML(x, !!now && now==='tmp:ls:'+x.id, true)).join('');
+    const lists=S.lists.length ? `<h3 class="lp-art-h">${esc(t('lpArtistLists'))}</h3><div class="lp-art-ls">${S.lists.map(l=>`<button class="lp-gc" type="button" data-lp-pl="${esc(l.id)}" data-lp-plname="${esc(l.name)}"><span class="lp-gcv">${l.cover ? `<img src="${esc(l.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : lpNoteCover(l.id)}</span><span class="lp-gct">${esc(l.name)}</span></button>`).join('')}</div>` : '';
+    return head+`<h3 class="lp-art-h">${esc(t('lpArtistTop'))}</h3><ol class="ls-rows lp-rows lp-srrows">${rows}</ol>`+lists;
+  }
+  return head+(S && S.state==='err' ? `<p class="dr-note">${esc(t('lpArtistErr'))}</p>` : `<p class="hot-state" aria-busy="true">${esc(t('lpArtistLoading'))}</p>`);
+}
+function lpPlistHTML(){                                                                                 // the songs of one play list found under an artist
+  const P=state.lp.spl, now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '';
+  const bar=`<div class="lp-secbar"><button class="btn dr-act" type="button" data-lp-plback>‹ ${esc(t('lpPlBack'))}</button><h3 class="lp-h">${esc(cut(P.name,30))}</h3>${P.state==='ok' && P.items.length ? `<button class="btn dr-act primary" type="button" data-lp-plplay>${esc(t('lpArtistPlay'))}</button>` : ''}</div>`;
+  if(P.state==='load') return bar+`<p class="hot-state" aria-busy="true">${esc(t('lpPlLoading'))}</p>`;
+  if(P.state==='err' || !P.items.length) return bar+`<p class="hot-state">${esc(t('lpPlErr'))}</p>`;
+  return bar+`<ol class="ls-rows lp-rows lp-srrows">${P.items.map(x=>listenRowHTML(x, !!now && now==='tmp:ls:'+x.id, true)).join('')}</ol>`;
 }
 function lpSearchResHTML(){
-  const L=state.lp, r=L.sres, q=L.sq.trim(), h=lpHist();
-  if(!r || q.length<2){
-    return h.length ? `<div class="lp-secbar"><h3 class="lp-h">${esc(t('lpSearchHist'))}</h3><button class="btn dr-act" type="button" data-lp-sclear>${esc(t('lpSearchClear'))}</button></div><div class="dr-pickcols lp-sh-chips">${h.map(v=>`<button class="dr-chip" type="button" data-lp-shist="${esc(v)}">${esc(v)}</button>`).join('')}</div>` : `<p class="hot-state">${esc(t('lpSearchHint'))}</p>`;
-  }
+  const L=state.lp, q=L.sq.trim(), h=lpHist();
+  if(lpPodMode()) return lpPodSearchResHTML();
+  if(L.spl) return lpPlistHTML();
+  const r=L.sres;
+  if(!r || q.length<2) return lpHistHTML(h);
   if(r.state==='load') return `<p class="hot-state" aria-busy="true">${esc(t('lpSearching'))}</p>`;
-  if(r.state==='err') return `<p class="hot-state">${esc(t('lpSearchErr'))}<br><button class="btn" type="button" data-lp-sretry>${esc(t('dirRetry'))}</button></p>`;
-  if(!r.items.length) return `<p class="hot-state">${esc(t('lpSearchNone',cut(q,30)))}</p>`;
-  const now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '';
-  return (r.partial ? `<p class="dr-note lp-spart">${esc(t('lpSearchPartial'))}</p>` : '') + `<ol class="ls-rows lp-rows lp-srrows">${r.items.map(x=>listenRowHTML(x, !!now && now==='tmp:ls:'+x.id, true)).join('')}</ol>`;
+  if(r.state==='err') return `<p class="hot-state">${esc(t('lpSearchErr'))}<br><button class="btn" type="button" data-lp-sretry>${esc(t('dirRetry'))}</button></p>${lpWideHTML(q)}`;
+  if(!r.items.length && !r.artist) return `<p class="hot-state">${esc(t('lpSearchNone',cut(q,30)))}</p>${lpWideHTML(q)}`;
+  const now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '', S=r.artist && L.sart && L.sart.name===r.artist.name ? L.sart : null;
+  const art=r.artist ? lpArtistHTML(r.artist, now) : '', shown=S && S.state==='ok' ? [] : r.items;                          // (the page of the artist has the songs: the search's own rows are shown while it is read, or when it cannot be)
+  return (r.partial ? `<p class="dr-note lp-spart">${esc(t('lpSearchPartial'))}</p>` : '') + art + (shown.length ? `<ol class="ls-rows lp-rows lp-srrows">${shown.map(x=>listenRowHTML(x, !!now && now==='tmp:ls:'+x.id, true)).join('')}</ol>` : '') + lpWideHTML(q);
 }
-let lpSrT=0, lpSrAbort=null;
-function lpSearchPaintRes(){ const el=$('#lpSrRes'); if(el){ el.innerHTML=lpSearchResHTML(); listenMark(); } }
-function lpSearchOpen(){ const L=state.lp; L.search=true; L.sq=''; L.sres=null; lpPaint(); const i=$('#lpSrIn'); if(i) i.focus(); }
-function lpSearchClose(){ const L=state.lp; clearTimeout(lpSrT); if(lpSrAbort) lpSrAbort.abort(); L.search=false; L.sres=null; L.sq=''; lpPaint(); }
-function lpSearchGo(q, now){                                                                           // two letters at least, and a third of a second after the last key
-  const L=state.lp; L.sq=q; clearTimeout(lpSrT); const w=q.trim();
-  if(w.length<2){ if(lpSrAbort) lpSrAbort.abort(); L.sres=null; lpSearchPaintRes(); return; }
-  lpSrT=setTimeout(()=>lpSearchRun(w), now ? 0 : 300);
+function lpPodSearchResHTML(){                                                                          // the podcast side: shows that match, each to listen to (the newest episode) or to follow
+  const L=state.lp, q=L.sq.trim(), r=L.psres;
+  if(!r || q.length<1) return lpHistHTML(lpHist());
+  if(r.state==='load') return `<p class="hot-state" aria-busy="true">${esc(t('psSearching'))}</p>`;
+  if(r.state==='err') return `<p class="hot-state">${esc(t('psErr'))}<br><button class="btn" type="button" data-lp-sretry>${esc(t('dirRetry'))}</button></p>${lpWideHTML(q)}`;
+  if(!r.shows.length) return `<p class="hot-state">${esc(t('psNone',cut(q,30)))}</p>${lpWideHTML(q)}`;
+  const can=!!feedApi();
+  return `<ul class="ps-rows">${r.shows.map((x,i)=>`<li class="ps-row"><span class="ps-cv">${x.cover ? `<img src="${esc(x.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ''}</span><span class="ps-tx"><b title="${esc(x.name)}">${esc(x.name)}</b><span class="ps-m">${esc([x.artist, x.n ? t('psN',x.n) : ''].filter(Boolean).join(' · '))}</span></span>${can ? `<span class="ps-acts"><button class="btn rc-play" type="button" data-ps-play="${i}">${ICON.play}<span>${esc(t('psListen'))}</span></button><button class="btn" type="button" data-ps-sub="${i}">${esc(t('psSub'))}</button></span>` : ''}</li>`).join('')}</ul>${lpWideHTML(q)}`;
 }
+let lpSrT=0, lpSrAbort=null, lpPsAbort=null;
+function lpSearchPaintRes(){ const el=$('#lpSrRes'); if(el){ el.innerHTML=lpSearchResHTML(); const h=document.querySelector('.lp-sq'); if(h) h.textContent=lpSqText(); listenMark(); } }
+function lpSearchLeave(){ const L=state.lp; clearTimeout(lpSrT); if(lpSrAbort) lpSrAbort.abort(); if(lpPsAbort) lpPsAbort.abort(); L.search=false; L.sres=null; L.psres=null; L.sart=null; L.spl=null; L.sq=''; }
+function lpSearchClose(){ lpSearchLeave(); const i=$('#q'); if(i) i.value=''; lpPaint(); }
+function lpTopSearch(v){                                                                                  // the box at the top, when the page is the music or the podcast side: what is typed is searched there, on the page (not in the whole site)
+  const L=state.lp, w=String(v||'').trim();
+  if(!L.search){ if(!w) return; lpSearchLeave(); L.search=true; lpPaint(); }
+  lpSearchGo(v);
+}
+function lpSearchGo(q, now){                                                                           // two letters at least for songs (one for a show), and a third of a second after the last key
+  const L=state.lp; L.sq=q; clearTimeout(lpSrT); const w=q.trim(), pod=lpPodMode();
+  if(w.length<(pod ? 1 : 2)){ if(lpSrAbort) lpSrAbort.abort(); if(lpPsAbort) lpPsAbort.abort(); L.sres=null; L.psres=null; L.sart=null; L.spl=null; lpSearchPaintRes(); return; }
+  L.spl=null;
+  lpSrT=setTimeout(()=>pod ? lpPodSearchRun(w) : lpSearchRun(w), now ? 0 : 300);
+}
+const lpHttps=u=>typeof u==='string' && u.startsWith('https://') ? u : '';
 async function lpSearchRun(w){
   const L=state.lp, api=listenApi(); if(!api) return;
   if(lpSrAbort) lpSrAbort.abort(); const ab=lpSrAbort=new AbortController();
@@ -8180,18 +8302,67 @@ async function lpSearchRun(w){
   try{
     const r=await fetch(api+'?search='+encodeURIComponent(w)+'&lang='+state.lang+'&region='+lpRegionPref(),{credentials:'omit', signal:ab.signal}), d=await r.json().catch(()=>null);
     if(!d || d.ok!==true || !Array.isArray(d.items)) throw new Error('search');
-    const items=d.items.slice(0,40).map(listenClean).filter(Boolean); items.forEach(x=>{ x.sr=true; });
+    const items=d.items.slice(0,50).map(listenClean).filter(Boolean); items.forEach(x=>{ x.sr=true; });
     if(L.sq.trim()!==w) return;
-    L.sres={state:'ok', items, partial:d.partial===true, q:w};
+    const artist=d.artist && typeof d.artist.name==='string' && d.artist.name ? {name:cut(d.artist.name,40), cover:lpHttps(d.artist.cover)} : null;
+    L.sres={state:'ok', items, partial:d.partial===true, q:w, artist};
+    if(artist){ if(!L.sart || L.sart.name!==artist.name) lpArtistLoad(artist.name); }
+    else if(d.artist_pending===true && /^[^\s]{1,12}( [^\s]{1,12})?$/.test(w)) lpArtistLoad(w, true);          // (the service was still looking the artist up: the page of the artist is asked for once, quietly; there is a card only when the words are an artist)
   }catch(e){ if(e.name==='AbortError' || L.sq.trim()!==w) return; L.sres={state:'err', items:[], q:w}; }
   lpSearchPaintRes();
 }
-document.addEventListener('input',e=>{ const i=e.target && e.target.closest && e.target.closest('#lpSrIn'); if(i) lpSearchGo(i.value); });
-document.addEventListener('keydown',e=>{
-  const i=e.target && e.target.closest && e.target.closest('#lpSrIn'); if(!i) return;
-  if(e.key==='Enter'){ e.preventDefault(); lpSearchGo(i.value,true); lpHistAdd(i.value.trim()); }
-  else if(e.key==='Escape'){ e.preventDefault(); lpSearchClose(); }
-});
+async function lpArtistLoad(name, probe){                                                                  // the page of the artist (the best songs of every source as one list, the play lists that go with the name); probe: the words may be no artist at all: nothing is shown until they are
+  const L=state.lp, api=listenApi(); if(!api) return;
+  L.sart=probe ? null : {name, state:'load', songs:[], lists:[], names:[]}; if(!probe) lpSearchPaintRes();
+  try{
+    const r=await fetch(api+'?artist='+encodeURIComponent(name)+'&lang='+state.lang+'&region='+lpRegionPref()+'&caps=resolve',{credentials:'omit'}), d=await r.json().catch(()=>null);
+    if(!d || d.ok!==true || !Array.isArray(d.songs)) throw new Error('artist');
+    if(probe && (!d.artist || typeof d.artist.name!=='string' || !d.artist.name)) return;                // (not an artist: the search stays a search)
+    const songs=d.songs.slice(0,50).map(listenClean).filter(Boolean); songs.forEach(x=>{ x.sr=true; });
+    const lists=(Array.isArray(d.lists) ? d.lists : []).slice(0,6).map(l=>({id:/^ne:pl:\d{1,14}$/.test(String(l && l.id || '')) ? l.id : '', name:cut(String(l && l.name || ''),40), cover:lpHttps(l && l.cover)})).filter(l=>l.id && l.name);
+    if(probe){ if(!L.sres || L.sres.q!==name || !songs.length) return; const nm=cut(String(d.artist.name),40); L.sres.artist={name:nm, cover:lpHttps(d.artist.cover)}; name=nm; }
+    if(probe || (L.sart && L.sart.name===name)) L.sart={name, state:songs.length ? 'ok' : 'err', songs, lists, names:(d.artist && Array.isArray(d.artist.names) ? d.artist.names : []).slice(0,6).map(v=>cut(String(v),30))};
+  }catch(e){ if(!probe && L.sart && L.sart.name===name) L.sart={name, state:'err', songs:[], lists:[], names:[]}; }
+  if(L.search) lpSearchPaintRes();
+}
+async function lpPlOpen(id, name){
+  const L=state.lp, api=listenApi(); if(!api) return;
+  L.spl={id, name, state:'load', items:[]}; lpSearchPaintRes();
+  try{
+    const r=await fetch(api+'?plist='+encodeURIComponent(id)+'&lang='+state.lang,{credentials:'omit'}), d=await r.json().catch(()=>null);
+    if(!d || d.ok!==true || !Array.isArray(d.items)) throw new Error('plist');
+    const items=d.items.slice(0,100).map(listenClean).filter(Boolean); items.forEach(x=>{ x.sr=true; });
+    if(L.spl && L.spl.id===id) L.spl={id, name, state:'ok', items};
+  }catch(e){ if(L.spl && L.spl.id===id) L.spl={id, name, state:'err', items:[]}; }
+  if(L.search) lpSearchPaintRes();
+}
+async function lpPodSearchRun(w){
+  const L=state.lp, api=listenApi(); if(!api) return;
+  if(lpPsAbort) lpPsAbort.abort(); const ab=lpPsAbort=new AbortController();
+  L.psres={state:'load', shows:[], q:w}; lpSearchPaintRes();
+  try{
+    const r=await fetch(api+'?psearch='+encodeURIComponent(w)+'&lang='+state.lang,{credentials:'omit', signal:ab.signal}), d=await r.json().catch(()=>null);
+    if(!d || d.ok!==true || !Array.isArray(d.shows)) throw new Error('psearch');
+    const shows=d.shows.slice(0,20).map(x=>({id:String(x && x.id || '').slice(0,14), name:cut(String(x && x.name || ''),80), artist:cut(String(x && x.artist || ''),60), cover:lpHttps(x && x.cover), feed:httpUrl(x && x.feed), n:+(x && x.n)>0 ? Math.floor(+x.n) : 0})).filter(x=>x.id && x.name && x.feed);
+    if(L.sq.trim()!==w) return;
+    L.psres={state:'ok', shows, q:w};
+  }catch(e){ if(e.name==='AbortError' || L.sq.trim()!==w) return; L.psres={state:'err', shows:[], q:w}; }
+  lpSearchPaintRes();
+}
+async function psPlay(i){                                                                                // the newest episode of a show that was found plays at once (a transient item: nothing is kept)
+  const x=state.lp.psres && state.lp.psres.shows[i]; if(!x || !feedApi()) return;
+  const b=document.querySelector(`[data-ps-play="${i}"]`); if(b){ b.disabled=true; b.classList.add('busy'); }
+  try{
+    const d=await callFeed({action:'discover',url:x.feed});
+    const e=((d && d.items)||[]).find(y=>feedAudio(y));
+    if(!e) throw new Error(d && d.ok===false ? ((state.lang==='zh'?d.message:d.message_en)||d.message||'?') : t('plFail'));
+    const tid='tmp:pod:'+hashStr(urlKey(x.feed)).toString(36);
+    state.tmp.set(tid,{id:tid, source:'tmp', type:'link', url:httpUrl(e.url)||x.feed, title:cut(e.title,140), summary:cut(e.summary,220), image:(String(e.image||'').startsWith('https://')?e.image:(String(d.image||'').startsWith('https://')?d.image:x.cover)),
+      audio:feedAudio(e), keywords:[], lang:state.lang, date:/^\d{4}-\d{2}-\d{2}/.test(e.date||'')?String(e.date).slice(0,10):today(), category:'notes', from:x.name});
+    plPlay(tid);
+  }catch(err){ toast(t('recoListenFail',err.message||String(err))); }
+  finally{ if(b){ b.disabled=false; b.classList.remove('busy'); } }
+}
 function lpListsHTML(){                                                                              // "my play lists": a row each, and a button for a new one
   const ls=lpLists();
   return `<section class="lp-songs"><header class="lp-songs-h"><button class="plp-ic lp-back" type="button" data-lp-back aria-label="${esc(t('lpBack'))}">${LP_BACK}</button><h3>${esc(t('lpMyLists'))}</h3><span class="lp-acts"><button class="btn dr-act" type="button" data-lp-newlist>${esc(t('lpListNewBtn'))}</button></span></header>`
@@ -8202,13 +8373,13 @@ function lpMusicHTML(all){
   const modes=hasPod ? `<div class="lp-modes seg" role="tablist" aria-label="${esc(t('lsTitle'))}">${['music','podcast'].map(m=>`<button type="button" role="tab" aria-selected="${m==='music'}" data-lp-mode="${m}">${esc(t('lpMode_'+m))}</button>`).join('')}</div>` : '';
   const tabs=LP_TABS.map(k=>`<button class="lp-tab" type="button" role="tab" aria-selected="${k===L.tab}" data-lp-tab="${k}">${esc(t('lpTab_'+k))}</button>`).join('') ;
   if(L.v2 && L.search) return `<div class="lp lp-sp">${lpSearchHTML()}</div>`;
-  const sbtn=L.v2 ? `<button class="ibtn lp-sbtn" type="button" data-lp-search title="${esc(t('lpSearch'))}" aria-label="${esc(t('lpSearch'))}">${LP_SEARCH}</button>` : '';
   const body=L.tab==='chart' ? lpChartHTML(all) : L.open ? (L.g==='my:lists' ? lpListsHTML() : lpSongsHTML(L.g, all)) : L.tab==='disc' ? lpDiscHTML(all) : lpRecHTML(all);
-  return `<div class="lp"><div class="lp-bar">${modes}<nav class="lp-tabs" role="tablist" aria-label="${esc(t('lsTitle'))}">${tabs}</nav>${sbtn}</div>${body}</div>`;
+  return `<div class="lp"><div class="lp-bar">${modes}<nav class="lp-tabs" role="tablist" aria-label="${esc(t('lsTitle'))}">${tabs}</nav></div>${body}</div>`;
 }
 function lpHTML(){
   const L=state.lp, P=lpPods(), all=lpGroups();
   if(!all.length) return `<p class="hot-state">${esc(L.err || t('lpLoading'))}${L.err ? `<br><button class="btn" type="button" data-lp-retry>${esc(t('dirRetry'))}</button>` : ''}</p>`;
+  if(L.v2 && L.search) return `<div class="lp lp-sp">${lpSearchHTML()}</div>`;          // (the search page, on the music side and on the podcast side)
   if(!lpPodMode()) return lpMusicHTML(all);
   const cur=lpSel(), mode=lpTypeOf(cur), order=lpOrder(mode), ci=order.findIndex(g=>g.id===cur), rows=lpIsRows();
   const hasPod=all.some(g=>g.type==='podcast'), hasMusic=all.some(g=>g.type!=='podcast'), modes=hasPod && hasMusic ? `<div class="lp-modes seg" role="tablist" aria-label="${esc(t('lsTitle'))}">${['music','podcast'].map(m=>`<button type="button" role="tab" aria-selected="${m===mode}" data-lp-mode="${m}">${esc(t('lpMode_'+m))}</button>`).join('')}</div>` : '';
@@ -8239,10 +8410,11 @@ function listenHTML(){                                                          
 }
 function listenSecHTML(){ setTimeout(()=>{ lpIndex(); lsEnsure(); },0); return `<div id="lsBlock">${listenHTML()}</div>`; }          // (the lists are asked for after the page is drawn, and drawn into their place when they are here)
 function lpPaint(){
+  qScopeSync();                                                                                         // (the box at the top says "music" once the service is known to be able to search it)
   const a=document.activeElement, d=a && a.dataset ? a.dataset : {}, att=d.lpG!==undefined ? ['data-lp-g',d.lpG] : d.lpShow!==undefined ? ['data-lp-show',d.lpShow] : d.lsScene ? ['data-ls-scene',d.lsScene] : d.lpMore!==undefined ? ['data-lp-more',''] : d.lpMode ? ['data-lp-mode',d.lpMode] : null;
   const b=$('#lsBlock'), p=$('#lpRoot');
   if(b) b.innerHTML=listenHTML();
-  if(p && state.lp.search && p.querySelector('#lpSrIn')){ lpSearchPaintRes(); return; }          // (the search page is not drawn again while somebody types: the box keeps its place and its words)
+  if(p && state.lp.search && p.querySelector('#lpSrRes')){ lpSearchPaintRes(); return; }          // (the search page is not drawn again while somebody types)
   if(p){
     const old=p.querySelector('.lp-strip'), was=old ? old.scrollLeft : null, wasCur=p.dataset.cur;
     p.innerHTML=lpHTML(); $('#viewSub').textContent=''; p.dataset.cur=lpSel();
@@ -8288,7 +8460,10 @@ function lpStep(d){                                                             
   if(!lpPodMode()){ const i=LP_TABS.indexOf(L.tab), k=LP_TABS[i+d]; if(k) lpTab(k); return; }
   const ord=lpOrder(lpTypeOf(lpSel())), i=ord.findIndex(g=>g.id===lpSel()), n=ord[i+d]; if(n) lpSelect(n.id);
 }
-function lpSetMode(mode){                                                                            // the switch between music and podcasts: back to the list chosen last in that kind
+function lpSetMode(mode){
+  if(state.lp.search) lpSearchLeave();
+  { const q=$('#q'); if(q && (qKind()==='music' || qKind()==='podcast')) q.value=''; }
+  setTimeout(qScopeSync,0);                                                                            // the switch between music and podcasts: back to the list chosen last in that kind
   const L=state.lp;
   if(mode==='music'){ L.mode='music'; L.open=false; L.shown=LP_PAGE; lpPaint(); lpEnsure(); lpToTop(); return; }
   const gs=lpGroups(), want=L['g_'+mode], ok=gs.find(g=>g.id===want && g.type===mode) || gs.find(g=>g.type===mode); if(ok) lpSelect(ok.id);
@@ -8510,11 +8685,18 @@ document.addEventListener('click',e=>{
 });
 function listenClick(e){
   const q=s=>e.target.closest(s); let b;
-  if(q('[data-lp-search]')){ lpSearchOpen(); return true; }
   if(q('[data-lp-sback]')){ lpSearchClose(); return true; }
   if(q('[data-lp-sclear]')){ LS.set('lpSearchHist',[]); lpSearchPaintRes(); return true; }
-  if((b=q('[data-lp-shist]'))){ const i=$('#lpSrIn'); if(i) i.value=b.dataset.lpShist; lpSearchGo(b.dataset.lpShist,true); return true; }
+  if((b=q('[data-lp-shist]'))){ const i=$('#q'); if(i) i.value=b.dataset.lpShist; lpSearchGo(b.dataset.lpShist,true); return true; }
   if(q('[data-lp-sretry]')){ lpSearchGo(state.lp.sq,true); return true; }
+  if(q('[data-qwide-top]')){ const w=state.lp.sq.trim(); lpSearchLeave(); qWide(w); return true; }
+  if(q('[data-lp-artplay]')){ const L=state.lp, S=L.sart, items=S && S.state==='ok' && S.songs.length ? S.songs : (L.sres ? L.sres.items : []); if(items.length) listenGo(items[0].id, items); return true; }
+  if(q('[data-lp-artsave]')){ const L=state.lp, S=L.sart, items=S && S.state==='ok' && S.songs.length ? S.songs : (L.sres ? L.sres.items : []), a=L.sres && L.sres.artist; if(items.length && a){ const l=lpListNew(a.name+' · '+t('lpArtistTop')); items.forEach(x=>lpListAdd(l.id,x)); toast(t('lpArtistSaved',l.name,items.length)); } return true; }
+  if((b=q('[data-lp-pl]'))){ lpPlOpen(b.dataset.lpPl, b.dataset.lpPlname||''); return true; }
+  if(q('[data-lp-plback]')){ state.lp.spl=null; lpSearchPaintRes(); return true; }
+  if(q('[data-lp-plplay]')){ const P=state.lp.spl; if(P && P.items.length) listenGo(P.items[0].id, P.items); return true; }
+  if((b=q('[data-ps-play]'))){ psPlay(+b.dataset.psPlay); return true; }
+  if((b=q('[data-ps-sub]'))){ const x=state.lp.psres && state.lp.psres.shows[+b.dataset.psSub]; if(x){ const id=subscribeNow(x.name, x.feed, ''); if(id) toast(t('psSubbed',cut(x.name,24))); } return true; }
   if(q('[data-lp-askgo]')){ lpAskDone(true); return true; }
   if(q('[data-lp-askskip]')){ lpAskDone(false); return true; }
   if((b=q('[data-lp-askk]'))){ const A=state.lp.ask=state.lp.ask||new Set(), k=b.dataset.lpAskk; if(A.has(k)) A.delete(k); else A.add(k); b.setAttribute('aria-pressed',String(A.has(k))); return true; }
@@ -9243,7 +9425,8 @@ function renderDir(){
   if(state.dType!=='all' && !state.dLanding) cl.push(clr('dtype',t('scType')+t('ty_'+state.dType)));
   if(dirLf()!=='all') cl.push(clr('dlf',t('scLang')+(state.lf==='zh'?t('langZh'):t('langEn'))));
   if(state.q.trim()) cl.push(clr('dq',t('scQ')+state.q.trim()));
-  if(sh) cl.push(clr('dshelf',sh.name)); if(!bkp && (pickOn() || topicPickOn()) && !sh) cl.push(clr('dpick',t(state.dTabs==='plat' ? 'dpSum' : 'dpSumT',pickCount())));
+  if(state.q.trim() && ['books','audiobooks','articles','video'].includes(qKind())) cl.push(`<button class="chip q-wide" type="button" data-qwide>${esc(t('qWide'))}</button>`);
+  if(sh) cl.push(clr('dshelf',sh.name)); if(!bkp && (pickOn() || topicPickOn()) && !sh) cl.push(clr('dpick',t(state.dTabs==='plat' ? 'dpSum' : 'dpSumT',pickCount())));          // (the tag chip is gone with the tags: master)
   $('#viewSub').innerHTML = html + (cl.length ? '<br>'+cl.join('') : '');
 
   { const pr=dirProfile(); state.dirInt = pr.n>=3 ? new Set([...pr.col].filter(([,w])=>w>=2).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0])) : new Set(); }          // (the columns this browser has really read, saved, liked or followed: said on a recommendation, never made up)
@@ -10130,6 +10313,7 @@ $('#shelfTypeFilters').addEventListener('click',e=>{
 document.querySelectorAll('[data-space]').forEach(b=>b.addEventListener('click',()=>setSpace(b.dataset.space)));
 $('#tabbar [data-hot-nav]').addEventListener('click',()=>publicGo('hot'));
 $('.view-head').addEventListener('click',e=>{                        // the active filters above the cards: click one to drop it
+  if(e.target.closest('[data-qwide]')){ qWide(state.q.trim()); return; }
   const c=e.target.closest('[data-clear]'); if(!c) return;
   const k=c.dataset.clear; if(k==='shelfType'){ state.mediaFilter='all'; LS.set('mediaFilter','all'); } else if(k==='dshelf') state.dShelf=''; else if(k==='dpick') clearPick();
   else if(k==='dtab'){ state.dTab=''; state.dSub=''; } else if(k==='dsub') state.dSub=''; else if(k==='dtype') state.dType='all'; else if(k==='dlf') state.lf='all'; else if(k==='dq'){ state.q=''; $('#q').value=''; }
@@ -10211,8 +10395,67 @@ $('#empty').addEventListener('click',e=>{
   if(clr && clr.dataset.clear==='dpick'){ clearPick(); state.dLimit=DIR_PAGE; render(); }
   else if(clr){ state.q=''; state.lf='all'; state.dType='all'; state.dShelf=''; state.dPick.clear(); saveDirPick(); state.dPickT.clear(); saveDirPickT(); state.dLimit=DIR_PAGE; $('#q').value=''; render(); }
 });
-let qTimer; $('#q').addEventListener('input',e=>{ clearTimeout(qTimer); qTimer=setTimeout(()=>{ state.q=e.target.value; state.dLimit=DIR_PAGE; render(); ftSchedule(); },120); });
-$('#q').addEventListener('keydown',e=>{ if(e.key==='Escape'){ e.target.value=''; state.q=''; render(); ftSchedule(); e.target.blur(); } });
+/* ===== search by section: the box at the top searches what the page is about (its label says what); only "all" and "discover" search the whole site ===== */
+const Q_LABEL={all:'qAll', music:'qMusic', podcast:'qPodcast', books:'qBooks', audiobooks:'qAudio', articles:'qArticles', video:'qVideo', hot:'qHot', mine:'qMine'};
+function qKind(){
+  if(!dirOn()) return 'mine';
+  if(state.dHot && hotBase()) return 'hot';
+  if(state.dListen && lpAvailable() && state.lp.v2) return lpPodMode() ? 'podcast' : 'music';
+  if(state.dLanding==='books') return state.dGenre==='audio' ? 'audiobooks' : 'books';
+  if(state.dLanding==='articles') return 'articles';
+  if(state.dLanding==='watch') return 'video';
+  return 'all';
+}
+let qNow='';
+function qScopeSync(){                                                                                    // the label in the box, and what it asks for, follow the page
+  const chip=$('#qScope'), box=$('#q'); if(!chip || !box) return;
+  const k=qKind(); chip.textContent=t(Q_LABEL[k]); chip.dataset.kind=k; box.placeholder=t('qp_'+k);
+  box.parentElement.style.setProperty('--qs',(chip.offsetWidth+6)+'px');
+  if(k!==qNow){
+    const was=qNow; qNow=k;
+    if(was && (k==='music' || k==='podcast' || k==='hot') && !state.q) box.value='';
+    if((was==='music' || was==='podcast') && k!==was && state.lp.search) lpSearchLeave();
+    if(was==='hot' && k!=='hot') hotQuery('');
+  }
+}
+let hotQ='';
+function hotQuery(v){ hotQ=String(v||'').trim().toLowerCase(); hotQApply(); }
+function hotQApply(){                                                                                      // the hot lists: what does not have the words is hidden (the entries that are on the page); a line says when nothing has them
+  const root=$('#dirReco'); if(!root) return;
+  let any=false; root.querySelectorAll('.hot-row').forEach(li=>{ const on=!hotQ || li.textContent.toLowerCase().includes(hotQ); li.hidden=!on; if(on) any=true; });
+  const note=root.querySelector('#hotQNone');
+  if(hotQ && !any){ if(!note){ const p=document.createElement('p'); p.id='hotQNone'; p.className='hot-state'; p.textContent=t('hotQNone',hotQ); const list=root.querySelector('.hot-board-body, .hot'); if(list) list.prepend(p); } else note.textContent=t('hotQNone',hotQ); }
+  else if(note) note.remove();
+}
+new MutationObserver(()=>{ if(hotQ) hotQApply(); }).observe($('#dirReco'),{childList:true,subtree:true});
+function qWide(q){ dirGoHome(); state.q=String(q||''); $('#q').value=state.q; state.dBrowse=true; state.dLimit=DIR_PAGE; render(); window.scrollTo({top:0}); ftSchedule(); }
+function qHistHTML(){ const h=lpHist(); return h.length ? `<div class="q-hist-h"><b>${esc(t('lpSearchHist'))}</b><button type="button" data-qh-clear>${esc(t('lpSearchClear'))}</button></div><div class="q-hist-c">${h.map(v=>`<button type="button" class="dr-chip" data-qh="${esc(v)}">${esc(v)}</button>`).join('')}</div>` : ''; }
+function qHistShow(){ const el=$('#qHist'), box=$('#q'), k=qKind(); if(!el) return; if((k==='music' || k==='podcast') && !box.value.trim()){ const h=qHistHTML(); el.innerHTML=h; el.hidden=!h; } else el.hidden=true; }
+function qHistHide(){ const el=$('#qHist'); if(el) el.hidden=true; }
+let qhT; $('#q').addEventListener('focus',()=>{ clearTimeout(qhT); qHistShow(); });
+$('#q').addEventListener('blur',()=>{ clearTimeout(qhT); qhT=setTimeout(qHistHide,150); });                  // (leaving the box closes it a moment later; coming back in that moment must not be closed by the timer of the leaving)
+$('#qHist').addEventListener('mousedown',e=>e.preventDefault());                                            // (a press on a word of the history keeps the focus in the box)
+$('#qHist').addEventListener('click',e=>{
+  const w=e.target.closest('[data-qh]');
+  if(w){ const v=w.dataset.qh; $('#q').value=v; qHistHide(); lpTopSearch(v); lpSearchGo(v,true); lpHistAdd(v); return; }
+  if(e.target.closest('[data-qh-clear]')){ LS.set('lpSearchHist',[]); qHistHide(); }
+});
+let qTimer; $('#q').addEventListener('input',e=>{
+  clearTimeout(qTimer); const k=qKind(), v=e.target.value; qHistShow();
+  if(k==='music' || k==='podcast'){ lpTopSearch(v); return; }
+  if(k==='hot'){ qTimer=setTimeout(()=>hotQuery(v),120); return; }
+  qTimer=setTimeout(()=>{ state.q=v; state.dLimit=DIR_PAGE; render(); ftSchedule(); },120);
+});
+$('#q').addEventListener('keydown',e=>{
+  const k=qKind();
+  if(e.key==='Escape'){
+    e.target.value=''; qHistHide();
+    if(k==='music' || k==='podcast'){ lpSearchClose(); }
+    else if(k==='hot') hotQuery('');
+    else { state.q=''; render(); ftSchedule(); }
+    e.target.blur();
+  }else if(e.key==='Enter' && (k==='music' || k==='podcast')){ e.preventDefault(); const w=e.target.value.trim(); if(w){ lpSearchGo(w,true); lpHistAdd(w); } }
+});
 $('#ftBtn').addEventListener('click',()=>{ state.ftOn=!state.ftOn; LS.set('ftOn',state.ftOn?1:0); ftSchedule(); render(); if(state.ftOn && state.q.trim()) toast(t('ftBusy')); });
 $('#sort').addEventListener('change',e=>{ state.sort=e.target.value; LS.set('sort',state.sort); render(); });
 function dirSortLabel(v){ const o=[...$('#sort').options].find(x=>x.value===v); return dirOn() && booksPage() && v==='recent' ? t('sortBooks') : (o ? o.textContent : ''); }
@@ -10273,6 +10516,7 @@ window.addEventListener('focus',()=>{ if($('#reader').hidden && !dlg.open && (st
 const SH_PHONE=matchMedia('(max-width:980px)'), shOn=()=>shellSel()==='2';
 function shMove(el, to, before){ if(el && to && el.parentElement!==to) to.insertBefore(el, before && before.parentElement===to ? before : null); }
 function shLayout(){
+  qScopeSync();
   const b=document.body, on=shOn(), phone=on && SH_PHONE.matches, shelf=on && !dirOn(), lab=$('.side-scroll>.dir-label');
   b.classList.toggle('shell2',on); b.classList.toggle('sh-phone',phone); b.classList.toggle('sh-shelf',shelf); b.classList.toggle('side-off',on && !!LS.get('sideOff',0));
   shMove($('#cats'), phone ? $('#stripIn') : $('.side-scroll'), phone ? $('#colChip') : lab);
