@@ -455,7 +455,8 @@ class H(BaseHTTPRequestHandler):
                         time.sleep(1.2)
                     items = [] if LISTEN['search'] == 'empty' else search_items(word)
                     art = artist_of(word)
-                    return self.reply(200, {'ok': True, 'q': word, 'items': items, **({'partial': True} if LISTEN['search'] == 'partial' else {}), **({'artist': {'name': art['name'], 'cover': art['cover']}} if art and items else {})})
+                    pend = LISTEN['search'] == 'pending' and art                                                   # (the lookup of the artist is not done yet: the answer says so and has no artist)
+                    return self.reply(200, {'ok': True, 'q': word, 'items': items, **({'partial': True} if LISTEN['search'] == 'partial' else {}), **({'artist': {'name': art['name'], 'cover': art['cover']}} if art and items and not pend else {}), **({'artist_pending': True} if pend else {})})
                 if (q.get('artist') or [''])[0]:
                     word = (q.get('artist') or [''])[0]
                     if UA:

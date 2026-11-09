@@ -7837,20 +7837,23 @@ async function lpSearchRun(w){
     if(L.sq.trim()!==w) return;
     const artist=d.artist && typeof d.artist.name==='string' && d.artist.name ? {name:cut(d.artist.name,40), cover:lpHttps(d.artist.cover)} : null;
     L.sres={state:'ok', items, partial:d.partial===true, q:w, artist};
-    if(artist && (!L.sart || L.sart.name!==artist.name)) lpArtistLoad(artist.name);
+    if(artist){ if(!L.sart || L.sart.name!==artist.name) lpArtistLoad(artist.name); }
+    else if(d.artist_pending===true && /^[^\s]{1,12}( [^\s]{1,12})?$/.test(w)) lpArtistLoad(w, true);          // (the service was still looking the artist up: the page of the artist is asked for once, quietly; there is a card only when the words are an artist)
   }catch(e){ if(e.name==='AbortError' || L.sq.trim()!==w) return; L.sres={state:'err', items:[], q:w}; }
   lpSearchPaintRes();
 }
-async function lpArtistLoad(name){                                                                        // the page of the artist (the best songs of every source as one list, the play lists that go with the name)
+async function lpArtistLoad(name, probe){                                                                  // the page of the artist (the best songs of every source as one list, the play lists that go with the name); probe: the words may be no artist at all: nothing is shown until they are
   const L=state.lp, api=listenApi(); if(!api) return;
-  L.sart={name, state:'load', songs:[], lists:[], names:[]}; lpSearchPaintRes();
+  L.sart=probe ? null : {name, state:'load', songs:[], lists:[], names:[]}; if(!probe) lpSearchPaintRes();
   try{
     const r=await fetch(api+'?artist='+encodeURIComponent(name)+'&lang='+state.lang+'&region='+lpRegionPref()+'&caps=resolve',{credentials:'omit'}), d=await r.json().catch(()=>null);
     if(!d || d.ok!==true || !Array.isArray(d.songs)) throw new Error('artist');
+    if(probe && (!d.artist || typeof d.artist.name!=='string' || !d.artist.name)) return;                // (not an artist: the search stays a search)
     const songs=d.songs.slice(0,50).map(listenClean).filter(Boolean); songs.forEach(x=>{ x.sr=true; });
     const lists=(Array.isArray(d.lists) ? d.lists : []).slice(0,6).map(l=>({id:/^ne:pl:\d{1,14}$/.test(String(l && l.id || '')) ? l.id : '', name:cut(String(l && l.name || ''),40), cover:lpHttps(l && l.cover)})).filter(l=>l.id && l.name);
-    if(L.sart && L.sart.name===name) L.sart={name, state:songs.length ? 'ok' : 'err', songs, lists, names:(d.artist && Array.isArray(d.artist.names) ? d.artist.names : []).slice(0,6).map(v=>cut(String(v),30))};
-  }catch(e){ if(L.sart && L.sart.name===name) L.sart={name, state:'err', songs:[], lists:[], names:[]}; }
+    if(probe){ if(!L.sres || L.sres.q!==name || !songs.length) return; const nm=cut(String(d.artist.name),40); L.sres.artist={name:nm, cover:lpHttps(d.artist.cover)}; name=nm; }
+    if(probe || (L.sart && L.sart.name===name)) L.sart={name, state:songs.length ? 'ok' : 'err', songs, lists, names:(d.artist && Array.isArray(d.artist.names) ? d.artist.names : []).slice(0,6).map(v=>cut(String(v),30))};
+  }catch(e){ if(!probe && L.sart && L.sart.name===name) L.sart={name, state:'err', songs:[], lists:[], names:[]}; }
   if(L.search) lpSearchPaintRes();
 }
 async function lpPlOpen(id, name){

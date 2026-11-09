@@ -73,6 +73,13 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await type('Search Beta', true);
   ok('words that are no artist: the songs only, no card, no page of an artist asked for', await waitFor(`document.querySelectorAll('#lpSrRes .ls-row').length===1`, 8000) && !(await J(`!!document.querySelector('#lpSrRes .lp-art')`)) && !(await log2()).some(x => x === 'artist:Search Beta'), await log2());
   ok('a row of a plain search says where the song can be heard from too', await J(`/Deezer \\(preview\\)/.test(document.querySelector('#lpSrRes .ls-row .ls-m').textContent)`), await J(`document.querySelector('#lpSrRes .ls-row .ls-m').textContent`));
+  // ---- the service was still looking the artist up when it answered: the page asks for the artist's page itself, once, quietly
+  await fresh('v2=1&search=pending');
+  await type('测试歌手', true);
+  ok('the answer has no artist but says it is still looked up: the card comes anyway (the page asks for the artist once, by the words)', await waitFor(`!!document.querySelector('#lpSrRes .lp-art') && document.querySelectorAll('#lpSrRes .lp-srrows .ls-row').length===4`, 9000) && (await log2()).filter(x => x === 'artist:测试歌手').length === 1, await log2());
+  await type('Search Beta', true);
+  await waitFor(`document.querySelectorAll('#lpSrRes .ls-row').length===1`, 8000);
+  ok('words that are no artist and were still being looked up: asked for once, and no card (the search stays a search)', !(await J(`!!document.querySelector('#lpSrRes .lp-art')`)), await log2());
   ok('no errors in the page', errs.length === 0, errs);
   await fetch(SVC + '/__listen?mode=ok&reset=1');
   console.log(`${pass} passed, ${fail} failed`);
