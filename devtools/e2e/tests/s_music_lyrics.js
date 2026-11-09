@@ -75,8 +75,8 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
 
   // ------------------------------------------------ a song without words
   await svc('v2=1&rs=nolyr');
-  await J(`document.querySelector('#lpRoot .lp-rows .ls-row:nth-child(7) .ls-main').click()`);
-  await waitFor(`plAudio.currentTime>0.05 && pl.q[pl.i].endsWith(':dy:06')`, 8000);
+  await J(`document.querySelector('#lpRoot .lp-rows .ls-row:nth-child(26) .ls-main').click()`);          // (far down the chart: the songs just after a song that was played were looked for ahead of time, with their words)
+  await waitFor(`plAudio.currentTime>0.05 && pl.q[pl.i].endsWith(':dy:25')`, 12000);
   await popup(); await sleep(300);
   ok('a song the service has no words for: no tab, the list is shown', await J(`document.querySelector('#plLyrTab').hidden && !document.querySelector('#plList').hidden`));
   await popClose();

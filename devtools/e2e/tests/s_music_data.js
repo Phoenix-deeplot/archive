@@ -42,14 +42,14 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await J(`plAudio.pause()`);
 
   // ------------------------------------------------ an address that has run out
-  await svc('v2=1&rs=short');          // (a song far down the chart: the songs the bar looked for ahead of time, one after the other, are not this one)
-  await go(10);
-  await waitFor(`pl.q[pl.i].endsWith(':dy:09') && plAudio.currentTime>0.05`, 8000);
-  const n1 = (await log2()).filter(x => x === 'resolve:Douyin Song 9').length;
+  await svc('v2=1&rs=short');          // (a song far down the chart: the songs the bar looks for ahead of time (the next two of each song that begins) are not this one)
+  await go(26);
+  const began = await waitFor(`pl.q[pl.i].endsWith(':dy:25') && plAudio.currentTime>0.05`, 12000);
+  const n1 = (await log2()).filter(x => x === 'resolve:Douyin Song 25').length;
   await J(`plAudio.pause()`); await sleep(2200);
-  ok('the address of a sound that was found is good for a time (here two seconds); until then the same song is not looked for again', n1 === 1 && await J(`Z.plStale(state.tmp.get(pl.q[pl.i]))`), n1);
-  await go(10);
-  ok('after that a song that is played again is looked for again (a new address)', await waitFor(`plAudio.currentTime>0.05 && !Z.plStale(state.tmp.get(pl.q[pl.i]))`, 8000) && (await log2()).filter(x => x === 'resolve:Douyin Song 9').length === 2, await log2());
+  ok('the address of a sound that was found is good for a time (here two seconds); until then the same song is not looked for again', n1 === 1 && await J(`Z.plStale(state.tmp.get(pl.q[pl.i]))`), [n1, began, (await log2()).slice(-10)]);
+  await go(26);
+  ok('after that a song that is played again is looked for again (a new address)', await waitFor(`plAudio.currentTime>0.05 && !Z.plStale(state.tmp.get(pl.q[pl.i]))`, 8000) && (await log2()).filter(x => x === 'resolve:Douyin Song 25').length === 2, await log2());
   await J(`plAudio.pause()`);
 
   // ------------------------------------------------ every sound fails: the service is asked once for new ones
