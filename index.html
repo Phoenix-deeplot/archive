@@ -1055,7 +1055,7 @@ html{overscroll-behavior-x:none}
 @media (max-width:620px){
   .grid:not(.list){grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   .grid:not(.list) .cover{aspect-ratio:4/3}
-  .grid:not(.list) .cover .ftype{top:6px;right:6px;font-size:10px;padding:4px 5px}
+  .grid:not(.list) .cover .ftype{top:6px;left:6px;right:auto;font-size:10px;padding:4px 5px}
   .grid:not(.list) .card-body{padding:9px 10px 4px}
   .grid:not(.list) .meta{gap:3px 7px;margin-bottom:4px;font-size:11.5px}
   .grid:not(.list) .meta > span:nth-last-child(2){display:none}
@@ -1150,11 +1150,13 @@ body:not(.in-dir) #grid:not(.list) .cover{aspect-ratio:4/3}
 body:not(.in-dir) #grid:not(.list) .meta{min-height:18px;max-height:18px;overflow:hidden;flex-wrap:nowrap;white-space:nowrap}
 body:not(.in-dir) #grid:not(.list) .card-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:2.8em}
 body:not(.in-dir) #grid:not(.list) .sum{-webkit-line-clamp:2}
-body:not(.in-dir) #grid.list{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:12px}
-body:not(.in-dir) #grid.list .card{display:grid;grid-template-columns:116px minmax(0,1fr);align-items:stretch;min-height:142px}
-body:not(.in-dir) #grid.list .cover{width:auto;min-width:0;min-height:0;height:auto;aspect-ratio:auto;align-self:stretch;margin:10px 0 10px 10px;border-radius:8px}
-body:not(.in-dir) #grid.list .card-body{min-width:0;padding:10px 10px 8px 0}
+body:not(.in-dir) #grid.list{grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));align-items:stretch;gap:12px}
+body:not(.in-dir) #grid.list .card{display:grid;grid-template-columns:clamp(94px,22%,116px) minmax(0,1fr);column-gap:14px;align-items:stretch;min-height:132px}
+body:not(.in-dir) #grid.list .cover{width:auto;min-width:0;min-height:0;height:auto;aspect-ratio:1/1;align-self:center;margin:10px 0 10px 10px;border-radius:8px}
+body:not(.in-dir) #grid.list .card-body{min-width:0;padding:10px 14px 8px 0}
 body:not(.in-dir) #grid.list .meta{min-width:0;max-height:17px;overflow:hidden;flex-wrap:nowrap;white-space:nowrap;gap:4px 7px;margin-bottom:4px;font-size:11px}
+body:not(.in-dir) #grid.list .meta .tag{display:none}
+body:not(.in-dir) #grid.list .card-title a{overflow-wrap:anywhere}
 body:not(.in-dir) #grid.list .card-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin:0 0 4px;font-size:16px;line-height:1.32}
 body:not(.in-dir) #grid.list .sum{display:-webkit-box;-webkit-line-clamp:2;margin:0 0 4px;font-size:13px;line-height:1.45}
 body:not(.in-dir) #grid.list .ft-snip{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;overflow:hidden;margin:2px 0;font-size:12px}
@@ -1168,8 +1170,8 @@ body:not(.in-dir) #grid.list .card-foot .ibtn{width:32px;height:32px}
   body:not(.in-dir) #grid:not(.list) .meta{min-height:15px;max-height:15px;font-size:10.5px;gap:0 6px;margin-bottom:3px}
   body:not(.in-dir) #grid:not(.list) .card-title{min-height:2.65em;font-size:14.5px;line-height:1.32;-webkit-line-clamp:2;margin-bottom:3px}
   body:not(.in-dir) #grid.list{grid-template-columns:minmax(0,1fr);gap:8px}
-  body:not(.in-dir) #grid.list .card{grid-template-columns:78px minmax(0,1fr);min-height:104px}
-  body:not(.in-dir) #grid.list .cover{aspect-ratio:1/1;margin:7px;border-radius:7px}
+  body:not(.in-dir) #grid.list .card{grid-template-columns:72px minmax(0,1fr);column-gap:10px;min-height:100px}
+  body:not(.in-dir) #grid.list .cover{aspect-ratio:1/1;margin:8px 0 8px 8px;border-radius:7px}
   body:not(.in-dir) #grid.list .card-body{padding:7px 8px 6px 0}
   body:not(.in-dir) #grid.list .meta{max-height:14px;min-height:14px;font-size:10px;gap:0 5px;margin-bottom:2px}
   body:not(.in-dir) #grid.list .meta .where,body:not(.in-dir) #grid.list .meta .star-badge,body:not(.in-dir) #grid.list .meta>span:nth-last-child(-n+2){display:none}
@@ -1568,7 +1570,7 @@ html.ptr{overscroll-behavior-y:contain}
 .cat-sep{height:1px;background:var(--rule);margin:8px 10px}
 .cat-btn.muted{color:var(--muted)}
 .cat-btn .cicon{width:9px;height:9px;flex:none}
-.cover .ftype{position:absolute;top:10px;right:10px;font:700 11px/1 var(--mono);letter-spacing:.06em;color:#1A2229;background:rgba(255,255,255,.88);border-radius:4px;padding:5px 7px}
+.cover .ftype{position:absolute;top:10px;left:10px;right:auto;z-index:3;font:700 11px/1 var(--mono);letter-spacing:.06em;color:#1A2229;background:rgba(255,255,255,.9);border-radius:4px;padding:5px 7px}
 .is-hidden .cover{filter:grayscale(.85);opacity:.6}
 .restore-btn{margin-left:auto}
 .where{border:1px solid var(--rule);border-radius:999px;padding:0 8px;font-size:12px;line-height:1.7;color:var(--muted)}
