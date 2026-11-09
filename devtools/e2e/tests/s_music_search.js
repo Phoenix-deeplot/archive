@@ -26,7 +26,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
     await J(`document.querySelector('#cats [data-dlisten]').click()`);
     await waitFor(`document.querySelector('#lpRoot .lp-tabs') && document.querySelector('#lpRoot .lp-forrows .ls-row')`, 9000); await sleep(300);
   };
-  const type = async (text, enter) => { await J(`(()=>{ const i=document.querySelector('#lpSrIn'); i.focus(); i.value=${JSON.stringify(text)}; i.dispatchEvent(new Event('input',{bubbles:true})); ${enter ? "i.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));" : ''} })()`); };
+  const type = async (text, enter) => { await J(`(()=>{ const i=document.querySelector('#q'); i.focus(); i.value=${JSON.stringify(text)}; i.dispatchEvent(new Event('input',{bubbles:true})); ${enter ? "i.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));" : ''} })()`); };
   const results = () => J(`[...document.querySelectorAll('#lpSrRes .ls-row[data-ls-row]')].map(r=>({id:r.dataset.lsRow, t:r.querySelector('.ls-t').firstChild.textContent, b:[...r.querySelectorAll('.ls-pv')].map(e=>e.textContent).join('+')}))`);
   await c.desktop(1280, 900, 1);
   const zone = tz => c.send('Emulation.setTimezoneOverride', { timezoneId: tz });          // (whose songs come first follows the language AND the time zone of the device)
@@ -35,12 +35,14 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   // ------------------------------------------------ an older service has no search
   await fresh('v2=0');
   ok('a service that does not know the newer questions: no search button, the page is as before', (await J(`state.lp.v2`)) === false && (await J(`!document.querySelector('#lpRoot [data-lp-search]')`)), await J(`state.lp.v2`));
+  ok('and the box at the top says it searches the whole site there (the music cannot be searched)', await J(`document.querySelector('#qScope').textContent==='Whole site' && /whole site/i.test(document.querySelector('#q').placeholder)`), await J(`document.querySelector('#qScope').textContent`));
 
   // ------------------------------------------------ the search page
   await fresh();
   ok('a service that knows the newer questions: the search button is in the bar of the music side, after the three tabs', (await J(`state.lp.v2`)) === true && (await J(`(()=>{ const b=document.querySelector('#lpRoot .lp-bar [data-lp-search]'); return !!b && b.getBoundingClientRect().left>document.querySelector('#lpRoot .lp-tabs').getBoundingClientRect().right-4; })()`)));
+  ok('the box at the top says what it searches on this page: “Music” and a placeholder about songs and artists', await J(`document.querySelector('#qScope').textContent==='Music' && /songs, artists/.test(document.querySelector('#q').placeholder) && document.querySelector('#qScope').dataset.kind==='music'`), await J(`document.querySelector('#qScope').textContent`));
   await J(`document.querySelector('#lpRoot [data-lp-search]').click()`); await sleep(300);
-  ok('the search page: a back arrow and a box (focused), no tabs; nothing yet asks the service; a hint says what to type', await J(`!!document.querySelector('#lpRoot .lp-sp #lpSrIn') && document.activeElement===document.querySelector('#lpSrIn') && !document.querySelector('#lpRoot .lp-tabs') && !!document.querySelector('#lpRoot [data-lp-sback]') && /two letters/.test(document.querySelector('#lpSrRes').textContent)`));
+  ok('the search page: a back arrow and what is searched (the words are typed in the box at the top, which is focused), no tabs; nothing yet asks the service; a hint says what to type', await J(`!!document.querySelector('#lpRoot .lp-sp') && !document.querySelector('#lpSrIn') && document.activeElement===document.querySelector('#q') && !document.querySelector('#lpRoot .lp-tabs') && !!document.querySelector('#lpRoot [data-lp-sback]') && /Searching music/.test(document.querySelector('#lpRoot .lp-sq').textContent) && /two letters/.test(document.querySelector('#lpSrRes').textContent)`));
   await type('S'); await sleep(700);
   ok('one letter asks nothing', (await log2()).filter(x => x.startsWith('search:')).length === 0);
   await type('Se'); await type('Sea'); await type('Sear'); await type('Search'); await sleep(900);
@@ -49,6 +51,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   const res = await results();
   ok('the songs found: six, each says whole or preview (a song that has a preview and can be had whole says “Preview”; one that has only a promise of a whole song says “Full”)', res.length === 6 && res[0].t === 'Search Alpha' && res[0].b === 'Full' && res[1].t === 'Search Beta' && res[1].b === 'Preview' && res[2].t === 'Search Gamma' && res[2].b === 'Full' && res[4].t === 'Search Epsilon' && res[4].b === 'Preview', res);          // (Epsilon has a preview and a source of China that has the whole song: for a reader outside China it is a preview)
 
+  ok('under the results a button searches the whole site for the same words (the box at the top is the music box on this page: the whole site is one click away)', await J(`!!document.querySelector('#lpSrRes [data-qwide-top]') && /Search the whole site for/.test(document.querySelector('#lpSrRes [data-qwide-top]').textContent)`));
   // ------------------------------------------------ playing a result
   await J(`document.querySelector('#lpSrRes .ls-row[data-ls-row="${res[0].id}"] .ls-main').click()`);
   ok('a click on a result plays it, and the results are the list of the bar', await waitFor(`pl.q.length===6 && pl.q[pl.i]==='tmp:ls:${res[0].id}' && plAudio.currentTime>0.05`, 8000), [await J(`pl.q.length`), await J(`pl.q[pl.i]`)]);
@@ -89,7 +92,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
 
   // ------------------------------------------------ the history, the other answers
   await J(`document.querySelector('#lpRoot [data-lp-sback]').click()`); await sleep(300);
-  ok('the arrow leaves the search page: the three tabs are back', await J(`!!document.querySelector('#lpRoot .lp-tabs') && !document.querySelector('#lpSrIn')`));
+  ok('the arrow leaves the search page: the three tabs are back, and the box at the top is empty', await J(`!!document.querySelector('#lpRoot .lp-tabs') && !document.querySelector('#lpRoot .lp-sp') && document.querySelector('#q').value===''`));
   await J(`document.querySelector('#lpRoot [data-lp-search]').click()`); await sleep(300);
   ok('the history of searches is shown as chips (this device only)', await J(`[...document.querySelectorAll('#lpSrRes [data-lp-shist]')].map(b=>b.textContent).join()`) === 'Search');
   await svc('v2=1&search=partial'); await J(`document.querySelector('#lpSrRes [data-lp-shist]').click()`);
@@ -104,7 +107,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   await J(`document.querySelector('#lpRoot [data-lp-search]').click()`); await sleep(300);
   await J(`document.querySelector('#lpSrRes [data-lp-sclear]').click()`); await sleep(200);
   ok('“clear” empties the history', (await J(`LS.get('lpSearchHist',[]).length`)) === 0 && /two letters/.test(await J(`document.querySelector('#lpSrRes').textContent`)));
-  ok('Escape leaves the search page', await (async () => { await J(`document.querySelector('#lpSrIn').dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}))`); await sleep(300); return J(`!document.querySelector('#lpSrIn')`); })());
+  ok('Escape in the box leaves the search page', await (async () => { await J(`document.querySelector('#q').dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}))`); await sleep(300); return J(`!document.querySelector('#lpRoot .lp-sp') && document.querySelector('#q').value===''`); })());
   // ------------------------------------------------ in China the whole song that a source of China has is looked for first
   await zone('Asia/Shanghai');
   await fresh('v2=1', 'zh');

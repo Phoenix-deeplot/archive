@@ -227,6 +227,31 @@ body.dir-discover .dir-label,body.dir-discover #dir,body.dir-discover #tagbox,bo
 .search.has-ft input{padding-right:92px}.search.has-ft kbd{display:none}
 .ft-snip{margin:6px 0 2px;font-size:13px;line-height:1.6;color:var(--muted)}.ft-snip mark{background:rgba(255,196,0,.45);color:inherit;border-radius:2px;padding:0 1px}
 .ft-where{display:inline-block;margin-right:6px;padding:0 7px;border:1px solid var(--rule);border-radius:999px;font-size:11.5px;color:var(--accent)}
+.search .q-scope{position:absolute;left:33px;top:50%;transform:translateY(-50%);font-size:12px;line-height:1;padding:3px 8px;border-radius:999px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-weight:600;white-space:nowrap;pointer-events:none;max-width:40%;overflow:hidden;text-overflow:ellipsis}
+.search .q-scope:empty{display:none}
+.search input{padding-left:calc(36px + var(--qs,0px))}
+.q-wide{border-style:dashed;color:var(--accent);font-weight:600}
+.q-wide-row{margin:14px 0 4px;text-align:center}
+.lp-sq{flex:1;min-width:0;font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ls-from{color:var(--muted);font-size:12px}
+.lp-art{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:6px 0 10px;padding:12px;border:1px solid var(--rule);border-radius:12px;background:var(--surface)}
+.lp-art-cv{flex:none;width:64px;height:64px;border-radius:50%;overflow:hidden;background:var(--rule);display:grid;place-items:center;font-size:26px;font-weight:700;color:var(--muted)}
+.lp-art-cv img{width:100%;height:100%;object-fit:cover}
+.lp-art-tx{flex:1 1 160px;min-width:0}
+.lp-art-tx b{display:block;font-size:18px;font-family:var(--serif)}
+.lp-art-n{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lp-art-acts{display:flex;gap:8px;flex-wrap:wrap}
+.lp-art-h{margin:14px 0 6px;font-size:15px}
+.lp-art-ls{display:flex;gap:12px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:thin}
+.lp-art-ls .lp-gc{flex:none;width:112px}
+.ps-rows{list-style:none;margin:0;padding:0}
+.ps-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--rule)}
+.ps-cv{flex:none;width:56px;height:56px;border-radius:8px;overflow:hidden;background:var(--rule)}
+.ps-cv img{width:100%;height:100%;object-fit:cover}
+.ps-tx{flex:1;min-width:0}
+.ps-tx b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps-m{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps-acts{flex:none;display:flex;gap:6px}
 .search kbd{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--rule);border-radius:4px;padding:0 6px;background:var(--bg)}
 .toolbar{display:flex;align-items:center;gap:8px;margin-left:auto}
 .toolbar select,.ctl-box select,.fl-slot select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:6px 8px}
@@ -1749,6 +1774,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
       <button class="ibtn side-toggle" type="button" id="sideToggle" aria-expanded="true" data-i-aria="sideHide"><svg class="icon" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M9.5 5v14"/></svg></button>
       <div class="search">
         <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <span class="q-scope" id="qScope" aria-hidden="true"></span>
         <input id="q" type="search" autocomplete="off" data-i-ph="search" placeholder="搜索标题、摘要、关键词">
         <kbd>/</kbd>
         <button class="ft" type="button" id="ftBtn" aria-pressed="false" data-i="ftLabel" data-i-aria="ftTip" hidden>搜正文</button>
@@ -2792,6 +2818,8 @@ Object.assign(I18N.zh,{themeTop:'主题', thLabel:'主题', thClassic:'经典', 
 Object.assign(I18N.en,{themeTop:'Theme', thLabel:'Theme', thClassic:'Classic', thCloud:'Cloud red', setTitle:'Settings', viewIsCards:'Cards', viewIsList:'List'});
 Object.assign(I18N.zh,{plWhy2:'网络连不上它的服务器', plWhy3:'声音文件有问题', plWhy4:'浏览器不接受：格式不支持，或网站不让外部播放'});
 Object.assign(I18N.en,{plWhy2:'the network cannot reach its server', plWhy3:'the sound file is broken', plWhy4:'the browser does not accept it: a format it cannot play, or the site does not let other sites play it'});
+Object.assign(I18N.zh,{qAll:'全站', qMusic:'音乐', qPodcast:'播客', qBooks:'书籍', qAudio:'有声书', qArticles:'文章', qVideo:'视频', qHot:'热榜', qMine:'书架', qp_all:'搜索全站：标题、摘要、关键词', qp_music:'搜索音乐：歌名、歌手', qp_podcast:'搜索播客：节目名', qp_books:'搜索精选图书', qp_audiobooks:'搜索有声书', qp_articles:'搜索精选文章', qp_video:'搜索视频', qp_hot:'搜索热榜里的条目', qp_mine:'搜索我的书架：标题、摘要、关键词', qWide:'在全站搜 ›', qWideQ:q=>`在全站搜“${q}” ›`, hotQNone:q=>`热榜里没有“${q}”`, lpSearchFor:'搜索音乐', lpSearchForPod:'搜索播客', lsSrcPv:'（试听）', lpArtistPlay:'播放全部', lpArtistSave:'存为歌单', lpArtistSaved:(n,c)=>`已存为歌单“${n}”（${c} 首）`, lpArtistTop:'热门歌曲', lpArtistLists:'相关歌单', lpArtistLoading:'正在读取这位歌手的歌……', lpArtistErr:'现在读不到这位歌手的歌，下面是搜到的歌曲', lpPlBack:'返回', lpPlLoading:'正在读取歌单……', lpPlErr:'这张歌单现在读不到', lpPlN:n=>`${n} 首`, psNone:q=>`没有找到和“${q}”有关的播客`, psErr:'现在搜不了播客', psSearching:'正在搜索播客……', psListen:'试听', psSub:'订阅', psN:n=>`${n} 期`, psHint:'输入节目名，例如“日谈”。', psSubbed:n=>`已订阅“${n}”`});
+Object.assign(I18N.en,{qAll:'Whole site', qMusic:'Music', qPodcast:'Podcasts', qBooks:'Books', qAudio:'Audiobooks', qArticles:'Articles', qVideo:'Videos', qHot:'Hot lists', qMine:'My shelf', qp_all:'Search the whole site: titles, summaries, keywords', qp_music:'Search music: songs, artists', qp_podcast:'Search podcasts: show names', qp_books:'Search the picked books', qp_audiobooks:'Search audiobooks', qp_articles:'Search the picked articles', qp_video:'Search videos', qp_hot:'Search the entries of the hot lists', qp_mine:'Search my shelf: titles, summaries, keywords', qWide:'Search the whole site ›', qWideQ:q=>`Search the whole site for “${q}” ›`, hotQNone:q=>`Nothing in the hot lists for “${q}”`, lpSearchFor:'Searching music', lpSearchForPod:'Searching podcasts', lsSrcPv:' (preview)', lpArtistPlay:'Play all', lpArtistSave:'Save as a play list', lpArtistSaved:(n,c)=>`Saved as the play list “${n}” (${c} songs)`, lpArtistTop:'Top songs', lpArtistLists:'Related play lists', lpArtistLoading:'Reading the songs of this artist…', lpArtistErr:'The songs of this artist cannot be read right now; here is what the search found', lpPlBack:'Back', lpPlLoading:'Reading the play list…', lpPlErr:'This play list cannot be read right now', lpPlN:n=>`${n} songs`, psNone:q=>`No podcast found for “${q}”`, psErr:'Podcasts cannot be searched right now', psSearching:'Searching podcasts…', psListen:'Listen', psSub:'Subscribe', psN:n=>`${n} episodes`, psHint:'Type the name of a show, such as “Daily”.', psSubbed:n=>`Subscribed to “${n}”`});
 Object.assign(I18N.zh,{bookLicLine:(l,h,from)=>`授权：${l} · 来源：${h}${from?` · 这一章来自：${from}`:''}`, bookTier:x=>({local:'这个浏览器里的副本', hot:'服务器上的副本', durable:'服务器上的副本', source:'刚从原站读取', feed:'刚从原站读取'})[x]||'', bookChN:n=>`${n} 章`, bookStart:'从头开始读', bookOrig:'打开原站', bookChapters:'章节', bookLic:'授权', bookNote:'点一章就在这里读；阅读页顶上的“上一篇 / 下一篇”翻章，字号和颜色在“Aa”里调。',
   'lic_public-domain':'公有领域', lic_cc0:'CC0', 'lic_cc-by':'CC BY', 'lic_cc-by-sa':'CC BY-SA', 'lic_cc-by-nc':'CC BY-NC', 'lic_cc-by-nc-sa':'CC BY-NC-SA', 'lic_free-to-read':'免费阅读'});
 Object.assign(I18N.en,{bookLicLine:(l,h,from)=>`Licence: ${l} · From ${h}${from?` · This chapter came from: ${from}`:''}`, bookTier:x=>({local:'a copy kept in this browser', hot:'the copy on the server', durable:'the copy on the server', source:'the original page, just now', feed:'the original page, just now'})[x]||'', bookChN:n=>n===1?'1 chapter':`${n} chapters`, bookStart:'Start reading', bookOrig:'Open the original', bookChapters:'Chapters', bookLic:'Licence', bookNote:'Tap a chapter to read it here; “Previous / Next” at the top of the reader turns the chapters, and the text size and colours are under “Aa”.',
@@ -7300,7 +7328,8 @@ function listenClean(x){                                                        
   if(!stream && x.mode!=='embed') return null;
   return {id:s(x.id).slice(0,60), title:cut(s(x.title),120), artist:cut(s(x.artist),80), cover:s(x.cover).startsWith('https://')?s(x.cover):'', dur:+x.dur>0?Math.floor(+x.dur):0, mode:stream?'stream':'embed', cands:cs,
           audio:stream?first:'', need:stream && !first && need, url:httpUrl(x.url), lic:cut(s(x.lic),30), from:cut(s(x.from),30), net:x.net==='global'?'global':'cn', preview:x.preview===true, date:/^\d{4}-\d{2}-\d{2}$/.test(s(x.date))?x.date:'', show:s(x.show).slice(0,20),
-          market:['cn','jp-kr','west','global'].includes(x.market)?x.market:'', tags:(Array.isArray(x.tags) ? x.tags : []).slice(0,4).map(v=>cut(s(v),20)).filter(Boolean)};
+          market:['cn','jp-kr','west','global'].includes(x.market)?x.market:'', tags:(Array.isArray(x.tags) ? x.tags : []).slice(0,4).map(v=>cut(s(v),20)).filter(Boolean),
+          src:(Array.isArray(x.src) ? x.src : []).slice(0,6).filter(v=>v && typeof v.name==='string' && v.name).map(v=>({p:s(v.p).slice(0,12), name:cut(v.name,20), k:v.k==='full'?'full':'preview', state:v.state==='pending'?'pending':'ok'}))};
 }
 async function lpResolve(x, force){                                                                   // -> {cands, ttl, lyrics} of a song (fresh sounds, and its words when a source has them), or null: the service says nothing (older service, no answer)
   const api=listenApi(), L=state.lp; if(!api || !L.v2 || !x) return null;
@@ -7472,6 +7501,7 @@ function lpDate(){ const ymd=String((state.lp.idx && state.lp.idx.date) || today
 function lpMeta(x){ return [x.artist || x.from, x.hot ? '🔥 '+t('lpRank',x.hot) : '', x.preview ? t('lsPreviewS') : '', x.net==='global' ? t('lsGlobal') : ''].filter(Boolean); }          // (who it is by, how hot it is (the place in a chart), "preview" when it is one, "overseas": nothing else)
 const lpIsRows=()=> LS.get('lpView','rows')!=='cards';                                              // (rows by default: a chart is read down a list; the cards are one tap away; the shelf's own view choice is not touched)
 const LP_BARS='<i class="ls-bars" aria-hidden="true"><b></b><b></b><b></b></i>';                       // (the little bars that dance on the row that plays)
+const lpFromLine=x=>x.sr && x.src && x.src.length ? `<span class="ls-from"> · ${esc(x.src.map(v=>v.name+(v.k==='preview' ? t('lsSrcPv') : '')).join(' · '))}</span>` : '';          // (a song that was searched for says where it can be heard from: the sources, a preview marked)
 function listenRowHTML(x, playing, plain){                                                                 // a song as a row: [rank] cover, title (a small "preview" when it is one), artist, ♥ and ⋯; an episode keeps a play mark and a link to its page
   lpSeen.set(x.id,x);
   const stream=x.mode==='stream';
@@ -7481,7 +7511,7 @@ function listenRowHTML(x, playing, plain){                                      
     return `<li class="ls-row nonum${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}"><span class="ls-cv">${cv}${LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}</b><span class="ls-m"><span class="ls-w">${esc(lpMeta(x)[0]||'')}</span>${lpMeta(x).length>1 ? `<span class="ls-x"> · ${esc(lpMeta(x).slice(1).join(' · '))}</span>` : ''}</span></span><span class="ls-ic" aria-hidden="true">${ICON.play}</span></button>${src}</li>`;
   }
   const liked=lpIsLiked(x.id), num=x.hot>0 && !plain;          // (plain: a list that is not a chart, such as the songs for you, which mixes a chart in: no place in front of a song)
-  return `<li class="ls-row${num?'':' nonum'}${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}">${num ? `<span class="ls-n${x.hot<=3?' top':''}"><em>${x.hot}</em>${LP_BARS}</span>` : ''}<span class="ls-cv">${cv}${num?'':LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}${x.preview && !lpPromise(x) && !lpUpgrade(x) ? `<em class="ls-pv">${esc(t('lsPreviewS'))}</em>` : x.sr && (!x.preview || lpPromise(x)) ? `<em class="ls-pv ls-wh">${esc(t('lsWholeS'))}</em>` : ''}</b><span class="ls-m">${esc(x.artist||x.from)}</span></span></button>`
+  return `<li class="ls-row${num?'':' nonum'}${playing?' is-playing':''}" data-ls-row="${esc(x.id)}"><button class="ls-main" type="button" data-ls-go="${esc(x.id)}" aria-label="${esc(t('lsPlayX',x.title))}">${num ? `<span class="ls-n${x.hot<=3?' top':''}"><em>${x.hot}</em>${LP_BARS}</span>` : ''}<span class="ls-cv">${cv}${num?'':LP_BARS}</span><span class="ls-tx"><b class="ls-t">${esc(x.title)}${x.preview && !lpPromise(x) && !lpUpgrade(x) ? `<em class="ls-pv">${esc(t('lsPreviewS'))}</em>` : x.sr && (!x.preview || lpPromise(x)) ? `<em class="ls-pv ls-wh">${esc(t('lsWholeS'))}</em>` : ''}</b><span class="ls-m">${esc(x.artist||x.from)}${lpFromLine(x)}</span></span></button>`
     + `<button class="ls-like" type="button" data-ls-like="${esc(x.id)}" aria-pressed="${liked}" title="${esc(t(liked?'lsLiked':'lsLike'))}" aria-label="${esc(t(liked?'lsLiked':'lsLike'))}">${ICON.heart}</button><button class="ls-more" type="button" data-ls-more="${esc(x.id)}" aria-haspopup="dialog" title="${esc(t('lsMore'))}" aria-label="${esc(t('lsMore'))}">${ICON.more}</button></li>`;
 }
 function lpCardHTML(x, playing){                                                                     // a song as a card: a square cover with a play mark, the title, the artist, one line of what it is
@@ -7708,30 +7738,73 @@ function lpChartHTML(all){
 const LP_SEARCH='<svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
 const lpHist=()=>{ const a=LS.get('lpSearchHist',[]); return Array.isArray(a) ? a.filter(v=>typeof v==='string' && v).slice(0,10) : []; };
 const lpHistAdd=q=>{ if(q) LS.set('lpSearchHist',[q].concat(lpHist().filter(v=>v!==q)).slice(0,10)); };
-function lpSearchHTML(){                                                                               // the search page: a back arrow and a box, then the history, or the songs found (each says whether it is a whole song or a preview)
-  const L=state.lp;
-  return `<div class="lp-sh"><button class="plp-ic lp-back" type="button" data-lp-sback aria-label="${esc(t('lpBack'))}">${LP_BACK}</button><input id="lpSrIn" class="lp-sin" type="search" enterkeyhint="search" autocomplete="off" maxlength="60" placeholder="${esc(t('lpSearchPh'))}" value="${esc(L.sq)}" aria-label="${esc(t('lpSearchPh'))}"></div><div id="lpSrRes">${lpSearchResHTML()}</div>`;
+function lpSqText(){ const L=state.lp, q=L.sq.trim(); return t(lpPodMode() ? 'lpSearchForPod' : 'lpSearchFor')+(q ? ' · '+cut(q,30) : ''); }
+function lpSearchHTML(){                                                                               // the search page: a back arrow and what is being searched (the words are typed in the box at the top, which says "music" or "podcasts"), then the history, or what was found
+  return `<div class="lp-sh"><button class="plp-ic lp-back" type="button" data-lp-sback aria-label="${esc(t('lpBack'))}">${LP_BACK}</button><span class="lp-sq">${esc(lpSqText())}</span></div><div id="lpSrRes">${lpSearchResHTML()}</div>`;
+}
+function lpWideHTML(q){ return q ? `<p class="q-wide-row"><button class="btn q-wide" type="button" data-qwide-top>${esc(t('qWideQ',cut(q,24)))}</button></p>` : ''; }
+function lpHistHTML(h){
+  return h.length ? `<div class="lp-secbar"><h3 class="lp-h">${esc(t('lpSearchHist'))}</h3><button class="btn dr-act" type="button" data-lp-sclear>${esc(t('lpSearchClear'))}</button></div><div class="dr-pickcols lp-sh-chips">${h.map(v=>`<button class="dr-chip" type="button" data-lp-shist="${esc(v)}">${esc(v)}</button>`).join('')}</div>` : `<p class="hot-state">${esc(t(lpPodMode() ? 'psHint' : 'lpSearchHint'))}</p>`;
+}
+function lpArtistHTML(a, now){                                                                          // the artist of a search: a card (name, the other names, play all, save as a play list), the best songs, the play lists that go with the name
+  const L=state.lp, S=L.sart && L.sart.name===a.name ? L.sart : null, songs=S && S.state==='ok' ? S.songs : [];
+  const cv=a.cover ? `<img src="${esc(a.cover)}" alt="" referrerpolicy="no-referrer">` : esc(Array.from(a.name)[0]||'♪');
+  const names=S && S.names && S.names.length>1 ? `<span class="lp-art-n">${esc(S.names.filter(n=>n!==a.name).slice(0,4).join(' · '))}</span>` : '';
+  const acts=`<span class="lp-art-acts"><button class="btn dr-act primary" type="button" data-lp-artplay>${esc(t('lpArtistPlay'))}</button><button class="btn dr-act" type="button" data-lp-artsave>${esc(t('lpArtistSave'))}</button></span>`;
+  const head=`<section class="lp-art"><span class="lp-art-cv">${cv}</span><span class="lp-art-tx"><b>${esc(a.name)}</b>${names}</span>${acts}</section>`;
+  if(S && S.state==='ok'){
+    const rows=songs.map(x=>listenRowHTML(x, !!now && now==='tmp:ls:'+x.id, true)).join('');
+    const lists=S.lists.length ? `<h3 class="lp-art-h">${esc(t('lpArtistLists'))}</h3><div class="lp-art-ls">${S.lists.map(l=>`<button class="lp-gc" type="button" data-lp-pl="${esc(l.id)}" data-lp-plname="${esc(l.name)}"><span class="lp-gcv">${l.cover ? `<img src="${esc(l.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : lpNoteCover(l.id)}</span><span class="lp-gct">${esc(l.name)}</span></button>`).join('')}</div>` : '';
+    return head+`<h3 class="lp-art-h">${esc(t('lpArtistTop'))}</h3><ol class="ls-rows lp-rows lp-srrows">${rows}</ol>`+lists;
+  }
+  return head+(S && S.state==='err' ? `<p class="dr-note">${esc(t('lpArtistErr'))}</p>` : `<p class="hot-state" aria-busy="true">${esc(t('lpArtistLoading'))}</p>`);
+}
+function lpPlistHTML(){                                                                                 // the songs of one play list found under an artist
+  const P=state.lp.spl, now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '';
+  const bar=`<div class="lp-secbar"><button class="btn dr-act" type="button" data-lp-plback>‹ ${esc(t('lpPlBack'))}</button><h3 class="lp-h">${esc(cut(P.name,30))}</h3>${P.state==='ok' && P.items.length ? `<button class="btn dr-act primary" type="button" data-lp-plplay>${esc(t('lpArtistPlay'))}</button>` : ''}</div>`;
+  if(P.state==='load') return bar+`<p class="hot-state" aria-busy="true">${esc(t('lpPlLoading'))}</p>`;
+  if(P.state==='err' || !P.items.length) return bar+`<p class="hot-state">${esc(t('lpPlErr'))}</p>`;
+  return bar+`<ol class="ls-rows lp-rows lp-srrows">${P.items.map(x=>listenRowHTML(x, !!now && now==='tmp:ls:'+x.id, true)).join('')}</ol>`;
 }
 function lpSearchResHTML(){
-  const L=state.lp, r=L.sres, q=L.sq.trim(), h=lpHist();
-  if(!r || q.length<2){
-    return h.length ? `<div class="lp-secbar"><h3 class="lp-h">${esc(t('lpSearchHist'))}</h3><button class="btn dr-act" type="button" data-lp-sclear>${esc(t('lpSearchClear'))}</button></div><div class="dr-pickcols lp-sh-chips">${h.map(v=>`<button class="dr-chip" type="button" data-lp-shist="${esc(v)}">${esc(v)}</button>`).join('')}</div>` : `<p class="hot-state">${esc(t('lpSearchHint'))}</p>`;
-  }
+  const L=state.lp, q=L.sq.trim(), h=lpHist();
+  if(lpPodMode()) return lpPodSearchResHTML();
+  if(L.spl) return lpPlistHTML();
+  const r=L.sres;
+  if(!r || q.length<2) return lpHistHTML(h);
   if(r.state==='load') return `<p class="hot-state" aria-busy="true">${esc(t('lpSearching'))}</p>`;
-  if(r.state==='err') return `<p class="hot-state">${esc(t('lpSearchErr'))}<br><button class="btn" type="button" data-lp-sretry>${esc(t('dirRetry'))}</button></p>`;
-  if(!r.items.length) return `<p class="hot-state">${esc(t('lpSearchNone',cut(q,30)))}</p>`;
-  const now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '';
-  return (r.partial ? `<p class="dr-note lp-spart">${esc(t('lpSearchPartial'))}</p>` : '') + `<ol class="ls-rows lp-rows lp-srrows">${r.items.map(x=>listenRowHTML(x, !!now && now==='tmp:ls:'+x.id, true)).join('')}</ol>`;
+  if(r.state==='err') return `<p class="hot-state">${esc(t('lpSearchErr'))}<br><button class="btn" type="button" data-lp-sretry>${esc(t('dirRetry'))}</button></p>${lpWideHTML(q)}`;
+  if(!r.items.length && !r.artist) return `<p class="hot-state">${esc(t('lpSearchNone',cut(q,30)))}</p>${lpWideHTML(q)}`;
+  const now=plPlaying() && pl.i>=0 ? pl.q[pl.i] : '', S=r.artist && L.sart && L.sart.name===r.artist.name ? L.sart : null;
+  const art=r.artist ? lpArtistHTML(r.artist, now) : '', shown=S && S.state==='ok' ? [] : r.items;                          // (the page of the artist has the songs: the search's own rows are shown while it is read, or when it cannot be)
+  return (r.partial ? `<p class="dr-note lp-spart">${esc(t('lpSearchPartial'))}</p>` : '') + art + (shown.length ? `<ol class="ls-rows lp-rows lp-srrows">${shown.map(x=>listenRowHTML(x, !!now && now==='tmp:ls:'+x.id, true)).join('')}</ol>` : '') + lpWideHTML(q);
 }
-let lpSrT=0, lpSrAbort=null;
-function lpSearchPaintRes(){ const el=$('#lpSrRes'); if(el){ el.innerHTML=lpSearchResHTML(); listenMark(); } }
-function lpSearchOpen(){ const L=state.lp; L.search=true; L.sq=''; L.sres=null; lpPaint(); const i=$('#lpSrIn'); if(i) i.focus(); }
-function lpSearchClose(){ const L=state.lp; clearTimeout(lpSrT); if(lpSrAbort) lpSrAbort.abort(); L.search=false; L.sres=null; L.sq=''; lpPaint(); }
-function lpSearchGo(q, now){                                                                           // two letters at least, and a third of a second after the last key
-  const L=state.lp; L.sq=q; clearTimeout(lpSrT); const w=q.trim();
-  if(w.length<2){ if(lpSrAbort) lpSrAbort.abort(); L.sres=null; lpSearchPaintRes(); return; }
-  lpSrT=setTimeout(()=>lpSearchRun(w), now ? 0 : 300);
+function lpPodSearchResHTML(){                                                                          // the podcast side: shows that match, each to listen to (the newest episode) or to follow
+  const L=state.lp, q=L.sq.trim(), r=L.psres;
+  if(!r || q.length<1) return lpHistHTML(lpHist());
+  if(r.state==='load') return `<p class="hot-state" aria-busy="true">${esc(t('psSearching'))}</p>`;
+  if(r.state==='err') return `<p class="hot-state">${esc(t('psErr'))}<br><button class="btn" type="button" data-lp-sretry>${esc(t('dirRetry'))}</button></p>${lpWideHTML(q)}`;
+  if(!r.shows.length) return `<p class="hot-state">${esc(t('psNone',cut(q,30)))}</p>${lpWideHTML(q)}`;
+  const can=!!feedApi();
+  return `<ul class="ps-rows">${r.shows.map((x,i)=>`<li class="ps-row"><span class="ps-cv">${x.cover ? `<img src="${esc(x.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ''}</span><span class="ps-tx"><b title="${esc(x.name)}">${esc(x.name)}</b><span class="ps-m">${esc([x.artist, x.n ? t('psN',x.n) : ''].filter(Boolean).join(' · '))}</span></span>${can ? `<span class="ps-acts"><button class="btn rc-play" type="button" data-ps-play="${i}">${ICON.play}<span>${esc(t('psListen'))}</span></button><button class="btn" type="button" data-ps-sub="${i}">${esc(t('psSub'))}</button></span>` : ''}</li>`).join('')}</ul>${lpWideHTML(q)}`;
 }
+let lpSrT=0, lpSrAbort=null, lpPsAbort=null;
+function lpSearchPaintRes(){ const el=$('#lpSrRes'); if(el){ el.innerHTML=lpSearchResHTML(); const h=document.querySelector('.lp-sq'); if(h) h.textContent=lpSqText(); listenMark(); } }
+function lpSearchLeave(){ const L=state.lp; clearTimeout(lpSrT); if(lpSrAbort) lpSrAbort.abort(); if(lpPsAbort) lpPsAbort.abort(); L.search=false; L.sres=null; L.psres=null; L.sart=null; L.spl=null; L.sq=''; }
+function lpSearchOpen(){ const L=state.lp; lpSearchLeave(); L.search=true; lpPaint(); const i=$('#q'); if(i){ i.value=''; i.focus(); } }
+function lpSearchClose(){ lpSearchLeave(); const i=$('#q'); if(i) i.value=''; lpPaint(); }
+function lpTopSearch(v){                                                                                  // the box at the top, when the page is the music or the podcast side: what is typed is searched there, on the page (not in the whole site)
+  const L=state.lp, w=String(v||'').trim();
+  if(!L.search){ if(!w) return; lpSearchLeave(); L.search=true; lpPaint(); }
+  lpSearchGo(v);
+}
+function lpSearchGo(q, now){                                                                           // two letters at least for songs (one for a show), and a third of a second after the last key
+  const L=state.lp; L.sq=q; clearTimeout(lpSrT); const w=q.trim(), pod=lpPodMode();
+  if(w.length<(pod ? 1 : 2)){ if(lpSrAbort) lpSrAbort.abort(); if(lpPsAbort) lpPsAbort.abort(); L.sres=null; L.psres=null; L.sart=null; L.spl=null; lpSearchPaintRes(); return; }
+  L.spl=null;
+  lpSrT=setTimeout(()=>pod ? lpPodSearchRun(w) : lpSearchRun(w), now ? 0 : 300);
+}
+const lpHttps=u=>typeof u==='string' && u.startsWith('https://') ? u : '';
 async function lpSearchRun(w){
   const L=state.lp, api=listenApi(); if(!api) return;
   if(lpSrAbort) lpSrAbort.abort(); const ab=lpSrAbort=new AbortController();
@@ -7739,18 +7812,64 @@ async function lpSearchRun(w){
   try{
     const r=await fetch(api+'?search='+encodeURIComponent(w)+'&lang='+state.lang+'&region='+lpRegionPref(),{credentials:'omit', signal:ab.signal}), d=await r.json().catch(()=>null);
     if(!d || d.ok!==true || !Array.isArray(d.items)) throw new Error('search');
-    const items=d.items.slice(0,40).map(listenClean).filter(Boolean); items.forEach(x=>{ x.sr=true; });
+    const items=d.items.slice(0,50).map(listenClean).filter(Boolean); items.forEach(x=>{ x.sr=true; });
     if(L.sq.trim()!==w) return;
-    L.sres={state:'ok', items, partial:d.partial===true, q:w};
+    const artist=d.artist && typeof d.artist.name==='string' && d.artist.name ? {name:cut(d.artist.name,40), cover:lpHttps(d.artist.cover)} : null;
+    L.sres={state:'ok', items, partial:d.partial===true, q:w, artist};
+    if(artist && (!L.sart || L.sart.name!==artist.name)) lpArtistLoad(artist.name);
   }catch(e){ if(e.name==='AbortError' || L.sq.trim()!==w) return; L.sres={state:'err', items:[], q:w}; }
   lpSearchPaintRes();
 }
-document.addEventListener('input',e=>{ const i=e.target && e.target.closest && e.target.closest('#lpSrIn'); if(i) lpSearchGo(i.value); });
-document.addEventListener('keydown',e=>{
-  const i=e.target && e.target.closest && e.target.closest('#lpSrIn'); if(!i) return;
-  if(e.key==='Enter'){ e.preventDefault(); lpSearchGo(i.value,true); lpHistAdd(i.value.trim()); }
-  else if(e.key==='Escape'){ e.preventDefault(); lpSearchClose(); }
-});
+async function lpArtistLoad(name){                                                                        // the page of the artist (the best songs of every source as one list, the play lists that go with the name)
+  const L=state.lp, api=listenApi(); if(!api) return;
+  L.sart={name, state:'load', songs:[], lists:[], names:[]}; lpSearchPaintRes();
+  try{
+    const r=await fetch(api+'?artist='+encodeURIComponent(name)+'&lang='+state.lang+'&region='+lpRegionPref()+'&caps=resolve',{credentials:'omit'}), d=await r.json().catch(()=>null);
+    if(!d || d.ok!==true || !Array.isArray(d.songs)) throw new Error('artist');
+    const songs=d.songs.slice(0,50).map(listenClean).filter(Boolean); songs.forEach(x=>{ x.sr=true; });
+    const lists=(Array.isArray(d.lists) ? d.lists : []).slice(0,6).map(l=>({id:/^ne:pl:\d{1,14}$/.test(String(l && l.id || '')) ? l.id : '', name:cut(String(l && l.name || ''),40), cover:lpHttps(l && l.cover)})).filter(l=>l.id && l.name);
+    if(L.sart && L.sart.name===name) L.sart={name, state:songs.length ? 'ok' : 'err', songs, lists, names:(d.artist && Array.isArray(d.artist.names) ? d.artist.names : []).slice(0,6).map(v=>cut(String(v),30))};
+  }catch(e){ if(L.sart && L.sart.name===name) L.sart={name, state:'err', songs:[], lists:[], names:[]}; }
+  if(L.search) lpSearchPaintRes();
+}
+async function lpPlOpen(id, name){
+  const L=state.lp, api=listenApi(); if(!api) return;
+  L.spl={id, name, state:'load', items:[]}; lpSearchPaintRes();
+  try{
+    const r=await fetch(api+'?plist='+encodeURIComponent(id)+'&lang='+state.lang,{credentials:'omit'}), d=await r.json().catch(()=>null);
+    if(!d || d.ok!==true || !Array.isArray(d.items)) throw new Error('plist');
+    const items=d.items.slice(0,100).map(listenClean).filter(Boolean); items.forEach(x=>{ x.sr=true; });
+    if(L.spl && L.spl.id===id) L.spl={id, name, state:'ok', items};
+  }catch(e){ if(L.spl && L.spl.id===id) L.spl={id, name, state:'err', items:[]}; }
+  if(L.search) lpSearchPaintRes();
+}
+async function lpPodSearchRun(w){
+  const L=state.lp, api=listenApi(); if(!api) return;
+  if(lpPsAbort) lpPsAbort.abort(); const ab=lpPsAbort=new AbortController();
+  L.psres={state:'load', shows:[], q:w}; lpSearchPaintRes();
+  try{
+    const r=await fetch(api+'?psearch='+encodeURIComponent(w)+'&lang='+state.lang,{credentials:'omit', signal:ab.signal}), d=await r.json().catch(()=>null);
+    if(!d || d.ok!==true || !Array.isArray(d.shows)) throw new Error('psearch');
+    const shows=d.shows.slice(0,20).map(x=>({id:String(x && x.id || '').slice(0,14), name:cut(String(x && x.name || ''),80), artist:cut(String(x && x.artist || ''),60), cover:lpHttps(x && x.cover), feed:httpUrl(x && x.feed), n:+(x && x.n)>0 ? Math.floor(+x.n) : 0})).filter(x=>x.id && x.name && x.feed);
+    if(L.sq.trim()!==w) return;
+    L.psres={state:'ok', shows, q:w};
+  }catch(e){ if(e.name==='AbortError' || L.sq.trim()!==w) return; L.psres={state:'err', shows:[], q:w}; }
+  lpSearchPaintRes();
+}
+async function psPlay(i){                                                                                // the newest episode of a show that was found plays at once (a transient item: nothing is kept)
+  const x=state.lp.psres && state.lp.psres.shows[i]; if(!x || !feedApi()) return;
+  const b=document.querySelector(`[data-ps-play="${i}"]`); if(b){ b.disabled=true; b.classList.add('busy'); }
+  try{
+    const d=await callFeed({action:'discover',url:x.feed});
+    const e=((d && d.items)||[]).find(y=>feedAudio(y));
+    if(!e) throw new Error(d && d.ok===false ? ((state.lang==='zh'?d.message:d.message_en)||d.message||'?') : t('plFail'));
+    const tid='tmp:pod:'+hashStr(urlKey(x.feed)).toString(36);
+    state.tmp.set(tid,{id:tid, source:'tmp', type:'link', url:httpUrl(e.url)||x.feed, title:cut(e.title,140), summary:cut(e.summary,220), image:(String(e.image||'').startsWith('https://')?e.image:(String(d.image||'').startsWith('https://')?d.image:x.cover)),
+      audio:feedAudio(e), keywords:[], lang:state.lang, date:/^\d{4}-\d{2}-\d{2}/.test(e.date||'')?String(e.date).slice(0,10):today(), category:'notes', from:x.name});
+    plPlay(tid);
+  }catch(err){ toast(t('recoListenFail',err.message||String(err))); }
+  finally{ if(b){ b.disabled=false; b.classList.remove('busy'); } }
+}
 function lpListsHTML(){                                                                              // "my play lists": a row each, and a button for a new one
   const ls=lpLists();
   return `<section class="lp-songs"><header class="lp-songs-h"><button class="plp-ic lp-back" type="button" data-lp-back aria-label="${esc(t('lpBack'))}">${LP_BACK}</button><h3>${esc(t('lpMyLists'))}</h3><span class="lp-acts"><button class="btn dr-act" type="button" data-lp-newlist>${esc(t('lpListNewBtn'))}</button></span></header>`
@@ -7768,6 +7887,7 @@ function lpMusicHTML(all){
 function lpHTML(){
   const L=state.lp, P=lpPods(), all=lpGroups();
   if(!all.length) return `<p class="hot-state">${esc(L.err || t('lpLoading'))}${L.err ? `<br><button class="btn" type="button" data-lp-retry>${esc(t('dirRetry'))}</button>` : ''}</p>`;
+  if(L.v2 && L.search) return `<div class="lp lp-sp">${lpSearchHTML()}</div>`;          // (the search page, on the music side and on the podcast side)
   if(!lpPodMode()) return lpMusicHTML(all);
   const cur=lpSel(), mode=lpTypeOf(cur), order=lpOrder(mode), ci=order.findIndex(g=>g.id===cur), rows=lpIsRows();
   const hasPod=all.some(g=>g.type==='podcast'), hasMusic=all.some(g=>g.type!=='podcast'), modes=hasPod && hasMusic ? `<div class="lp-modes seg" role="tablist" aria-label="${esc(t('lsTitle'))}">${['music','podcast'].map(m=>`<button type="button" role="tab" aria-selected="${m===mode}" data-lp-mode="${m}">${esc(t('lpMode_'+m))}</button>`).join('')}</div>` : '';
@@ -7801,7 +7921,7 @@ function lpPaint(){
   const a=document.activeElement, d=a && a.dataset ? a.dataset : {}, att=d.lpG!==undefined ? ['data-lp-g',d.lpG] : d.lpShow!==undefined ? ['data-lp-show',d.lpShow] : d.lsScene ? ['data-ls-scene',d.lsScene] : d.lpMore!==undefined ? ['data-lp-more',''] : d.lpMode ? ['data-lp-mode',d.lpMode] : null;
   const b=$('#lsBlock'), p=$('#lpRoot');
   if(b) b.innerHTML=listenHTML();
-  if(p && state.lp.search && p.querySelector('#lpSrIn')){ lpSearchPaintRes(); return; }          // (the search page is not drawn again while somebody types: the box keeps its place and its words)
+  if(p && state.lp.search && p.querySelector('#lpSrRes')){ lpSearchPaintRes(); return; }          // (the search page is not drawn again while somebody types)
   if(p){
     const old=p.querySelector('.lp-strip'), was=old ? old.scrollLeft : null, wasCur=p.dataset.cur;
     p.innerHTML=lpHTML(); $('#viewSub').textContent=''; p.dataset.cur=lpSel();
@@ -7847,7 +7967,10 @@ function lpStep(d){                                                             
   if(!lpPodMode()){ const i=LP_TABS.indexOf(L.tab), k=LP_TABS[i+d]; if(k) lpTab(k); return; }
   const ord=lpOrder(lpTypeOf(lpSel())), i=ord.findIndex(g=>g.id===lpSel()), n=ord[i+d]; if(n) lpSelect(n.id);
 }
-function lpSetMode(mode){                                                                            // the switch between music and podcasts: back to the list chosen last in that kind
+function lpSetMode(mode){
+  if(state.lp.search) lpSearchLeave();
+  { const q=$('#q'); if(q && (qKind()==='music' || qKind()==='podcast')) q.value=''; }
+  setTimeout(qScopeSync,0);                                                                            // the switch between music and podcasts: back to the list chosen last in that kind
   const L=state.lp;
   if(mode==='music'){ L.mode='music'; L.open=false; L.shown=LP_PAGE; lpPaint(); lpEnsure(); lpToTop(); return; }
   const gs=lpGroups(), want=L['g_'+mode], ok=gs.find(g=>g.id===want && g.type===mode) || gs.find(g=>g.type===mode); if(ok) lpSelect(ok.id);
@@ -8072,8 +8195,16 @@ function listenClick(e){
   if(q('[data-lp-search]')){ lpSearchOpen(); return true; }
   if(q('[data-lp-sback]')){ lpSearchClose(); return true; }
   if(q('[data-lp-sclear]')){ LS.set('lpSearchHist',[]); lpSearchPaintRes(); return true; }
-  if((b=q('[data-lp-shist]'))){ const i=$('#lpSrIn'); if(i) i.value=b.dataset.lpShist; lpSearchGo(b.dataset.lpShist,true); return true; }
+  if((b=q('[data-lp-shist]'))){ const i=$('#q'); if(i) i.value=b.dataset.lpShist; lpSearchGo(b.dataset.lpShist,true); return true; }
   if(q('[data-lp-sretry]')){ lpSearchGo(state.lp.sq,true); return true; }
+  if(q('[data-qwide-top]')){ const w=state.lp.sq.trim(); lpSearchLeave(); qWide(w); return true; }
+  if(q('[data-lp-artplay]')){ const L=state.lp, S=L.sart, items=S && S.state==='ok' && S.songs.length ? S.songs : (L.sres ? L.sres.items : []); if(items.length) listenGo(items[0].id, items); return true; }
+  if(q('[data-lp-artsave]')){ const L=state.lp, S=L.sart, items=S && S.state==='ok' && S.songs.length ? S.songs : (L.sres ? L.sres.items : []), a=L.sres && L.sres.artist; if(items.length && a){ const l=lpListNew(a.name+' · '+t('lpArtistTop')); items.forEach(x=>lpListAdd(l.id,x)); toast(t('lpArtistSaved',l.name,items.length)); } return true; }
+  if((b=q('[data-lp-pl]'))){ lpPlOpen(b.dataset.lpPl, b.dataset.lpPlname||''); return true; }
+  if(q('[data-lp-plback]')){ state.lp.spl=null; lpSearchPaintRes(); return true; }
+  if(q('[data-lp-plplay]')){ const P=state.lp.spl; if(P && P.items.length) listenGo(P.items[0].id, P.items); return true; }
+  if((b=q('[data-ps-play]'))){ psPlay(+b.dataset.psPlay); return true; }
+  if((b=q('[data-ps-sub]'))){ const x=state.lp.psres && state.lp.psres.shows[+b.dataset.psSub]; if(x){ const id=subscribeNow(x.name, x.feed, ''); if(id) toast(t('psSubbed',cut(x.name,24))); } return true; }
   if(q('[data-lp-askgo]')){ lpAskDone(true); return true; }
   if(q('[data-lp-askskip]')){ lpAskDone(false); return true; }
   if((b=q('[data-lp-askk]'))){ const A=state.lp.ask=state.lp.ask||new Set(), k=b.dataset.lpAskk; if(A.has(k)) A.delete(k); else A.add(k); b.setAttribute('aria-pressed',String(A.has(k))); return true; }
@@ -8799,6 +8930,7 @@ function renderDir(){
   if(state.dType!=='all' && !state.dLanding) cl.push(clr('dtype',t('scType')+t('ty_'+state.dType)));
   if(dirLf()!=='all') cl.push(clr('dlf',t('scLang')+(state.lf==='zh'?t('langZh'):t('langEn'))));
   if(state.q.trim()) cl.push(clr('dq',t('scQ')+state.q.trim()));
+  if(state.q.trim() && ['books','audiobooks','articles','video'].includes(qKind())) cl.push(`<button class="chip q-wide" type="button" data-qwide>${esc(t('qWide'))}</button>`);
   if(sh) cl.push(clr('dshelf',sh.name)); if(state.dTag) cl.push(clr('dtag','#'+state.dTag)); if(!bkp && (pickOn() || topicPickOn()) && !sh) cl.push(clr('dpick',t(state.dTabs==='plat' ? 'dpSum' : 'dpSumT',pickCount())));
   $('#viewSub').innerHTML = html + (cl.length ? '<br>'+cl.join('') : '');
 
@@ -9669,6 +9801,7 @@ $('#tagbox').addEventListener('click',e=>{
 document.querySelectorAll('[data-space]').forEach(b=>b.addEventListener('click',()=>setSpace(b.dataset.space)));
 $('#tabbar [data-hot-nav]').addEventListener('click',()=>publicGo('hot'));
 $('.view-head').addEventListener('click',e=>{                        // the active filters above the cards: click one to drop it
+  if(e.target.closest('[data-qwide]')){ qWide(state.q.trim()); return; }
   const c=e.target.closest('[data-clear]'); if(!c) return;
   const k=c.dataset.clear; if(k==='tag') state.tag=''; else if(k==='dtag') state.dTag=''; else if(k==='dshelf') state.dShelf=''; else if(k==='dpick') clearPick();
   else if(k==='dtab'){ state.dTab=''; state.dSub=''; } else if(k==='dsub') state.dSub=''; else if(k==='dtype') state.dType='all'; else if(k==='dlf') state.lf='all'; else if(k==='dq'){ state.q=''; $('#q').value=''; }
@@ -9750,8 +9883,56 @@ $('#empty').addEventListener('click',e=>{
   if(clr && clr.dataset.clear==='dpick'){ clearPick(); state.dLimit=DIR_PAGE; render(); }
   else if(clr){ state.q=''; state.lf='all'; state.tag=''; state.dType='all'; state.dTag=''; state.dShelf=''; state.dPick.clear(); saveDirPick(); state.dPickT.clear(); saveDirPickT(); state.dLimit=DIR_PAGE; $('#q').value=''; render(); }
 });
-let qTimer; $('#q').addEventListener('input',e=>{ clearTimeout(qTimer); qTimer=setTimeout(()=>{ state.q=e.target.value; state.dLimit=DIR_PAGE; render(); ftSchedule(); },120); });
-$('#q').addEventListener('keydown',e=>{ if(e.key==='Escape'){ e.target.value=''; state.q=''; render(); ftSchedule(); e.target.blur(); } });
+/* ===== search by section: the box at the top searches what the page is about (its label says what); only "all" and "discover" search the whole site ===== */
+const Q_LABEL={all:'qAll', music:'qMusic', podcast:'qPodcast', books:'qBooks', audiobooks:'qAudio', articles:'qArticles', video:'qVideo', hot:'qHot', mine:'qMine'};
+function qKind(){
+  if(!dirOn()) return 'mine';
+  if(state.dHot && hotBase()) return 'hot';
+  if(state.dListen && lpAvailable() && state.lp.v2) return lpPodMode() ? 'podcast' : 'music';
+  if(state.dLanding==='books') return state.dGenre==='audio' ? 'audiobooks' : 'books';
+  if(state.dLanding==='articles') return 'articles';
+  if(state.dLanding==='watch') return 'video';
+  return 'all';
+}
+let qNow='';
+function qScopeSync(){                                                                                    // the label in the box, and what it asks for, follow the page
+  const chip=$('#qScope'), box=$('#q'); if(!chip || !box) return;
+  const k=qKind(); chip.textContent=t(Q_LABEL[k]); chip.dataset.kind=k; box.placeholder=t('qp_'+k);
+  box.parentElement.style.setProperty('--qs',(chip.offsetWidth+6)+'px');
+  if(k!==qNow){
+    const was=qNow; qNow=k;
+    if(was && (k==='music' || k==='podcast' || k==='hot') && !state.q) box.value='';
+    if((was==='music' || was==='podcast') && k!==was && state.lp.search) lpSearchLeave();
+    if(was==='hot' && k!=='hot') hotQuery('');
+  }
+}
+let hotQ='';
+function hotQuery(v){ hotQ=String(v||'').trim().toLowerCase(); hotQApply(); }
+function hotQApply(){                                                                                      // the hot lists: what does not have the words is hidden (the entries that are on the page); a line says when nothing has them
+  const root=$('#dirReco'); if(!root) return;
+  let any=false; root.querySelectorAll('.hot-row').forEach(li=>{ const on=!hotQ || li.textContent.toLowerCase().includes(hotQ); li.hidden=!on; if(on) any=true; });
+  const note=root.querySelector('#hotQNone');
+  if(hotQ && !any){ if(!note){ const p=document.createElement('p'); p.id='hotQNone'; p.className='hot-state'; p.textContent=t('hotQNone',hotQ); const list=root.querySelector('.hot-board-body, .hot'); if(list) list.prepend(p); } else note.textContent=t('hotQNone',hotQ); }
+  else if(note) note.remove();
+}
+new MutationObserver(()=>{ if(hotQ) hotQApply(); }).observe($('#dirReco'),{childList:true,subtree:true});
+function qWide(q){ dirGoHome(); state.q=String(q||''); $('#q').value=state.q; state.dBrowse=true; state.dLimit=DIR_PAGE; render(); window.scrollTo({top:0}); ftSchedule(); }
+let qTimer; $('#q').addEventListener('input',e=>{
+  clearTimeout(qTimer); const k=qKind(), v=e.target.value;
+  if(k==='music' || k==='podcast'){ lpTopSearch(v); return; }
+  if(k==='hot'){ qTimer=setTimeout(()=>hotQuery(v),120); return; }
+  qTimer=setTimeout(()=>{ state.q=v; state.dLimit=DIR_PAGE; render(); ftSchedule(); },120);
+});
+$('#q').addEventListener('keydown',e=>{
+  const k=qKind();
+  if(e.key==='Escape'){
+    e.target.value='';
+    if(k==='music' || k==='podcast'){ lpSearchClose(); }
+    else if(k==='hot') hotQuery('');
+    else { state.q=''; render(); ftSchedule(); }
+    e.target.blur();
+  }else if(e.key==='Enter' && (k==='music' || k==='podcast')){ e.preventDefault(); const w=e.target.value.trim(); if(w){ lpSearchGo(w,true); lpHistAdd(w); } }
+});
 $('#ftBtn').addEventListener('click',()=>{ state.ftOn=!state.ftOn; LS.set('ftOn',state.ftOn?1:0); ftSchedule(); render(); if(state.ftOn && state.q.trim()) toast(t('ftBusy')); });
 $('#sort').addEventListener('change',e=>{ state.sort=e.target.value; LS.set('sort',state.sort); render(); });
 function dirSortLabel(v){ const o=[...$('#sort').options].find(x=>x.value===v); return dirOn() && booksPage() && v==='recent' ? t('sortBooks') : (o ? o.textContent : ''); }
@@ -9812,6 +9993,7 @@ window.addEventListener('focus',()=>{ if($('#reader').hidden && !dlg.open && (st
 const SH_PHONE=matchMedia('(max-width:980px)'), shOn=()=>shellSel()==='2';
 function shMove(el, to, before){ if(el && to && el.parentElement!==to) to.insertBefore(el, before && before.parentElement===to ? before : null); }
 function shLayout(){
+  qScopeSync();
   const b=document.body, on=shOn(), phone=on && SH_PHONE.matches, shelf=on && !dirOn(), lab=$('.side-scroll>.dir-label');
   b.classList.toggle('shell2',on); b.classList.toggle('sh-phone',phone); b.classList.toggle('sh-shelf',shelf); b.classList.toggle('side-off',on && !!LS.get('sideOff',0));
   shMove($('#cats'), phone ? $('#stripIn') : $('.side-scroll'), phone ? $('#colChip') : lab);
