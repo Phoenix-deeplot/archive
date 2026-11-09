@@ -9449,7 +9449,7 @@ function renderDir(){
   else list=interleaveDays(list.sort(byDate));
   const bkNotes = curList ? new Map(curList.books.map(b=>[b.id,bkText(b.why)])) : null;
   if(curList){ const ord=new Map(curList.books.map((b,i)=>[b.id,i])); list.sort((a,b)=>ord.get(a.id)-ord.get(b.id)); }          // (a book list is read in the order that its maker gave)
-  const spanKind = !bkp && !curList && !tk.length && !state.dShelf && !state.dTag ? (state.dLanding==='articles' ? 'article' : state.dLanding==='watch' ? 'video' : !state.dLanding && state.dBrowse && state.dType==='all' ? 'all' : '') : '';
+  const spanKind = !bkp && !curList && !tk.length && !state.dShelf ? (state.dLanding==='articles' ? 'article' : state.dLanding==='watch' ? 'video' : !state.dLanding && state.dBrowse && state.dType==='all' ? 'all' : '') : '';
   let spanHTML='', spanNote='';
   if(spanKind){                                                                                    // the time span of the page: what the reader chose (or the page's own), widened by one step while it holds fewer than 12
     const want=DIR_SPANS.includes(state.dSpans[spanKind]) ? state.dSpans[spanKind] : DIR_SPAN_DEFAULT[spanKind], within=n=>n==='all' ? list : list.filter(it=>{ const a=dirAge(it); return a!==null && a<DIR_SPAN_AGE[n]; });
