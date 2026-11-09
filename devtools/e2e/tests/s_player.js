@@ -149,9 +149,10 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
 
   // ================================================ H. a sound that is gone
   const e0 = await ep(0);
-  await J(`plPlay(${JSON.stringify(e0)})`); await sleep(2000);
+  await J(`plPlay(${JSON.stringify(e0)})`); await sleep(4000);
   const gone = await J(`({msg:document.querySelector('#toastMsg').textContent, act:document.querySelector('#toastAct').textContent, loaded:pl.loaded})`);
   ok('an episode whose sound is gone: the page says it cannot be played here and offers the original; it does not play on in silence', /放不了/.test(gone.msg) && gone.act === '打开原站' && gone.loaded === '', gone);
+  ok('and the message names the server the sound came from and what the browser said (so that a reader can tell where it failed), after one more try of the same sound', /放不了[^·]*· 127\.0\.0\.1 · /.test(gone.msg) && /(网络连不上|声音文件有问题|浏览器不接受)/.test(gone.msg), gone.msg);
 
   // ================================================ I. an older subscription learns where the sounds are
   await J(`(async()=>{ for(const it of state.items.filter(x=>x.id.startsWith('local:feed:'))){ delete it.audio; delete it.image; const rec={...it}; delete rec.source; await idb.put(rec); } })()`);
