@@ -145,6 +145,15 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   ok('the service is slow (a second and a half), the wait is cut at half a second: the preview begins ...', await waitFor(`pl.loaded && pl.cands[0] && pl.cands[0].p==='deezer'`, 6000));
   ok('... and the whole song takes over when it is found, while the song is still at its beginning', await waitFor(`pl.loaded && pl.cands[0] && pl.cands[0].p==='bodian' && plAudio.currentTime<12`, 9000));
   await J(`plAudio.pause()`);
+
+  // ------------------------------------------------ the answer had no whole song though a source had promised one: one more question a little later
+  await fresh('v2=1&rs=miss1', 'zh');
+  await type('Search Epsilon', true);
+  await waitFor(`document.querySelectorAll('#lpSrRes .ls-row').length===1`, 8000);
+  await J(`document.querySelector('#lpSrRes .ls-row .ls-main').click()`);
+  ok('the first answer has the preview only (the source of whole songs was slow for a moment): the preview begins ...', await waitFor(`pl.loaded && pl.cands[0] && pl.cands[0].p==='deezer'`, 9000), await J(`pl.cands.map(c=>c.p+':'+c.k).join()`));
+  ok('... a second question (fresh) goes out a little later, once, and the whole song takes over while the song is still at its beginning', await waitFor(`pl.loaded && pl.cands[0] && pl.cands[0].p==='bodian' && plAudio.currentTime<12`, 9000) && (await log2()).filter(x => x === 'resolve:Search Epsilon').length === 1 && (await log2()).filter(x => x === 'resolve:Search Epsilon:fresh').length === 1, [await J(`pl.cands.map(c=>c.p+':'+c.k).join()`), await log2()]);
+  await J(`plAudio.pause()`);
   ok('no errors in the page', errs.length === 0, errs);
   await fetch(SVC + '/__listen?mode=ok&reset=1');                                  // (the fake service answers as it did before again: the tests after this one do not know the newer questions)
   console.log(`${pass} passed, ${fail} failed`);

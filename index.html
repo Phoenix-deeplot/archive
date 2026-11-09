@@ -5359,9 +5359,18 @@ function plWhy(){                                                               
 function plResolve(id, force){                                                                                // -> a promise: true when the song now has a sound it did not have (the service found one); the song and the bar's copy of it are given the sounds and the words
   const it=plItem(id), x=lpSeen.get(String(id).slice(7)); if(!it || !x || !state.lp.v2) return Promise.resolve(false);
   if(plRs.has(id)) return plRs.get(id);
+  const promised=lpPromise(it) || lpUpgrade(it);                                                      // (a whole song was promised: a source of the reader's side says it has it)
   it.rsAsked=true; x.rsAsked=true; state.lp.rsDone.add(String(x.id));                                                                  // (asked for once: a promise that came to nothing is not asked for again at every play)
-  const p=lpResolve(x,force).then(r=>{ if(!r) return false; lpApplyResolve(x,it,r); return r.cands.length>0; }).finally(()=>plRs.delete(id));
+  const p=lpResolve(x,force).then(r=>{ if(!r) return false; lpApplyResolve(x,it,r); if(promised && !r.cands.some(c=>c.k==='full')){ it.rsMissed=true; x.rsMissed=true; } return r.cands.length>0; }).finally(()=>plRs.delete(id));
   plRs.set(id,p); return p;
+}
+function plRetryWhole(id){                                                                            // the answer had no whole song though a source had promised one (that source was slow or failing for a moment): one more question a little later; a whole song that comes takes over while the song is at its beginning
+  const it=plItem(id), x=lpSeen.get(String(id).slice(7)); if(!it || !x || !it.rsMissed || it.rsRetry || !state.lp.v2) return;
+  it.rsRetry=true; x.rsRetry=true;
+  setTimeout(()=>{ plResolve(id,'fresh').then(()=>{
+    const k=pl.q.indexOf(id), cur=plItem(id);
+    if(k>=0 && pl.i===k && cur && pl.loaded===id && plAudio.currentTime<12 && !pl.cands.some(c=>c.k==='full') && plCands(cur).some(c=>c.k==='full')) plSwitch(id);
+  }); },2500);
 }
 function plFinding(i, go, start, force){                                                                      // the song has no sound (yet): the service is asked for one, then the song is loaded
   const id=pl.q[i], it=plItem(id); if(!it) return;
@@ -5373,7 +5382,7 @@ function plFinding(i, go, start, force){                                        
     if(!done){ done=true; if(pl.find===id) pl.find=''; if(!cur.need && plCands(cur).length) plLoad(k,go,start); else { plTick(); plFailed(id); } return; }
     if(late && pl.loaded===id && plAudio.currentTime<12 && !pl.cands.some(c=>c.k==='full') && plCands(cur).some(c=>c.k==='full')) plSwitch(id);          // (the whole song was found after the preview began)
   };
-  plResolve(id,force).then(()=>fin(done));
+  plResolve(id,force).then(()=>{ fin(done); plRetryWhole(id); });
   if(soft) setTimeout(()=>{ if(!done) fin(false); },PL_UP_MS);
 }
 const PL_UP_MS=Math.max(500,+LS.get('plUpMs',4000)||4000);
@@ -5394,6 +5403,7 @@ function plLoad(i, go, at){
   pl.i=i; pl.pre=''; pl.preA=null; pl.closed=false;
   const prog=plProgMap()[id], start = at!==undefined ? at : prog && !prog[2] && prog[0]>5 ? Math.max(0,prog[0]-3) : 0;                    // where it was left, a little before
   if(plIsMusic(it) && (it.need || plStale(it) || lpPromise(it) || lpUpgrade(it)) && state.lp.v2){ plFinding(i,go,start); return; }
+  if(plIsMusic(it) && it.rsMissed) plRetryWhole(id);                                                   // (its question was asked beforehand, at a hover or at the song before, and came back without the whole song)
   const cs=plCands(it);
   pl.want=start; pl.cands=cs; pl.ci=0;
   if(!cs.length){
@@ -7362,7 +7372,7 @@ async function lpResolve(x, force){                                             
   const api=listenApi(), L=state.lp; if(!api || !L.v2 || !x) return null;
   const hit=L.rs.get(x.id); if(hit && !force && Date.now()<hit.exp) return hit.r;
   try{
-    const u=api+'?resolve=1&id='+encodeURIComponent(x.id)+'&t='+encodeURIComponent(x.title)+'&a='+encodeURIComponent(x.artist||'')+'&d='+(x.dur||0)+'&lang='+state.lang+'&region='+lpRegionPref();
+    const u=api+'?resolve=1&id='+encodeURIComponent(x.id)+'&t='+encodeURIComponent(x.title)+'&a='+encodeURIComponent(x.artist||'')+'&d='+(x.dur||0)+'&lang='+state.lang+'&region='+lpRegionPref()+(force==='fresh' ? '&fresh=1' : '');
     const r=await fetch(u,{credentials:'omit'}), d=await r.json().catch(()=>null);
     if(!d || d.ok!==true || !Array.isArray(d.cands)) return null;
     const out={cands:d.cands.slice(0,8).map(lpCleanCand).filter(c=>c && c.audio), ttl:Math.max(1,Math.min(3600,+d.ttl||600)), lyrics:lpCleanLyrics(d.lyrics)};

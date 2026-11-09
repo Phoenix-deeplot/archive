@@ -479,8 +479,11 @@ class H(BaseHTTPRequestHandler):
                     return self.reply(200, {'ok': True, 'q': word, 'shows': shows})
                 if (q.get('resolve') or [''])[0]:
                     title = (q.get('t') or [''])[0]
+                    fresh = (q.get('fresh') or [''])[0] == '1'
                     if UA:
-                        LISTEN['log2'].append('resolve:' + title)
+                        LISTEN['log2'].append('resolve:' + title + (':fresh' if fresh else ''))
+                    if LISTEN['rs'] == 'miss1' and not fresh:              # the first question comes back with a preview only (the source of whole songs was slow for a moment); the second (fresh=1) has the whole song
+                        return self.reply(200, {'ok': True, 'id': (q.get('id') or [''])[0], 'ttl': 60, 'cands': [{'p': 'deezer', 'k': 'preview', 'audio': POD + '/ep3.wav', 'net': 'any', 'lic': 'Deezer 30 秒试听'}]})
                     if LISTEN['rs'] == 'down':
                         return self.reply(503, {'ok': False, 'error': 'down'})
                     if LISTEN['rs'] == 'slow':
