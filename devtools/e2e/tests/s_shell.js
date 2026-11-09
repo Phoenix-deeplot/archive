@@ -61,17 +61,15 @@ const get = p => fetch(SVC + p).then(r => r.json());
   await J(`document.querySelector('#themeTop').click()`); await settle(400);
   const lDark = await look();
   ok('one tap on the phone theme button switches directly from classic to dark, with no menu', lDark.th === 'dark' && lDark.stored === 'dark' && !lDark.expanded && lDark.label.includes('深色') && !lDark.hasPop, lDark);
+  ok('"深色": dark colours, and the serif and the thin icons of the classic theme still', lDark.accent === '#5cc2b1' && lDark.bg === 'rgb(18, 22, 25)' && lDark.font === l0.font && lDark.stroke === l0.stroke && lDark.btn === '主题：深色', lDark);
   await J(`document.querySelector('#themeTop').click()`); await settle(400);
   const l1 = await look(), tc1 = await tabcol(), ac1 = await accent();
   ok('one more tap switches to cloud red: a cool white, red accent, sans-serif headings, heavier icons and rounder cards; the choice is saved', l1.th === 'cloud' && l1.stored === 'cloud' && l1.accent === '#d8363a' && l1.bg === 'rgb(246, 247, 249)' && l1.font !== l0.font && !/Noto Serif/.test(l1.font) && /Noto Serif/.test(l0.font) && parseFloat(l1.stroke) > parseFloat(l0.stroke) && parseFloat(l1.card) > parseFloat(l0.card) && l1.btn === '主题：云红', [l0, l1]);
   ok('the bottom bar follows the theme: the one that is on and the + are red now', ac1 !== ac0 && tc1.on === ac1 && tc1.plus === ac1, [tc1, ac1]);
-  await J(`document.querySelector('#themeTop').click()`); await settle(400);
-  const l2 = await look();
-  ok('"深色": dark colours, and the serif and the thin icons of the classic theme again', l2.th === 'dark' && l2.accent === '#5cc2b1' && l2.bg === 'rgb(18, 22, 25)' && l2.font === l0.font && l2.stroke === l0.stroke && l2.btn === '主题：深色', l2);
   await J(`document.querySelector('#themeTop').click()`); await sleep(300);
   await J(`document.querySelector('#grid').click()`); await sleep(300);
   const l3 = await look();
-  ok('a third tap returns to classic (colours, font, icons, corners as at the start), and no theme menu is left open', l3.th === 'light' && !l3.expanded && l3.accent === l0.accent && l3.bg === l0.bg && l3.font === l0.font && l3.stroke === l0.stroke && l3.card === l0.card && l3.btn === '主题：经典', [l0, l3]);
+  ok('the third tap returns to classic, the ring is 经典 → 深色 → 云红 → 经典 (colours, font, icons, corners as at the start), and no theme menu is left open', l3.th === 'light' && !l3.expanded && l3.accent === l0.accent && l3.bg === l0.bg && l3.font === l0.font && l3.stroke === l0.stroke && l3.card === l0.card && l3.btn === '主题：经典', [l0, l3]);
   await J(`state.theme='auto'; LS.set('theme','auto'); document.documentElement.removeAttribute('data-theme')`);
 
   // the filter panel
