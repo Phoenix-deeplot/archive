@@ -5340,6 +5340,11 @@ function plStart(go){                                                           
 function plTrouble(id, why){                                                                          // this sound does not play (an error, nothing for a few seconds, a length that is not the song's): the next sound of the song; none left: the song is given up (or, if it is only slow, waited for)
   if(pl.loaded!==id) return;
   clearTimeout(pl.stallT);
+  const it0=plItem(id), c0=pl.cands[pl.ci];
+  if(it0 && plIsMusic(it0) && state.lp.v2 && c0 && c0.k==='full' && plSet.src!=='free' && !lpAsked(it0) && !pl.cands.slice(pl.ci+1).some(c=>c.k==='full')
+     && (it0.cands||[]).some(c=>c.rs && c.k==='full' && !c.audio && (c.net==='any' || c.net===(lpRegionPref()==='cn' ? 'cn' : 'global')))){          // (a whole sound at hand is gone, only previews are left, and a source of the reader's side has promised another whole song with no address yet: it is asked for before a preview is taken)
+    const at=plAudio.currentTime>3 ? plAudio.currentTime : pl.want, go=pl.go; pl.loaded=''; plAudio.pause(); plFinding(pl.q.indexOf(id), go, at, true); return;
+  }
   if(pl.ci<pl.cands.length-1){ if(plAudio.currentTime>3) pl.want=plAudio.currentTime; pl.ci++; plStart(pl.go); return; }
   if(why==='stall'){ toast(t('plSlow')); return; }
   const rk=id+'#'+pl.ci;

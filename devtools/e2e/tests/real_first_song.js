@@ -36,7 +36,8 @@ const BASE = 'http://127.0.0.1:8820/';
   for (let i = 0; i < 70; i++) {
     const s = await J(`JSON.stringify({ci:pl.ci, p:(pl.cands[pl.ci]||{}).p, k:(pl.cands[pl.ci]||{}).k, n:pl.cands.length, t:+plAudio.currentTime.toFixed(1), dur:+(plAudio.duration||0).toFixed(0), paused:plAudio.paused, err:plAudio.error&&plAudio.error.code, ready:plAudio.readyState})`);
     if (s !== last) { stamp('BAR ' + s); last = s; }
-    if (JSON.parse(s).t > 1.5 && !JSON.parse(s).paused) break;
+    const b = JSON.parse(s);
+    if (b.t > 1.5 && !b.paused && b.dur > 60) break;                                   // (a whole song is playing)
     await sleep(250);
   }
   await J(`plAudio.pause()`);

@@ -95,7 +95,8 @@ LRC = ('[00:00.50]First line of the song\n[00:03.00]Second line of the song\n[00
 SEARCH_SONGS = [   # title, artist, dur, how it sounds: 'whole' (a whole sound), 'preview' (a preview and a stub that resolve can fill), 'stub' (only a stub)
     ('Search Alpha', 'Singer A', 200, 'whole'), ('Search Beta', 'Singer B', 210, 'preview'), ('Search Gamma', 'Singer C', 190, 'stub'), ('Search Delta', 'Singer A', 205, 'whole'),
     ('Search Epsilon', 'Singer G', 195, 'both'), ('Search Nothing', 'Singer D', 180, 'stub'), ('Moon River', 'Singer E', 170, 'whole'), ('Moonlight', 'Singer F', 160, 'preview'),
-    ('Artist Song One', '测试歌手', 200, 'both'), ('Artist Song Two', '测试歌手', 210, 'preview'), ('Artist Song Three', '测试歌手', 190, 'whole'), ('Artist Song Four', '測試歌手', 205, 'preview')]
+    ('Artist Song One', '测试歌手', 200, 'both'), ('Artist Song Two', '测试歌手', 210, 'preview'), ('Artist Song Three', '测试歌手', 190, 'whole'), ('Artist Song Four', '測試歌手', 205, 'preview'),
+    ('Broken Whole', 'Singer H', 200, 'brokenwhole')]
 ARTIST = {'name': '测试歌手', 'cover': 'https://img.example/art.jpg', 'names': ['测试歌手', 'Test Singer', '測試歌手'], 'words': ('测试歌手', 'test singer', '測試歌手')}
 SRC_NAMES = {'bodian': '波点音乐', 'deezer': 'Deezer', 'audius': 'Audius', 'apple': 'Apple Music', 'netease': '网易云音乐'}
 
@@ -134,6 +135,8 @@ def song_item(i, title, artist, dur, how):
             cs = [c('audius', 'full', '/ep1.wav', lic='Audius')]
         elif how == 'preview':
             cs = [c('deezer', 'preview', '/ep3.wav', lic='Deezer 30 秒试听')]
+        elif how == 'brokenwhole':                                                # a whole sound at hand that is gone (404), a source of China that has promised another whole song (no address yet), and a preview
+            cs = [c('audius', 'full', '/missing.mp3', lic='Audius'), c('bodian', 'full', big=True, lyr=True, resolve=True, net='cn', lic='波点音乐'), c('deezer', 'preview', '/ep3.wav', lic='Deezer 30 秒试听')]
         elif how == 'both':                                                       # a preview at hand, and a source of China that says it has the whole song (no address yet)
             cs = [c('bodian', 'full', big=True, lyr=True, resolve=True, net='cn', lic='波点音乐'), c('deezer', 'preview', '/ep3.wav', lic='Deezer 30 秒试听')]
         else:
