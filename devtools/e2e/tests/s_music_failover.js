@@ -52,6 +52,8 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   ok('"only free sources": the sounds of NetEase and Bodian are left out (song 0 has NetEase and Audius)', (await candsOf(0)) === 'audius', await candsOf(0));
   await J(`plSet.src='speed'`);
   ok('"speed first": a small file before a big one (the big one is the first the service gave)', (await candsOf(4)) === 'audius,bodian*', await candsOf(4));
+  ok('"speed first" never puts a preview before a whole song: the small whole one, then the big whole one (a VIP song has only that), then the preview', (await J(`(()=>{ const it=Object.assign({}, state.tmp.get(listenTmp(lpGroupItems('fo-test','').items[4])), {cands:[{p:'apple',k:'preview',audio:'https://x.example/p.m4a',net:'any',big:false},{p:'bodian',k:'full',audio:'https://x.example/f.flac',net:'any',big:true},{p:'audius',k:'full',audio:'https://x.example/a.mp3',net:'any',big:false}]}); return plCands(it).map(x=>x.p).join(); })()`)) === 'audius,bodian,apple');
+  ok('...and a song with only a big whole file and a preview plays the big whole file first', (await J(`(()=>{ const it=Object.assign({}, state.tmp.get(listenTmp(lpGroupItems('fo-test','').items[4])), {cands:[{p:'apple',k:'preview',audio:'https://x.example/p.m4a',net:'any',big:false},{p:'bodian',k:'full',audio:'https://x.example/f.flac',net:'any',big:true}]}); return plCands(it).map(x=>x.p).join(); })()`)) === 'bodian,apple');
   await J(`plSet.src='whole'`);
   ok('"whole first" (the default): the order the service gave, whole before preview', (await candsOf(4)) === 'bodian*,audius', await candsOf(4));
 

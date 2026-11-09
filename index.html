@@ -230,6 +230,11 @@ body.dir-discover .dir-label,body.dir-discover #dir,body.dir-discover #tagbox,bo
 .search .q-scope{position:absolute;left:33px;top:50%;transform:translateY(-50%);font-size:12px;line-height:1;padding:3px 8px;border-radius:999px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-weight:600;white-space:nowrap;pointer-events:none;max-width:40%;overflow:hidden;text-overflow:ellipsis}
 .search .q-scope:empty{display:none}
 .search input{padding-left:calc(36px + var(--qs,0px))}
+.q-hist{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:30;padding:10px 12px;background:var(--bg);border:1px solid var(--rule);border-radius:10px;box-shadow:0 12px 24px rgba(0,0,0,.14);max-height:min(50vh,320px);overflow:auto}
+.q-hist[hidden]{display:none}
+.q-hist-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 8px;font-size:13px;color:var(--muted)}
+.q-hist-h button{border:0;background:none;color:var(--accent);font:inherit;cursor:pointer;padding:2px 4px}
+.q-hist-c{display:flex;flex-wrap:wrap;gap:6px}
 .q-wide{border-style:dashed;color:var(--accent);font-weight:600}
 .q-wide-row{margin:14px 0 4px;text-align:center}
 .lp-sq{flex:1;min-width:0;font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1778,6 +1783,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
         <input id="q" type="search" autocomplete="off" data-i-ph="search" placeholder="搜索标题、摘要、关键词">
         <kbd>/</kbd>
         <button class="ft" type="button" id="ftBtn" aria-pressed="false" data-i="ftLabel" data-i-aria="ftTip" hidden>搜正文</button>
+        <div class="q-hist" id="qHist" hidden></div>
       </div>
       <div class="toolbar">
         <div class="seg lf-one" role="group" id="langFilter" aria-label="Content language">
@@ -2084,7 +2090,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     </div>
     <div class="plp-set" id="plSetSheet" hidden>
       <div class="plp-set-h"><b data-i="plSetT">播放设置</b><button class="plp-ic" type="button" data-plp="setx" data-i-aria="plSetClose"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-      <div class="plp-row"><div class="l" data-i="plSrcL">音源</div><div class="pl-chips" id="plSrcs"></div></div>
+      <div class="plp-row"><div class="l" data-i="plSrcL">音源</div><div class="d" data-i="plSrcD">VIP 歌曲只有很大的整首文件：前两项都会放整首，“只用免费合规源”不放，只有 30 秒试听</div><div class="pl-chips" id="plSrcs"></div></div>
       <div class="plp-row plp-tg"><div><div class="l" data-i="plDataL">手机流量下小字提示</div><div class="d" data-i="plDataD">用手机流量放大文件（无损约 30–50 MB）时，播放条上写一句；这首歌有小文件的音源就先用它</div></div><button class="plp-sw" type="button" id="plDataSw" role="switch" data-i-aria="plDataL"></button></div>
       <div class="plp-row"><div class="l" data-i="plSleep">定时关闭</div><div class="pl-chips" id="plSleeps"></div></div>
       <div class="plp-row plp-tg" id="plLyrRow" hidden><div><div class="l" data-i="plLyrL">显示歌词</div><div class="d" data-i="plLyrD">有歌词的歌，在播放列表旁边多一格“歌词”</div></div><button class="plp-sw" type="button" id="plLyrSw" role="switch" data-i-aria="plLyrL"></button></div>
@@ -2840,8 +2846,8 @@ Object.assign(I18N.zh,{pinTip:'固定在左边', unpinTip:'取消固定', eyeLbl
 Object.assign(I18N.en,{pinTip:'Pin at the left', unpinTip:'Unpin', eyeLbl:'Eye care', eye_follow:'Follow system', eye_sepia:'Sepia', eye_green:'Green', eye_dark:'Dark', eyeTip:x=>`Eye care: now "${x}", click for the next`, eyeNow:x=>`Eye care: ${x}`, fsNow:n=>`Text size ${n}%`, pgPrev:'Previous page', pgNext:'Next page', fsSmaller:'Smaller text', fsBigger:'Bigger text', rbarTip:'Text size and page'});
 Object.assign(I18N.zh,{lpTab_rec:'推荐', lpTab_chart:'榜单', lpTab_disc:'发现', lpRegionCn:'国内', lpRegionGlobal:'国际', lpRegionTip:'国内 / 国际：先推荐哪里的歌', lpRadio:'今日电台', lpRadioPlay:'播放', lpRadioN:n=>`${n} 首`, lpBatch:'换一批', lpShelf:'精选歌单', lpForYou:'为你推荐', lpMyLikes:'我喜欢的', lpMyRecent:'最近播放', lpMyLists:'我的歌单', lpStyles:'风格', lpScenes:'场景', lpMoreStyles:n=>`更多风格（${n}）`, lpLessStyles:'收起', lpBack:'返回', lpR_cn:'中国', lpR_west:'欧美', 'lpR_jp-kr':'日韩', lpR_global:'全球', lpChartPick:'换一个榜单', lsLike:'喜欢', lsLiked:'取消喜欢', lsMore:'更多', lsmNext:'下一首播放', lsmAdd:'加入歌单', lsmLike:'喜欢', lsmUnlike:'取消喜欢', lsmNo:'不想听这类', lsmNextDone:s=>`下一首播放：${s}`, lsmNoDone:'已隐藏这首，以后少推荐类似的', lsmLikedDone:'已加入“我喜欢的”', lsmUnlikedDone:'已取消喜欢', lsmAdded:n=>`已加入“${n}”`, lsmHave:'歌单里已经有这首了', lsmNewList:'新建歌单', lsmNewPh:'新歌单的名字', lsmCreate:'新建并加入', lsmListN:n=>`${n} 首`, lpListDef:n=>`歌单 ${n}`, lpNoLists:'还没有歌单。在歌曲的 ⋯ 里点“加入歌单”就会建一个。', lpEmptyList:'这里还没有歌曲', lpListRename:'重命名', lpListDelete:'删除', lpListDelAsk:n=>`删除歌单“${n}”？`, lpListNewBtn:'新建歌单', lpListName:'歌单的名字'});
 Object.assign(I18N.en,{lpTab_rec:'For you', lpTab_chart:'Charts', lpTab_disc:'Discover', lpRegionCn:'China', lpRegionGlobal:'World', lpRegionTip:'China / World: whose songs to suggest first', lpRadio:'Today’s radio', lpRadioPlay:'Play', lpRadioN:n=>`${n} songs`, lpBatch:'Next batch', lpShelf:'Play lists', lpForYou:'For you', lpMyLikes:'Liked songs', lpMyRecent:'Recently played', lpMyLists:'My play lists', lpStyles:'Styles', lpScenes:'Scenes', lpMoreStyles:n=>`More styles (${n})`, lpLessStyles:'Fewer', lpBack:'Back', lpR_cn:'China', lpR_west:'West', 'lpR_jp-kr':'Japan · Korea', lpR_global:'World', lpChartPick:'Another chart', lsLike:'Like', lsLiked:'Unlike', lsMore:'More', lsmNext:'Play next', lsmAdd:'Add to a play list', lsmLike:'Like', lsmUnlike:'Unlike', lsmNo:'Not this kind', lsmNextDone:s=>`Plays next: ${s}`, lsmNoDone:'Hidden, and fewer like it from now on', lsmLikedDone:'Added to “Liked songs”', lsmUnlikedDone:'Unliked', lsmAdded:n=>`Added to “${n}”`, lsmHave:'It is in the play list already', lsmNewList:'New play list', lsmNewPh:'Name of the new play list', lsmCreate:'Create and add', lsmListN:n=>`${n} songs`, lpListDef:n=>`Play list ${n}`, lpNoLists:'No play lists yet. “Add to a play list” in the ⋯ of a song makes one.', lpEmptyList:'No songs here yet', lpListRename:'Rename', lpListDelete:'Delete', lpListDelAsk:n=>`Delete the play list “${n}”?`, lpListNewBtn:'New play list', lpListName:'Name of the play list'});
-Object.assign(I18N.zh,{plCollapse:'收起', plSetTip:'播放设置', plSetT:'播放设置', plSetClose:'关闭设置', plSrcL:'音源', plSrc_whole:'整首优先', plSrc_speed:'速度优先', plSrc_free:'只用免费合规源', plDataL:'手机流量下省流量', plDataD:'不自动播放大文件（无损约 30–50 MB）', plClearS:'清空', plQnSongs:n=>`${n} 首`, plQnEps:n=>`${n} 集`, plFocusL:'专注模式 ›', plWipe:'清除这台设备上的听歌记录', plWiped:'听歌记录已清除', plCleared:'已清空', plUndo:'撤销'});
-Object.assign(I18N.en,{plCollapse:'Fold', plSetTip:'Player settings', plSetT:'Player settings', plSetClose:'Close settings', plSrcL:'Source', plSrc_whole:'Whole songs first', plSrc_speed:'Fastest first', plSrc_free:'Free sources only', plDataL:'Spare mobile data', plDataD:'Big files (lossless, 30–50 MB) are not played by themselves', plClearS:'Clear', plQnSongs:n=>`${n} songs`, plQnEps:n=>`${n} episodes`, plFocusL:'Focus mode ›', plWipe:'Clear what this device remembers of listening', plWiped:'Listening history cleared', plCleared:'Cleared', plUndo:'Undo'});
+Object.assign(I18N.zh,{plCollapse:'收起', plSetTip:'播放设置', plSetT:'播放设置', plSetClose:'关闭设置', plSrcL:'音源', plSrcD:'VIP 歌曲只有很大的整首文件：前两项都会放整首，“只用免费合规源”不放，只有 30 秒试听', plSrc_whole:'整首优先', plSrc_speed:'速度优先', plSrc_free:'只用免费合规源', plDataL:'手机流量下省流量', plDataD:'不自动播放大文件（无损约 30–50 MB）', plClearS:'清空', plQnSongs:n=>`${n} 首`, plQnEps:n=>`${n} 集`, plFocusL:'专注模式 ›', plWipe:'清除这台设备上的听歌记录', plWiped:'听歌记录已清除', plCleared:'已清空', plUndo:'撤销'});
+Object.assign(I18N.en,{plCollapse:'Fold', plSetTip:'Player settings', plSetT:'Player settings', plSetClose:'Close settings', plSrcL:'Source', plSrcD:'A VIP song only has a big whole file: the first two play it, “Free sources only” does not (30-second previews only)', plSrc_whole:'Whole songs first', plSrc_speed:'Fastest first', plSrc_free:'Free sources only', plDataL:'Spare mobile data', plDataD:'Big files (lossless, 30–50 MB) are not played by themselves', plClearS:'Clear', plQnSongs:n=>`${n} songs`, plQnEps:n=>`${n} episodes`, plFocusL:'Focus mode ›', plWipe:'Clear what this device remembers of listening', plWiped:'Listening history cleared', plCleared:'Cleared', plUndo:'Undo'});
 Object.assign(I18N.zh,{plMode_list:'列表循环', plMode_one:'单曲循环', plMode_shuffle:'随机播放', plMode_order:'顺序播放', plSlow:'这个音源加载有点慢，再等一下', plBigAsk:mb=>`这首歌的文件很大（约 ${mb} MB），现在是手机流量`, plBigGo:'仍然播放'});
 Object.assign(I18N.en,{plMode_list:'Repeat the list', plMode_one:'Repeat one', plMode_shuffle:'Shuffle', plMode_order:'In order', plSlow:'This source is slow to load; waiting a little longer', plBigAsk:mb=>`This file is big (about ${mb} MB) and you are on mobile data`, plBigGo:'Play anyway'});
 Object.assign(I18N.zh,{newVer:'有新版本了', newVerGo:'刷新', newVerLater:'以后再说', updBusy:'更新中…', pullDown:'下拉刷新', pullGo:'松开刷新', pullOk:'已更新', pullOff:'没连上网，还是上次的'});
@@ -5140,7 +5146,7 @@ const CHANGELOG=[{v:'2026-10-22',
       '语言筛选改成一个按钮：点一下依次换，全部 → 中 → EN → 全部，按钮上写的是现在的。听歌页：“为你推荐”在宽屏分两列，右边不再空着；歌曲右边的“⋯”菜单改成在屏幕中间弹出。手机上发现世界里的主题按钮恢复了（之前被误藏，点了没有反应）。',
       '“今日听什么”能搜歌了：推荐页顶栏右边的放大镜，至少输入两个字，同时问好几个来源，每一首标明是“整首”还是“试听”。⋯ 菜单里多了“找整首”（试听的歌去找整首）和“换音源”（这首歌的每个音源列出来，点哪个就先用哪个）；没有声音地址的歌（比如抖音热歌榜）放的时候才去找声音，找到的地址过期了会自己再找，一首歌的声音全放不出来时也会再问一次。有歌词的歌，“正在播放”里列表旁边多一格“歌词”：当前这句高亮，点一句跳到那里（设置里可以关）。“为你推荐”现在会学你的口味：喜欢、听完、点“不想听这类”、很快切走都会记一笔（只记在这台设备上，30 天减半，“清除这台设备上的听歌记录”一键清掉），国内读者七成是国内的歌，每五首里有一首是没听过的歌手；第一次会问你爱听什么。原来只有 30 秒试听的歌，在国内会先去找整首（波点等来源），找不到才放试听；手机流量下放很大的整首（约 30 MB）不再弹窗，播放条上用小字写一句“手机流量 · 约 30 MB”。',
       '新增故事类播客：“今日听什么 → 播客”里，热门播客后面是故事的几张列表——悬疑怪谈、真实罪案、真实故事、历史野史、轻松段子、睡前故事，以及喜马拉雅、小宇宙、荔枝FM 的故事热门（各平台节目在 Apple 播客中国榜上的位置）；“推荐订阅”里多了一组“故事 · 悬疑 · 段子 · 睡前”，热榜那一组也多了抖音、头条、小红书、公众号、微信读书、起点、QQ 音乐、Apple 播客榜、36氪、雪球、豆瓣的榜单，公共目录也收了几个，带“故事”标签。“精选图书”里多了“有声书”：第 1 章在前、一章一章往后放、放完自动放下一章、“接着听”回到上次的章和秒、一章放不了不会跳过去；只收公版的书和电台自己的节目（《红楼梦》《西游记》《水浒传》《聊斋志异》，“民国往事”里的《金粉世家》《骆驼祥子》《啼笑因缘》《四世同堂》《民国风云史》《闲话上海滩》等，和 LibriVox 的经典与故事；LibriVox 的声音在国外，标“海外”）。各页的标题、标题下的开关和按钮统一了样子：标题不再一页大一页小。',
-      '搜索按栏目分：页面最上面的搜索框左边多了个小标签，写着它搜什么（全站 / 音乐 / 播客 / 书籍 / 有声书 / 文章 / 视频 / 热榜 / 书架）；在“今日听什么”里直接在这个框里搜歌或搜播客节目，不再跳到全站搜索；书籍、文章、视频里搜不到时旁边有“在全站搜 ›”。搜到歌手时，结果最上面是歌手卡（播放全部、存为歌单），下面是各个来源合在一起的热门歌曲和相关歌单，邓紫棋、G.E.M.、鄧紫棋认作同一个人；每首歌的小字里写着它能从哪些来源听到（波点、网易云、Deezer 试听……）。点歌更快了：鼠标放在一行上就先去找它的声音，开始播放时会提前找接下来两首的声音。'],
+      '搜索按栏目分：页面最上面的搜索框左边多了个小标签，写着它搜什么（全站 / 音乐 / 播客 / 书籍 / 有声书 / 文章 / 视频 / 热榜 / 书架）；在“今日听什么”里直接在这个框里搜歌或搜播客节目，不再跳到全站搜索；书籍、文章、视频里搜不到时旁边有“在全站搜 ›”。搜到歌手时，结果最上面是歌手卡（播放全部、存为歌单），下面是各个来源合在一起的热门歌曲和相关歌单，邓紫棋、G.E.M.、鄧紫棋认作同一个人；每首歌的小字里写着它能从哪些来源听到（波点、网易云、Deezer 试听……）。点歌更快了：鼠标放在一行上就先去找它的声音，开始播放时会提前找接下来两首的声音。“今日听什么”里的搜索放大镜去掉了，只用最上面的搜索框；点一下空的搜索框，它下面就列出搜索记录。繁体和简体写的同一首歌（告白气球 / 告白氣球）合成一首。播放设置里选“速度优先”时，VIP 歌曲也会放整首，不再退到 30 秒试听。'],
   en:['New: “Back up & restore”: export the files, collections, subscriptions and reading places you added into one file, and restore it when you change device or fear a loss.',
       'Subscribed and saved links can now be read in the page: when a feed carries the full text it is shown at once; otherwise, and for any article link you paste and for the articles of the public directory, the original page is read and shown here and kept in your browser. Pages that need a login or do not let programs read them still open the original site (the card says “Original only”).',
       'New in the reading settings: “Download as a web page (HTML)” and “Print / save as PDF”.',
@@ -5185,7 +5191,7 @@ const CHANGELOG=[{v:'2026-10-22',
       'The language of the content is one button now: each tap the next, All → 中 → EN → All, and it says which is on. On the listening page the songs for you are two columns on a wide screen, so nothing is left blank at the right, and the “⋯” menu of a song opens in the middle of the screen. On a phone the theme button works again in the public space (it had been hidden there by mistake).',
       'What to listen to today can search: the magnifier at the right end of the bar of the music side, two letters at least; several sources are asked at once and each song says “Full” or “Preview”. The “⋯” menu has “Find the full song” (for a preview) and “Change source” (every source of the song is listed, the one you tap comes first); a song with no sound yet (the Douyin chart, for one) gets its sound when it is played, an address that has run out is looked for again by itself, and when every sound of a song fails the service is asked once more. A song with lyrics has a “Lyrics” tab beside the list in “Now playing”: the line that is sung is lit, a tap on a line goes there (a switch in the settings turns it off). “For you” learns your taste now: a like, a song heard to the end, “not this kind” and a quick skip each count (kept on this device only, half the weight after 30 days, and “clear the records of this device” clears it); a reader in China gets seven in ten Chinese songs, and every fifth song is an artist you have not heard; the first time you are asked what you like. In China a song that used to have only a 30-second preview is first looked for as a whole song (Bodian and the others) and the preview plays only when none is found; on mobile data a very big whole song (about 30 MB) no longer asks, the bar says “Mobile data · about 30 MB” in small letters.',
       'Story podcasts: under “What to listen to today → Podcasts”, after the top list there are lists of stories — mystery, true crime, true stories, history tales, funny talk, bedtime stories — and the hot stories of Ximalaya, Xiaoyuzhou and Lizhi FM (where the shows of each platform stand on Apple Podcasts’ China chart); “Recommended subscriptions” has a group “Stories · mystery · funny talk · bedtime” and its hot-lists group has the charts of Douyin, Toutiao, Xiaohongshu, WeChat articles, WeRead, Qidian, QQ Music, Apple Podcasts, 36Kr, Xueqiu and Douban, and the public directory took in a few, tagged “故事”. “Picked books” has “Audiobooks”: the first chapter first, chapter after chapter, the next one by itself, “Carry on” goes back to the chapter and the second you left, and a chapter that does not play is not skipped; only public-domain books and a broadcaster’s own programmes (Dream of the Red Chamber, Journey to the West, Water Margin, Strange Tales from a Chinese Studio, and LibriVox’s classics and stories; LibriVox’s sounds are abroad, marked “Overseas”).',
-      'Search by section: the search box at the top has a small label that says what it searches (whole site / music / podcasts / books / audiobooks / articles / videos / hot lists / my shelf); on “What to listen to today” it searches songs or podcast shows right there, no longer jumping to a whole-site search; in books, articles and videos a “Search the whole site ›” is next to the words. When the words name an artist the top of the results is an artist card (play all, save as a play list), then the top songs of all the sources and the related play lists, and 邓紫棋, G.E.M. and 鄧紫棋 are one artist; each song says in small letters which sources it can be heard from (Bodian, NetEase, Deezer preview …). Playing is quicker: a pointer resting on a row looks for its sound beforehand, and when a song begins the sounds of the next two are looked for.']}];
+      'Search by section: the search box at the top has a small label that says what it searches (whole site / music / podcasts / books / audiobooks / articles / videos / hot lists / my shelf); on “What to listen to today” it searches songs or podcast shows right there, no longer jumping to a whole-site search; in books, articles and videos a “Search the whole site ›” is next to the words. When the words name an artist the top of the results is an artist card (play all, save as a play list), then the top songs of all the sources and the related play lists, and 邓紫棋, G.E.M. and 鄧紫棋 are one artist; each song says in small letters which sources it can be heard from (Bodian, NetEase, Deezer preview …). Playing is quicker: a pointer resting on a row looks for its sound beforehand, and when a song begins the sounds of the next two are looked for. The search magnifier on “What to listen to today” is gone: the box at the top is the one way in, and a click in the empty box lists what was searched before. The same song written in traditional and in simplified characters (告白气球 / 告白氣球) is one song. With “Fastest first” in the player settings a VIP song is still played whole instead of falling back to the 30-second preview.']}];
 const guideItem = () => state.items.find(x=>(x.source==='static'||x.source==='server') && /(^|\/)notes\/guide\/index\.html$/.test(x.id));
 const canAsk=()=>!!state.dirCfg && !LS.get('dirIntroOff',0) && !state.dPickT.size;               // the question "what do you feel like reading?" is for somebody who has not answered it, where the site has a public space
 function introStep(n, ask){                                                                  // which buttons go with which step of the window
@@ -5266,7 +5272,7 @@ function plCands(it){                                                           
   if(!cs.length && httpUrl(a.url)) cs=[{p:'', k:it.preview?'preview':'full', audio:a.url, net:'any', big:false}];
   if(plSet.src==='free') cs=cs.filter(c=>!c.p || PL_FREE.has(c.p));
   const home=LS.get('lpRegion', state.lang==='zh'?'cn':'global')==='cn' ? 'cn' : 'global';
-  const rank=c=>[it.pref && c.p===it.pref ? 0 : 1, plSet.src==='speed' ? +(c.big===true) : 0, c.k==='preview' ? 1 : 0, +plSave3(c), c.net==='any' || c.net===home ? 0 : 1];          // (the source the reader chose for this song first; whole before preview, then on mobile data a small file before a big one, then a sound near the reader before one far away; "speed first": the small ones before the big ones)
+  const rank=c=>[it.pref && c.p===it.pref ? 0 : 1, c.k==='preview' ? 1 : 0, plSet.src==='speed' ? +(c.big===true) : 0, +plSave3(c), c.net==='any' || c.net===home ? 0 : 1];          // (the source the reader chose for this song first; whole before preview in every setting (a VIP song has only a big whole file: "speed first" must not give it up for 30 seconds), then "speed first": the small ones before the big ones, on mobile data a small file before a big one, then a sound near the reader before one far away)
   return cs.map((c,i)=>({c,i,r:rank(c)})).sort((x,y)=>{ for(let k=0;k<5;k++) if(x.r[k]!==y.r[k]) return x.r[k]-y.r[k]; return x.i-y.i; }).map(x=>x.c);
 }
 const PL_MODE_ICON={                                                                                  // the play mode, one picture each: the list again, one song again, shuffled, in order and stop
@@ -7756,7 +7762,6 @@ function lpChartHTML(all){
   const pick=c.list.length>1 ? `<div class="lp-regs lp-cgs" role="tablist" aria-label="${esc(t('lpChartPick'))}">${c.list.map(g=>`<button class="lp-reg" type="button" role="tab" aria-selected="${g.id===c.g.id}" data-lp-cgb="${esc(g.id)}">${esc(lpName(g))}</button>`).join('')}</div>` : '';
   return regs+pick+lpSongsHTML(c.g.id, all);
 }
-const LP_SEARCH='<svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
 const lpHist=()=>{ const a=LS.get('lpSearchHist',[]); return Array.isArray(a) ? a.filter(v=>typeof v==='string' && v).slice(0,10) : []; };
 const lpHistAdd=q=>{ if(q) LS.set('lpSearchHist',[q].concat(lpHist().filter(v=>v!==q)).slice(0,10)); };
 function lpSqText(){ const L=state.lp, q=L.sq.trim(); return t(lpPodMode() ? 'lpSearchForPod' : 'lpSearchFor')+(q ? ' · '+cut(q,30) : ''); }
@@ -7812,7 +7817,6 @@ function lpPodSearchResHTML(){                                                  
 let lpSrT=0, lpSrAbort=null, lpPsAbort=null;
 function lpSearchPaintRes(){ const el=$('#lpSrRes'); if(el){ el.innerHTML=lpSearchResHTML(); const h=document.querySelector('.lp-sq'); if(h) h.textContent=lpSqText(); listenMark(); } }
 function lpSearchLeave(){ const L=state.lp; clearTimeout(lpSrT); if(lpSrAbort) lpSrAbort.abort(); if(lpPsAbort) lpPsAbort.abort(); L.search=false; L.sres=null; L.psres=null; L.sart=null; L.spl=null; L.sq=''; }
-function lpSearchOpen(){ const L=state.lp; lpSearchLeave(); L.search=true; lpPaint(); const i=$('#q'); if(i){ i.value=''; i.focus(); } }
 function lpSearchClose(){ lpSearchLeave(); const i=$('#q'); if(i) i.value=''; lpPaint(); }
 function lpTopSearch(v){                                                                                  // the box at the top, when the page is the music or the podcast side: what is typed is searched there, on the page (not in the whole site)
   const L=state.lp, w=String(v||'').trim();
@@ -7904,9 +7908,8 @@ function lpMusicHTML(all){
   const modes=hasPod ? `<div class="lp-modes seg" role="tablist" aria-label="${esc(t('lsTitle'))}">${['music','podcast'].map(m=>`<button type="button" role="tab" aria-selected="${m==='music'}" data-lp-mode="${m}">${esc(t('lpMode_'+m))}</button>`).join('')}</div>` : '';
   const tabs=LP_TABS.map(k=>`<button class="lp-tab" type="button" role="tab" aria-selected="${k===L.tab}" data-lp-tab="${k}">${esc(t('lpTab_'+k))}</button>`).join('') ;
   if(L.v2 && L.search) return `<div class="lp lp-sp">${lpSearchHTML()}</div>`;
-  const sbtn=L.v2 ? `<button class="ibtn lp-sbtn" type="button" data-lp-search title="${esc(t('lpSearch'))}" aria-label="${esc(t('lpSearch'))}">${LP_SEARCH}</button>` : '';
   const body=L.tab==='chart' ? lpChartHTML(all) : L.open ? (L.g==='my:lists' ? lpListsHTML() : lpSongsHTML(L.g, all)) : L.tab==='disc' ? lpDiscHTML(all) : lpRecHTML(all);
-  return `<div class="lp"><div class="lp-bar">${modes}<nav class="lp-tabs" role="tablist" aria-label="${esc(t('lsTitle'))}">${tabs}</nav>${sbtn}</div>${body}</div>`;
+  return `<div class="lp"><div class="lp-bar">${modes}<nav class="lp-tabs" role="tablist" aria-label="${esc(t('lsTitle'))}">${tabs}</nav></div>${body}</div>`;
 }
 function lpHTML(){
   const L=state.lp, P=lpPods(), all=lpGroups();
@@ -8217,7 +8220,6 @@ document.addEventListener('click',e=>{
 });
 function listenClick(e){
   const q=s=>e.target.closest(s); let b;
-  if(q('[data-lp-search]')){ lpSearchOpen(); return true; }
   if(q('[data-lp-sback]')){ lpSearchClose(); return true; }
   if(q('[data-lp-sclear]')){ LS.set('lpSearchHist',[]); lpSearchPaintRes(); return true; }
   if((b=q('[data-lp-shist]'))){ const i=$('#q'); if(i) i.value=b.dataset.lpShist; lpSearchGo(b.dataset.lpShist,true); return true; }
@@ -9942,8 +9944,19 @@ function hotQApply(){                                                           
 }
 new MutationObserver(()=>{ if(hotQ) hotQApply(); }).observe($('#dirReco'),{childList:true,subtree:true});
 function qWide(q){ dirGoHome(); state.q=String(q||''); $('#q').value=state.q; state.dBrowse=true; state.dLimit=DIR_PAGE; render(); window.scrollTo({top:0}); ftSchedule(); }
+function qHistHTML(){ const h=lpHist(); return h.length ? `<div class="q-hist-h"><b>${esc(t('lpSearchHist'))}</b><button type="button" data-qh-clear>${esc(t('lpSearchClear'))}</button></div><div class="q-hist-c">${h.map(v=>`<button type="button" class="dr-chip" data-qh="${esc(v)}">${esc(v)}</button>`).join('')}</div>` : ''; }
+function qHistShow(){ const el=$('#qHist'), box=$('#q'), k=qKind(); if(!el) return; if((k==='music' || k==='podcast') && !box.value.trim()){ const h=qHistHTML(); el.innerHTML=h; el.hidden=!h; } else el.hidden=true; }
+function qHistHide(){ const el=$('#qHist'); if(el) el.hidden=true; }
+let qhT; $('#q').addEventListener('focus',()=>{ clearTimeout(qhT); qHistShow(); });
+$('#q').addEventListener('blur',()=>{ clearTimeout(qhT); qhT=setTimeout(qHistHide,150); });                  // (leaving the box closes it a moment later; coming back in that moment must not be closed by the timer of the leaving)
+$('#qHist').addEventListener('mousedown',e=>e.preventDefault());                                            // (a press on a word of the history keeps the focus in the box)
+$('#qHist').addEventListener('click',e=>{
+  const w=e.target.closest('[data-qh]');
+  if(w){ const v=w.dataset.qh; $('#q').value=v; qHistHide(); lpTopSearch(v); lpSearchGo(v,true); lpHistAdd(v); return; }
+  if(e.target.closest('[data-qh-clear]')){ LS.set('lpSearchHist',[]); qHistHide(); }
+});
 let qTimer; $('#q').addEventListener('input',e=>{
-  clearTimeout(qTimer); const k=qKind(), v=e.target.value;
+  clearTimeout(qTimer); const k=qKind(), v=e.target.value; qHistShow();
   if(k==='music' || k==='podcast'){ lpTopSearch(v); return; }
   if(k==='hot'){ qTimer=setTimeout(()=>hotQuery(v),120); return; }
   qTimer=setTimeout(()=>{ state.q=v; state.dLimit=DIR_PAGE; render(); ftSchedule(); },120);
@@ -9951,7 +9964,7 @@ let qTimer; $('#q').addEventListener('input',e=>{
 $('#q').addEventListener('keydown',e=>{
   const k=qKind();
   if(e.key==='Escape'){
-    e.target.value='';
+    e.target.value=''; qHistHide();
     if(k==='music' || k==='podcast'){ lpSearchClose(); }
     else if(k==='hot') hotQuery('');
     else { state.q=''; render(); ftSchedule(); }
