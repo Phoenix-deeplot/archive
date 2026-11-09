@@ -90,6 +90,8 @@ mark{background:var(--mark);color:inherit;border-radius:2px;padding:0 1px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .kw{display:inline-flex;align-items:center;border:1px solid var(--rule);background:var(--bg);color:var(--muted);border-radius:999px;padding:1px 9px;font:inherit;font-size:12.5px;line-height:1.6;cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .kw:hover{border-color:var(--muted);color:var(--ink)}
+.card .kw{cursor:default}
+.card .kw:hover{border-color:var(--rule);color:var(--muted)}
 .kw[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .kw em{font-style:normal;opacity:.65;margin-left:5px;font-variant-numeric:tabular-nums}
 .tagbox .kw{background:var(--surface)}
@@ -1953,7 +1955,6 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     <div class="side-scroll">
       <nav class="col-nav" id="colNav" aria-label="Collections" hidden></nav>
       <nav class="cats" id="cats" aria-label="Categories"></nav>
-      <div class="tagbox" id="tagbox" hidden></div>
       <p class="dir-label"><span id="dirLabel"></span><span id="dirCount"></span></p>
       <div class="dir" id="dir"></div>
     </div>
@@ -2010,7 +2011,6 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
         <div class="fl-row"><span data-i="flSort">排序</span><span class="fl-slot" id="flSort"></span></div>
         <div class="fl-row"><span data-i="flLang">内容语言</span><span class="fl-slot" id="flLang"></span></div>
         <div class="fl-row"><span data-i="flView">显示</span><span class="fl-slot" id="flView"></span></div>
-        <div class="fl-row fl-col" id="flTagRow"><span data-i="flTag">标签</span><div class="fl-slot" id="flTag"></div></div>
         <div class="fl-dir" id="flDir"></div>
       </section>
       <section class="fl-panel" id="colPop" hidden aria-label="合集"></section>
@@ -2025,7 +2025,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     <section class="view-head">
       <div class="vh-txt"><h1 id="viewTitle">全部</h1>
       <p id="viewSub"></p></div>
-      <div class="vh-ctl" id="vhCtl"><span class="ctl-box" id="ctlBox"><button class="tag-btn" type="button" id="tagBtn" hidden aria-expanded="false" aria-controls="tagPop"></button></span><section class="tag-pop" id="tagPop" hidden aria-label="标签"></section></div>
+      <div class="vh-ctl" id="vhCtl"><span class="ctl-box" id="ctlBox"></span></div>
     </section>
     <section class="shelf-type-filters" id="shelfTypeFilters" aria-label="内容类型" hidden></section>
     <div class="dir-bar" id="dirBar" hidden>
@@ -3018,12 +3018,12 @@ const state = {
   flags: LS.get('flags',{}),               // static mode: {id:{featured,hidden}}
   seeds: LS.get('seeds',{}), progress: LS.get('progress',{}), lastRead: LS.get('lastRead',{}),
   visible:[], readingId:null, blobUrl:null, pending:[], dirOpen:new Set(),
-  tag:'', mediaFilter:LS.get('mediaFilter','all'), tagsOpen:false, pubReq:LS.get('pubReq',{}),          // topic-tag and content-form filters of my own shelf; publish requests (id -> time)
+  mediaFilter:LS.get('mediaFilter','all'), pubReq:LS.get('pubReq',{}),          // content-form filter of my own shelf; publish requests (id -> time)
   space:LS.get('space','mine'), dirCfg:'', dirData:null, dirState:'idle', dirErr:'', dirBusy:false, dirSrc:null, dirAt:0, dirRefreshing:false, shelfMap:new Map(), dirKeys:null, dirOps:null,   // 'mine' | 'dir' (the public directory, read-only)
-  dType:'all', dTag:'', dShelf:'', dLimit:60
+  dType:'all', dShelf:'', dLimit:60
 };
-Object.assign(I18N.zh,{shelfMediaHeading:'内容类型',shelfMediaAll:'全部',shelfMediaArticle:'图文',shelfMediaBook:'书籍',shelfMediaNote:'笔记',shelfMediaPdf:'PDF／资料',shelfMediaAudio:'音频',shelfMediaVideo:'视频',shelfMediaGallery:'图集',shelfMediaWeb:'网页',shelfMediaEmpty:'这个内容类型里还没有内容。',shelfTopicTags:'主题标签'});
-Object.assign(I18N.en,{shelfMediaHeading:'Content type',shelfMediaAll:'All',shelfMediaArticle:'Photo & text',shelfMediaBook:'Books',shelfMediaNote:'Notes',shelfMediaPdf:'PDF & files',shelfMediaAudio:'Audio',shelfMediaVideo:'Video',shelfMediaGallery:'Galleries',shelfMediaWeb:'Web pages',shelfMediaEmpty:'There is nothing in this content type yet.',shelfTopicTags:'Topic tags'});
+Object.assign(I18N.zh,{shelfMediaHeading:'内容类型',shelfMediaAll:'全部',shelfMediaArticle:'图文',shelfMediaBook:'书籍',shelfMediaNote:'笔记',shelfMediaPdf:'PDF／资料',shelfMediaAudio:'音频',shelfMediaVideo:'视频',shelfMediaGallery:'图集',shelfMediaWeb:'网页',shelfMediaEmpty:'这个内容类型里还没有内容。'});
+Object.assign(I18N.en,{shelfMediaHeading:'Content type',shelfMediaAll:'All',shelfMediaArticle:'Photo & text',shelfMediaBook:'Books',shelfMediaNote:'Notes',shelfMediaPdf:'PDF & files',shelfMediaAudio:'Audio',shelfMediaVideo:'Video',shelfMediaGallery:'Galleries',shelfMediaWeb:'Web pages',shelfMediaEmpty:'There is nothing in this content type yet.'});
 const $ = s => document.querySelector(s);
 Object.assign(I18N.zh,{themeTop:'主题', thLabel:'主题', thClassic:'经典', thCloud:'云红', setTitle:'设置', viewIsCards:'卡片', viewIsList:'列表'});
 Object.assign(I18N.en,{themeTop:'Theme', thLabel:'Theme', thClassic:'Classic', thCloud:'Cloud red', setTitle:'Settings', viewIsCards:'Cards', viewIsList:'List'});
@@ -3953,7 +3953,6 @@ function coverHTML(it, noImg, media){
 const tokens = () => state.q.toLowerCase().split(/\s+/).filter(Boolean);
 function matches(it, tk){
   if(state.lf!=='all'){ if(state.lf==='zh' && it.lang==='en') return false; if(state.lf==='en' && it.lang==='zh') return false; }
-  if(state.tag && !(it.keywords||[]).some(k=>String(k).toLowerCase()===state.tag.toLowerCase())) return false;
   if(state.cat!=='reco'&&state.mediaFilter!=='all'&&shelfMediaFilterKey(it)!==state.mediaFilter) return false;
   if(!tk.length) return true;
   if(ftHit(it)) return true;                                                                            // the words are in its text (the full-text switch is on)
@@ -4146,7 +4145,7 @@ const ICON = {
 /* The real, shareable address of an item (search engines ignore everything after "#", so "#read/…" is never it):
    its own file, or for Markdown / TXT the full-text page the build wrote (it.page, only on a deployed site). */
 const directHref = it => it.type==='link' ? httpUrl(it.url) : !(it.source==='server'||it.source==='static') ? '' : (it.type==='md'||it.type==='txt') ? (it.page ? encPath(it.page) : '') : encPath(it.path);
-const kwChips = (list, n) => (list||[]).slice(0,n).map(k=>`<button class="kw" type="button" data-tag="${esc(k)}">#${esc(k)}</button>`).join('');
+const kwChips = (list, n) => (list||[]).slice(0,n).map(k=>`<span class="kw">#${esc(k)}</span>`).join('');
 const canDelete = it => it.source==='server' || it.source==='local' || it.source==='folder';
 function cardHTML(it, tk, hiddenView){
   const media=shelfMediaOf(it), au=media.audio, summary=shelfCardSummary(it), star=isFeatured(it), pinned=pinRank(it)>0, prog=au ? plPct(it) : Math.round((state.progress[it.id]||{}).pct||0), href=it.source==='preview'?'':directHref(it), isLink=it.type==='link';
@@ -4280,7 +4279,6 @@ function render(){
   $('#moreRow').hidden=true; $('#dirLabel').textContent=t('dir'); $('#dirBar').hidden=true; document.body.classList.remove('dir-discover','dir-hot','dir-listen','dir-audio','dir-watch','dir-books'); $('#dirReco').hidden=true; $('#dirReco').innerHTML='';          // (the directory's home page is made again when it is shown: its cards must not linger behind the shelf)
 
   renderCols();                                                            // also settles which part of the shelf is shown, before anything below counts it
-  const tags=ownTags(); if(state.tag && !tags.some(g=>g.name.toLowerCase()===state.tag.toLowerCase())) state.tag='';
   if(!SHELF_MEDIA_TYPES.some(([id])=>id===state.mediaFilter)){ state.mediaFilter='all'; LS.set('mediaFilter','all'); }
   const tk=tokens(), filtered=scoped().filter(it=>matches(it,tk)), cats=allCats();
   if(state.cat==='reco' && !recoAvailable()) state.cat='all';
@@ -4294,14 +4292,13 @@ function render(){
     return `<button class="cat-btn" type="button" data-cat="${esc(c)}" aria-current="${c===state.cat}">${dot}<span>${esc(catName(c))}</span><span class="n">${n}</span></button>`;
   }).join('') + `<div class="cat-sep"></div>${recoBtn()}<button class="cat-btn muted" type="button" data-cat="hidden" aria-current="${state.cat==='hidden'}"><svg class="icon cicon" viewBox="0 0 24 24" style="width:16px;height:16px;margin:0 -3px">${ICON.hide.replace(/^<svg[^>]*>|<\/svg>$/g,'')}</svg><span>${esc(t('hidden'))}</span><span class="n">${hiddenN}</span></button>`;
 
-  renderTagbox(tags, state.tag);
   const list=sorted(filtered.filter(it=>inCat(it,cat)));
   state.visible=list.filter(it=>it.type!=='link' || canReadHere(it)).map(it=>it.id);        // a link is read in the page unless the service said it cannot be (a login, a bot check ...)
   const hv = state.cat==='hidden';
   $('#viewTitle').textContent=reco?t('recoTitle'):catName(state.cat);
   const dkey = ['all','featured','books','tools','notes','hidden'].includes(cat)?cat:'other';
   const subTxt = tk.length ? t('matchCount',list.length,state.q.trim()) : t('desc_'+dkey)+(state.lang==='zh'?'，':', ')+t('count',list.length);
-  $('#viewSub').innerHTML = esc(reco?t('recoSub',recoCount()):subTxt) + (state.mediaFilter!=='all' ? `<br><button class="chip" type="button" data-clear="shelfType" title="${esc(t('clearTag'))}"><b>${esc(t(SHELF_MEDIA_TYPES.find(([id])=>id===state.mediaFilter)?.[1]||'shelfMediaAll'))}</b><em>✕</em></button>` : '') + (state.tag ? `<br><button class="chip" type="button" data-clear="tag" title="${esc(t('clearTag'))}"><b>#${esc(state.tag)}</b><em>✕</em></button>` : '');
+  $('#viewSub').innerHTML = esc(reco?t('recoSub',recoCount()):subTxt) + (state.mediaFilter!=='all' ? `<br><button class="chip" type="button" data-clear="shelfType" title="${esc(t('clearTag'))}"><b>${esc(t(SHELF_MEDIA_TYPES.find(([id])=>id===state.mediaFilter)?.[1]||'shelfMediaAll'))}</b><em>✕</em></button>` : '');
 
   const groups = cat==='all' ? CAT_ORDER.concat(['featured'], cats.filter(c=>!['all','featured',...CAT_ORDER].includes(c))) : [cat];
   const dirRow = it => {
@@ -4727,7 +4724,7 @@ const BOOK_SRC=[[/(^|\.)wikisource\.org$/,'维基文库','Wikisource'],[/(^|\.)g
 const bookSource = it => { const h=hostOf(it.url), m=BOOK_SRC.find(r=>r[0].test(h)); return m ? m[state.lang==='zh'?1:2] : h; };          // where the book is read: the name of a known site, else its address
 /* The page of the picked books ("精选图书"): no filter bar and no update line; it has a genre (one row of small tabs), the book lists (themed, by hand, each book with a line on why) and an author.
    state.dGenre / state.dList / state.dAuthor are not kept: the page opens on all the books. The genre comes from the book (it.genre) or from its tags. */
-const booksPage = () => state.dLanding==='books' && !state.dShelf && !state.dTag;
+const booksPage = () => state.dLanding==='books' && !state.dShelf;
 const BOOK_GENRES=['novel','philosophy','history','verse','science','tech','magazine','library'];
 const BOOK_GENRE_TAGS=[['magazine','杂志 期刊 magazine journal'],['library','书库 library'],['tech','技术 编程 tech programming'],['science','科学 数学 物理 生物 science math physics biology'],['novel','小说 novel fiction'],['philosophy','哲学 思想 兵法 寓言 philosophy'],['history','历史 笔记 神话 history myth'],['verse','诗歌 散文 poetry essay']];          // (the first that fits: a magazine about science is a magazine, a novel about history is a novel)
 function bookGenre(it){
@@ -7072,27 +7069,6 @@ async function purgeItem(id){
     forgetItem(id); toast(t('purged')); await loadAll();
   }catch(e){ toast(t('delFail')+e.message); }
 }
-/* ================= tags (my own shelf: the keywords of the items) ================= */
-const TAG_FOLD = 14;
-function ownTags(){
-  const m=new Map();
-  scoped().forEach(it=>{ if(isHidden(it)) return; (it.keywords||[]).forEach(k=>{ k=String(k).trim(); if(!k) return; const key=k.toLowerCase(), g=m.get(key); if(g) g.n++; else m.set(key,{name:k,n:1}); }); });
-  return [...m.values()].sort((a,b)=>b.n-a.n||a.name.localeCompare(b.name));
-}
-function renderTagbox(tags, active){
-  const box=$('#tagbox'); box.hidden=!tags.length;
-  if(!tags.length){ box.innerHTML=''; return; }
-  const open=state.tagsOpen, shown=open?tags:tags.slice(0,TAG_FOLD), more=tags.length-TAG_FOLD, on=(active||'').toLowerCase();
-  box.innerHTML = `<p class="dir-label"><span>${esc(t('shelfTopicTags'))}</span><span>${tags.length}</span></p><div class="chips">`+
-    shown.map(g=>`<button class="kw" type="button" data-tag="${esc(g.name)}" aria-pressed="${g.name.toLowerCase()===on}">#${esc(g.name)}<em>${g.n}</em></button>`).join('')+`</div>`+
-    (more>0?`<button class="dir-more" type="button" data-fold="tags" aria-expanded="${open}">${esc(open?t('dirLess'):t('moreTags',more))}</button>`:'');
-}
-function pickTag(name){
-  const dir=dirOn(), cur=dir?state.dTag:state.tag, next=cur.toLowerCase()===String(name).toLowerCase()?'':String(name);
-  if(dir){ state.dTag=next; state.dLimit=DIR_PAGE; } else state.tag=next;
-  render(); window.scrollTo({top:0}); document.body.classList.remove('drawer');
-}
-
 /* ================= the public directory =================
    Read-only data from a shelf-directory repo (directory.json, written by its aggregate.py). Everything in it comes from other
    people's sites, so it is only ever shown as escaped text, as http(s) links with rel="nofollow ugc", or as https pictures
@@ -9081,7 +9057,6 @@ $('#dirReco').addEventListener('click',e=>{
   const gd=e.target.closest('[data-dr-guide]'); if(gd){ e.preventDefault(); const g=guideItem(); LS.set('guideTipOff',1); if(g) openReader(g.id); return; }
   if(e.target.closest('[data-dr-tipx]')){ LS.set('guideTipOff',1); render(); return; }
   if(e.target.closest('[data-dr-clear]')){ state.dirRead={}; LS.set('dirRead',{}); state.vote={}; LS.set('dirVote',{}); toast(t('drForYouCleared')); render(); return; }
-  const tg=e.target.closest('[data-tag]'); if(tg){ pickTag(tg.dataset.tag); return; }
   const sh=e.target.closest('[data-dshelf]'); if(sh){ state.dShelf=sh.dataset.dshelf; state.dLimit=DIR_PAGE; render(); window.scrollTo({top:0}); return; }
   const sk=e.target.closest('[data-d="save"]'); if(sk){ const c=sk.closest('.card'); if(c) toggleSaveLink(c.dataset.did); return; }
   if(dirLikeClick(e)) return;
@@ -9156,7 +9131,7 @@ function updNoteSync(){                                                         
   document.documentElement.classList.toggle('ptr',dirOn());
 }
 function dirList(skip){
-  const tk=tokens(), tg=state.dTag.toLowerCase(), subs=state.dView==='subs' ? new Set(subCols().map(c=>urlKey(c.feed.url))) : null;
+  const tk=tokens(), subs=state.dView==='subs' ? new Set(subCols().map(c=>urlKey(c.feed.url))) : null;
   const bkp=booksPage(), bkIds=bkp && state.dList ? bookListIds(state.dList) : null;          // (the picked-books page does not take part in the filters of the other pages: programs, platforms, domains; it has its own: a book list, a genre, an author)
   return state.dirData.items.filter(it=>{
     const lf=dirLf(); if(lf==='zh' && it.lang==='en') return false; if(lf==='en' && it.lang==='zh') return false;
@@ -9169,7 +9144,6 @@ function dirList(skip){
     if(skip!=='shelf' && state.dShelf && it.shelf!==state.dShelf) return false;
     if(!bkp && skip!=='pick' && !state.dShelf && pickOn() && !state.dPick.has(it.shelf)) return false;                  // (the programs ticked in the panel; a program chosen on its own wins)
     if(!bkp && skip!=='pickt' && !state.dShelf && topicPickOn() && !(dirMeta(it) && state.dPickT.has(it.col))) return false;                // (the categories ticked in the panel, domain side)
-    if(skip!=='tag' && tg && !it.tags.some(x=>x.toLowerCase()===tg)) return false;
     const sh0=state.shelfMap.get(it.shelf);
     if(!bkp && state.dView!=='all' && !(state.dView==='featured' ? !!(sh0 && sh0.featured) : state.dView==='hot' ? heatOf(it)>0 : !!(sh0 && sh0.feed && subs && subs.has(urlKey(sh0.feed))))) return false;
     if(!bkp && skip!=='tab' && state.dTab && !(dirMeta(it) && state.dTab.startsWith('col:') ? it.col===state.dTab.slice(4) : it.plat===state.dTab.slice(5))) return false;
@@ -9191,14 +9165,14 @@ function interleaveDays(list){                                                  
   }
   return out;
 }
-const dirIsHome=()=>!tokens().length && !state.dShelf && !state.dTag && state.dType==='all' && state.dView==='all' && !state.dTab && dirLf()==='all' && !pickOn();          // no filter, no search
-function dirGoHome(){ state.dHot=false; state.dListen=false; state.dLanding=''; state.dGenre=''; state.dList=''; state.dAuthor=''; state.dTab=''; state.dSub=''; state.dType='all'; state.dView='all'; state.lf='all'; state.q=''; $('#q').value=''; state.dTag=''; state.dShelf=''; state.dBrowse=false; }
+const dirIsHome=()=>!tokens().length && !state.dShelf && state.dType==='all' && state.dView==='all' && !state.dTab && dirLf()==='all' && !pickOn();          // no filter, no search
+function dirGoHome(){ state.dHot=false; state.dListen=false; state.dLanding=''; state.dGenre=''; state.dList=''; state.dAuthor=''; state.dTab=''; state.dSub=''; state.dType='all'; state.dView='all'; state.lf='all'; state.q=''; $('#q').value=''; state.dShelf=''; state.dBrowse=false; }
 function dirLandingHTML(items){
   if(!items.length || !['articles','watch'].includes(state.dLanding)) return '';
   const rows=state.view==='list', saved=new Set(state.items.filter(x=>x.type==='link').map(x=>x.id));
   const title=state.dLanding==='articles' ? publicLabel('articles') : (state.lang==='zh'?'推荐视频':'Recommended videos');
   if(state.dLanding==='watch'&&!rows){
-    const lead=items.find(it=>dirCardKind(it)==='video')||items[0], rest=items.filter(it=>it!==lead).slice(0,2);
+    const lead=items.find(it=>dirCardKind(it)==='video')||items[0], rest=items.filter(it=>it!==lead).slice(0,5);
     const feature=dirCardHTML(lead,[],saved,true).replace('class="card xcard','class="card xcard watch-feature');
     const side=rest.map(it=>dirCardHTML(it,[],saved,true).replace('class="card xcard','class="card xcard watch-side-card')).join('');
     return `<section class="dr-sec dr-picks watch-picks"><h2>${esc(title)}</h2><div class="watch-picks-grid${rest.length?'':' solo'}">${feature}${side?`<div class="watch-picks-side">${side}</div>`:''}</div></section>`;
@@ -9214,14 +9188,13 @@ function renderDir(){
   $('#dirLabel').textContent=t('dirShelves');
   $('#connectBtn').hidden=true; $('#disconnectBtn').hidden=true;
   if(!d){                                                          // still loading, or it failed
-    $('#cats').innerHTML=''; $('#tagbox').hidden=true; $('#dir').innerHTML=''; $('#dirCount').textContent=''; $('#dirBar').hidden=true; $('#dirReco').hidden=true; $('#dirReco').innerHTML='';
+    $('#cats').innerHTML=''; $('#dir').innerHTML=''; $('#dirCount').textContent=''; $('#dirBar').hidden=true; $('#dirReco').hidden=true; $('#dirReco').innerHTML='';
     $('#viewTitle').textContent=t('dirTitle'); $('#viewSub').textContent=''; grid.innerHTML=''; $('#source').textContent='';
     empty.hidden=false;
     empty.innerHTML = state.dirState==='error' ? `<h2>${esc(t('dirError'))}</h2><p>${esc(state.dirErr)}</p><p><button class="btn" type="button" data-retry>${esc(t('dirRetry'))}</button></p>` : `<p>${esc(t('dirLoading'))}</p>`;
     return;
   }
   if(state.dShelf && !state.shelfMap.has(state.dShelf)) state.dShelf='';                       // a filter for something the directory no longer has
-  if(state.dTag && !d.tags.some(g=>g.name.toLowerCase()===state.dTag.toLowerCase())) state.dTag='';
   const tk=tokens(), forType=dirList('type'), counts={}; forType.forEach(it=>{ const k=dirTypeOf(it); counts[k]=(counts[k]||0)+1; });
   const home=dirIsHome(), hot=home && state.dHot && !!hotBase(), listenOn=lpAvailable(), listen=home && state.dListen && listenOn && !hot, discover=home && !state.dBrowse && !hot && !listen;          // the first level of the public space is a discovery page; everything else (all sources, platforms, tags, a filter) is the second
   document.body.classList.toggle('dir-discover',discover); document.body.classList.toggle('dir-hot',hot); document.body.classList.toggle('dir-listen',listen);
@@ -9239,7 +9212,6 @@ function renderDir(){
   const hotRow=()=>hotBase() && moduleOn('trending') ? `<a class="cat-btn" href="/hot/" data-dhot="1" aria-current="${hot}"><span class="dot" style="background:var(--heat)"></span><span>${esc(t('hotSide'))}</span></a>` : '';
   const picksRow=k=>`<a class="cat-btn" href="${PUBLIC_ROUTES[k]}" data-dlanding="${k}" aria-current="${state.dLanding===k}"><span class="dot" style="background:var(--c-${k==='books'?'books':k==='watch'?'featured':'notes'})"></span><span>${esc(publicLabel(k))}</span></a>`;
   $('#cats').innerHTML = navRow(0,t('homeSide'),discover) + hotRow() + listenRow() + picksRow('books') + row('all',forType.length) + DIR_TYPES.filter(k=>counts[k] && k!=='book' && !(k==='audio' && listenOn)).map(k=>row(k,counts[k])).join('');          // article/video keep their type; the same sidebar row opens their recommendation section
-  $('#tagbox').hidden=true; $('#tagbox').innerHTML='';                                                // (the public space has no list of tags in its side: a tag on a card still filters)
   const shelves=d.shelves.filter(s=>s.kind!=='link' && s.n>0), openS=state.dirOpen.has('shelves');
   $('#dir').innerHTML = (openS?shelves:shelves.slice(0,DIR_SHELVES)).map(s=>`<button class="shelf-row" type="button" data-dshelf="${esc(s.id)}" aria-current="${s.id===state.dShelf}" title="${esc(s.name)}"><span>${esc(s.name)}</span><span class="n">${s.n}</span></button>`).join('')
     + (shelves.length>DIR_SHELVES ? `<button class="dir-more" type="button" data-fold="shelves" aria-expanded="${openS}">${esc(openS?t('dirLess'):t('dirMore',shelves.length-DIR_SHELVES))}</button>` : '');
@@ -9259,7 +9231,7 @@ function renderDir(){
   const bkNotes = curList ? new Map(curList.books.map(b=>[b.id,bkText(b.why)])) : null;
   if(curList){ const ord=new Map(curList.books.map((b,i)=>[b.id,i])); list.sort((a,b)=>ord.get(a.id)-ord.get(b.id)); }          // (a book list is read in the order that its maker gave)
   const sh=state.dShelf?state.shelfMap.get(state.dShelf):null;
-  $('#viewTitle').textContent = sh ? sh.name : state.dTag ? '#'+state.dTag : curList ? bkText(curList.name) : state.dLanding ? publicLabel(state.dLanding) : state.dType!=='all' ? t('ty_'+state.dType) : discover ? t('dirDiscover') : t('dirTitle');
+  $('#viewTitle').textContent = sh ? sh.name : curList ? bkText(curList.name) : state.dLanding ? publicLabel(state.dLanding) : state.dType!=='all' ? t('ty_'+state.dType) : discover ? t('dirDiscover') : t('dirTitle');
   let sub = tk.length ? t('matchCount',list.length,state.q.trim()) : curList ? bkText(curList.blurb) : '';                                // (no count of the whole directory: the page does not need it)
   if(sh && sh.description) sub = sh.description + (state.lang==='zh'?'。':'. ') + sub;
   let html = esc(sub);
@@ -9271,15 +9243,18 @@ function renderDir(){
   if(state.dType!=='all' && !state.dLanding) cl.push(clr('dtype',t('scType')+t('ty_'+state.dType)));
   if(dirLf()!=='all') cl.push(clr('dlf',t('scLang')+(state.lf==='zh'?t('langZh'):t('langEn'))));
   if(state.q.trim()) cl.push(clr('dq',t('scQ')+state.q.trim()));
-  if(sh) cl.push(clr('dshelf',sh.name)); if(state.dTag) cl.push(clr('dtag','#'+state.dTag)); if(!bkp && (pickOn() || topicPickOn()) && !sh) cl.push(clr('dpick',t(state.dTabs==='plat' ? 'dpSum' : 'dpSumT',pickCount())));
+  if(sh) cl.push(clr('dshelf',sh.name)); if(!bkp && (pickOn() || topicPickOn()) && !sh) cl.push(clr('dpick',t(state.dTabs==='plat' ? 'dpSum' : 'dpSumT',pickCount())));
   $('#viewSub').innerHTML = html + (cl.length ? '<br>'+cl.join('') : '');
 
   { const pr=dirProfile(); state.dirInt = pr.n>=3 ? new Set([...pr.col].filter(([,w])=>w>=2).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0])) : new Set(); }          // (the columns this browser has really read, saved, liked or followed: said on a recommendation, never made up)
   state.subKeys=new Set(subCols().map(c=>urlKey(c.feed.url)));                                    // (the programs this browser follows: "you follow it" on a card)
   const saved=new Set(state.items.filter(x=>x.type==='link').map(x=>x.id)); state.dirAbove=null;
-  const landingHome=['articles','watch'].includes(state.dLanding) && !tk.length && !state.dShelf && !state.dTag && state.dView==='all' && !state.dTab && !state.dSub && dirLf()==='all' && !pickOn() && !topicPickOn();
+  const landingHome=['articles','watch'].includes(state.dLanding) && !tk.length && !state.dShelf && state.dView==='all' && !state.dTab && !state.dSub && dirLf()==='all' && !pickOn() && !topicPickOn();
   const slug=state.dLanding==='articles'?'selected':'featured';
-  const picks=landingHome ? moduleCap(found.filter(canRecommend).sort((a,b)=>Number(hasPlacement(b,slug))-Number(hasPlacement(a,slug)) || moduleScore(b,slug)-moduleScore(a,slug) || byDate(a,b)),slug,state.dLanding==='articles'?6:3) : [];
+  const curatedPicks=landingHome ? moduleCap(found.filter(canRecommend).sort((a,b)=>Number(hasPlacement(b,slug))-Number(hasPlacement(a,slug)) || moduleScore(b,slug)-moduleScore(a,slug) || byDate(a,b)),slug,6) : [];
+  const picks=landingHome && state.dLanding==='watch'
+    ? [...curatedPicks,...list.filter(it=>canRecommend(it) && !curatedPicks.some(p=>p.id===it.id))].slice(0,6)
+    : curatedPicks;
   const moreTitle=state.dLanding==='articles' ? (state.lang==='zh'?'更多文章':'More articles') : (state.lang==='zh'?'更多视频':'More videos');
   const reco=discover ? dirHomeHTML() : bkp ? dirBooksHeadHTML() : landingHome ? dirLandingHTML(picks)+(picks.length && list.length>picks.length ? `<h2 class="dr-all">${esc(moreTitle)}</h2>` : '') : '';                       // one recommendation section above the unchanged article/video cards
   $('#dirReco').innerHTML=reco; $('#dirReco').hidden=!reco; $('#dirBar').hidden=discover;
@@ -9397,8 +9372,8 @@ async function openSubscribe(){
   const dir=dirOn(); subScopes = dir ? dirScopes() : await ownScopes();
   if(!subScopes.length) return;
   $('#subTitle').textContent=t(dir?'subDirTitle':'subTitle'); $('#subHint').textContent=t(dir?'subDirHint':'subHint');
-  const want = dir ? (state.dShelf?'shelf:'+state.dShelf : state.dTag?'tag:'+state.dTag.toLowerCase() : state.dType!=='all'?'type:'+state.dType : 'all')
-                   : (state.tag?'tag:'+state.tag.toLowerCase() : (state.cat!=='all' && state.cat!=='hidden')?'cat:'+state.cat : 'all');
+  const want = dir ? (state.dShelf?'shelf:'+state.dShelf : state.dType!=='all'?'type:'+state.dType : 'all')
+                   : ((state.cat!=='all' && state.cat!=='hidden')?'cat:'+state.cat : 'all');
   subIdx=Math.max(0,subScopes.findIndex(s=>s.key===want));
   let html='', group=null;
   subScopes.forEach((s,i)=>{ if(s.group!==group){ if(group) html+='</optgroup>'; if(s.group) html+=`<optgroup label="${esc(s.group)}">`; group=s.group; } html+=`<option value="${i}"${i===subIdx?' selected':''}>${esc(s.label)}</option>`; });
@@ -10075,7 +10050,6 @@ $('#addNote').addEventListener('click',()=>{ dlg.close(); openNote(''); });
 
 /* ================= events ================= */
 $('#grid').addEventListener('click',e=>{                            // the parts of a card that exist in both spaces: tags, the shelf name, save
-  const tg=e.target.closest('[data-tag]'); if(tg){ pickTag(tg.dataset.tag); return; }
   const sh=e.target.closest('[data-dshelf]'); if(sh){ state.dShelf=state.dShelf===sh.dataset.dshelf?'':sh.dataset.dshelf; state.dLimit=DIR_PAGE; render(); window.scrollTo({top:0}); return; }
   const sv=e.target.closest('[data-d="save"]'); if(sv){ const c=sv.closest('.card'); if(c) toggleSaveLink(c.dataset.did); return; }
   if(dirLikeClick(e)) return;
@@ -10149,10 +10123,6 @@ $('#cats').addEventListener('click',e=>{
   if(dt){ if(publicRouteFromPath()) history.pushState({},'','/'); state.dType=dt.dataset.dtype; state.dLanding=''; state.dBrowse=true; state.dHot=false; state.dListen=false; state.dLimit=DIR_PAGE; render(); window.scrollTo({top:0}); document.body.classList.remove('drawer'); return; }
   const b=e.target.closest('[data-cat]'); if(!b) return; state.cat=b.dataset.cat; render(); window.scrollTo({top:0}); document.body.classList.remove('drawer');
 });
-$('#tagbox').addEventListener('click',e=>{
-  const fold=e.target.closest('[data-fold]'); if(fold){ state.tagsOpen=!state.tagsOpen; render(); return; }
-  const tg=e.target.closest('[data-tag]'); if(tg) pickTag(tg.dataset.tag);
-});
 $('#shelfTypeFilters').addEventListener('click',e=>{
   const b=e.target.closest('[data-shelf-type]'); if(!b||b.disabled) return;
   state.mediaFilter=b.dataset.shelfType||'all'; LS.set('mediaFilter',state.mediaFilter); render(); window.scrollTo({top:0});
@@ -10161,7 +10131,7 @@ document.querySelectorAll('[data-space]').forEach(b=>b.addEventListener('click',
 $('#tabbar [data-hot-nav]').addEventListener('click',()=>publicGo('hot'));
 $('.view-head').addEventListener('click',e=>{                        // the active filters above the cards: click one to drop it
   const c=e.target.closest('[data-clear]'); if(!c) return;
-  const k=c.dataset.clear; if(k==='tag') state.tag=''; else if(k==='shelfType'){ state.mediaFilter='all'; LS.set('mediaFilter','all'); } else if(k==='dtag') state.dTag=''; else if(k==='dshelf') state.dShelf=''; else if(k==='dpick') clearPick();
+  const k=c.dataset.clear; if(k==='shelfType'){ state.mediaFilter='all'; LS.set('mediaFilter','all'); } else if(k==='dshelf') state.dShelf=''; else if(k==='dpick') clearPick();
   else if(k==='dtab'){ state.dTab=''; state.dSub=''; } else if(k==='dsub') state.dSub=''; else if(k==='dtype') state.dType='all'; else if(k==='dlf') state.lf='all'; else if(k==='dq'){ state.q=''; $('#q').value=''; }
   else if(k==='dhome'){ dirGoHome(); window.scrollTo({top:0}); }
   state.dLimit=DIR_PAGE; render();
@@ -10239,7 +10209,7 @@ $('#empty').addEventListener('click',e=>{
   if(e.target.closest('[data-retry]')){ loadDirectory(true); return; }
   const clr=e.target.closest('[data-clear]');
   if(clr && clr.dataset.clear==='dpick'){ clearPick(); state.dLimit=DIR_PAGE; render(); }
-  else if(clr){ state.q=''; state.lf='all'; state.tag=''; state.dType='all'; state.dTag=''; state.dShelf=''; state.dPick.clear(); saveDirPick(); state.dPickT.clear(); saveDirPickT(); state.dLimit=DIR_PAGE; $('#q').value=''; render(); }
+  else if(clr){ state.q=''; state.lf='all'; state.dType='all'; state.dShelf=''; state.dPick.clear(); saveDirPick(); state.dPickT.clear(); saveDirPickT(); state.dLimit=DIR_PAGE; $('#q').value=''; render(); }
 });
 let qTimer; $('#q').addEventListener('input',e=>{ clearTimeout(qTimer); qTimer=setTimeout(()=>{ state.q=e.target.value; state.dLimit=DIR_PAGE; render(); ftSchedule(); },120); });
 $('#q').addEventListener('keydown',e=>{ if(e.key==='Escape'){ e.target.value=''; state.q=''; render(); ftSchedule(); e.target.blur(); } });
@@ -10307,24 +10277,20 @@ function shLayout(){
   b.classList.toggle('shell2',on); b.classList.toggle('sh-phone',phone); b.classList.toggle('sh-shelf',shelf); b.classList.toggle('side-off',on && !!LS.get('sideOff',0));
   shMove($('#cats'), phone ? $('#stripIn') : $('.side-scroll'), phone ? $('#colChip') : lab);
   shMove($('#colNav'), phone ? $('#colPop') : $('.side-scroll'), phone ? null : $('#cats'));
-  shMove($('#tagbox'), phone ? $('#flTag') : shelf ? $('#tagPop') : $('.side-scroll'), phone || shelf ? null : lab);
   b.classList.toggle('in-dir',dirOn());
   shMove($('#dirBar'), $('.main'), $('#recoBanner'));
-  const lf=$('#langFilter'), so=$('#sort'), srt=$('#sortBtn'), vb=$('#viewBtn'), bar=$('#dirBar'), tb=$('.toolbar'), tg=$('#tagBtn'), box0=$('#ctlBox');
+  const lf=$('#langFilter'), so=$('#sort'), srt=$('#sortBtn'), vb=$('#viewBtn'), bar=$('#dirBar'), tb=$('.toolbar'), box0=$('#ctlBox');
   if(phone && !dirOn()){ shMove(so,$('#flSort')); shMove(lf,$('#flLang')); shMove(vb,$('#flView')); }          // (my shelf on a phone: the filter panel; the public space has no panel: its one row has them)
-  else if(on){ const to=bar && !bar.hidden ? bar.querySelector('.dir-line') : $('#vhCtl'); shMove(box0,to); [tg,lf,so,srt,vb].forEach(e=>shMove(e,box0)); }
+  else if(on){ const to=bar && !bar.hidden ? bar.querySelector('.dir-line') : $('#vhCtl'); shMove(box0,to); [lf,so,srt,vb].forEach(e=>shMove(e,box0)); }
   else { [lf,so,vb].forEach(e=>shMove(e,tb,$('#noteBtn'))); }
   if(on){ box0.hidden=dirOn() && (!bar || bar.hidden); lf.hidden=dirOn() && !langOnPage(); so.hidden=dirOn(); srt.hidden=!dirOn(); }
-  tg.hidden=!(on && !phone && shelf && !$('#tagbox').hidden); tg.classList.toggle('on',!!state.tag); tg.textContent=t('shelfTopicTags')+(state.tag ? '：#'+cut(state.tag,8) : '')+' ▾'; if(tg.hidden) $('#tagPop').hidden=true;
   if(!on) return;
   shTheme();
   { const sl=so.selectedOptions && so.selectedOptions[0]; $('#flSum').textContent=(sl ? sl.textContent : '')+' · '+t(state.view==='grid' ? 'viewIsCards' : 'viewIsList'); }
   $('#tabbar [data-space="dir"]').hidden=!state.dirCfg; $('#tabbar [data-hot-nav]').hidden=!state.dirCfg; $('#tabbar [data-space="dir"]').setAttribute('aria-pressed',String(dirOn())); $('#tabbar [data-hot-nav]').setAttribute('aria-pressed','false'); $('#tabbar [data-space="mine"]').setAttribute('aria-pressed',String(!dirOn())); $('#tabbar').classList.toggle('one',!state.dirCfg);
-  $('#flTagRow').hidden=!phone || !$('#flTag').children.length || $('#tagbox').hidden;
-  const flTagLabel=$('#flTagRow>span'); if(flTagLabel) flTagLabel.textContent=t('shelfTopicTags');
   const chip=$('#colChip'), hasCol=!$('#colNav').hidden && !dirOn();
   chip.hidden=!phone || !hasCol; if(phone && hasCol){ const c=(state.cols||[]).find(x=>x.id===state.col); chip.innerHTML=esc((c ? t('colChip')+'：'+cut(c.name,10) : t('colChip'))+' ▾')+(state.col!=='all' ? `<span class="col-x" data-colclear role="button" tabindex="0" aria-label="${esc(t('colClear'))}">✕</span>` : ''); chip.classList.toggle('on',state.col!=='all'); }
-  const nf=(state.lf!=='all' ? 1 : 0)+(state.tag ? 1 : 0)+(state.mediaFilter!=='all' ? 1 : 0)+(state.dTag ? 1 : 0)+(state.dShelf ? 1 : 0)+(state.dTab ? 1 : 0)+(state.dSub ? 1 : 0)+(typeof pickOn==='function' && (pickOn() || topicPickOn()) ? 1 : 0);
+  const nf=(state.lf!=='all' ? 1 : 0)+(state.mediaFilter!=='all' ? 1 : 0)+(state.dShelf ? 1 : 0)+(state.dTab ? 1 : 0)+(state.dSub ? 1 : 0)+(typeof pickOn==='function' && (pickOn() || topicPickOn()) ? 1 : 0);
   const fb=$('#flBtn span:not(.fl-n)'), fn=$('#flBtn .fl-n'); if(nf){ if(fn) fn.textContent=nf; else fb.insertAdjacentHTML('afterend',`<span class="fl-n">${nf}</span>`); } else if(fn) fn.remove();
   const sb=$('#sideToggle'); sb.setAttribute('aria-expanded',String(!b.classList.contains('side-off'))); const l=t(b.classList.contains('side-off') ? 'sideShow' : 'sideHide'); sb.title=l; sb.setAttribute('aria-label',l);
   if(phone){ const st=$('#stripIn'), on2=$('#cats [aria-current="true"]'); if(st && on2 && st.scrollWidth>st.clientWidth+2) st.scrollLeft=Math.max(0, on2.offsetLeft-st.offsetLeft-(st.clientWidth-on2.offsetWidth)/2); }
@@ -10355,10 +10321,6 @@ $('#setBtn').addEventListener('click',()=>document.body.classList.add('drawer'))
 $('#langTop').addEventListener('click',()=>$('#langBtn').click());
 $('#themeTop').addEventListener('click',cycleTheme);
 $('#cats').addEventListener('click',e=>{ if(shOn() && e.target.closest('.cat-btn')) window.scrollTo(0,0); });          // (another section starts at its top)
-{ const tp=$('#tagPop'), tb2=$('#tagBtn'), shut=()=>{ tp.hidden=true; tb2.setAttribute('aria-expanded','false'); };
-  tb2.addEventListener('click',()=>{ tp.hidden=!tp.hidden; tb2.setAttribute('aria-expanded',String(!tp.hidden)); });
-  tp.addEventListener('click',e=>{ if(e.target.closest('[data-tag]')) shut(); });
-  document.addEventListener('click',e=>{ if(!tp.hidden && !e.target.closest('#tagPop') && !e.target.closest('#tagBtn')) shut(); }); }
 $('#sideToggle').addEventListener('click',()=>{ const off=!document.body.classList.contains('side-off'); LS.set('sideOff',off?1:0); shLayout(); });
 const plusDlg=$('#plusDlg');
 $('#tbPlus').addEventListener('click',()=>{
