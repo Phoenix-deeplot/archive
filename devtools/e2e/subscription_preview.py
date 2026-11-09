@@ -19,14 +19,17 @@ def main():
     ap.add_argument('--port', type=int, default=8936)
     ap.add_argument('--demo-root', default=str(Path(__file__).resolve().parent / '.demo' / 'dist'))
     ap.add_argument('--feed-api', default='', help='optional feed API URL, for reusing a local API process that can reach public feeds')
+    ap.add_argument('--submit-api', default='', help='optional submit API URL; the local route is check-only unless a database is explicitly configured')
     args = ap.parse_args()
     sys.path.insert(0, args.api_root)
     import feedapi
+    import submission
     root = Path(args.demo_root).resolve()
     if not (root / 'index.html').is_file():
         ap.error('Build the isolated demo first with make_demo.py')
     base = 'http://127.0.0.1:' + str(args.port)
     feed_api = args.feed_api or base + '/api/feed'
+    submit_api = args.submit_api or base + '/api/submit'
     env = {'ALLOW_LOCAL_ORIGIN': '1', 'IP_SALT': 'subscription-preview'}
     feedback = []
     if os.environ.get('RSSHUB_BASE'):
@@ -38,6 +41,9 @@ def main():
             if self.path == '/api/feed':
                 with lock:
                     feedapi.respond(self, env, 'POST')
+            elif self.path == '/api/submit':
+                with lock:
+                    submission.respond(self, env, 'POST')
             elif self.path == '/api/feedback':
                 try:
                     length = min(int(self.headers.get('Content-Length') or 0), 6000)
@@ -51,9 +57,16 @@ def main():
                 self.send_error(404)
 
         def do_OPTIONS(self):
-            feedapi.respond(self, env, 'OPTIONS')
+            if self.path == '/api/submit':
+                submission.respond(self, env, 'OPTIONS')
+            else:
+                feedapi.respond(self, env, 'OPTIONS')
 
         def do_GET(self):
+            if self.path.split('?')[0] == '/api/feed':
+                return feedapi.respond(self, env, 'GET')
+            if self.path.split('?')[0] == '/api/submit':
+                return submission.respond(self, env, 'GET')
             if self.path.split('?')[0] == '/api/feedback':
                 body = b'{"ok":true,"service":"shelf-feedback","configured":true}'
                 self.send_response(200); self.send_header('Content-Type', 'application/json; charset=utf-8')
@@ -88,7 +101,7 @@ def main():
                 return
             if self.path.split('?')[0] == '/dir/directory.json':
                 data = json.loads((root / 'dir' / 'directory.json').read_text(encoding='utf-8'))
-                data.update(feed_api=feed_api, submit_api='', feedback_api=base + '/api/feedback', hot_api='', listen_api='')
+                data.update(feed_api=feed_api, submit_api=submit_api, feedback_api=base + '/api/feedback', hot_api='', listen_api='')
                 body = json.dumps(data, ensure_ascii=False).encode('utf-8')
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json; charset=utf-8')

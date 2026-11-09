@@ -108,6 +108,17 @@ a.cover{text-decoration:none;color:inherit}
 .shelf-row span:first-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .shelf-row .n{font-size:12px;font-variant-numeric:tabular-nums}
 #submitDlg{width:min(560px,calc(100vw - 24px))}
+#sourceApplyDlg{width:min(640px,calc(100vw - 24px))}
+.source-apply-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.source-apply-grid label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+.source-apply-grid select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:8px}
+.source-apply-group{margin:14px 0 0}
+.source-apply-group>strong{display:block;margin-bottom:6px;font-size:13px}
+.source-apply-choices{display:flex;flex-wrap:wrap;gap:7px}
+.source-apply-choice{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);border-radius:999px;padding:5px 10px;font-size:13px;line-height:1.4;background:var(--surface)}
+.source-apply-choice input{margin:0;accent-color:var(--accent)}
+.source-apply-note{margin:8px 0 0;color:var(--muted);font-size:12.5px}
+@media(max-width:620px){.source-apply-grid{grid-template-columns:1fr}}
 #submitTabs{margin:0 0 12px}
 .hp{position:absolute !important;left:-9999px !important;width:1px !important;height:1px !important;opacity:0 !important}
 .counter{margin:4px 0 0;font-size:12.5px;color:var(--muted);text-align:right}
@@ -120,6 +131,16 @@ a.cover{text-decoration:none;color:inherit}
 table.chk{border-collapse:collapse;width:100%;font-size:13.5px}
 table.chk th{text-align:left;color:var(--muted);font-weight:500;padding:2px 12px 2px 0;vertical-align:top;white-space:nowrap}
 table.chk td{padding:2px 0;word-break:break-word}
+.apply-meta{border-top:1px solid var(--rule);margin-top:12px;padding-top:12px}
+.apply-meta-title{font-weight:650;margin:0 0 9px}
+.apply-meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.apply-meta-grid label{display:block;margin:0 0 4px;font-size:13px;color:var(--muted)}
+.apply-meta-grid select,.apply-meta-grid input{width:100%;min-width:0}
+.apply-placement-list{display:flex;flex-wrap:wrap;gap:6px;margin:5px 0}
+.apply-placement-list label{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--rule);border-radius:999px;padding:5px 9px;color:var(--text);margin:0}
+.apply-placement-list input{width:auto;margin:0}
+.apply-meta-note{margin:4px 0 0;font-size:12px;color:var(--muted)}
+@media(max-width:520px){.apply-meta-grid{grid-template-columns:1fr}}
 .chk-sub{margin:8px 0 2px;color:var(--muted);font-size:13px}
 .chk-list{margin:0;padding-left:1.2em;font-size:13.5px}
 .where.good{color:var(--accent);border-color:var(--accent)}
@@ -1105,7 +1126,9 @@ body.in-dir #sort,#langFilter[hidden],#sort[hidden],#sortBtn[hidden],#ctlBox[hid
 .fs-tools{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
 .col-tools{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
 .col-item.is-feed{flex-wrap:wrap}
-.col-item .col-sub{flex-basis:100%;margin:-2px 0 2px;font-size:12.5px;color:var(--muted)}
+.col-item .col-sub{display:flex;align-items:center;gap:8px;flex-basis:100%;margin:-2px 0 2px;font-size:12.5px;color:var(--muted)}
+.col-item .col-sub>span{flex:1;min-width:0}
+.col-item .col-sub .btn{flex:none;padding:5px 8px;font-size:12px}
 .col-item .col-sub.bad{color:var(--danger)}
 .col-nav .new{margin-left:6px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--surface);font-size:11.5px;font-style:normal;font-weight:700;line-height:1.55}
 #source .link-btn{border:0;background:none;padding:0;font:inherit;font-weight:600;color:var(--accent);text-decoration:underline;cursor:pointer}
@@ -1426,6 +1449,7 @@ dialog::backdrop{background:rgba(10,14,18,.45)}
 #fbDlg input[type=text]{margin-bottom:8px}
 .fb-hp{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none}
 @media (max-width:620px){#fbDlg .fb-kinds{display:flex}#fbDlg .fb-kinds button{flex:1;min-height:44px;padding:5px 4px}}
+@media (max-width:620px){#addDlg .dlg-foot{flex-wrap:wrap;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px))}#addDlg .dlg-foot .btn{flex:1 1 40%;min-width:0;min-height:42px;padding-inline:8px}}
 .pending{border:1px solid var(--rule);border-radius:8px;padding:10px 12px 12px;margin-top:12px}
 .pending .fname{font-family:var(--mono);font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
 .row2{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end}
@@ -2185,6 +2209,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     <div class="dlg-body">
       <p class="sub-hint" data-i="colHint">合集只存在这个浏览器里：一次导入的一批文件放在一起，随时切换。</p>
       <div class="col-tools" id="colTools" hidden></div>
+      <p class="sub-hint" id="colPublicHint" hidden></p>
       <div id="colList"></div>
       <div class="col-new"><input type="text" id="colNewName" maxlength="40" autocomplete="off" data-i-ph="colNamePh" placeholder="合集名称"><button class="btn" type="button" id="colNewBtn" data-i="colNew">＋ 新建合集</button></div>
       <p class="sub-hint" id="colStorage"></p>
@@ -2502,6 +2527,21 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
   </div>
 </dialog>
 
+<dialog id="sourceApplyDlg" aria-labelledby="sourceApplyTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h2 id="sourceApplyTitle">申请加入公共空间</h2></div>
+    <div class="dlg-body">
+      <p class="sub-hint" id="sourceApplyLead">先检查订阅内容并给出分类建议。你可以调整，最终由管理员审核。</p>
+      <p class="result-line" id="sourceApplyStatus" role="status" aria-live="polite"></p>
+      <div id="sourceApplyOptions" hidden></div>
+    </div>
+    <div class="dlg-foot">
+      <button class="btn" type="button" id="sourceApplyCancel">取消</button>
+      <button class="btn primary" type="button" id="sourceApplySubmit" disabled>提交申请</button>
+    </div>
+  </div>
+</dialog>
+
 <dialog id="moveDlg" aria-labelledby="moveTitle">
   <div class="dlg">
     <div class="dlg-head"><h2 id="moveTitle"></h2></div>
@@ -2575,6 +2615,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
     <div class="dlg-foot">
       <button class="btn" type="button" id="addCancel" data-i="cancel">取消</button>
       <button class="btn primary" type="button" id="addSave" data-i="save" disabled>保存</button>
+      <button class="btn" type="button" id="fsPublicSubmit" hidden>申请加入公共空间</button>
       <button class="btn primary" type="button" id="fsGo" hidden disabled>订阅</button>
     </div>
   </div>
@@ -2685,6 +2726,7 @@ const I18N = {
     fsHint:'订阅你想读的博客或文章源（RSS / Atom / JSON Feed）：新文章会出现在你自己的书架里，每个订阅一个合集。文章点开就在这里读：订阅源自带全文的直接显示，只带摘要的会读取原文页面后显示（需要登录或不让程序读取的页面除外，会打开原站）。订阅清单和读过的正文都只存在这个浏览器里。',
     stTitle:'试试这些', stHint:'站长挑的几个值得订阅的源，点一下就订阅，随时可以在“管理”里取消。', stGo:'订阅', stDone:'已订阅', stFinish:'完成', stAdded:n=>`这次已订阅 ${n} 个，点“完成”就能在书架里看到它们。`,
     fsKindFeed:'订阅源', fsKindLink:'单个页面', fsFound:n=>`共 ${n} 篇`, fsLatest:'最近的几篇', fsName:'合集名称', fsGo:'订阅', fsSaveLink:'存成链接',
+    sourceApply:'申请加入公共空间', sourceSubmitting:'正在提交…', sourceQueued:'已提交，等待审核', sourceNote:'会提交公开订阅源地址，并读取少量公开条目供审核；不会提交你的书架数据或阅读记录。审核通过后，节目才会进入公共目录。', sourceNoApi:'公共目录提交服务暂不可用。',
     fsLinkNote:'这个地址是一个页面，没有订阅源可以跟着更新，会存成一条链接（和“收藏的链接”一样）。', fsDup:'已经订阅过这个源了。', fsMax:n=>`最多订阅 ${n} 个源，请先取消一些。`,
     fsNoApi:'这个站点没有开通订阅更新服务。', fsFail:'查找失败：', fsOffline:'现在没有网络。', fsRate:'查得太频繁了，请稍等几分钟再试。', fsSlow:'服务没有及时回答，请稍后再试。',
     fsSubscribed:name=>`已订阅「${name}」`, fsLinkSaved:name=>`已存成链接：「${name}」`, fsSaveSelf:'读不到这个地址，也可以直接把它存成一条链接。', fsSaveSelfBtn:'直接存成链接',
@@ -2780,6 +2822,11 @@ const I18N = {
     kind_reader: s=>`这是你书架里《${s}》在阅读器里的地址，别人打不开，不是公开网址。点“检查”会改为直接申请这一本。`, kind_readerGone:'这是阅读器里的地址，别人打不开，不是公开网址；而且这一项已经不在你的书架里了。请用书架里卡片上的地球图标申请。',
     kindListed: s=>`公共目录里已经有这个网址了（${s}），不需要再提交`, checkSlow:'这个网站响应太慢，检查没有完成。稍后再点“检查”试一次。', checkBtn:'检查', checking:'正在检查…', chkOk:'检查结果如下。确认无误后勾选下面的声明并提交，站长审核通过后才会出现在目录里。',
     chkKind:'识别为', chkName:'名称', chkSource:'来源', chkFound:'找到', chkLang:'语言', chkTags:'标签', chkLicense:'许可', chkAbout:'简介', chkTitle:'标题', chkAuthor:'作者', chkPages:'页数', chkToc:'目录', chkTocN:n=>`${n} 条`,
+    applyMetaTitle:'内容建议（自动识别，可修改）', applyMetaType:'内容形式', applyMetaCategory:'内容分类', applyMetaLanguage:'内容语言', applyMetaTopics:'主题标签', applyMetaTagsHint:'可填写逗号分隔的标签，最多 5 个。', applyMetaTagsFormHint:'在上方标签框编辑后重新检查。', applyMetaPlacements:'申请进入栏目', applyMetaPlacementHint:'栏目为你的推荐建议，需审核后生效；未选择时由管理员安排。',
+    type_article:'文章', type_video:'视频', type_audio:'音频', type_podcast:'播客', type_music:'音乐', type_book:'书籍', type_news:'新闻', type_other:'其他',
+    cat_hot:'综合热点', cat_tech:'科技', cat_study:'学习与专业提升', cat_business:'商业财经', cat_world:'国际时事', cat_entertainment:'娱乐', cat_audio:'影音社区', cat_books:'图书', cat_shopping:'购物', cat_other:'其他',
+    lang_auto:'自动识别', lang_zh:'中文', lang_en:'英文', lang_multi:'多语言',
+    module_featured:'精选', module_selected:'推荐', module_personalized:'为你推荐', module_trending:'正在发生', module_latest:'最新',
     chkChars:'长度', chkLinks:'链接', chkExcerpt:'开头', chkLatest:'最新几条', chkFoundN:n=>`${n} 条`, chkCharsN:n=>`${n} 个字符`, chkLinksN:(n,d)=>`${n} 个${d?`：${d}`:''}`, publishNoApi:'这个目录还没有开通在线投稿。',
     badgeInDir:'公共目录 ✓', badgeSame:x=>`重复：与《${x}》相同`, dupAsk:x=>`库里已经有内容完全相同的《${x}》。\n仍然要添加吗？`,
     confirmPurgeLocal:t=>`彻底删除《${t}》？\n它只保存在这个浏览器里，删除后无法恢复。`,
@@ -2879,6 +2926,7 @@ const I18N = {
     fsHint:'Follow the blogs and article feeds (RSS / Atom / JSON Feed) you want to read: new articles appear in your own shelf, one collection per subscription. Articles open right here: when a feed carries the full text it is shown at once; with only excerpts, the original page is read and shown (pages that need a login or keep programs out open on their own site). The list and the text you read stay in this browser.',
     stTitle:'Try these', stHint:'A few sources the site owner picked. One click subscribes; you can unsubscribe any time in “Manage”.', stGo:'Subscribe', stDone:'Subscribed', stFinish:'Done', stAdded:n=>`Subscribed to ${n} this time; click “Done” to see them on your shelf.`,
     fsKindFeed:'Feed', fsKindLink:'A single page', fsFound:n=>`${n} articles`, fsLatest:'Latest', fsName:'Collection name', fsGo:'Subscribe', fsSaveLink:'Save as a link',
+    sourceApply:'Suggest for public directory', sourceSubmitting:'Submitting…', sourceQueued:'Submitted for review', sourceNote:'The public feed address is submitted, and a small sample of public entries is read for review. Your shelf data and reading history are not sent. The feed appears in the public directory only after approval.', sourceNoApi:'The public directory submission service is unavailable.',
     fsLinkNote:'This address is a page without a feed to follow. It is saved as a link (like a “saved link”).', fsDup:'You follow this feed already.', fsMax:n=>`At most ${n} subscriptions: remove some first.`,
     fsNoApi:'This site has no update service for subscriptions.', fsFail:'Could not look it up: ', fsOffline:'You are offline.', fsRate:'Too many requests; wait a few minutes.', fsSlow:'The service did not answer in time; try again later.',
     fsSubscribed:name=>`Subscribed to “${name}”`, fsLinkSaved:name=>`Saved as a link: “${name}”`, fsSaveSelf:'This address could not be read; you can still save it as a link.', fsSaveSelfBtn:'Save as a link anyway',
@@ -2964,6 +3012,11 @@ const I18N = {
     kind_reader: s=>`This is the reader address of “${s}” on your shelf: nobody else can open it, it is not a public address. “Check” will ask for that item itself instead.`, kind_readerGone:'This is a reader address, not a public one, and the item is no longer on your shelf. Use the globe on its card instead.',
     kindListed: s=>`The public directory has this address already (${s}); there is no need to submit it again`, checkSlow:'This site answers too slowly, so the check did not finish. Try “Check” again a little later.', checkBtn:'Check', checking:'Checking…', chkOk:'This is what the check found. If it is right, tick the declaration below and submit; it appears in the directory once the maintainer approves.',
     chkKind:'Recognised as', chkName:'Name', chkSource:'Source', chkFound:'Found', chkLang:'Language', chkTags:'Tags', chkLicense:'License', chkAbout:'About', chkTitle:'Title', chkAuthor:'Author', chkPages:'Pages', chkToc:'Contents', chkTocN:n=>`${n} headings`,
+    applyMetaTitle:'Content suggestions (auto-detected; editable)', applyMetaType:'Content type', applyMetaCategory:'Category', applyMetaLanguage:'Language', applyMetaTopics:'Topics', applyMetaTagsHint:'Separate tags with commas (up to 5).', applyMetaTagsFormHint:'Edit in the tags field above, then check again.', applyMetaPlacements:'Request these sections', applyMetaPlacementHint:'These are suggestions for review; an administrator assigns a section if none is selected.',
+    type_article:'Article', type_video:'Video', type_audio:'Audio', type_podcast:'Podcast', type_music:'Music', type_book:'Book', type_news:'News', type_other:'Other',
+    cat_hot:'Top stories', cat_tech:'Technology', cat_study:'Learning & work', cat_business:'Business & finance', cat_world:'World affairs', cat_entertainment:'Entertainment', cat_audio:'Audio & community', cat_books:'Books', cat_shopping:'Shopping', cat_other:'Other',
+    lang_auto:'Auto-detect', lang_zh:'Chinese', lang_en:'English', lang_multi:'Multiple languages',
+    module_featured:'Featured', module_selected:'Recommended', module_personalized:'For you', module_trending:'Trending', module_latest:'Latest',
     chkChars:'Length', chkLinks:'Links', chkExcerpt:'Beginning', chkLatest:'Latest', chkFoundN:n=>`${n}`, chkCharsN:n=>`${n} characters`, chkLinksN:(n,d)=>`${n}${d?`: ${d}`:''}`, publishNoApi:'This directory does not take online submissions yet.',
     badgeInDir:'In the directory ✓', badgeSame:x=>`Duplicate of “${x}”`, dupAsk:x=>`The library has “${x}” with exactly the same content.\nAdd it anyway?`,
     confirmPurgeLocal:t=>`Delete “${t}” for good?\nIt lives only in this browser and cannot be recovered.`,
@@ -3600,13 +3653,14 @@ async function renderColDlg(){
   const subs=subCols();
   $('#colTools').hidden=!subs.length;
   $('#colTools').innerHTML = subs.length ? `<button class="btn" type="button" data-fs="refresh"${subBusy?' disabled':''}>${esc(t('feedRefreshAll'))}</button><button class="btn" type="button" data-fs="export">${esc(t('feedExport'))}</button><button class="btn" type="button" data-fs="copy">${esc(t('feedCopy'))}</button>` : '';
+  $('#colPublicHint').hidden=!(subs.length&&submitApi()); $('#colPublicHint').textContent=t('sourceNote');
   $('#colList').innerHTML = state.cols.map(c=>{
     const mine=state.items.filter(x=>x.source==='local' && x.collection===c.id), n=mine.length;
     if(!c.feed) return `<div class="col-item" data-id="${esc(c.id)}"><input type="text" value="${esc(c.name)}" maxlength="40" aria-label="${esc(t('colLabel'))}"><span class="n">${n}</span><button class="btn danger" type="button" data-del="${esc(c.id)}">${esc(t('colDelete'))}</button></div>`;
     const u=mine.filter(x=>x.unread).length, st = c.feed.error ? t('feedErr',c.feed.error) : c.feed.checked ? t('feedChecked',ago(c.feed.checked)) : t('feedNever');
     return `<div class="col-item is-feed" data-id="${esc(c.id)}"><input type="text" value="${esc(c.name)}" maxlength="40" aria-label="${esc(t('colLabel'))}"><span class="n">${n}</span>`
       + `<button class="btn" type="button" data-refresh="${esc(c.id)}"${subBusy?' disabled':''}>${esc(t('feedRefresh'))}</button>${u?`<button class="btn" type="button" data-readall="${esc(c.id)}">${esc(t('feedMarkRead'))}</button>`:''}<button class="btn danger" type="button" data-del="${esc(c.id)}">${esc(t('feedUnsub'))}</button>`
-      + `<div class="col-sub${c.feed.error?' bad':''}">${esc(hostOf(c.feed.home||c.feed.url))} · ${esc(subBusy?t('feedRefreshing'):st)}${u?` · ${esc(t('feedNewN',u))}`:''}</div></div>`;
+      + `<div class="col-sub${c.feed.error?' bad':''}"><span>${esc(hostOf(c.feed.home||c.feed.url))} · ${esc(subBusy?t('feedRefreshing'):st)}${u?` · ${esc(t('feedNewN',u))}`:''}</span>${submitApi()?`<button class="btn" type="button" data-source-submit="${esc(c.id)}">${esc(t('sourceApply'))}</button>`:''}</div></div>`;
   }).join('');
   let line=t('colStorageNone');
   try{ const e=await navigator.storage.estimate(), p=navigator.storage.persisted ? await navigator.storage.persisted() : false; line=t('colStorage',fmtMB(e.usage||0),fmtMB(e.quota||0),p); }catch(err){}
@@ -3628,6 +3682,7 @@ $('#colList').addEventListener('change',e=>{                                    
 $('#colList').addEventListener('click',async e=>{                                     // delete the collection and the files in it (they exist nowhere else); for a subscription: unsubscribe
   const rf=e.target.closest('[data-refresh]'); if(rf){ refreshSubs({ids:[rf.dataset.refresh],force:true,manual:true}); return; }
   const ra=e.target.closest('[data-readall]'); if(ra){ markAllRead(ra.dataset.readall); return; }
+  const sr=e.target.closest('[data-source-submit]'); if(sr){ const c=colById(sr.dataset.sourceSubmit); if(c&&c.feed){ colDlg.close(); openSourceApplication({url:c.feed.home||c.feed.url,feed_url:c.feed.url,homepage_url:c.feed.home||'',name:c.name}); } return; }
   const b=e.target.closest('[data-del]'); if(!b) return;
   const c=colById(b.dataset.del), mine=state.items.filter(x=>x.source==='local' && x.collection===b.dataset.del); if(!c) return;
   if(!confirm(c.feed ? t('feedAsk',c.name,mine.length) : t('colDeleteAsk',mine.length,c.name))) return;
@@ -6874,7 +6929,7 @@ function setAddTab(tab){
   const on=feedApi(), sub=tab==='sub' && on;
   $('#addTabs').hidden=!on;
   document.querySelectorAll('[data-atab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.atab===(sub?'sub':'files'))));
-  $('#addFilesPane').hidden=sub; $('#addSubPane').hidden=!sub; $('#addSave').hidden=sub; $('#fsGo').hidden=!(sub && fsFound); $('#fsGo').textContent=t(fsFound && fsFound.kind!=='feed' ? 'fsSaveLink' : 'fsGo');
+  $('#addFilesPane').hidden=sub; $('#addSubPane').hidden=!sub; $('#addSave').hidden=sub; $('#fsGo').hidden=!(sub && fsFound); $('#fsGo').textContent=t(fsFound && fsFound.kind!=='feed' ? 'fsSaveLink' : 'fsGo'); $('#fsPublicSubmit').hidden=!(sub && fsFound&&fsFound.kind==='feed'&&submitApi());
   const h=$('#addTitle'); h.dataset.i=sub?'fsTitle':'addTitle'; h.textContent=t(h.dataset.i);
   if(sub){
     h.textContent=state.lang==='zh' ? '添加订阅' : 'Add a subscription';
@@ -6887,7 +6942,7 @@ function setAddTab(tab){
   }
 }
 const fsMsg = m => { const w=$('#fsMsg'); w.textContent=m||''; w.hidden=!m; };
-function fsReset(){ fsLookupVersion++; fsFound=null; stAdded=[]; $('#fsUrl').value=''; $('#fsResult').hidden=true; $('#fsResult').innerHTML=''; fsMsg(''); $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); setFinish(false); renderStarter(); }
+function fsReset(){ fsLookupVersion++; fsFound=null; stAdded=[]; $('#fsUrl').value=''; $('#fsResult').hidden=true; $('#fsResult').innerHTML=''; fsMsg(''); $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsPublicSubmit').hidden=true; $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); setFinish(false); renderStarter(); }
 function renderFound(d){
   const feed=d.kind==='feed', dup=feed && subCols().some(c=>urlKey(c.feed.url)===urlKey(d.feed));
   const name=d.title||hostOf(d.feed||d.url);
@@ -6895,18 +6950,106 @@ function renderFound(d){
   const routeAuthNote=d.resolution&&d.resolution.auth_required?`<p class="fs-note">${esc(t('fsRouteAuthNote'))}</p>`:'';
   const authAsk=d.authPlatform?`<div class="fs-auth"><p>${esc(t('fsAuthHint',d.authPlatform))}</p><div class="fs-auth-actions"><button class="btn" type="button" data-fs-auth="yes">${esc(t('fsAuthYes'))}</button><button class="btn" type="button" data-fs-auth="no">${esc(t('fsAuthNo'))}</button></div><p class="fs-auth-status" role="status" aria-live="polite"></p></div>`:'';
   $('#fsResult').innerHTML=`<div class="fs-card"><h3>${esc(name)}</h3><p class="fs-meta">${esc(t(feed?'fsKindFeed':'fsKindLink'))} · ${esc(hostOf(d.home||d.feed||d.url))}${feed&&d.found?' · '+esc(state.lang==='zh'?'已读取最近 '+d.found+' 条':'Read '+d.found+' recent items'):''}</p>`
-    + (scopeText ? `<p class="fs-note">${esc(scopeText)}</p>` : '') + routeAuthNote
+    + (scopeText ? `<p class="fs-note">${esc(scopeText)}</p>` : '') + (feed&&submitApi()?`<p class="fs-note">${esc(t('sourceNote'))}</p>`:'') + routeAuthNote
     + (feed ? `<ul>${(d.items||[]).slice(0,4).map(i=>`<li>${esc(cut(i.title,70))}${i.date?` <span>(${esc(String(i.date).slice(0,10))})</span>`:''}</li>`).join('')}</ul>`
               + `<label for="fsName">${esc(t('fsName'))}</label><input type="text" id="fsName" maxlength="40" value="${esc(uniqueColName(name))}" autocomplete="off">`
             : (d.summary?`<p class="sum">${esc(cut(d.summary,200))}</p>`:'') + `<p class="fs-note">${esc(d.manual?t('fsSaveSelf'):t('fsLinkNote'))}</p>`
               + (d.readable===true ? `<p class="fs-note">${esc(t('fsReadable'))}</p>` : d.readable===false ? `<p class="fs-note">${esc(t('fsUnreadable',(state.lang==='zh'?d.reason_message:d.reason_message_en)||d.reason||'?'))}</p>` : ''))
     + (dup?`<p class="fs-note">${esc(t('fsDup'))}</p>`:'') + authAsk + '</div>';
-  $('#fsResult').hidden=false; $('#fsGo').hidden=false; $('#fsGo').textContent=t(feed?'fsGo':'fsSaveLink'); $('#fsGo').disabled=!!dup;
+  $('#fsResult').hidden=false; $('#fsGo').hidden=false; $('#fsGo').textContent=t(feed?'fsGo':'fsSaveLink'); $('#fsGo').disabled=!!dup; $('#fsPublicSubmit').hidden=!(feed&&submitApi());
 }
+let sourceSubmitBusy=false;
+async function submitPublicSource(payload,button){
+  const api=submitApi(); if(!api){ toast(t('sourceNoApi')); return false; }
+  if(sourceSubmitBusy) return false;
+  sourceSubmitBusy=true; if(button){button.disabled=true;button.textContent=t('sourceSubmitting');}
+  const ctl=new AbortController(), timer=setTimeout(()=>ctl.abort(),28000);
+  try{
+    const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:'source',...payload}),signal:ctl.signal});
+    const d=await r.json().catch(()=>({}));
+    if(r.ok&&d.ok){ if(button){button.textContent=t('sourceQueued');} $('#sourceApplyDlg').close(); toast(t('sourceQueued')); return true; }
+    const msg=msgOf(d,r); if(button){button.disabled=false;button.textContent=t('sourceApply');} toast(msg); return false;
+  }catch(e){ if(button){button.disabled=false;button.textContent=t('sourceApply');} toast(t(e&&e.name==='AbortError'?'checkSlow':'submitNet')); return false; }
+  finally{ clearTimeout(timer); sourceSubmitBusy=false; }
+}
+const SOURCE_TYPE_LABELS={article:['文章','Article'],video:['视频','Video'],audio:['音频','Audio'],podcast:['播客','Podcast'],music:['音乐','Music'],book:['图书','Book'],news:['新闻','News'],other:['其他','Other']};
+const SOURCE_CATEGORY_LABELS={hot:['热榜与趋势','Trends'],tech:['AI 与科技','AI & Tech'],study:['学习与研究','Study & Research'],business:['财经与商业','Business & Finance'],world:['全球正在发生','World Now'],audio:['播客与创作者','Audio & Creators'],books:['读书与深度','Books & Long Reads'],other:['其他','Other']};
+const SOURCE_PLACEMENT_LABELS={featured:['精选','Featured'],selected:['今日精选','Today’s picks'],personalized:['个性化推荐','For you'],trending:['正在发生','Trending'],latest:['最新','Latest']};
+const SOURCE_TOPIC_LABELS={tech:['科技','Technology'],dev:['编程','Programming'],business:['商业','Business'],finance:['金融','Finance'],academic:['学术','Academic'],education:['教育','Education'],books:['图书','Books'],culture:['文化','Culture'],music:['音乐','Music'],entertainment:['娱乐','Entertainment'],games:['游戏','Games'],news:['新闻','News'],tools:['工具','Tools'],design:['设计','Design'],life:['生活','Lifestyle'],health:['健康','Health']};
+let sourceApplyCurrent=null, sourceApplyBusy=false;
+const sourceApplyDlg=$('#sourceApplyDlg');
+function sourceApplyLabel(pair){ return pair[state.lang==='zh'?0:1]; }
+function sourceApplyModules(){
+  const known=['featured','selected','personalized','trending','latest'];
+  const live=state.dirOps&&state.dirOps.modules instanceof Map ? [...state.dirOps.modules.values()].filter(m=>m&&m.enabled).map(m=>m.slug) : null;
+  return (live&&live.length?live:known).filter(x=>SOURCE_PLACEMENT_LABELS[x]);
+}
+function sourceApplySelect(id,entries,value){
+  return '<select id="'+id+'">'+entries.map(([key,label])=>'<option value="'+esc(key)+'"'+(key===value?' selected':'')+'>'+esc(label)+'</option>').join('')+'</select>';
+}
+function sourceApplyCheck(slug,label,checked){
+  return '<label class="source-apply-choice"><input type="checkbox" value="'+esc(slug)+'"'+(checked?' checked':'')+'><span>'+esc(label)+'</span></label>';
+}
+function renderSourceApplyOptions(d){
+  const zh=state.lang==='zh', box=$('#sourceApplyOptions');
+  const types=Object.keys(SOURCE_TYPE_LABELS), categories=Object.keys(SOURCE_CATEGORY_LABELS);
+  const configuredTopics=Array.isArray(state.dirData&&state.dirData.topics)?state.dirData.topics:[];
+  const selectedTopics=new Set(Array.isArray(d.topics)?d.topics:[]);
+  const topicMap=new Map(configuredTopics.filter(x=>x&&x.id).map(x=>[x.id,x]));
+  [...selectedTopics].forEach(id=>{ if(!topicMap.has(id)){ const label=SOURCE_TOPIC_LABELS[id]||[id.replace(/[-_]+/g,' '),id.replace(/[-_]+/g,' ')]; topicMap.set(id,{id,zh:label[0],en:label[1]}); } });
+  const topics=[...topicMap.values()];
+  const modules=sourceApplyModules(), selectedModules=new Set(Array.isArray(d.placements)?d.placements:[]);
+  const typeOptions=types.map(x=>[x,sourceApplyLabel(SOURCE_TYPE_LABELS[x])]);
+  const categoryOptions=categories.map(x=>[x,sourceApplyLabel(SOURCE_CATEGORY_LABELS[x])]);
+  const languageOptions=[['zh',zh?'中文':'Chinese'],['en',zh?'英文':'English'],['multi',zh?'多语言':'Multilingual'],['unknown',zh?'待确认':'Unknown']];
+  const topicChoices=topics.map(x=>sourceApplyCheck(x.id,zh?x.zh:x.en,selectedTopics.has(x.id))).join('');
+  const placementChoices=modules.map(x=>sourceApplyCheck(x,sourceApplyLabel(SOURCE_PLACEMENT_LABELS[x]),selectedModules.has(x))).join('');
+  const ai=d.ai||{}, aiText=ai.status==='completed'?(zh?'AI 已给出建议，提交后仍由管理员审核。':'AI suggestions are ready; an administrator still reviews the request.'):(zh?'当前使用规则建议，AI 未配置或未运行；管理员会最终审核。':'Rule-based suggestions are shown; AI did not run. An administrator makes the final decision.');
+  const risks=[...(Array.isArray(d.warnings)?d.warnings:[]),...(Array.isArray(ai.risk_flags)?ai.risk_flags:[])].filter(Boolean);
+  box.innerHTML='<div class="source-apply-grid"><label>'+(zh?'内容形式':'Content type')+sourceApplySelect('sourceApplyType',typeOptions,d.content_type||'other')+'</label><label>'+(zh?'主分类':'Category')+sourceApplySelect('sourceApplyCategory',categoryOptions,d.category||'other')+'</label><label>'+(zh?'语言':'Language')+sourceApplySelect('sourceApplyLanguage',languageOptions,d.language||'unknown')+'</label></div>'
+    +'<div class="source-apply-group" data-kind="placements"><strong>'+(zh?'申请栏目（可多选）':'Requested sections (choose any)')+'</strong><div class="source-apply-choices">'+(placementChoices||'<span class="source-apply-note">'+(zh?'暂时没有可用栏目，管理员审核时会分配。':'No sections are available; an administrator will assign one during review.')+'</span>')+'</div><p class="source-apply-note">'+esc(aiText)+'</p></div>'
+    +'<div class="source-apply-group" data-kind="topics"><strong>'+(zh?'主题标签（可多选）':'Topic tags (choose any)')+'</strong><div class="source-apply-choices">'+(topicChoices||'<span class="source-apply-note">'+(zh?'目录暂时没有标签选项，可先提交给管理员判断。':'No topic tags are configured yet; submit for administrator review.')+'</span>')+'</div></div>'
+    +(risks.length?'<p class="source-apply-note">'+esc((zh?'审核提示：':'Review notes: ')+risks.join('；'))+'</p>':'');
+  box.hidden=false;
+}
+async function openSourceApplication(payload){
+  const api=submitApi(); if(!api){toast(t('sourceNoApi'));return;}
+  sourceApplyCurrent=payload; sourceApplyBusy=true;
+  $('#sourceApplyStatus').className='result-line'; $('#sourceApplyStatus').textContent=state.lang==='zh'?'正在读取少量公开条目并生成建议…':'Reading a small sample and preparing suggestions…';
+  $('#sourceApplyOptions').hidden=true; $('#sourceApplyOptions').textContent=''; $('#sourceApplySubmit').disabled=true;
+  if(!sourceApplyDlg.open) sourceApplyDlg.showModal();
+  const ctl=new AbortController(), timer=setTimeout(()=>ctl.abort(),28000);
+  try{
+    const response=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind:'check',what:'source',...payload}),signal:ctl.signal});
+    const body=await response.json().catch(()=>({}));
+    if(!response.ok||!body.ok||!body.result) throw new Error(msgOf(body,response));
+    sourceApplyCurrent={...payload,analysis:body.result};
+    renderSourceApplyOptions(body.result);
+    $('#sourceApplyStatus').textContent=state.lang==='zh'?('已识别：'+(body.result.name||payload.name||'')+' · '+(body.result.sample_count||0)+' 条样本'):('Detected: '+(body.result.name||payload.name||'')+' · '+(body.result.sample_count||0)+' samples');
+    $('#sourceApplySubmit').disabled=false;
+  }catch(e){
+    $('#sourceApplyStatus').className='result-line bad';
+    $('#sourceApplyStatus').textContent=e&&e.name==='AbortError'?t('checkSlow'):e instanceof TypeError?t('submitNet'):e.message;
+  }finally{clearTimeout(timer);sourceApplyBusy=false;}
+}
+function sourceApplyValues(){
+  const box=$('#sourceApplyOptions');
+  return {content_type:$('#sourceApplyType').value,category:$('#sourceApplyCategory').value,language:$('#sourceApplyLanguage').value,
+    topics:[...box.querySelectorAll('[data-kind="topics"] input:checked')].map(x=>x.value),
+    placements:[...box.querySelectorAll('[data-kind="placements"] input:checked')].map(x=>x.value)};
+}
+$('#sourceApplyCancel').addEventListener('click',()=>sourceApplyDlg.close());
+$('#sourceApplySubmit').addEventListener('click',async()=>{
+  if(sourceApplyBusy||!sourceApplyCurrent||!sourceApplyCurrent.analysis)return;
+  const {analysis,...base}=sourceApplyCurrent, button=$('#sourceApplySubmit');
+  button.disabled=true;
+  const ok=await submitPublicSource({...base,...sourceApplyValues()},null);
+  if(!ok) button.disabled=false;
+});
 async function fsFind(){
   const raw=$('#fsUrl').value.trim(); if(!raw){ $('#fsUrl').focus(); return; }
   const version=++fsLookupVersion;
-  fsMsg(''); fsFound=null; $('#fsResult').hidden=true; $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsFind').disabled=true; $('#fsFind').textContent=t('fsFinding');
+  fsMsg(''); fsFound=null; $('#fsResult').hidden=true; $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsPublicSubmit').hidden=true; $('#fsFind').disabled=true; $('#fsFind').textContent=t('fsFinding');
   try{
     const d=await callFeed({action:'discover',url:raw});
     if(version!==fsLookupVersion || !dlg.open) return;
@@ -6929,7 +7072,13 @@ $('#fsResult').addEventListener('click',e=>{
 document.querySelectorAll('[data-atab]').forEach(b=>b.addEventListener('click',()=>setAddTab(b.dataset.atab)));
 $('#fsFind').addEventListener('click',fsFind);
 $('#fsUrl').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); fsFind(); } });
-$('#fsUrl').addEventListener('input',()=>{ fsLookupVersion++; fsFound=null; fsMsg(''); $('#fsResult').hidden=true; $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); renderStarter(); });
+$('#fsUrl').addEventListener('input',()=>{ fsLookupVersion++; fsFound=null; fsMsg(''); $('#fsResult').hidden=true; $('#fsGo').disabled=true; $('#fsGo').hidden=true; $('#fsPublicSubmit').hidden=true; $('#fsFind').disabled=false; $('#fsFind').textContent=t('fsFind'); renderStarter(); });
+$('#fsPublicSubmit').addEventListener('click',()=>{
+  const d=fsFound; if(!d||d.kind!=='feed') return;
+  const name=($('#fsName')&&$('#fsName').value.trim())||d.title||hostOf(d.feed);
+  dlg.close();
+  openSourceApplication({url:$('#fsUrl').value.trim()||d.home||d.feed,feed_url:d.feed,homepage_url:d.home||'',name,title:name,description:d.description||d.summary||''});
+});
 $('#fsGo').addEventListener('click',async ()=>{
   const d=fsFound; if(!d) return;
   try{
@@ -9678,9 +9827,9 @@ function syncForms(){
   document.querySelectorAll('#postForms [data-pform]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.pform===postForm)));
   const h=$('#cardFormHint'), x=t('formHint_'+cardForm); h.textContent=x; h.hidden=!x;
 }
-function postData(){ return {title:$('#postTitle').value.trim(), author:$('#postAuthor').value.trim(), tags:withForm($('#postTags').value,postForm), body:$('#postBody').value}; }
+function postData(){ return {title:$('#postTitle').value.trim(), author:$('#postAuthor').value.trim(), tags:withForm($('#postTags').value,postForm), body:$('#postBody').value, content_type:postForm==='novel'||postForm==='list'?'book':'article'}; }
 let cardExtra={pages:0, toc:[]};                                                                      // what the picked item says of itself (not typed): its pages and the headings of its contents
-function cardData(){ return {title:$('#cardTitle').value.trim(), author:$('#cardAuthor').value.trim(), tags:withForm($('#cardTags').value,cardForm), summary:$('#cardSummary').value.replace(/\s+/g,' ').trim(), url:$('#cardUrl').value.trim(),
+function cardData(){ return {title:$('#cardTitle').value.trim(), author:$('#cardAuthor').value.trim(), tags:withForm($('#cardTags').value,cardForm), summary:$('#cardSummary').value.replace(/\s+/g,' ').trim(), url:$('#cardUrl').value.trim(), content_type:'book',
   ...(cardExtra.pages?{pages:cardExtra.pages}:{}), ...(cardExtra.toc.length?{toc:cardExtra.toc}:{})}; }
 const CARD_MIN=10, CARD_MAX=1000;
 const plainLen = md => String(md).replace(/```[\s\S]*?```/g,' ').replace(/!\[[^\]]*\]\([^)]*\)/g,' ').replace(/\[([^\]]*)\]\([^)]*\)/g,'$1').replace(/[#>*_`~|\-]+/g,'').replace(/\s+/g,' ').trim().length;
@@ -9689,6 +9838,36 @@ function setResult(msg, kind){ const r=$('#submitResult'); r.textContent=msg||''
    Any change of the input throws the result away. */
 let submitCheck=null, submitFrom=null;
 function resetCheck(){ submitCheck=null; const b=$('#submitCheck'); b.hidden=true; b.textContent=''; }
+const APPLY_TYPES=['article','video','audio','podcast','music','book','news','other'];
+const APPLY_CATEGORIES=['hot','tech','study','business','world','entertainment','audio','books','shopping','other'];
+function applyMetaControls(r){
+  const type=APPLY_TYPES.includes(r.content_type)?r.content_type:'article', category=APPLY_CATEGORIES.includes(r.category)?r.category:'other';
+  const lang=['zh','en','multi'].includes(r.language)?r.language:'multi', selected=new Set(Array.isArray(r.placements)?r.placements:[]);
+  const types=APPLY_TYPES.map(x=>'<option value="'+x+'"'+(x===type?' selected':'')+'>'+esc(t('type_'+x))+'</option>').join('');
+  const cats=APPLY_CATEGORIES.map(x=>'<option value="'+x+'"'+(x===category?' selected':'')+'>'+esc(t('cat_'+x))+'</option>').join('');
+  const langs=['zh','en','multi'].map(x=>'<option value="'+x+'"'+(x===lang?' selected':'')+'>'+esc(t('lang_'+x))+'</option>').join('');
+  const live=state.dirOps&&state.dirOps.modules instanceof Map?[...state.dirOps.modules.values()].filter(m=>m&&m.enabled).map(m=>m.slug):[];
+  const modules=(live.length?live:['featured','selected','personalized','trending','latest']).filter(x=>/^[a-z0-9][a-z0-9-]{0,79}$/.test(x));
+  const placementHtml=modules.map(x=>{const label=t('module_'+x),pair=SOURCE_PLACEMENT_LABELS[x],fallback=pair?sourceApplyLabel(pair):x;return '<label><input type="checkbox" data-placement="'+esc(x)+'"'+(selected.has(x)?' checked':'')+'><span>'+esc(label&&label!=='module_'+x?label:fallback)+'</span></label>';}).join('');
+  const topicHTML=r.what==='url'
+    ? '<label for="applyTopics">'+esc(t('applyMetaTopics'))+'</label><input id="applyTopics" type="text" value="'+esc((r.topics||r.tags||[]).join(', '))+'" autocomplete="off"><p class="apply-meta-note">'+esc(t('applyMetaTagsHint'))+'</p>'
+    : '<p class="apply-meta-note">'+esc(t('applyMetaTopics')+': '+((r.topics||r.tags||[]).join(', ')||'—'))+' '+esc(t('applyMetaTagsFormHint'))+'</p>';
+  return '<section class="apply-meta"><p class="apply-meta-title">'+esc(t('applyMetaTitle'))+'</p><div class="apply-meta-grid">'
+    +'<div><label for="applyType">'+esc(t('applyMetaType'))+'</label><select id="applyType">'+types+'</select></div>'
+    +'<div><label for="applyCategory">'+esc(t('applyMetaCategory'))+'</label><select id="applyCategory">'+cats+'</select></div>'
+    +'<div><label for="applyLanguage">'+esc(t('applyMetaLanguage'))+'</label><select id="applyLanguage">'+langs+'</select></div>'
+    +'<div>'+topicHTML+'</div></div><div><label>'+esc(t('applyMetaPlacements'))+'</label><div class="apply-placement-list">'+placementHtml+'</div>'
+    +'<p class="apply-meta-note">'+esc(t('applyMetaPlacementHint'))+'</p></div></section>';
+}
+function applyMetaPayload(){
+  const r=submitCheck||{}, type=$('#applyType'), category=$('#applyCategory'), language=$('#applyLanguage'), topic=$('#applyTopics');
+  const topics=r.what==='url'&&topic ? topic.value.split(/[,，、]/).map(x=>x.trim()).filter(Boolean).slice(0,5)
+    : submitTab==='post' ? withForm($('#postTags').value,postForm).split(/[,，、]/).map(x=>x.trim()).filter(Boolean).slice(0,5)
+    : submitTab==='card' ? withForm($('#cardTags').value,cardForm).split(/[,，、]/).map(x=>x.trim()).filter(Boolean).slice(0,5) : (r.topics||r.tags||[]);
+  const placements=[...document.querySelectorAll('#submitCheck [data-placement]:checked')].map(x=>x.dataset.placement);
+  return {content_type:type?type.value:r.content_type||'article',category:category?category.value:r.category||'other',
+          language:language?language.value:r.language||'',topics,placements};
+}
 function renderCheck(r){
   const box=$('#submitCheck'), zh=state.lang==='zh', row=(k,v)=>v?`<tr><th>${esc(t(k))}</th><td>${esc(v)}</td></tr>`:'';
   const rows = r.what==='post'
@@ -9700,6 +9879,7 @@ function renderCheck(r){
   const warn=(r.warnings||[]).map(w=>`<p class="warn">⚠️ ${esc(zh?w[0]:w[1])}</p>`).join('');
   const own = feedApi() && r.what!=='post' && r.what!=='record' && r.kind==='feed' && httpUrl(r.source) ? `<p class="chk-sub">${esc(t('chkSubNote'))} <button class="link-btn" type="button" data-sub-this="${esc(r.source)}">${esc(t('chkSubBtn'))}</button></p>` : '';
   box.innerHTML=`<p class="chk-title">${esc(t('chkOk'))}</p><table class="chk">${rows}</table>${latest?`<p class="chk-sub">${esc(t('chkLatest'))}</p><ul class="chk-list">${latest}</ul>`:''}${own}${warn}`;
+  box.insertAdjacentHTML('beforeend',applyMetaControls(r));
   box.hidden=false;
 }
 function subscribeThis(url,lookup=true){ submitDlg.close(); openAdd(null,'sub'); if(url){ $('#fsUrl').value=url; if(lookup) fsFind(); } }          // the "收录" window -> "添加 → 订阅" with the address filled in
@@ -9811,7 +9991,8 @@ async function sendSubmit(){
     window.open(`https://github.com/${repo}/issues/new?${q}`,'_blank','noopener'); submitDlg.close(); return;
   }
   const hp=$('#submitHp').value;
-  const payload = post ? {kind:'post', ...postData(), rights:true, website:hp} : card ? {kind:'record', ...cardData(), rights:true, website:hp} : {kind:'url', url:classifyUrl($('#submitUrl').value).url, rights:true, website:hp};
+  const meta=applyMetaPayload();
+  const payload = post ? {kind:'post', ...postData(), ...meta, rights:true, website:hp} : card ? {kind:'record', ...cardData(), ...meta, rights:true, website:hp} : {kind:'url', url:classifyUrl($('#submitUrl').value).url, ...meta, rights:true, website:hp};
   $('#submitGo').disabled=true; setResult('…');
   try{
     const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
