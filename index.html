@@ -7512,7 +7512,7 @@ function lpSorted(items, id){
   if(k==='artist') return items.slice().sort((a,b)=>a.artist.localeCompare(b.artist,loc) || a.title.localeCompare(b.title,loc));
   return items;                                                                                      // (the service's order, or the newest episode first)
 }
-const lpShownItems=()=>{ if(state.lp.search && state.lp.sres) return state.lp.sres.items; const cur=lpCur(); if(!cur) return state.lp.tab==='rec' ? lpRecItems() : []; return lpSorted(lpGroupItems(cur, cur==='pod' ? state.lp.show : '').items, cur); };
+const lpShownItems=()=>{ const L=state.lp; if(L.search){ if(L.spl && L.spl.state==='ok') return L.spl.items; if(L.sres){ const S=L.sres.artist && L.sart && L.sart.name===L.sres.artist.name && L.sart.state==='ok' ? L.sart : null; return S ? S.songs : L.sres.items; } } const cur=lpCur(); if(!cur) return state.lp.tab==='rec' ? lpRecItems() : []; return lpSorted(lpGroupItems(cur, cur==='pod' ? state.lp.show : '').items, cur); };
 function lpEnsure(){                                                                                 // the lists that the page on the screen needs are asked for (the daily picks for the radio, the chart that is shown, the list that was opened)
   if(!listenApi()) return; lpIndex(); const L=state.lp; if(L.v2 && L.tab==='rec' && !lpPodMode()) lpPoolEnsure();
   if(!lpPodMode() && L.tab==='rec'){ const gs=lpGroups(), d=gs.find(g=>g.type==='music' && g.kind==='daily'), m=lpMixGroup(gs); if(d) lpLoad(d.id); if(m) lpLoad(m.id); }
@@ -7939,6 +7939,7 @@ function listenHTML(){                                                          
 }
 function listenSecHTML(){ setTimeout(()=>{ lpIndex(); lsEnsure(); },0); return `<div id="lsBlock">${listenHTML()}</div>`; }          // (the lists are asked for after the page is drawn, and drawn into their place when they are here)
 function lpPaint(){
+  qScopeSync();                                                                                         // (the box at the top says "music" once the service is known to be able to search it)
   const a=document.activeElement, d=a && a.dataset ? a.dataset : {}, att=d.lpG!==undefined ? ['data-lp-g',d.lpG] : d.lpShow!==undefined ? ['data-lp-show',d.lpShow] : d.lsScene ? ['data-ls-scene',d.lsScene] : d.lpMore!==undefined ? ['data-lp-more',''] : d.lpMode ? ['data-lp-mode',d.lpMode] : null;
   const b=$('#lsBlock'), p=$('#lpRoot');
   if(b) b.innerHTML=listenHTML();

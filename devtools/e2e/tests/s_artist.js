@@ -38,6 +38,11 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   ok('the best songs: four, each says where it can be heard from; a preview is marked (a song with a whole source and a preview, a preview only ...)', rows.length === 4 && /波点音乐/.test(rows[0].m) && /Deezer \(preview\)/.test(rows[0].m) && /Deezer \(preview\)/.test(rows[1].m) && !/波点/.test(rows[1].m) && /Audius/.test(rows[2].m) && !/preview/.test(rows[2].m), rows);
   ok('the play lists of the artist: two tiles under the songs', await J(`document.querySelectorAll('#lpSrRes [data-lp-pl]').length===2 && /play lists/i.test(document.querySelector('#lpSrRes').textContent)`));
 
+  // ---- a press on one song of the artist's page: it plays, and the songs of that page are the list of the bar
+  const second = await J(`document.querySelectorAll('#lpSrRes .lp-srrows .ls-row')[1].dataset.lsRow`);
+  await J(`document.querySelectorAll('#lpSrRes .lp-srrows .ls-row')[1].querySelector('.ls-main').click()`);
+  ok('a press on a song of the artist\'s page plays that song, and the four songs of the page are the list of the bar (the press must not do nothing)', await waitFor(`pl.q.length===4 && pl.q[pl.i]==='tmp:ls:${second}' && plAudio.currentTime>0.05`, 9000), [await J(`pl.q.length`), await J(`pl.q[pl.i]`), second]);
+  await J(`plAudio.pause()`);
   // ---- play all, save as a play list
   await J(`document.querySelector('#lpSrRes [data-lp-artplay]').click()`);
   ok('“Play all” plays the first song with the songs of the artist as the list of the bar', await waitFor(`pl.q.length===4 && pl.q[pl.i]==='tmp:ls:sr:08'`, 9000), [await J(`pl.q.length`), await J(`pl.q[pl.i]`)]);
@@ -49,6 +54,9 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   // ---- a play list under the artist
   await J(`document.querySelector('#lpSrRes [data-lp-pl="ne:pl:555"]').click()`);
   ok('a play list of the artist opens under the artist: its name, an arrow back, the songs (asked for with the id of the list)', await waitFor(`document.querySelectorAll('#lpSrRes .lp-srrows .ls-row').length===4 && /测试歌手热门单曲/.test(document.querySelector('#lpSrRes .lp-secbar').textContent) && !!document.querySelector('#lpSrRes [data-lp-plback]')`, 8000) && (await log2()).includes('plist:ne:pl:555'), await J(`document.querySelector('#lpSrRes').textContent.slice(0,100)`));
+  await J(`document.querySelector('#lpSrRes .lp-srrows .ls-row:nth-child(2) .ls-main').click()`);
+  ok('a press on a song of a play list plays it with the songs of that list as the list of the bar', await waitFor(`pl.q.length===4 && /tmp:ls:ne:7001/.test(pl.q[pl.i]) && plAudio.currentTime>0.05`, 8000), await J(`pl.q.join()`));
+  await J(`plAudio.pause()`);
   await J(`document.querySelector('#lpSrRes [data-lp-plplay]').click()`);
   ok('“Play all” of the play list plays its songs', await waitFor(`pl.q.length===4 && /tmp:ls:ne:7000/.test(pl.q[pl.i])`, 8000), await J(`pl.q.join()`));
   await J(`plAudio.pause()`);

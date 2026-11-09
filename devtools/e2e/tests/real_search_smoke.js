@@ -24,6 +24,7 @@ const BASE = 'http://127.0.0.1:8820/';
   for (const w of words) {
     await J(`(()=>{ const i=document.querySelector('#q'); i.focus(); i.value=${JSON.stringify(w)}; i.dispatchEvent(new Event('input',{bubbles:true})); i.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true})); })()`);
     await waitFor(`document.querySelectorAll('#lpSrRes .ls-row').length>0`, 20000);
+    if (!(await J(`document.querySelectorAll('#lpSrRes .ls-row').length`))) { console.log('\n== ' + w + ' ==\nNO ROWS; the page says:', await J(`document.querySelector('#lpSrRes').textContent.slice(0,200)`)); continue; }
     await waitFor(`!!document.querySelector('#lpSrRes .lp-art-h')`, 15000);
     const card = await J(`(()=>{ const a=document.querySelector('#lpSrRes .lp-art'); return a ? {name:a.querySelector('b').textContent, names:(a.querySelector('.lp-art-n')||{textContent:''}).textContent} : null; })()`);
     const rows = await J(`[...document.querySelectorAll('#lpSrRes .lp-srrows .ls-row')].slice(0,6).map(r=>r.querySelector('.ls-t').textContent.replace(/\\s+/g,' ').slice(0,18)+' | '+r.querySelector('.ls-m').textContent.replace(/\\s+/g,' ').slice(0,60))`);
@@ -33,7 +34,11 @@ const BASE = 'http://127.0.0.1:8820/';
     await J(`document.querySelector('#lpSrRes .lp-srrows .ls-row .ls-main').click()`);
     const started = await waitFor(`plAudio.currentTime>0.5 && !plAudio.paused`, 20000);
     const res = await J(`({t:+plAudio.currentTime.toFixed(1), dur:+(plAudio.duration||0).toFixed(0), host:(plAudio.currentSrc||'').split('/')[2], p:(pl.cands[pl.ci]||{}).p, k:(pl.cands[pl.ci]||{}).k})`);
-    console.log('  the first song:', started ? 'starts after ' + (Date.now() - t0) + ' ms' : 'DID NOT START', JSON.stringify(res), res.dur > 60 ? '=> a WHOLE song' : '=> a preview');
+    console.log('  the first song:', started ? 'starts after ' + (Date.now() - t0) + ' ms' : 'DID NOT START', JSON.stringify(res), res.dur > 60 ? '=> a WHOLE song' : '=> a preview at first');
+    if (started && res.dur <= 60) {                                                                    // (the whole song takes over while the preview is at its beginning)
+      const took = await waitFor(`(plAudio.duration||0)>60`, 14000);
+      console.log('  ... a few seconds later:', took ? 'the WHOLE song took over ' + JSON.stringify(await J(`({dur:+(plAudio.duration||0).toFixed(0), t:+plAudio.currentTime.toFixed(1), host:(plAudio.currentSrc||'').split('/')[2], p:(pl.cands[pl.ci]||{}).p})`)) : 'still the preview');
+    }
     await J(`plAudio.pause()`);
     await J(`(()=>{ const i=document.querySelector('#q'); i.value=''; i.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true})); })()`); await sleep(500);
   }
