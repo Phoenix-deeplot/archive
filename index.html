@@ -1055,7 +1055,7 @@ html{overscroll-behavior-x:none}
 @media (max-width:620px){
   .grid:not(.list){grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   .grid:not(.list) .cover{aspect-ratio:4/3}
-  .grid:not(.list) .cover .ftype{top:6px;left:6px;right:auto;font-size:10px;padding:4px 5px}
+  .grid:not(.list) .cover .ftype{top:6px;left:6px;right:auto;font-size:9px;padding:3px 5px}
   .grid:not(.list) .card-body{padding:9px 10px 4px}
   .grid:not(.list) .meta{gap:3px 7px;margin-bottom:4px;font-size:11.5px}
   .grid:not(.list) .meta > span:nth-last-child(2){display:none}
@@ -1089,10 +1089,11 @@ body:not(.in-dir) #grid .media-count{position:absolute;left:10px;bottom:10px;z-i
 body:not(.in-dir) #grid .video-mark{position:absolute;left:12px;bottom:12px;z-index:2;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:rgba(15,22,26,.78);color:#fff}
 body:not(.in-dir) #grid .video-mark .icon{width:22px;height:22px}
 body:not(.in-dir) #grid .ftype{z-index:2}
-body:not(.in-dir) #grid .card-foot .acts.shelf-acts{position:relative;flex:none;flex-wrap:nowrap;align-items:center;gap:4px}
+body:not(.in-dir) #grid .card-foot .acts.shelf-acts{position:static;flex:none;flex-wrap:nowrap;align-items:center;gap:4px}
 body:not(.in-dir) #grid .shelf-acts>.ibtn{display:inline-flex}
 body:not(.in-dir) #grid .shelf-acts>.ibtn.more{display:inline-flex}
-body:not(.in-dir) #grid .shelf-acts .shelf-more{position:absolute;right:0;bottom:calc(100% + 8px);z-index:5;display:none;width:min(252px,calc(100vw - 36px));grid-template-columns:repeat(4,minmax(42px,1fr));gap:4px;padding:7px;border:1px solid var(--rule);border-radius:12px;background:var(--surface);box-shadow:0 8px 28px rgba(0,0,0,.2)}
+body:not(.in-dir) #grid .card.acts-open{overflow:visible;z-index:40}
+body:not(.in-dir) #grid .shelf-acts .shelf-more{position:fixed;left:12px;top:12px;right:auto;bottom:auto;z-index:5;display:none;width:min(252px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow-y:auto;grid-template-columns:repeat(4,minmax(42px,1fr));gap:4px;padding:7px;border:1px solid var(--rule);border-radius:12px;background:var(--surface);box-shadow:0 8px 28px rgba(0,0,0,.2)}
 body:not(.in-dir) #grid .card.acts-open .shelf-acts .shelf-more{display:grid}
 body:not(.in-dir) #grid .shelf-more .ibtn{width:44px;height:44px;opacity:1;border:1px solid var(--rule);background:var(--bg)}
 body:not(.in-dir) #grid .shelf-more .ibtn:hover{color:var(--accent)}
@@ -1147,6 +1148,8 @@ body:not(.in-dir) #grid .shelf-acts>.ibtn.hide-primary{display:inline-flex}
 body:not(.in-dir) #grid:not(.list){grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));align-items:stretch;gap:16px}
 body:not(.in-dir) #grid:not(.list) .card{height:100%;min-width:0}
 body:not(.in-dir) #grid:not(.list) .cover{aspect-ratio:4/3}
+body:not(.in-dir) #grid:not(.list) .card[data-kind="image"] .cover,body:not(.in-dir) #grid:not(.list) .card[data-kind="gallery"] .cover{aspect-ratio:1/1}
+body:not(.in-dir) #grid .card[data-kind="image"] .cover>img{object-fit:contain;background:var(--bg)}
 body:not(.in-dir) #grid:not(.list) .meta{min-height:18px;max-height:18px;overflow:hidden;flex-wrap:nowrap;white-space:nowrap}
 body:not(.in-dir) #grid:not(.list) .card-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:2.8em}
 body:not(.in-dir) #grid:not(.list) .sum{-webkit-line-clamp:2}
@@ -1157,6 +1160,9 @@ body:not(.in-dir) #grid.list .card-body{min-width:0;padding:10px 14px 8px 0}
 body:not(.in-dir) #grid.list .meta{min-width:0;max-height:17px;overflow:hidden;flex-wrap:nowrap;white-space:nowrap;gap:4px 7px;margin-bottom:4px;font-size:11px}
 body:not(.in-dir) #grid.list .meta .tag{display:none}
 body:not(.in-dir) #grid.list .card-title a{overflow-wrap:anywhere}
+body:not(.in-dir) #grid.list .card[data-kind="image"],body:not(.in-dir) #grid.list .card[data-kind="gallery"]{grid-template-columns:clamp(104px,25%,136px) minmax(0,1fr);min-height:142px}
+body:not(.in-dir) #grid .card[data-kind="image"] .meta .tag,body:not(.in-dir) #grid .card[data-kind="gallery"] .meta .tag{display:none}
+body:not(.in-dir) #grid .card[data-kind="image"] .cover .ftype,body:not(.in-dir) #grid .card[data-kind="gallery"] .cover .ftype{top:6px;left:6px;right:auto;font-size:9px;letter-spacing:0;padding:3px 5px;opacity:.86}
 body:not(.in-dir) #grid.list .card-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin:0 0 4px;font-size:16px;line-height:1.32}
 body:not(.in-dir) #grid.list .sum{display:-webkit-box;-webkit-line-clamp:2;margin:0 0 4px;font-size:13px;line-height:1.45}
 body:not(.in-dir) #grid.list .ft-snip{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;overflow:hidden;margin:2px 0;font-size:12px}
@@ -1171,6 +1177,7 @@ body:not(.in-dir) #grid.list .card-foot .ibtn{width:32px;height:32px}
   body:not(.in-dir) #grid:not(.list) .card-title{min-height:2.65em;font-size:14.5px;line-height:1.32;-webkit-line-clamp:2;margin-bottom:3px}
   body:not(.in-dir) #grid.list{grid-template-columns:minmax(0,1fr);gap:8px}
   body:not(.in-dir) #grid.list .card{grid-template-columns:72px minmax(0,1fr);column-gap:10px;min-height:100px}
+  body:not(.in-dir) #grid.list .card[data-kind="image"],body:not(.in-dir) #grid.list .card[data-kind="gallery"]{grid-template-columns:92px minmax(0,1fr);min-height:122px}
   body:not(.in-dir) #grid.list .cover{aspect-ratio:1/1;margin:8px 0 8px 8px;border-radius:7px}
   body:not(.in-dir) #grid.list .card-body{padding:7px 8px 6px 0}
   body:not(.in-dir) #grid.list .meta{max-height:14px;min-height:14px;font-size:10px;gap:0 5px;margin-bottom:2px}
@@ -1570,7 +1577,7 @@ html.ptr{overscroll-behavior-y:contain}
 .cat-sep{height:1px;background:var(--rule);margin:8px 10px}
 .cat-btn.muted{color:var(--muted)}
 .cat-btn .cicon{width:9px;height:9px;flex:none}
-.cover .ftype{position:absolute;top:10px;left:10px;right:auto;z-index:3;font:700 11px/1 var(--mono);letter-spacing:.06em;color:#1A2229;background:rgba(255,255,255,.9);border-radius:4px;padding:5px 7px}
+.cover .ftype{position:absolute;top:10px;left:10px;right:auto;z-index:3;font:700 10px/1 var(--mono);letter-spacing:.04em;color:#1A2229;background:rgba(255,255,255,.9);border-radius:4px;padding:4px 6px}
 .is-hidden .cover{filter:grayscale(.85);opacity:.6}
 .restore-btn{margin-left:auto}
 .where{border:1px solid var(--rule);border-radius:999px;padding:0 8px;font-size:12px;line-height:1.7;color:var(--muted)}
@@ -4001,12 +4008,14 @@ function cardHTML(it, tk, hiddenView){
   const listed = inDir || listedPost;
   const canPublish = !!pubKind && !listed;
   const asked = canPublish && !!state.pubReq[it.id];
+  const publishOffer=it.source!=='preview' && (it.type==='link'||['static','local','folder','server'].includes(it.source));
+  const publishControl=listed ? `<button class="ibtn is-done" type="button" data-act="published" title="${esc(t('publishDone'))}" aria-label="${esc(t('publishDone'))}">${ICON.globe}</button>` : publishOffer ? ib('publish',ICON.globe,t(asked?'publishAgain':'publishTip')) : '';
   const badges = (it.unread?`<span class="where good new-badge">${esc(t('feedNew'))}</span>`:'') + (au?`<span class="where good">${esc(t('plPodcast'))}</span>`:'') + (hasText(it)?`<span class="where">${esc(t('fullText'))}</span>`:'') + (isLink && isNoread(it)?`<span class="where" title="${esc(it.noread.msg||'')}">${esc(t('origOnly'))}</span>`:'') + (it.source==='local' && !isLink && it.data===undefined && it.html===undefined?`<span class="where">${esc(t(it.bk?'syncCloud':'syncListOnly'))}</span>`:'') + (listed?`<span class="where good">${esc(t('badgeInDir'))}</span>`:'') + (asked?`<span class="where">${esc(t('badgeAsked'))}</span>`:'') + (same?`<span class="where warn" title="${esc(same.title)}">${esc(t('badgeSame',cut(same.title,16)))}</span>`:'');
   const acts = hiddenView
     ? `<button class="btn restore-btn" type="button" data-act="restore">${ICON.restore}${esc(t('restore'))}</button>${manage?`<button class="btn danger" type="button" data-act="purge">${ICON.trash}${esc(t('delForever'))}</button>`:''}`
-    : `<span class="acts collapsible shelf-acts">${au?ib('play',ICON.play,t('plListen')):''}${ib('star',ICON.star,star?t('unstarTip'):t('starTip'),star)}${mainHide}<button class="ibtn more" type="button" data-act="more" aria-haspopup="true" aria-expanded="false" title="${esc(t('cardMore'))}" aria-label="${esc(t('cardMore'))}">${ICON.more}</button><span class="shelf-more" role="group" aria-label="${state.lang==='zh'?'更多操作':'More actions'}">${au?ib('enqueue',ICON.queue,t('plEnq'))+ib('notes',ICON.notes,t('plNotes')):''}${ib('pin',ICON.pin,pinned?t('unpinTip'):t('pinTip'),pinned)}${menuHide}${it.source==='local' && it.type==='md'?ib('edit',ICON.pen,t('editNote')):''}${canMove?ib('move',ICON.move,t('move')):''}${canPublish?ib('publish',ICON.globe,t(asked?'publishAgain':'publishTip')):listed&&pubKind?`<button class="ibtn is-done" type="button" data-act="published" title="${esc(t('publishDone'))}" aria-label="${esc(t('publishDone'))}">${ICON.globe}</button>`:''}${ib('shuffle',ICON.shuffle,t('shuffle'))}${href?`<a class="ibtn" href="${esc(href)}" target="_blank" rel="noopener" title="${esc(t('newTab'))}" aria-label="${esc(t('newTab'))}">${ICON.ext}</a>`:''}${manage?ib('purge',ICON.trash,t('delTip')).replace('class="ibtn"','class="ibtn is-del"'):''}</span></span>`;
+    : `<span class="acts collapsible shelf-acts">${au?ib('play',ICON.play,t('plListen')):''}${ib('star',ICON.star,star?t('unstarTip'):t('starTip'),star)}${mainHide}<button class="ibtn more" type="button" data-act="more" aria-haspopup="true" aria-expanded="false" title="${esc(t('cardMore'))}" aria-label="${esc(t('cardMore'))}">${ICON.more}</button><span class="shelf-more" role="group" aria-label="${state.lang==='zh'?'更多操作':'More actions'}">${au?ib('enqueue',ICON.queue,t('plEnq'))+ib('notes',ICON.notes,t('plNotes')):''}${ib('pin',ICON.pin,pinned?t('unpinTip'):t('pinTip'),pinned)}${menuHide}${it.source==='local' && it.type==='md'?ib('edit',ICON.pen,t('editNote')):''}${canMove?ib('move',ICON.move,t('move')):''}${publishControl}${href?`<a class="ibtn" href="${esc(href)}" target="_blank" rel="noopener" title="${esc(t('newTab'))}" aria-label="${esc(t('newTab'))}">${ICON.ext}</a>`:''}${manage?ib('purge',ICON.trash,t('delTip')).replace('class="ibtn"','class="ibtn is-del"'):''}</span></span>`;
   const coverAct=media.kind==='gallery'?'gallery':'open';
-  return `<article class="card${hiddenView?' is-hidden':''}${pinned&&!hiddenView?' is-pinned':''}" data-id="${esc(it.id)}">
+  return `<article class="card${hiddenView?' is-hidden':''}${pinned&&!hiddenView?' is-pinned':''}" data-kind="${esc(media.kind)}" data-id="${esc(it.id)}">
     <button class="cover" type="button" data-act="${coverAct}" aria-label="${esc(media.kind==='gallery'?(state.lang==='zh'?'查看图片':'View photos'):it.title)}">${coverHTML(it,false,media)}${prog>1?`<span class="prog" style="width:${Math.min(prog,100)}%"></span>`:''}${au?`<span class="play" role="button" data-act="play" aria-label="${esc(t('plPlayThis'))}">${ICON.play}</span>`:media.kind==='video'?`<span class="video-mark" aria-hidden="true">${ICON.play}</span>`:''}</button>
     <div class="card-body">
       <p class="meta">${pinned&&!hiddenView?`<span class="pin-badge">${ICON.pin}${esc(t('pinned'))}</span>`:''}<span class="tag ${catClass(it.category)}">${esc(catName(it.category))}</span>${where?`<span class="where">${esc(where)}</span>`:''}${badges}${star&&it.category!=='featured'?`<span class="star-badge">★ ${esc(t('featured'))}</span>`:''}<span>${esc(lang)}</span><span>${esc(it.date||'')}</span></p>
@@ -9867,7 +9876,9 @@ $('#grid').addEventListener('click',e=>{                            // the parts
   if(dirLikeClick(e)) return;
   if(dirOpenClick(e)) return;
 });
-document.addEventListener('click',e=>{ if(!e.target.closest('.acts.collapsible')) document.querySelectorAll('.card.acts-open').forEach(c=>{ c.classList.remove('acts-open'); const b=c.querySelector('[data-act="more"]'); if(b) b.setAttribute('aria-expanded','false'); }); });          // a tap anywhere else closes the buttons of a card
+function closeShelfActionMenus(){ document.querySelectorAll('.card.acts-open').forEach(c=>{ c.classList.remove('acts-open'); const b=c.querySelector('[data-act="more"]'); if(b) b.setAttribute('aria-expanded','false'); const m=c.querySelector('.shelf-more'); if(m) m.removeAttribute('style'); }); }
+document.addEventListener('click',e=>{ if(!e.target.closest('.acts.collapsible')) closeShelfActionMenus(); });          // a tap anywhere else closes the buttons of a card
+window.addEventListener('scroll',()=>{ if(document.querySelector('.card.acts-open')) closeShelfActionMenus(); },{passive:true});
 document.addEventListener('click',e=>{ const a=e.target.closest('.shelf-more a'); if(!a) return; const c=a.closest('.card'); if(c){ c.classList.remove('acts-open'); const b=c.querySelector('[data-act="more"]'); if(b) b.setAttribute('aria-expanded','false'); } });
 function coverFailed(e){                                            // someone else's cover picture failed to load: the generated cover instead
   const im=e.target; if(!im || im.tagName!=='IMG' || !im.dataset.fb) return;
@@ -9883,7 +9894,7 @@ $('#grid').addEventListener('click',async e=>{
   const el=e.target.closest('[data-act]'); if(!el) return;
   const card=el.closest('.card'), id=card&&card.dataset.id; if(!id) return;
   const act=el.dataset.act;
-  if(act==='more'){ const on=!card.classList.contains('acts-open'); document.querySelectorAll('.card.acts-open').forEach(c=>{ c.classList.remove('acts-open'); const b=c.querySelector('[data-act="more"]'); if(b) b.setAttribute('aria-expanded','false'); }); card.classList.toggle('acts-open',on); el.setAttribute('aria-expanded',String(on)); return; }
+  if(act==='more'){ const on=!card.classList.contains('acts-open'); closeShelfActionMenus(); if(on){ card.classList.add('acts-open'); el.setAttribute('aria-expanded','true'); const menu=card.querySelector('.shelf-more'); if(menu){ const width=Math.max(1,Math.min(252,window.innerWidth-24)); menu.style.position='fixed'; menu.style.left='12px'; menu.style.top='12px'; menu.style.right='auto'; menu.style.bottom='auto'; menu.style.width=width+'px'; const phone=document.body.classList.contains('sh-phone'), safeBottom=phone?88:12; menu.style.maxHeight=Math.max(120,window.innerHeight-safeBottom-20)+'px'; menu.style.overflowY='auto'; const r=el.getBoundingClientRect(), h=menu.getBoundingClientRect().height, left=Math.max(12,Math.min(r.right-width,window.innerWidth-width-12)); let top=r.top-h-8; if(top<12) top=Math.min(r.bottom+8,window.innerHeight-safeBottom-h-12); menu.style.left=left+'px'; menu.style.top=Math.max(12,top)+'px'; } } return; }
   if((act==='open'||act==='play') && state.items.find(x=>x.id===id)?.source==='preview'){ e.preventDefault(); toast(state.lang==='zh'?'这是布局预览用的模拟内容':'Demo content for layout preview'); return; }
   if(act==='gallery'){ e.preventDefault(); const galleryItem=state.items.find(x=>x.id===id); if(galleryItem && galleryItem.source!=='preview') markRead(id,card); openShelfGallery(id,shelfMediaOf(galleryItem||{}).images); return; }
   if(act==='open'){
