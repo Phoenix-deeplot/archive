@@ -46,7 +46,7 @@ const ok = (name, cond, extra) => { if (cond) { pass++; console.log('PASS', name
   // ------------------------------------------------ a section keeps its search, and offers the whole site
   await go('Article picks');
   await type('zzzz-no-such-article');
-  await waitFor(`/found 0|0 /.test(document.querySelector('#viewSub').textContent)`, 4000);
+  await waitFor(`state.q==='zzzz-no-such-article' && !document.querySelector('#viewSub .dspans') && /found 0|0 /.test(document.querySelector('#viewSub').textContent)`, 4000);          // (the box waits a moment before it searches; a page that has the time spans says "Only 0 this week" before it does)
   ok('words typed on a section stay in that section (the title is still the section) and a chip offers the whole site', await J(`document.getElementById('viewTitle').textContent==='Article picks' && !!document.querySelector('#viewSub [data-qwide]')`), [await J(`document.getElementById('viewTitle').textContent`), await J(`document.querySelector('#viewSub').textContent`)]);
   await J(`document.querySelector('#viewSub [data-qwide]').click()`); await sleep(1500);
   ok('the chip searches the whole site for the same words: the whole list, the words kept in the box', await J(`document.getElementById('viewTitle').textContent!=='Article picks' && document.querySelector('#q').value==='zzzz-no-such-article' && state.q==='zzzz-no-such-article'`), [await J(`document.getElementById('viewTitle').textContent`), await J(`document.querySelector('#q').value`)]);
