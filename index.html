@@ -1586,7 +1586,7 @@ body.dir-audio .dir-line{display:none}                          /* (its only con
   body.shell2.side-off .side{display:none}
   body.shell2.side-off.has-player .player{left:0}
   body.shell2.side-off.has-player .pl-mini{left:max(12px,env(safe-area-inset-left))}
-  body.shell2 .view-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  body.shell2 .view-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;min-height:76px;box-sizing:border-box}          /* (76 px: the height of the heading with the controls of my shelf in it: the list under it does not jump when the section changes) */
   body.shell2 .vh-ctl{display:block;padding-bottom:6px}
   body.shell2 .dir-line .ctl-box{margin-left:auto}
   body.shell2 .view-head p{min-height:25px}                                   /* (the heading has the same height on every page: the content under it does not move) */
@@ -2790,6 +2790,8 @@ const state = {
 const $ = s => document.querySelector(s);
 Object.assign(I18N.zh,{themeTop:'主题', thLabel:'主题', thClassic:'经典', thCloud:'云红', setTitle:'设置', viewIsCards:'卡片', viewIsList:'列表'});
 Object.assign(I18N.en,{themeTop:'Theme', thLabel:'Theme', thClassic:'Classic', thCloud:'Cloud red', setTitle:'Settings', viewIsCards:'Cards', viewIsList:'List'});
+Object.assign(I18N.zh,{plWhy2:'网络连不上它的服务器', plWhy3:'声音文件有问题', plWhy4:'浏览器不接受：格式不支持，或网站不让外部播放'});
+Object.assign(I18N.en,{plWhy2:'the network cannot reach its server', plWhy3:'the sound file is broken', plWhy4:'the browser does not accept it: a format it cannot play, or the site does not let other sites play it'});
 Object.assign(I18N.zh,{bookLicLine:(l,h,from)=>`授权：${l} · 来源：${h}${from?` · 这一章来自：${from}`:''}`, bookTier:x=>({local:'这个浏览器里的副本', hot:'服务器上的副本', durable:'服务器上的副本', source:'刚从原站读取', feed:'刚从原站读取'})[x]||'', bookChN:n=>`${n} 章`, bookStart:'从头开始读', bookOrig:'打开原站', bookChapters:'章节', bookLic:'授权', bookNote:'点一章就在这里读；阅读页顶上的“上一篇 / 下一篇”翻章，字号和颜色在“Aa”里调。',
   'lic_public-domain':'公有领域', lic_cc0:'CC0', 'lic_cc-by':'CC BY', 'lic_cc-by-sa':'CC BY-SA', 'lic_cc-by-nc':'CC BY-NC', 'lic_cc-by-nc-sa':'CC BY-NC-SA', 'lic_free-to-read':'免费阅读'});
 Object.assign(I18N.en,{bookLicLine:(l,h,from)=>`Licence: ${l} · From ${h}${from?` · This chapter came from: ${from}`:''}`, bookTier:x=>({local:'a copy kept in this browser', hot:'the copy on the server', durable:'the copy on the server', source:'the original page, just now', feed:'the original page, just now'})[x]||'', bookChN:n=>n===1?'1 chapter':`${n} chapters`, bookStart:'Start reading', bookOrig:'Open the original', bookChapters:'Chapters', bookLic:'Licence', bookNote:'Tap a chapter to read it here; “Previous / Next” at the top of the reader turns the chapters, and the text size and colours are under “Aa”.',
@@ -5304,13 +5306,20 @@ function plTrouble(id, why){                                                    
   clearTimeout(pl.stallT);
   if(pl.ci<pl.cands.length-1){ if(plAudio.currentTime>3) pl.want=plAudio.currentTime; pl.ci++; plStart(pl.go); return; }
   if(why==='stall'){ toast(t('plSlow')); return; }
+  const rk=id+'#'+pl.ci;
+  if(why==='error' && !plRetried.has(rk)){ plRetried.add(rk); const go=pl.go, at=plAudio.currentTime>3 ? plAudio.currentTime : pl.want; pl.want=at; setTimeout(()=>{ if(pl.loaded===id) plStart(go); },900); return; }          // (a dropped connection or a server that was busy is not a sound that is gone: one more try of the same sound)
   const it=plItem(id);
   if(it && plIsMusic(it) && !it.rsTried && state.lp.v2){                                               // (every sound of the song failed: the service is asked for new ones once, an address may have run out)
     it.rsTried=true; const at=plAudio.currentTime>3 ? plAudio.currentTime : pl.want, go=pl.go; pl.loaded=''; plAudio.pause(); plFinding(pl.q.indexOf(id), go, at, true); return;
   }
   plFailed(id);
 }
-const plRs=new Map();
+const plRs=new Map(), plRetried=new Set();
+function plWhy(){                                                                                      // " · the server · what the browser said": the toast of a sound that does not play says where it comes from, so that a reader can say it back
+  let h=''; try{ h=new URL(plAudio.currentSrc).hostname; }catch(e){}
+  const r={2:'plWhy2', 3:'plWhy3', 4:'plWhy4'}[plAudio.error && plAudio.error.code];
+  return (h ? ' · '+h : '')+(r ? ' · '+t(r) : '');
+}
 function plResolve(id, force){                                                                                // -> a promise: true when the song now has a sound it did not have (the service found one); the song and the bar's copy of it are given the sounds and the words
   const it=plItem(id), x=lpSeen.get(String(id).slice(7)); if(!it || !x || !state.lp.v2) return Promise.resolve(false);
   if(plRs.has(id)) return plRs.get(id);
@@ -5336,7 +5345,7 @@ function plFailed(id){
   const it=plItem(id); pl.loaded=''; pl.want=0; plToggleIcon(); plMarkCards();
   if(id.startsWith('tmp:ls:ab:') && it){ toast(t('abChFail',cut(it.title,24)), t('abRetry'), ()=>{ const k=pl.q.indexOf(id); if(k>=0) plLoad(k,true); }); return; }          // (a chapter of an audiobook that does not play is not skipped: a book is heard in order; the reader may try again)
   if(id.startsWith('tmp:ls:') && pl.i<pl.q.length-1){ toast(t('lsSkip',cut(it ? it.title : '',24))); plNext(); return; }                 // a song of today's listening that the platform does not give out: on to the next one
-  if(it) toast(t('plFail'), it.url ? t('plOpenOrig') : undefined, it.url ? ()=>window.open(it.url,'_blank','noopener,noreferrer') : undefined);
+  if(it) toast(t('plFail')+plWhy(), it.url ? t('plOpenOrig') : undefined, it.url ? ()=>window.open(it.url,'_blank','noopener,noreferrer') : undefined);
 }
 function plLenCheck(){                                                                                // the length of the sound is not the song's (a cut, a wrong song): the next sound, when there is one
   const it=plCur(), c=pl.cands[pl.ci]; if(!it || !c || c.k==='preview' || pl.ci>=pl.cands.length-1) return;

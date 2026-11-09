@@ -67,15 +67,11 @@ const get = p => fetch(SVC + p).then(r => r.json());
   const l2 = await lfRead(); await J(`document.querySelector('#lfBtn').click()`); await sleep(350);
   const l3 = await lfRead();
   ok('the language is one button of at least 40 px: 全部 → 中 → EN → 全部, the list follows, the tooltip names the next one', l0.n === 1 && l0.h >= 40 && [l0, l1, l2, l3].map(x => x.lf).join() === 'all,zh,en,all' && [l0, l1, l2, l3].map(x => x.text).join() === '全部,中,EN,全部' && /^内容语言：全部（点一下换成 中文）/.test(l0.tip) && /换成 English/.test(l1.tip) && l0.on === 'false' && l1.on === 'true', [l0, l1, l2, l3]);
-  // ---- the theme pop-up works in the public space too (it was hidden there by mistake)
+  // ---- the theme button of the top bar is ONE TAP (the next theme: 经典 → 深色 → 云红 → 经典), in the public space too; there is no pop-up of themes
   await go('发现');
-  await J(`document.querySelector('#themeTop').click()`); await sleep(350);
-  const th0 = await J(`({shown:getComputedStyle(document.querySelector('#themePop')).display!=='none' && !document.querySelector('#themePop').hidden, n:document.querySelectorAll('#themePop [data-thset]').length})`);
-  await J(`document.querySelector('#themePop [data-thset="dark"]').click()`); await sleep(350);
-  const th1 = await J(`document.documentElement.getAttribute('data-theme')`);
-  await J(`document.querySelector('#themePop [data-thset="light"]').click()`); await sleep(350);
-  const th2 = await J(`document.documentElement.getAttribute('data-theme')`);
-  ok('发现世界, phone: the theme button opens its pop-up (three themes), and a choice changes the page (dark, then the classic one)', th0.shown && th0.n === 3 && th1 === 'dark' && th2 === 'light', [th0, th1, th2]);
+  const thTap = async () => { await J(`document.querySelector('#themeTop').click()`); await sleep(350); return J(`({t:document.documentElement.getAttribute('data-theme'), hint:document.querySelector('#themeTop').title, pop:!!document.querySelector('#themePop')})`); };
+  const th0 = await thTap(), th1 = await thTap(), th2 = await thTap();
+  ok('发现世界, phone: the theme button is one tap and no pop-up: dark, cloud, the classic one again; its tooltip names the theme that is on', th0.t === 'dark' && th1.t === 'cloud' && th2.t === 'light' && /深色/.test(th0.hint) && /云红/.test(th1.hint) && /经典/.test(th2.hint) && !th0.pop, [th0, th1, th2]);
   await go('全部');
 
   // ---- the sort button goes round and says so
