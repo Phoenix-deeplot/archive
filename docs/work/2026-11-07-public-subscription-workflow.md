@@ -88,4 +88,7 @@
 - 待后续：真实审核和数据库写入需在部署环境验证；本轮未部署。
 
 ## 8. 合并记录
-待用户要求合并。
+- 2026-11-09：`codex/public-subscription-ui` 先合入最新 `master`，再合入 `master`；无冲突，合并提交 `13f2a44`。
+- 验收：页面语法与重复函数检查通过；`s_subscription_discovery` 端到端测试 16 项通过。合并后 master 与验收分支源码树一致。
+- `manifest.js`、`manifest.json` 的既有本地修改保留，未纳入提交。
+- 未部署。
