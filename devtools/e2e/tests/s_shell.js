@@ -115,8 +115,8 @@ const get = p => fetch(SVC + p).then(r => r.json());
   // the discover space
   await J(`document.querySelector('#tabbar [data-space="dir"]').click()`); await settle(2500);
   const dsp = await J(`({sp:state.space, on:[...document.querySelectorAll('#tabbar button')].map(b=>b.getAttribute('aria-pressed')).join(), chips:[...document.querySelectorAll('#stripIn #cats .cat-btn')].map(b=>b.textContent.trim().replace(/\\d+$/,'')).join('|'), ph:document.body.classList.contains('sh-phone'), chip:document.querySelector('#colChip').hidden})`);
-  ok('the bottom bar switches to the discover space; the strip is its sections: 发现 | 热榜 | 今日听什么 | 全部 | …', dsp.sp === 'dir' && dsp.on === 'false,,true' || (dsp.sp === 'dir' && /^发现\|热榜\|今日听什么\|精选图书\|全部/.test(dsp.chips) && dsp.chip), dsp);
-  ok('the strip begins with 发现 | 热榜 | 今日听什么 | 精选图书 | 全部', /^发现\|热榜\|今日听什么\|精选图书\|全部/.test(dsp.chips), dsp.chips);
+  ok('the bottom bar switches to the discover space; the strip is its sections: 发现 | 热榜 | 今日听什么 | 精选图书 | 精选文章 | 看什么 | 全部', dsp.sp === 'dir' && dsp.on === 'false,,true' || (dsp.sp === 'dir' && /^发现\|热榜\|今日听什么\|精选图书\|精选文章\|看什么\|全部/.test(dsp.chips) && dsp.chip), dsp);
+  ok('the strip begins with 发现 | 热榜 | 今日听什么 | 精选图书 | 精选文章 | 看什么, and 全部 is the last chip of the types', /^发现\|热榜\|今日听什么\|精选图书\|精选文章\|看什么\|/.test(dsp.chips) && /\|全部$/.test(dsp.chips), dsp.chips);
   ok('the collections chip is for the shelf only', dsp.chip === true);
   ok('the names are the owner’s: 精选图书 | 精选文章 | 看什么 are in the strip, there is no 笔记 in the public space, nothing is called 公共目录 on the bottom bar', dsp.chips.includes('精选文章') && dsp.chips.includes('看什么') && !dsp.chips.includes('笔记') && !/公共目录/.test(await J(`document.querySelector('#tabbar').textContent`)), dsp.chips);
   const b1 = await bar();
