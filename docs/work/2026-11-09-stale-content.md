@@ -67,6 +67,6 @@
 
 ## 4. 合并记录
 
-- 合并顺序：
-- 合并后的测试结果：
-- 删除的分支和 worktree：
+- 合并顺序：my-archive：`claude/search-music`（先把 master 并进来：Codex 已合并的内容，`index.html` 一处冲突——去掉标签筛选的小标，留下“在全站搜”小标）→ `claude/sidebar-order`（`README.md` 同一行一处冲突，以 search-music 的文字为准再套上侧栏顺序）→ `claude/fresh-ranking`；shelf-directory：`claude/fix-daily` → `claude/hot-fixes` → `claude/search-music`（都没有冲突）。my-archive 的三个分支先在一个集成分支上合在一起、跑了完整浏览器测试，再依次合进 master，核对过 master 和测过的内容一致（`git diff` 为空）。2026-11-09，用户说“合并”之后。
+- 合并后的测试结果：shelf-directory master：923 条，只有主干上原来就有的 7 个失败（test_records ×2、test_submission ×2、test_feedresolver ×3，不是这次引入的）。my-archive 的完整浏览器测试（47 套）：和这几项相关的都过；有 8 套有问题，其中 7 套（`s_mobile` 3 处、`s_first`、`s_dir` 2 处、`s_hotpage`、`s_rich`、`s_player` 1 处、`s_bookpage`）在合并前的 master 上**同样失败**（Codex 合并的界面改动之后这些测试没有跟着改，不是这次合并带来的，没有动）；`s_search_scope` 有一处等待条件被时间跨度的提示行提前满足（合并后才暴露），已修，20 条全过。
+- 删除的分支和 worktree：my-archive：分支 `claude/search-music`、`claude/sidebar-order`、`claude/fresh-ranking`、`claude/fixes`、`codex/video-viewing-experience`（已合并，worktree 干净）、临时分支 `tmp/sidebar-test`，以及它们的 worktree；shelf-directory：`claude/search-music`、`claude/hot-fixes`、`claude/fix-daily` 和它们的 worktree。**保留**：`codex/miniprogram-pilot`（按用户说的）；`codex/public-subscription-ui`（my-archive，还有 6 个提交没进 master）、`codex/public-subscription-api`（shelf-directory，还有 5 个提交没进 master）、`backup-before-sync`（shelf-directory，2026-10-15 的备份）——这三个没合并，用安全删除（`-d`）是删不掉的，要用户定。
