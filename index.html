@@ -1017,6 +1017,14 @@ body.in-dir #sort,#langFilter[hidden],#sort[hidden],#sortBtn[hidden],#ctlBox[hid
 .dr-foot .btn{padding:3px 10px;font-size:12.5px}
 .dr-rank{font-family:var(--sans);font-weight:700;color:var(--accent)}
 .heat{display:inline-flex;align-items:center;gap:3px;font-weight:600;color:var(--heat)}
+#lfBtn{display:inline-flex;align-items:center;gap:5px}
+#lfBtn .icon{width:16px;height:16px}
+.dspans{display:inline-flex;flex-wrap:wrap;gap:6px;vertical-align:middle}
+.dspans button{border:1px solid var(--rule);background:transparent;color:var(--muted);border-radius:999px;padding:4px 14px;min-height:40px;font:inherit;font-size:13px;cursor:pointer}
+.dspans button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.upd{font-size:12.5px;color:var(--muted)}
+.upd.stale{color:var(--heat)}
+.xmeta .newtag{font-weight:700;color:var(--heat);font-size:12px}
 .heat .icon{width:13px;height:13px;fill:currentColor;stroke:none}
 .card.is-read .card-title a{color:var(--muted)}
 @media (max-width:760px){.dr-row{grid-template-columns:minmax(0,1fr)}.dir-line select{flex:1 1 140px}
@@ -1790,6 +1798,7 @@ try{ var _v=localStorage.getItem('archive.shell'), _on=_v!==null ? String(_v).re
           <button type="button" id="lfBtn" aria-pressed="false">全部</button>
         </div>
         <select id="sort" aria-label="Sort">
+          <option value="mix" data-i="sortMix">综合</option>
           <option value="recent" data-i="sortRecent">最近添加</option>
           <option value="date" data-i="sortDate">发布日期</option>
           <option value="heat" data-i="sortHeat">热度</option>
@@ -2806,7 +2815,7 @@ const LINK_LANG = (function(){
 })();
 const state = {
   lang: LINK_LANG || (['zh','en'].includes(LS.get('lang','')) ? LS.get('lang','') : sysLang()), langAuto: !LINK_LANG && !['zh','en'].includes(LS.get('lang','')),                // (no choice made: the system's language, and it follows the system)
-  theme: LS.get('theme','auto'), view: LS.get('view','grid'), sort: LS.get('sort','recent'),
+  theme: LS.get('theme','auto'), view: LS.get('view','grid'), sort: LS.get('sort','recent'), dsort: LS.get('dsort','mix'), dSpans: (v=>v && typeof v==='object' && !Array.isArray(v) ? v : {})(LS.get('dirSpan',{})),
   rs: Object.assign({fs:100, th:'follow'}, LS.get('reader',{})),        // reader settings: the size of the letters (a %) and the colour (follow | sepia | green | dark; the eye-care button goes round them); what older versions kept (line height, width, font ...) is not read
   marks: LS.get('marks',{}),                                                           // bookmarks (a place in a document): {id:[{pct,label,at}]}
   cols: LS.get('cols',[]), col: LS.get('col','all'),                                   // collections of the files added in this browser: [{id,name,at}]; which part of the shelf is shown: all | site | folder | loose | <collection id>
@@ -2872,8 +2881,10 @@ Object.assign(I18N.en,{sortBy:v=>`Sort: ${v}`, sortBooks:'Picks'});
     Object.assign(I18N.en,{plDataL:'Say so on mobile data', plDataD:'When a big file (lossless, 30–50 MB) plays on mobile data the bar says so in small letters; a small source of the song, if there is one, comes first', plCellular:v=>`Mobile data · ${v}`});
     Object.assign(I18N.zh,{abTab:'有声书', abTitle:'有声书', abIntro:'有头有尾的书，一章一章往后听，记住听到哪里。这里只收公版和电台自己的节目。', abNone:'有声书暂时看不了', abChapters:n=>`${n} 章`, abHours:h=>`${h} 小时`, abMins:m=>`${m} 分钟`, abGoLast:n=>`接着听 · 第 ${n} 章`, abGoStart:'从头听', abAt:n=>`听到第 ${n} 章`, abResume:(b,n)=>`接着听《${b}》第 ${n} 章`, abHot:'热门', abErr:'这本书现在读不到', abStale:'这本书现在读不到最新的，先用上次读到的。', abRtP:'公版：文字已进入公共领域', abRtB:'电台自己的节目', abFrom:v=>`声音来自 ${v}`, abGlobal:'海外', abGlobalTip:'声音在国外的服务器上，在中国大陆可能很慢', abChFail:v=>`《${v}》这一章放不了`, abRetry:'重试'});
     Object.assign(I18N.en,{abTab:'Audiobooks', abTitle:'Audiobooks', abIntro:'Books with a beginning and an end, heard chapter after chapter, picking up where you left. Only public domain and a broadcaster\'s own programmes.', abNone:'Audiobooks are not available right now', abChapters:n=>`${n} chapters`, abHours:h=>`${h} h`, abMins:m=>`${m} min`, abGoLast:n=>`Carry on · chapter ${n}`, abGoStart:'From the start', abAt:n=>`at chapter ${n}`, abResume:(b,n)=>`Carry on with ${b}, chapter ${n}`, abHot:'Popular', abErr:'This book cannot be read right now', abStale:'The newest cannot be read right now; what was read last time is used.', abRtP:'Public domain: the text belongs to everybody', abRtB:'The broadcaster\'s own programme', abFrom:v=>`Sound from ${v}`, abGlobal:'Overseas', abGlobalTip:'The sound is on a server abroad and may be slow in mainland China', abChFail:v=>`“${v}” does not play`, abRetry:'Try again'});
-    Object.assign(I18N.zh,{lfTip:(a,b)=>`内容语言：${a}（点一下换成 ${b}）`});
-    Object.assign(I18N.en,{lfTip:(a,b)=>`Content language: ${a} (tap for ${b})`});
+    Object.assign(I18N.zh,{lfTip:(a,b)=>`内容语言：${a}（点一下换成 ${b}）`, lfToast:a=>`内容语言：${a}`, sortMix:'综合', span_day:'今天', span_week:'本周', span_month:'本月', span_all:'全部', spanLabel:'时间范围', newTag:'新',
+      spanWiden:(n,w)=>`${w}只有 ${n} 条，已补上更早的`, lastUpd:(d,n)=>`内容最近更新于 ${d}（${n} 天前）`});
+    Object.assign(I18N.en,{lfTip:(a,b)=>`Content language: ${a} (tap for ${b})`, lfToast:a=>`Content language: ${a}`, sortMix:'Hot & new', span_day:'Today', span_week:'This week', span_month:'This month', span_all:'All', spanLabel:'Time span', newTag:'New',
+      spanWiden:(n,w)=>`Only ${n} ${w.toLowerCase()}; older ones are added`, lastUpd:(d,n)=>`Last update ${d} (${n} days ago)`});
 const t = (k,...a) => { const v=(I18N[state.lang]||I18N.zh)[k]; return typeof v==='function'?v(...a):(v==null?k:v); };
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const catName = c => (['all','featured','books','tools','notes','hidden'].includes(c)? t(c) : c);
@@ -3853,10 +3864,10 @@ function render(){
   document.querySelectorAll('[data-i-aria]').forEach(el=>{ el.setAttribute('aria-label',t(el.dataset.iAria)); el.title=t(el.dataset.iAria); });
   document.querySelectorAll('[data-i-ph]').forEach(el=>{ el.placeholder=t(el.dataset.iPh); });
   $('#langBtn').textContent=$('#langTop').textContent=state.lang==='zh' ? '中' : 'EN'; document.querySelector('[data-lang="auto"]').setAttribute('aria-pressed',String(state.langAuto));          // ("auto" follows the system; the button shows the language and switches it to the other one)
-  { const lb=$('#lfBtn'), cur=state.lf, nxt=LF_NEXT[cur]||'zh', nm=k=>k==='zh' ? t('langZh') : k==='en' ? t('langEn') : t('lfAll'); lb.textContent = cur==='zh' ? '中' : cur==='en' ? 'EN' : t('lfAll'); lb.setAttribute('aria-pressed',String(cur!=='all')); const tip=t('lfTip',nm(cur),nm(nxt)); lb.title=tip; lb.setAttribute('aria-label',tip); }          // (one button: it says the language that is on, and the tooltip says what the next tap gives)
+  { const lb=$('#lfBtn'), cur=state.lf, nxt=LF_NEXT[cur]||'zh', nm=k=>k==='zh' ? t('langZh') : k==='en' ? t('langEn') : t('lfAll'); lb.innerHTML = ICON.globe+`<span>${esc(cur==='zh' ? '中' : cur==='en' ? 'EN' : t('lfAll'))}</span>`; lb.setAttribute('aria-pressed',String(cur!=='all')); const tip=t('lfTip',nm(cur),nm(nxt)); lb.title=tip; lb.setAttribute('aria-label',tip); }          // (one button: it says the language that is on, and the tooltip says what the next tap gives)
   const dm=dirOn(), heatOn=heatAvailable(), sel=$('#sort');                                                // my shelf: added / published / read / title; the directory: newest / read here / heat / title
-  [...sel.options].forEach(o=>{ o.hidden=o.disabled = dm ? o.value==='date' : o.value==='heat'; if(o.value==='heat' && !heatOn) o.hidden=o.disabled=true; if(o.value==='recent') o.textContent=t(dm?'sortNewest':'sortRecent'); });
-  sel.value = (dm && state.sort==='date') || (!dm && state.sort==='heat') || (state.sort==='heat' && !heatOn) ? 'recent' : state.sort;
+  [...sel.options].forEach(o=>{ o.hidden=o.disabled = dm ? o.value==='date' : (o.value==='heat' || o.value==='mix'); if(o.value==='heat' && !heatOn) o.hidden=o.disabled=true; if(o.value==='recent') o.textContent=t(dm?'sortNewest':'sortRecent'); });
+  { const cs=dm ? state.dsort : state.sort; sel.value = dm ? (['mix','recent','heat','read','title'].includes(cs) && !(cs==='heat' && !heatOn) ? cs : 'mix') : (cs==='heat' || cs==='mix' ? 'recent' : cs); }          // (the directory's own choice, "composite" at first; my shelf keeps its own)
   syncFt(dm);
   const vl=state.view==='grid'?t('viewGrid'):t('viewList'); $('#viewBtn').innerHTML=state.view==='grid'?ICON.list:ICON.grid; $('#viewBtn').title=vl; $('#viewBtn').setAttribute('aria-label',vl);
   { const lab=dirSortLabel(sel.value), sb=$('#sortBtn'), tip=t('sortBy',lab); sb.innerHTML=ICON.sort+`<span class="sb-l">${esc(lab)}</span>`; sb.title=tip; sb.setAttribute('aria-label',tip); document.body.classList.toggle('in-dir',dm); }          // (the public space sorts with one button that goes round the ways, no drop-down)
@@ -5146,7 +5157,7 @@ const CHANGELOG=[{v:'2026-10-22',
       '语言筛选改成一个按钮：点一下依次换，全部 → 中 → EN → 全部，按钮上写的是现在的。听歌页：“为你推荐”在宽屏分两列，右边不再空着；歌曲右边的“⋯”菜单改成在屏幕中间弹出。手机上发现世界里的主题按钮恢复了（之前被误藏，点了没有反应）。',
       '“今日听什么”能搜歌了：推荐页顶栏右边的放大镜，至少输入两个字，同时问好几个来源，每一首标明是“整首”还是“试听”。⋯ 菜单里多了“找整首”（试听的歌去找整首）和“换音源”（这首歌的每个音源列出来，点哪个就先用哪个）；没有声音地址的歌（比如抖音热歌榜）放的时候才去找声音，找到的地址过期了会自己再找，一首歌的声音全放不出来时也会再问一次。有歌词的歌，“正在播放”里列表旁边多一格“歌词”：当前这句高亮，点一句跳到那里（设置里可以关）。“为你推荐”现在会学你的口味：喜欢、听完、点“不想听这类”、很快切走都会记一笔（只记在这台设备上，30 天减半，“清除这台设备上的听歌记录”一键清掉），国内读者七成是国内的歌，每五首里有一首是没听过的歌手；第一次会问你爱听什么。原来只有 30 秒试听的歌，在国内会先去找整首（波点等来源），找不到才放试听；手机流量下放很大的整首（约 30 MB）不再弹窗，播放条上用小字写一句“手机流量 · 约 30 MB”。',
       '新增故事类播客：“今日听什么 → 播客”里，热门播客后面是故事的几张列表——悬疑怪谈、真实罪案、真实故事、历史野史、轻松段子、睡前故事，以及喜马拉雅、小宇宙、荔枝FM 的故事热门（各平台节目在 Apple 播客中国榜上的位置）；“推荐订阅”里多了一组“故事 · 悬疑 · 段子 · 睡前”，热榜那一组也多了抖音、头条、小红书、公众号、微信读书、起点、QQ 音乐、Apple 播客榜、36氪、雪球、豆瓣的榜单，公共目录也收了几个，带“故事”标签。“精选图书”里多了“有声书”：第 1 章在前、一章一章往后放、放完自动放下一章、“接着听”回到上次的章和秒、一章放不了不会跳过去；只收公版的书和电台自己的节目（《红楼梦》《西游记》《水浒传》《聊斋志异》，“民国往事”里的《金粉世家》《骆驼祥子》《啼笑因缘》《四世同堂》《民国风云史》《闲话上海滩》等，和 LibriVox 的经典与故事；LibriVox 的声音在国外，标“海外”）。各页的标题、标题下的开关和按钮统一了样子：标题不再一页大一页小。',
-      '搜索按栏目分：页面最上面的搜索框左边多了个小标签，写着它搜什么（全站 / 音乐 / 播客 / 书籍 / 有声书 / 文章 / 视频 / 热榜 / 书架）；在“今日听什么”里直接在这个框里搜歌或搜播客节目，不再跳到全站搜索；书籍、文章、视频里搜不到时旁边有“在全站搜 ›”。搜到歌手时，结果最上面是歌手卡（播放全部、存为歌单），下面是各个来源合在一起的热门歌曲和相关歌单，邓紫棋、G.E.M.、鄧紫棋认作同一个人；每首歌的小字里写着它能从哪些来源听到（波点、网易云、Deezer 试听……）。点歌更快了：鼠标放在一行上就先去找它的声音，开始播放时会提前找接下来两首的声音。“今日听什么”里的搜索放大镜去掉了，只用最上面的搜索框；点一下空的搜索框，它下面就列出搜索记录。繁体和简体写的同一首歌（告白气球 / 告白氣球）合成一首。播放设置里选“速度优先”时，VIP 歌曲也会放整首，不再退到 30 秒试听。'],
+      '搜索按栏目分：页面最上面的搜索框左边多了个小标签，写着它搜什么（全站 / 音乐 / 播客 / 书籍 / 有声书 / 文章 / 视频 / 热榜 / 书架）；在“今日听什么”里直接在这个框里搜歌或搜播客节目，不再跳到全站搜索；书籍、文章、视频里搜不到时旁边有“在全站搜 ›”。搜到歌手时，结果最上面是歌手卡（播放全部、存为歌单），下面是各个来源合在一起的热门歌曲和相关歌单，邓紫棋、G.E.M.、鄧紫棋认作同一个人；每首歌的小字里写着它能从哪些来源听到（波点、网易云、Deezer 试听……）。点歌更快了：鼠标放在一行上就先去找它的声音，开始播放时会提前找接下来两首的声音。“今日听什么”里的搜索放大镜去掉了，只用最上面的搜索框；点一下空的搜索框，它下面就列出搜索记录。繁体和简体写的同一首歌（告白气球 / 告白氣球）合成一首。播放设置里选“速度优先”时，VIP 歌曲也会放整首，不再退到 30 秒试听。发现世界的列表现在默认按“综合”排：热度和点赞乘上随时间的衰减（视频 2 天、文章 7 天、音频 30 天减半），最近两天的内容排在最前，订阅的节目更靠前，同一个节目连着最多两条，新的内容带一个小标“新”。精选文章、看什么、全部三页多了“今天 / 本周 / 本月 / 全部”，选定范围里不足 12 条会自动补上更早的并写明；一页的最新内容已经超过两天，会写“内容最近更新于……”。语言筛选的按钮加了地球图标，点一下会说“内容语言：中文”。'],
   en:['New: “Back up & restore”: export the files, collections, subscriptions and reading places you added into one file, and restore it when you change device or fear a loss.',
       'Subscribed and saved links can now be read in the page: when a feed carries the full text it is shown at once; otherwise, and for any article link you paste and for the articles of the public directory, the original page is read and shown here and kept in your browser. Pages that need a login or do not let programs read them still open the original site (the card says “Original only”).',
       'New in the reading settings: “Download as a web page (HTML)” and “Print / save as PDF”.',
@@ -5191,7 +5202,7 @@ const CHANGELOG=[{v:'2026-10-22',
       'The language of the content is one button now: each tap the next, All → 中 → EN → All, and it says which is on. On the listening page the songs for you are two columns on a wide screen, so nothing is left blank at the right, and the “⋯” menu of a song opens in the middle of the screen. On a phone the theme button works again in the public space (it had been hidden there by mistake).',
       'What to listen to today can search: the magnifier at the right end of the bar of the music side, two letters at least; several sources are asked at once and each song says “Full” or “Preview”. The “⋯” menu has “Find the full song” (for a preview) and “Change source” (every source of the song is listed, the one you tap comes first); a song with no sound yet (the Douyin chart, for one) gets its sound when it is played, an address that has run out is looked for again by itself, and when every sound of a song fails the service is asked once more. A song with lyrics has a “Lyrics” tab beside the list in “Now playing”: the line that is sung is lit, a tap on a line goes there (a switch in the settings turns it off). “For you” learns your taste now: a like, a song heard to the end, “not this kind” and a quick skip each count (kept on this device only, half the weight after 30 days, and “clear the records of this device” clears it); a reader in China gets seven in ten Chinese songs, and every fifth song is an artist you have not heard; the first time you are asked what you like. In China a song that used to have only a 30-second preview is first looked for as a whole song (Bodian and the others) and the preview plays only when none is found; on mobile data a very big whole song (about 30 MB) no longer asks, the bar says “Mobile data · about 30 MB” in small letters.',
       'Story podcasts: under “What to listen to today → Podcasts”, after the top list there are lists of stories — mystery, true crime, true stories, history tales, funny talk, bedtime stories — and the hot stories of Ximalaya, Xiaoyuzhou and Lizhi FM (where the shows of each platform stand on Apple Podcasts’ China chart); “Recommended subscriptions” has a group “Stories · mystery · funny talk · bedtime” and its hot-lists group has the charts of Douyin, Toutiao, Xiaohongshu, WeChat articles, WeRead, Qidian, QQ Music, Apple Podcasts, 36Kr, Xueqiu and Douban, and the public directory took in a few, tagged “故事”. “Picked books” has “Audiobooks”: the first chapter first, chapter after chapter, the next one by itself, “Carry on” goes back to the chapter and the second you left, and a chapter that does not play is not skipped; only public-domain books and a broadcaster’s own programmes (Dream of the Red Chamber, Journey to the West, Water Margin, Strange Tales from a Chinese Studio, and LibriVox’s classics and stories; LibriVox’s sounds are abroad, marked “Overseas”).',
-      'Search by section: the search box at the top has a small label that says what it searches (whole site / music / podcasts / books / audiobooks / articles / videos / hot lists / my shelf); on “What to listen to today” it searches songs or podcast shows right there, no longer jumping to a whole-site search; in books, articles and videos a “Search the whole site ›” is next to the words. When the words name an artist the top of the results is an artist card (play all, save as a play list), then the top songs of all the sources and the related play lists, and 邓紫棋, G.E.M. and 鄧紫棋 are one artist; each song says in small letters which sources it can be heard from (Bodian, NetEase, Deezer preview …). Playing is quicker: a pointer resting on a row looks for its sound beforehand, and when a song begins the sounds of the next two are looked for. The search magnifier on “What to listen to today” is gone: the box at the top is the one way in, and a click in the empty box lists what was searched before. The same song written in traditional and in simplified characters (告白气球 / 告白氣球) is one song. With “Fastest first” in the player settings a VIP song is still played whole instead of falling back to the 30-second preview.']}];
+      'Search by section: the search box at the top has a small label that says what it searches (whole site / music / podcasts / books / audiobooks / articles / videos / hot lists / my shelf); on “What to listen to today” it searches songs or podcast shows right there, no longer jumping to a whole-site search; in books, articles and videos a “Search the whole site ›” is next to the words. When the words name an artist the top of the results is an artist card (play all, save as a play list), then the top songs of all the sources and the related play lists, and 邓紫棋, G.E.M. and 鄧紫棋 are one artist; each song says in small letters which sources it can be heard from (Bodian, NetEase, Deezer preview …). Playing is quicker: a pointer resting on a row looks for its sound beforehand, and when a song begins the sounds of the next two are looked for. The search magnifier on “What to listen to today” is gone: the box at the top is the one way in, and a click in the empty box lists what was searched before. The same song written in traditional and in simplified characters (告白气球 / 告白氣球) is one song. With “Fastest first” in the player settings a VIP song is still played whole instead of falling back to the 30-second preview. The lists of the discover world are ordered “Hot & new” at first: heat and likes against a half-life (a video 2 days, an article 7, a sound 30), what is of the last two days first, the programs you follow before the others, one program at most twice in a row, and a small “New” on what is new. The articles, the videos and the whole list have “Today / This week / This month / All”: a span with fewer than 12 is widened and says so, and a page whose newest thing is more than two days old says when it was last updated. The language button has a globe, and a press says “Content language: …”.']}];
 const guideItem = () => state.items.find(x=>(x.source==='static'||x.source==='server') && /(^|\/)notes\/guide\/index\.html$/.test(x.id));
 const canAsk=()=>!!state.dirCfg && !LS.get('dirIntroOff',0) && !state.dPickT.size;               // the question "what do you feel like reading?" is for somebody who has not answered it, where the site has a public space
 function introStep(n, ask){                                                                  // which buttons go with which step of the window
@@ -7086,6 +7097,30 @@ function renderSubs(){                                                          
   box.innerHTML=html; box.hidden=!html;
 }
 /* ---- the home page of the directory: not one long list. Owner's picks, "for you" (what this browser has read, saved, followed and liked), the top of every domain / platform mixed, the top 5 of every hot list. */
+/* ---- the composite order ("综合"): the directory's own way of ordering. A thing is worth its heat and its likes (and a pick of the owner, a place on a hot list, the program being followed here) and loses half of it in a
+   half-life that depends on what it is (a video 2 days, an article 7, a sound 30, the rest 14); what has no date counts as 60 days old. The last 2 days come first (the programs that are followed before the others, 12 at most: the editor's picks, which have a place of their own above, are taken out of the list afterwards):
+   a program that has news is seen, however hot the older things are. One program never has more than two in a row. */
+const DIR_HALF={video:2, article:7, audio:30}, DIR_FRESH_DAYS=2, DIR_FRESH_LEAD=12, DIR_SPANS=['day','week','month','all'], DIR_SPAN_AGE={day:2, week:8, month:31}, DIR_SPAN_MIN=12, DIR_SPAN_DEFAULT={article:'week', video:'day', all:'all'};
+const dirNowMs=()=>Date.now();
+const dirAge=it=>{ const ts=Date.parse(String(it.date||'').slice(0,10)); return isNaN(ts) ? null : Math.max(0,(dirNowMs()-ts)/86400000); };
+const dirIsNew=it=>{ const a=dirAge(it); return a!==null && a<DIR_FRESH_DAYS; };
+function dirFollowed(it, follow){ const sh=state.shelfMap.get(it.shelf); return !!(sh && sh.feed && follow.has(urlKey(sh.feed))); }
+function dirMixScore(it, follow){
+  const sh=state.shelfMap.get(it.shelf)||{}, h=(state.heat && state.heat.items[it.id]) || {}, age=dirAge(it), half=DIR_HALF[it.type]||14;
+  let base=1+1.5*Math.log2(1+heatOf(it))+.8*Math.log2(1+(h.l||0))+(sh.featured?1.2:0);
+  if(h.d) base-=Math.min(1,h.d/Math.max(1,(h.l||0)+(h.o||0)/5));
+  if(it.rank) base+=Math.max(0,6-it.rank)*.25;
+  if(follow && dirFollowed(it,follow)) base*=1.5;
+  if(dirLf()==='all' && it.lang && it.lang===state.lang) base*=1.3;
+  return Math.max(.1,base)*Math.pow(.5,(age===null ? 60 : age)/half);
+}
+function dirSpread(list, run){ const out=[], left=list.slice(); while(left.length){ const last=out.slice(-run); let i=left.findIndex(it=>!(last.length===run && last.every(x=>x.shelf===it.shelf))); if(i<0) i=0; out.push(left.splice(i,1)[0]); } return out; }          // (the same program at most `run` times in a row)
+function dirMixOrder(list){
+  const follow=new Set(subCols().map(c=>urlKey(c.feed.url))), sc=new Map(list.map(it=>[it,dirMixScore(it,follow)])), byScore=(a,b)=>sc.get(b)-sc.get(a) || String(b.date||'').localeCompare(String(a.date||''));
+  const lead=dirSpread(list.filter(dirIsNew).sort((a,b)=>Number(dirFollowed(b,follow))-Number(dirFollowed(a,follow)) || byScore(a,b)),2).slice(0,DIR_FRESH_LEAD), used=new Set(lead);
+  return dirSpread(lead.concat(list.filter(it=>!used.has(it)).sort(byScore)),2);
+}
+function dirNewestDate(items){ let best=''; for(const it of items){ const d=String(it.date||'').slice(0,10); if(d>best && !isNaN(Date.parse(d))) best=d; } return best; }
 function dirScore(it){                                                                          // how much an entry deserves a place up front: heat (log), freshness (halves in 3 days), the owner's pick, likes; a place on a hot list; dislikes count against it
   const sh=state.shelfMap.get(it.shelf)||{}, h=(state.heat && state.heat.items[it.id]) || {}, ts=Date.parse(String(it.date||'').slice(0,10)), age=isNaN(ts) ? 365 : Math.max(0,(Date.now()-ts)/86400000);
   let s=Math.log2(1+heatOf(it)) + 2*Math.pow(.5,age/3) + (sh.featured?1.2:0) + .8*Math.log2(1+(h.l||0));
@@ -7188,7 +7223,7 @@ function dirMetaLine(it, sh){
     const lg=it.lang==='zh' ? t('langZh') : it.lang==='en' ? t('langEn') : '', src=bookSource(it), ch=bookChs(it);
     return (lg ? `<span class="lm">${esc(lg)}</span>` : '') + (it.author ? `<button class="au" type="button" data-bauthor="${esc(it.author)}">${esc(it.author)}</button>` : '') + (src ? `<span>${esc(src)}</span>` : '') + (ch ? `<span>${esc(t('bookChN',ch.n.length))}</span>${bookReadAt(it)}` : '');
   }
-  const lm=dirLangMark(it), day=dirDay(it), tn=it.type!=='article' ? `<span class="tag ${TYPE_COLOR[it.type]}">${esc(t('ty_'+it.type))}</span>` : '';
+  const lm=dirLangMark(it), day=dirDay(it), tn=(dirIsNew(it) ? `<span class="newtag">${esc(t('newTag'))}</span>` : '') + (it.type!=='article' ? `<span class="tag ${TYPE_COLOR[it.type]}">${esc(t('ty_'+it.type))}</span>` : '');
   return tn + srcMark(it) + (sh ? `<button class="shelf-link" type="button" data-dshelf="${esc(sh.id)}" title="${esc(sh.name)}">${esc(sh.name)}</button>` : `<span>${esc(hostOf(it.url))}</span>`) + (lm ? `<span class="lm">${esc(lm)}</span>` : '') + (it.author ? `<span class="au">${esc(it.author)}</span>` : '') + (it.pages ? `<span>${esc(t('pages',it.pages))}</span>` : '') + (bookChs(it) ? `<span>${esc(t('bookChN',it.ch.n.length))}</span>${bookReadAt(it)}` : '') + (licName(it.license) ? `<span class="lic" title="${esc(t('bookLic'))}">${esc(licName(it.license))}</span>` : '') + (day ? `<span>${esc(day)}</span>` : '');
 }
 const REL='nofollow ugc noopener noreferrer';
@@ -7338,7 +7373,7 @@ function dirHomeHTML(){
   const cnt=new Map(); state.dirData.items.forEach(it=>{ dirMeta(it); if(it.col) cnt.set(it.col,(cnt.get(it.col)||0)+1); });          // the way on: every column that has something, and the whole directory behind one button
   const explore=sec('dr-explore', t('exploreTitle'), '', `<div class="dr-pickcols">${DIR_COLS.filter(c=>cnt.get(c.id)).map(c=>`<button class="dr-chip" type="button" data-dr-explore="${esc(c.id)}">${esc(colName(c.id))}<span class="n">${cnt.get(c.id)}</span></button>`).join('')}${hotBase() ? `<button class="btn dr-act" type="button" data-dr-hot>${esc(t('hotSide'))} ›</button>` : ''}${lpAvailable() ? `<button class="btn dr-act" type="button" data-dr-listen>${esc(t('lsTitle'))} ›</button>` : ''}<button class="btn dr-act" type="button" data-dr-browse>${esc(t('exploreAll'))}</button></div>`);
   let out=(intro ? '' : guideTipHTML()) + intro + (moduleOn('featured') ? sec('dr-today', t('drToday'), '', todayBody) : '') + listenSecHTML() + explore + cold + recent + mid + dirSubBlockHTML();
-  return out ? out+`<h2 class="dr-all">${esc(t(state.sort==='recent'||state.sort==='date' ? 'drLatest' : 'drAllTitle'))}</h2>` : '';
+  return out ? out+`<h2 class="dr-all">${esc(t(state.dsort==='recent'||state.dsort==='mix' ? 'drLatest' : 'drAllTitle'))}</h2>` : '';
 }
 /* ================= today's listening ("今日听什么"): songs and podcast episodes that play in the player at the foot of the page, in lists that change every day =================
    The service (/api/listen) says which lists there are today and, for one list, its songs or episodes: each has the address of a sound this page's player plays (a whole song or episode, or the 30 seconds a
@@ -8951,19 +8986,33 @@ function renderDir(){
   const bkp=booksPage(), curList=bkp && state.dList ? bookLists().find(l=>l.id===state.dList) : null;          // the picked-books page: its genres are the tabs of the one row
   renderDirBar();
   if(bkp && state.dGenre==='audio'){ renderAudioPage(); return; }                                      // (the tab "有声书": the audiobooks, not the books of the directory)
-  const found=dirList(), byDate=(a,b)=>String(b.date||'').localeCompare(String(a.date||'')), key=state.dView==='hot' ? 'heat' : state.sort; let list=found.slice();
+  const found=dirList(), byDate=(a,b)=>String(b.date||'').localeCompare(String(a.date||'')), key=state.dView==='hot' ? 'heat' : state.dsort; let list=found.slice();
   if(key==='title') list.sort((a,b)=>a.title.localeCompare(b.title,state.lang==='zh'?'zh-Hans-CN':'en'));
   else if(key==='read') list.sort((a,b)=>(state.dirRead[b.id]||0)-(state.dirRead[a.id]||0) || byDate(a,b));                 // what was opened here last comes first
   else if(key==='heat' && heatAvailable()) list.sort((a,b)=>heatOf(b)-heatOf(a) || byDate(a,b));
+  else if(key==='mix' && !bkp && !tk.length) list=dirMixOrder(list);
   else if(bkp) list.sort((a,b)=>(b.lang===state.lang)-(a.lang===state.lang) || heatOf(b)-heatOf(a) || a.title.localeCompare(b.title,state.lang==='zh'?'zh-Hans-CN':'en'));          // (books have no dates: the page's language first, then what is read most, then the title)
   else list=interleaveDays(list.sort(byDate));
   const bkNotes = curList ? new Map(curList.books.map(b=>[b.id,bkText(b.why)])) : null;
   if(curList){ const ord=new Map(curList.books.map((b,i)=>[b.id,i])); list.sort((a,b)=>ord.get(a.id)-ord.get(b.id)); }          // (a book list is read in the order that its maker gave)
+  const spanKind = !bkp && !curList && !tk.length && !state.dShelf && !state.dTag ? (state.dLanding==='articles' ? 'article' : state.dLanding==='watch' ? 'video' : !state.dLanding && state.dBrowse && state.dType==='all' ? 'all' : '') : '';
+  let spanHTML='', spanNote='';
+  if(spanKind){                                                                                    // the time span of the page: what the reader chose (or the page's own), widened by one step while it holds fewer than 12
+    const want=DIR_SPANS.includes(state.dSpans[spanKind]) ? state.dSpans[spanKind] : DIR_SPAN_DEFAULT[spanKind], within=n=>n==='all' ? list : list.filter(it=>{ const a=dirAge(it); return a!==null && a<DIR_SPAN_AGE[n]; });
+    let i=DIR_SPANS.indexOf(want), cur=within(want); const wantN=cur.length;
+    while(cur.length<DIR_SPAN_MIN && i<DIR_SPANS.length-1){ i++; cur=within(DIR_SPANS[i]); }
+    if(DIR_SPANS[i]!==want && wantN<DIR_SPAN_MIN) spanNote=t('spanWiden',wantN,t('span_'+want));
+    list=cur; state.dSpanNow=DIR_SPANS[i];
+    spanHTML=`<span class="dspans" role="group" aria-label="${esc(t('spanLabel'))}">`+DIR_SPANS.map(k=>`<button type="button" data-dspan="${k}" data-dspan-kind="${spanKind}" aria-pressed="${k===want}">${esc(t('span_'+k))}</button>`).join('')+`</span>`;
+  }
+  const newest=dirNewestDate(found), oldDays=newest ? Math.floor((dirNowMs()-Date.parse(newest))/86400000) : 0;
   const sh=state.dShelf?state.shelfMap.get(state.dShelf):null;
   $('#viewTitle').textContent = sh ? sh.name : state.dTag ? '#'+state.dTag : curList ? bkText(curList.name) : state.dLanding ? publicLabel(state.dLanding) : state.dType!=='all' ? t('ty_'+state.dType) : discover ? t('dirDiscover') : t('dirTitle');
   let sub = tk.length ? t('matchCount',list.length,state.q.trim()) : curList ? bkText(curList.blurb) : '';                                // (no count of the whole directory: the page does not need it)
   if(sh && sh.description) sub = sh.description + (state.lang==='zh'?'。':'. ') + sub;
   let html = esc(sub);
+  if(spanHTML) html += (html ? ' ' : '') + spanHTML + (spanNote ? ` <span class="upd">${esc(spanNote)}</span>` : '');
+  if(spanKind && newest && oldDays>DIR_FRESH_DAYS) html += (html ? ' ' : '') + `<span class="upd stale">${esc(t('lastUpd',newest.slice(5),oldDays))}</span>`;          // (a page that has not had news for days says so: it does not look new)
   if(sh && sh.home) html += ` <a href="${esc(sh.home)}" target="_blank" rel="nofollow ugc noopener noreferrer">${esc(t('visitSite'))} ↗</a>`;
   const clr=(k,label)=>`<button class="chip" type="button" data-clear="${k}" title="${esc(t('clearTag'))}"><b>${esc(label)}</b><em>✕</em></button>`;
   const cl=[], colL=state.dTab.startsWith('col:') ? colName(state.dTab.slice(4)) : '', pltL=state.dTab.startsWith('plat:') ? platName(state.dTab.slice(5)) : '';
@@ -9002,7 +9051,7 @@ function renderDir(){
   more.hidden = !latestVisible || list.length<=shown.length; $('#moreBtn').textContent = t('showMore')+` (${shown.length} / ${list.length})`;
   if(list.length || picks.length) empty.hidden=true;
   else { empty.hidden=false; empty.innerHTML = state.dLanding==='books' ? (state.lang==='zh'?'公共目录还没有可推荐的图书，待审核书目上线后会在这里展示。':'There are no reviewed books in the public directory yet.') : d.items.length ? t('emptySearch',esc(state.q.trim()||'…')) : t('dirEmpty'); }
-  $('#source').innerHTML = t('srcDir',esc(hostOf(state.dirCfg)||state.dirCfg),esc(d.generated||''));
+  $('#source').innerHTML = t('srcDir',esc(hostOf(state.dirCfg)||state.dirCfg),esc(dirNewestDate(d.items)||d.generated||''));          // ("updated on": the newest thing in it; the day it was built says nothing about its content)
 }
 async function toggleSaveLink(did){
   const it=state.dirData && state.dirData.items.find(x=>x.id===did); if(!it) return;
@@ -9844,6 +9893,7 @@ document.querySelectorAll('[data-space]').forEach(b=>b.addEventListener('click',
 $('#tabbar [data-hot-nav]').addEventListener('click',()=>publicGo('hot'));
 $('.view-head').addEventListener('click',e=>{                        // the active filters above the cards: click one to drop it
   if(e.target.closest('[data-qwide]')){ qWide(state.q.trim()); return; }
+  const sp=e.target.closest('[data-dspan]'); if(sp){ state.dSpans[sp.dataset.dspanKind]=sp.dataset.dspan; LS.set('dirSpan',state.dSpans); state.dLimit=DIR_PAGE; render(); return; }
   const c=e.target.closest('[data-clear]'); if(!c) return;
   const k=c.dataset.clear; if(k==='tag') state.tag=''; else if(k==='dtag') state.dTag=''; else if(k==='dshelf') state.dShelf=''; else if(k==='dpick') clearPick();
   else if(k==='dtab'){ state.dTab=''; state.dSub=''; } else if(k==='dsub') state.dSub=''; else if(k==='dtype') state.dType='all'; else if(k==='dlf') state.lf='all'; else if(k==='dq'){ state.q=''; $('#q').value=''; }
@@ -9987,11 +10037,12 @@ $('#q').addEventListener('keydown',e=>{
   }else if(e.key==='Enter' && (k==='music' || k==='podcast')){ e.preventDefault(); const w=e.target.value.trim(); if(w){ lpSearchGo(w,true); lpHistAdd(w); } }
 });
 $('#ftBtn').addEventListener('click',()=>{ state.ftOn=!state.ftOn; LS.set('ftOn',state.ftOn?1:0); ftSchedule(); render(); if(state.ftOn && state.q.trim()) toast(t('ftBusy')); });
-$('#sort').addEventListener('change',e=>{ state.sort=e.target.value; LS.set('sort',state.sort); render(); });
+function setSortKey(v){ if(dirOn()){ state.dsort=v; LS.set('dsort',v); } else { state.sort=v; LS.set('sort',v); } }          // (the directory and my shelf are sorted each in its own way)
+$('#sort').addEventListener('change',e=>{ setSortKey(e.target.value); render(); });
 function dirSortLabel(v){ const o=[...$('#sort').options].find(x=>x.value===v); return dirOn() && booksPage() && v==='recent' ? t('sortBooks') : (o ? o.textContent : ''); }
 $('#sortBtn').addEventListener('click',()=>{                                                              // the next way of sorting among those that this page has; the toast says which
   const sel=$('#sort'), ways=[...sel.options].filter(o=>!o.disabled && !o.hidden); if(ways.length<2) return;
-  const n=ways[(ways.findIndex(o=>o.value===sel.value)+1)%ways.length]; state.sort=n.value; LS.set('sort',state.sort); state.dLimit=DIR_PAGE; render(); toast(t('sortBy',dirSortLabel(n.value)));
+  const n=ways[(ways.findIndex(o=>o.value===sel.value)+1)%ways.length]; setSortKey(n.value); state.dLimit=DIR_PAGE; render(); toast(t('sortBy',dirSortLabel(n.value)));
 });
 $('#viewBtn').addEventListener('click',()=>{ state.view=state.view==='grid'?'list':'grid'; LS.set('view',state.view); render(); });
 function setLang(v){                                                                          // "auto": follow the system; zh / en: that language, remembered
@@ -10002,7 +10053,7 @@ function setLang(v){                                                            
 document.querySelector('[data-lang="auto"]').addEventListener('click',()=>setLang('auto'));
 $('#langBtn').addEventListener('click',()=>setLang(state.lang==='zh' ? 'en' : 'zh'));
 addEventListener('languagechange',()=>{ if(state.langAuto && sysLang()!==state.lang) setLang('auto'); });                 // (the system's language was changed while the page is open)
-$('#lfBtn').addEventListener('click',()=>{ state.lf=LF_NEXT[state.lf]||'zh'; render(); });
+$('#lfBtn').addEventListener('click',()=>{ state.lf=LF_NEXT[state.lf]||'zh'; render(); toast(t('lfToast', state.lf==='zh' ? t('langZh') : state.lf==='en' ? t('langEn') : t('lfAll'))); });          // (the button is a globe and a word; the line says it once more: this is the language of the CONTENT)
 function shellSel(){ return String(LS.get('shell', window.__ZT_SHELL || '2')); }                          // "2": the new shell (the default: a home-screen app on an iPhone cannot take a switch in the address), "1": the old page (?shell=1)
 function themeNow(){ return state.theme==='cloud' && shellSel()!=='2' ? 'light' : state.theme; }                 // (the third theme is the new shell's: the old page shows it as the light one)
 function themeEff(){ const t0=themeNow(); return t0==='auto' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : t0; }          // (what is on screen: the system's choice when none was made)
