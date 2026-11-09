@@ -61,7 +61,9 @@
 
 - 2026-11-09 工作流已修（`claude/fix-daily` 的 `6c9f45f`），测试 2 条通过。
 - 2026-11-09 侧栏顺序已改（`claude/sidebar-order` 的 `24a931a`）：发现、热榜、今日听什么、精选图书、精选文章、看什么、（其它类型）、全部。手机上的栏目条是同一个列表，跟着变。测试：`s_first`、`s_listen`、`s_shell`（两处栏目条）改成新顺序。验证是在 `claude/search-music` 的基础上做的（master 上这几套 e2e 本来就有跑不过的，`claude/fixes` 里修过）：`s_first` 29、`s_listen` 90、`s_public_bar` 28、`s_hotpage` 67、`s_player2` 11、`s_shell` 77、`s_dir` 98、`s_more` 13、`s_bookpage` 34，全过。临时 worktree `E:\Ztree\wt\tmp-sidebar-test`（分支 `tmp/sidebar-test` = search-music + 侧栏改动）只用来给用户看预览，用完删。
-- 等用户定：热门和更新的比例（见给用户的说明：综合排序 + 时间跨度、固定比例、只标“更新于”）。
+- 2026-11-09 综合排序、时间跨度、更新时间、“新”标、语言按钮标识已做完（`claude/fresh-ranking` 的 `330b588`，从 `claude/search-music` 开出，所以要在它之后合并）。和规划的差别：“刚更新”一块最多 **12** 条（不是 8：编辑精选另有位置，会从列表里拿掉，8 条不够）。页脚的“更新于”改成最新一条的日期（原来是目录生成的那天，会让旧内容看起来是新的）。测试：新增 `s_fresh` 27 条；`s_dir`、`s_first`、`s_mobile` 认新的默认顺序；`s_dir` 98、`s_first` 29、`s_public_bar` 28、`s_shell` 77、`s_hotpage` 67、`s_rich` 48、`s_lang` 13、`s_text` 27、`s_dirkeep` 20、`s_group` 12、`s_bookpage` 34、`s_more` 13 全过；`s_mobile` 单独在新 rig 上 39 过，和 `s_dir` 放在一起跑时有已知的计数器串扰（run_all 里已记为已知）。
+- 预览：临时 worktree `E:\Ztree\wt\tmp-sidebar-test`（分支 `tmp/sidebar-test` = search-music + 侧栏 + 综合排序，只用来看，用完删）；预览里的目录数据是线上的 `directory.json`（1252 条，停在 11-06），不是做出来的假数据：精选文章页显示“本周只有 5 条，已补上更早的”和“内容最近更新于 11-06（3 天前）”。
+- 已确认的取舍：订阅有更新时的做法 = 最近 2 天的内容先出，订阅的节目排在前面，并且订阅的节目整体 ×1.5。
 
 ## 4. 合并记录
 
